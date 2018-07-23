@@ -1,0 +1,3762 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+ <head>
+  <!-- SAPE RTB JS -->
+  <!--<script
+    async="async"
+    src="//cdn-rtb.sape.ru/rtb-b/js/518/2/518.js"
+    type="text/javascript">
+</script>-->
+  <!-- SAPE RTB END -->
+  <script src="http://litcult.ru/i/js/jquery/jquery-1.11.3.min.js" type="text/javascript">
+  </script>
+  <script>
+   jQuery.noConflict();
+  </script>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="DDSP" name="generator"/>
+  <meta content="100002185525212" property="fb:admins"/>
+  <title>
+   ЛитКульт — Литературный Портал «ЛитКульт»
+  </title>
+  <base href="http://litcult.ru/"/>
+  <meta content="Проект ЛитКульт создан для людей, которым небезразличны современная литература и культура. Этот сайт является площадкой для публикации работ опытных и начинающих авторов, а также предоставляет возможность читателю выразить свое мнение о произведении в ком" name="description"/>
+  <meta content="стихи, поэзия, современная литература, блоги, литературный форум, новости кино, кинорецензии, арт, живопись, конкурсы, проза, крупная проза, дебют, фото" name="keywords"/>
+  <link href="./u/css/sub/portal-nocolors.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+  <link href="./u/css/cache/theme.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+  <!--
+  <script async src="http://api-maps.yandex.ru/2.0/?load=package.full&mode=release&lang=ru-RU" type="text/javascript"></script>
+  -->
+  <script src="./i/js/tiny_mce/tiny_mce.js" type="text/javascript">
+  </script>
+  <!--<script type="text/javascript" src="./i/js/tinymce/tinymce.min.js"></script>-->
+  <!--<script type="text/javascript" src="./i/js/jquery/jquery-1.11.3.min.js"></script>-->
+  <script src="./u/js/sub/portal.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   /* --- common/js --- */
+  window.addEvent('domready', function(){
+
+  //new Ddsp.MenuEdit('menu');
+
+  // Названия внутри текстовых полей
+  Ddsp.Site.authFormDefaults(
+    $('authForm'), $('authLogin'), $('authPass'), $('btnLogin'), 'Логин', 'Пароль');
+  
+  // Подсказка при авторизации
+  var eTopSlideTip = $('topSlideTip');
+  if (eTopSlideTip) {
+    if (eTopSlideTip.get('class') == 'topSlideTipPm') {
+            var st = new Ddsp.SlideTips.Pm(eTopSlideTip, {
+        url: 'msgs',
+        onRemove: function() {
+          var n = this.getTotal();
+          var ePmCnt = $('pmCnt');
+          $('pmCnt').set('html', n);
+          if (!n) {
+            var ePmBtn = ePmCnt.getParent().getParent();
+            ePmBtn.removeClass('send2');
+            ePmBtn.removeClass('notify2');
+            ePmBtn.addClass('sendOff');
+            ePmCnt.getParent().dispose();
+          }
+        },
+        onSystem: function(system) {
+          var ePmBtn = $('pmCnt').getParent().getParent();
+          if (system) {
+            ePmBtn.removeClass('send2');
+            ePmBtn.addClass('notify2');
+          } else {
+            ePmBtn.removeClass('notify2');
+            ePmBtn.addClass('send2');
+          }
+        }
+      });
+          } else {
+      var st = new Ddsp.SlideTips(eTopSlideTip);
+    }
+    st.setOptions({
+      onShow: function() {
+        eTopSlideTip.setStyle(
+          'left',
+          -Math.round(this.element.getSize().x / 2 - this.element.getPrevious().getSize().x / 2)
+        );
+      }
+    });
+  }
+
+  
+  // Форма потеряного пароля
+    
+  // Табы
+  var eTabs = $('tabs');
+  if (eTabs) {
+    var tabs = new SimpleTabs('tabs', {selector: 'h2[class=tab]'});
+    var ul = document.getElement('.tab-menu');
+    var submenu = $('submenu');
+    submenu.empty();
+    ul.inject(submenu);
+    new Element('div', {'class':'clear'}).inject(ul);
+    var anch = window.location.href.split('#')[1];
+    if (anch) {
+      if (anch.match(/cmt\d+|msgs/))
+        // Конкретный коммент. Перключаем на вкладку комментов
+        tabs.selectByName('bmt_comments'); 
+      else tabs.selectByName(anch);
+    }
+  }
+  
+  // Всплывающие подсказки
+  //new Tips('.tools a,.tooltips a,.tooltip');
+  
+  // Кнопки сохранения
+  new Ddsp.SubmitButtons();
+  
+  // Автокомплитеры
+  Ddsp.Autocompleters.init();
+  
+  // Всплывающее окно авторизации
+  $$('a').each(function(el){
+    if (el.get('href') == '/auth') {
+      el.addEvent('click', function() {
+        new Ddsp.DialogAuth();
+        return false;
+      });
+    }
+  });
+
+    
+  
+   
+
+  // Замена адресов картами
+  $$('.t_geoAddress').each(function(el){
+    if (!((el.get('text').trim() == null) || (el.get('text').trim() == ""))) {
+      new Ddsp.Atlas(el, {
+        key: '',
+        prefix: 'trhrt',
+        center: [88.00000, 88.00000]
+      });
+    }
+  });
+
+var catchSubmit = function catchSubmit(event) {
+    if ((document.getElementById('addressi') == null) ||
+      (document.getElementById('latitudei') == null) ||
+      (document.getElementById('longitudei') == null)) {
+    return true;
+  }
+  if (!isNaN(document.getElementById('latitudei').value.trim()) &&
+      !isNaN(document.getElementById('longitudei').value.trim())) {
+    var curLat = parseFloat(document.getElementById('latitudei').value.trim());
+    var curLon = parseFloat(document.getElementById('longitudei').value.trim());
+    if ((curLat > -90.0)&&(curLat < 90.0)&&(curLon > -90.0)&&(curLon < 90.0)) {
+      return true;
+    }
+  }
+  
+  event.preventDefault();
+  var addr = 'trhrt' + document.getElementById('addressi').value.trim();
+  setTimeout(function() {cancelGeocoding();}, 2000);
+
+  var myGeocoder = ymaps.geocode(
+    		         // Строка с адресом, который нужно геокодировать
+        		     addr, {
+    		             // - искать только в этой области
+    		             strictBounds: false,
+    		             // - требуемое количество результатов
+    		             results: 1
+    		         }
+    		       );
+          myGeocoder.then(
+            function(response) {
+        	    var latitude = 88.00000;
+        	    var longitude = 88.00000;
+                if (response.geoObjects.getLength()) {
+                    // point - первый элемент коллекции найденных объектов
+                    var point = response.geoObjects.get(0);
+                    latitude = point.geometry.getBounds()[0][0];
+                    longitude = point.geometry.getBounds()[0][1];
+                }
+                document.getElementById('latitudei').set("value", latitude);
+                document.getElementById('longitudei').set("value", longitude);
+                document.getElementById('DD_Form').submit();
+                            }
+          );
+    return false;
+}
+
+function cancelGeocoding() {
+    document.getElementById('DD_Form').submit();
+
+}
+
+  var ddForm = document.getElementById('DD_Form');
+    try {
+        ddForm.addEventListener("submit", catchSubmit, false);
+      //ddForm.addEventListener("onsubmit", catchSubmit, false);
+    } catch(e) {
+        ddForm.attachEvent("onsubmit", catchSubmit()); //Internet Explorer
+    }
+
+  /*  
+  var ddItemsTile = document.getElement('div[class~=layout_tile] > div[class~=ddItems]')
+  if (ddItemsTile) {
+    Ddsp.cutItemTitles(ddItemsTile);
+    (function() { Ddsp.equalItemHeights(ddItemsTile); }).delay(500);
+  }
+  */
+  
+    
+    
+    
+  // Лайтбокс
+  new Lightbox({
+    assetBaseUrl: './i/css/common',
+    relString: 'ddspLightbox'
+  }, $$('.module_photoalbum_slave a[class=thumb]'));
+  
+  // Выравнивание высоты tile-записей
+  (function(){
+    Ddsp.equalItemHeights($$('.layout_tile .ddItems .item'))
+  }).delay(100);
+  
+});
+window.addEvent('domready', function(){
+  var eContainer = $('container');
+  new Ddsp.HorizontalMenuRoundedBg($('menu'), {
+    createExtraElements: false,
+    borderElement: eContainer,
+    borderPlus: 0
+  });
+  new Ddsp.HorizontalMenuRoundedBg($('orderMenu'), {
+    borderElement: eContainer
+  });
+});
+  </script>
+  <style>
+   /* --- common/css --- */
+  </style>
+  <!-- common/extra-header -->
+  <script type="text/javascript">
+   window.addEvent('domready', function(){
+  var eContainer = $('container');
+  new Ddsp.HorizontalMenuRoundedBg($('menu'), {
+    borderElement: eContainer,
+    borderPlus: 8
+  });
+  new Ddsp.HorizontalMenuRoundedBg($('orderMenu'), {
+    borderElement: eContainer
+  });
+});
+  </script>
+  <style>
+  </style>
+  <!-- common/vklike -->
+  <!--
+  <script type="text/javascript"
+    src="http://userapi.com/js/api/openapi.js?33">
+  </script>
+  -->
+  <script charset="windows-1251" src="http://vkontakte.ru/js/api/openapi.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   VK.init({apiId: 2410610, onlyWidgets: true});
+  </script>
+  <script async="" src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript">
+  </script>
+  <script async="" src="http://mediaplayer.yahoo.com/js" type="text/javascript">
+  </script>
+  <!-- ClientJS -->
+  <!-- gcaptcha -->
+  <script src="/i/js/client/client.min.js">
+  </script>
+  <script src="https://www.google.com/recaptcha/api.js">
+  </script>
+ </head>
+ <body>
+  <div class="pageName_main blocksLayout" id="layout">
+   <div class="container showgrid" id="container">
+    <table style="margin-bottom:0px">
+     <tbody>
+      <tr>
+       <td>
+        <div class="clear span-24 last" id="topBanner">
+         <div class="body">
+         </div>
+        </div>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <div>
+         <a href="./" id="logo" title="ЛитКульт">
+          <span>
+           ЛитКульт
+          </span>
+         </a>
+        </div>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <!-- Begin Authorization & Personal Panel -->
+    <div class="span-24 last" id="top">
+     <div id="auth">
+      <table>
+       <tbody>
+        <tr>
+         <td>
+          <form action="/" id="authForm" method="post">
+           <div class="item">
+            <input class="fld" id="authLogin" name="authLogin" type="text" value="login"/>
+           </div>
+           <div class="item">
+            <input class="fld" id="authPass" name="authPass" type="password" value="password"/>
+           </div>
+           <input id="fingerprint" name="fingerprint" type="hidden" value=""/>
+           <script>
+            var client = new ClientJS(); // Create A New Client Object
+	var fingerprint = client.getFingerprint(); // Calculate Device/Browser Fingerprint
+	document.getElementById('fingerprint').value=fingerprint;
+           </script>
+           <!-- 
+   <div class="item">
+     <label for="myComputer">
+     <input type="checkbox" name="expires" value="1" checked id="myComputer" />
+       <small>чужой компьютер</small>
+     </label>
+   </div>
+    -->
+           <div class="item" style="position:relative">
+            <a class="btn btnSubmit" href="#" id="btnLogin">
+             <span>
+              Войти
+             </span>
+            </a>
+           </div>
+           <div class="item">
+            <a class="btn btn1" href="registration" id="btnReg">
+             <span>
+              Регистрация
+             </span>
+            </a>
+           </div>
+           <div class="item">
+            <a class="btn btn1" href="registration/lostpass">
+             Забыли?
+            </a>
+           </div>
+           <div class="clear">
+            <!-- -->
+           </div>
+          </form>
+         </td>
+         <td>
+          <div class="item gray" style="margin-left:10px;">
+           <a class="btn btn1" href="comments">
+            Все комментарии
+           </a>
+          </div>
+         </td>
+         <td>
+          <div class="item" style="max-width:300px;margin-left:10px;">
+           <form action="searchresult" method="get">
+            <input name="q" type="text"/>
+            <input name="search" type="submit" value="Поиск"/>
+           </form>
+          </div>
+          <!--<div><script>
+  (function() {
+    var cx = '010799071656576015645:embmfgkrw6g';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<style>
+.gsc-input-box{
+	height: 20px;
+}
+.gsib_a{
+	padding: 0;
+}
+</style>
+<gcse:searchbox-only resultsUrl="searchresult"></gcse:searchbox-only></div>-->
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <!-- End Authorization & Personal Panel -->
+    <!-- Begin Top Banner -->
+    <!-- <div class="clear" id="topBanner">
+    <div id="topAds"></div>
+  </div> -->
+    <!-- End Top Banner -->
+    <div class="span-24 last hMenu mainmenu" id="menu" style="min-height:40px">
+     <ul>
+      <li class="hasChildren" id="mi_lyrics">
+       <a href="lyrics">
+        <span>
+         Стихи
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_ljubimie_stihi">
+         <a href="lyrics.ljubimie-stihi">
+          <span>
+           Любимые Стихи
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_vse_poeti_litkul_ta">
+         <a href="http://litcult.ru/lyrics?a=authors">
+          <span>
+           Все поэты ЛитКульта
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li class="hasChildren" id="mi_prose">
+       <a href="prose">
+        <span>
+         Проза
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_books">
+         <a href="http://litcult.ru/books">
+          <span>
+           Книги Путешественники
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_chtivo">
+         <a href="prose.chtivo">
+          <span>
+           Чтиво
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_annotation">
+         <a href="http://litcult.ru/annotation">
+          <span>
+           Аннотации
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_vse_prozaiki_litkul_ta">
+         <a href="http://litcult.ru/prose?a=authors">
+          <span>
+           Все прозаики ЛитКульта
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li id="mi_duel">
+       <a href="duel">
+        <span>
+         Дуэли
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+      </li>
+      <li id="mi_blog">
+       <a href="blog">
+        <span>
+         Блоги
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+      </li>
+      <li class="hasChildren" id="mi_audio">
+       <a href="audio">
+        <span>
+         Аудио
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_skazki">
+         <a href="http://litcult.ru/project.skazki2">
+          <span>
+           Аудио-сказки для детей
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_declamation">
+         <a href="http://litcult.ru/konkursy.declamation">
+          <span>
+           Декламация
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li class="hasChildren" id="mi_knopki">
+       <a href="knopki">
+        <span>
+         Добавить
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_stihi">
+         <a href="http://litcult.ru/lyrics?a=new">
+          <span>
+           Добавить Стихи
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_proza">
+         <a href="http://litcult.ru/prose?a=new">
+          <span>
+           Добавить Прозу
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_blog">
+         <a href="http://litcult.ru/blog?a=new">
+          <span>
+           Запись в Блог
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_audio">
+         <a href="http://litcult.ru/audio?a=new">
+          <span>
+           Добавить Аудио
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_art">
+         <a href="http://litcult.ru/art?a=new">
+          <span>
+           Добавить Арт
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_forum">
+         <a href="http://litcult.ru/forum?a=new">
+          <span>
+           Новая Тема на Форуме
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_love">
+         <a href="http://litcult.ru/lyrics.ljubimie-stihi?a=new">
+          <span>
+           Добавить Любимый Стих
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_dobavit_citatu">
+         <a href="http://litcult.ru/citaty?a=new">
+          <span>
+           Добавить Цитату
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li class="hasChildren" id="mi_content">
+       <a href="content">
+        <span>
+         Контент
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_art">
+         <a href="http://litcult.ru/art">
+          <span>
+           Арт
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_video">
+         <a href="http://litcult.ru/video">
+          <span>
+           Видео
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_debut">
+         <a href="http://litcult.ru/debut">
+          <span>
+           Дебют
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_citaty">
+         <a href="http://litcult.ru/citaty">
+          <span>
+           Цитаты
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_kino">
+         <a href="http://litcult.ru/kino">
+          <span>
+           Кино
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_foto">
+         <a href="http://litcult.ru/foto.meeting">
+          <span>
+           Фото
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_fanfiction">
+         <a href="http://litcult.ru/fanfiction">
+          <span>
+           Фанфики
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_bio">
+         <a href="http://litcult.ru/bio">
+          <span>
+           Биографии
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_statnew2">
+         <a href="http://litcult.ru/news.litnet">
+          <span>
+           Новые Статьи
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_kakizdat">
+         <a href="http://litcult.ru/kakizdat">
+          <span>
+           Как издать свою книгу
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li class="hasChildren" id="mi_konkursy">
+       <a href="konkursy">
+        <span>
+         Конкурсы
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_gora">
+         <a href="http://litcult.ru/gora">
+          <span>
+           Царь Горы
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_indie">
+         <a href="konkursy.indie">
+          <span>
+           Инди-Дуэли
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_konkurspoetry">
+         <a href="http://litcult.ru/lyrics.kontest-lyrics">
+          <span>
+           Конкурсные Стихи
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_kontest_pose">
+         <a href="konkursy.kontest-pose">
+          <span>
+           Конкурсная Проза
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li class="hasChildren" id="mi_news2">
+       <a href="news2">
+        <span>
+         Новости
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+       <ul>
+        <li id="mi_news_litcult">
+         <a href="news2.news-litcult">
+          <span>
+           Новости ЛитКульта
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_news3">
+         <a href="news2.news3">
+          <span>
+           Другие Новости
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_afisha">
+         <a href="news2.afisha">
+          <span>
+           Афиша концертов
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+        <li id="mi_opros">
+         <a href="http://litcult.ru/content.opros">
+          <span>
+           Архив Опросов
+          </span>
+         </a>
+         <i>
+         </i>
+         <div class="clear">
+         </div>
+        </li>
+       </ul>
+      </li>
+      <li id="mi_forum">
+       <a href="forum">
+        <span>
+         Форум
+        </span>
+       </a>
+       <i>
+       </i>
+       <div class="clear">
+       </div>
+      </li>
+     </ul>
+     <div class="clear">
+      <!-- -->
+     </div>
+    </div>
+    <div class="span-8 col">
+     <div class="body">
+      <div class="pageBlocks">
+       <div class="block size- pbt_items colN1" id="block_1295">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           Все на матч! Голосуем!
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_duel">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_title">
+              <div class="element f_title t_text">
+               <h2>
+                <a href="duel/1440">
+                 Крис Пратт — Тед Левайн 33:27 (матч завершён)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="duel/1440#msgs" title="комментарии (19)">
+                 <i>
+                 </i>
+                 19
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_tema t_tags">
+               <b class="title">
+                Тема Дуэли:
+               </b>
+               <a href="duel/t2.tema.idi-i-smotri">
+                Иди и смотри
+               </a>
+              </div>
+              <div class="element f_format t_tagsSelect">
+               <b class="title">
+                Формат дуэли:
+               </b>
+               <a href="duel/t2.format.viii-chempionat-poetov-litkulta">
+                VIII Чемпионат Поэтов ЛитКульта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_title">
+              <div class="element f_title t_text">
+               <h2>
+                <a href="duel/1439">
+                 Боб Оденкёрк — Трэйси Леттс — Брэдли Уитфорд 20:17:21 (матч завершён)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="duel/1439#msgs" title="комментарии (22)">
+                 <i>
+                 </i>
+                 22
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_tema t_tags">
+               <b class="title">
+                Тема Дуэли:
+               </b>
+               <a href="duel/t2.tema.snimaya-sloj-za-sloem">
+                Снимая слой за слоем
+               </a>
+              </div>
+              <div class="element f_format t_tagsSelect">
+               <b class="title">
+                Формат дуэли:
+               </b>
+               <a href="duel/t2.format.viii-chempionat-poetov-litkulta">
+                VIII Чемпионат Поэтов ЛитКульта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN1" id="block_98">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/blog">
+            Новое в Блогах
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_blog">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    30
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/88599">
+                 <img src="u/users/sm_88599.jpg" title="Соня явный"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="blog/20003">
+                 Ничего не напоминает?
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    201
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="blog/20002#msgs" title="комментарии (26)">
+                 <i>
+                 </i>
+                 26
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/87733">
+                 <img src="u/users/sm_87733.jpg" title="eliekon"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="blog/20002">
+                 Хорошая и плохая поэзия. Чем хорошие стихи отличаются от плохих?
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    76
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments shortComments" href="blog/20001#msgs" title="комментарии (1)">
+                 <i>
+                 </i>
+                 1
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/87958">
+                 <img src="u/users/sm_87958.jpg" title="vj фисташко"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="blog/20001">
+                 Простоблог от простоавтора 2
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    216
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="blog/20000#msgs" title="комментарии (8)">
+                 <i>
+                 </i>
+                 8
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/87856">
+                 <img src="u/users/sm_87856.jpg" title="Izverg"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="blog/20000">
+                 Теория большого пшика
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_text colN1" id="block_618">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <p>
+          <a href="/news2.news-litcult/8903">
+           <img src="/u/ed/undefined/undefined/text/1516589708.jpg"/>
+          </a>
+         </p>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN1" id="block_85">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/news2.news-litcult">
+            Новости ЛитКульта
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_news_litcult">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news-litcult/8934">
+                <img src="/u/dd/news_litcult/8934/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news-litcult/8934">
+                 Жеребьёвка плэй-офф VIII Чемпионата Прозаиков ЛитКульта
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="news2.news-litcult/8934#msgs" title="комментарии (3)">
+                 <i>
+                 </i>
+                 3
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2.news-litcult/t2.rub.novosti-sajta">
+                новости сайта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news-litcult/8933">
+                <img src="/u/dd/news_litcult/8933/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news-litcult/8933">
+                 Итоги Третьего Тура Восьмого Чемпионата Прозаиков ЛитКульта
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="news2.news-litcult/8933#msgs" title="комментарии (24)">
+                 <i>
+                 </i>
+                 24
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2.news-litcult/t2.rub.novosti-sajta">
+                новости сайта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news-litcult/8932">
+                <img src="/u/dd/news_litcult/8932/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news-litcult/8932">
+                 Электронная версия сборника «Авторы XXI века (май 2018)»
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="news2.news-litcult/8932#msgs" title="комментарии (8)">
+                 <i>
+                 </i>
+                 8
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2.news-litcult/t2.rub.novosti-sajta">
+                новости сайта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news-litcult/8931">
+                <img src="/u/dd/news_litcult/8931/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news-litcult/8931">
+                 Сбор средств на развитие и поддержку ЛитКульта
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="news2.news-litcult/8931#msgs" title="комментарии (6)">
+                 <i>
+                 </i>
+                 6
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2.news-litcult/t2.rub.novosti-sajta">
+                новости сайта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news-litcult/8930">
+                <img src="/u/dd/news_litcult/8930/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news-litcult/8930">
+                 Жеребьёвка Финала VIII Чемпионата Поэтов ЛитКульта
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2.news-litcult/t2.rub.novosti-sajta">
+                новости сайта
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN1" id="block_100">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/lyrics.ljubimie-stihi">
+            Новые Любимые Стихи
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_love_lyrics">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/lyrics.ljubimie-stihi/3125">
+                <img src="/u/dd/love_lyrics/3125/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics.ljubimie-stihi/3125">
+                 Внутри меня семит с антисемитом
+                </a>
+               </h2>
+              </div>
+              <div class="element f_avtor t_tags">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="lyrics.ljubimie-stihi/t2.avtor.eldar-ryazanov">
+                Эльдар Рязанов
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/lyrics.ljubimie-stihi/3124">
+                <img src="/u/dd/love_lyrics/3124/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics.ljubimie-stihi/3124">
+                 Мы — евреи (глава из поэмы «Твоя победа»)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_avtor t_tags">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="lyrics.ljubimie-stihi/t2.avtor.margarita-aliger">
+                Маргарита Алигер
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/lyrics.ljubimie-stihi/3123">
+                <img src="/u/dd/love_lyrics/3123/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                 </td>
+                </tr>
+                <tr>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics.ljubimie-stihi/3123">
+                 Ветка миндаля
+                </a>
+               </h2>
+              </div>
+              <div class="element f_avtor t_tags">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="lyrics.ljubimie-stihi/t2.avtor.andrej-dementev">
+                Андрей Дементьев
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="clear">
+        <!-- -->
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="span-8 col">
+     <div class="body">
+      <div class="pageBlocks">
+       <div class="block size- pbt_pastItems colN2" id="block_97">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/lyrics">
+            Лучшие Поэты Недели
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_lyrics">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    225
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  54
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55843#msgs" title="комментарии (19)">
+                 <i>
+                 </i>
+                 19
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/78435">
+                 <img src="u/users/sm_78435.jpg" title="Viktoria"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55843">
+                 Шмели
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/78435">
+                Viktoria
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    439
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  50
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55855#msgs" title="комментарии (38)">
+                 <i>
+                 </i>
+                 38
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/76607">
+                 <img src="u/users/sm_76607.jpg" title="simon"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55855">
+                 полстакана имени никифора молочкова
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/76607">
+                simon
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    165
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  39
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55837#msgs" title="комментарии (6)">
+                 <i>
+                 </i>
+                 6
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/12237">
+                 <img src="u/users/sm_12237.jpg" title="vn19"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55837">
+                 сонное
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/12237">
+                vn19
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    240
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  33
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55846#msgs" title="комментарии (26)">
+                 <i>
+                 </i>
+                 26
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/12237">
+                 <img src="u/users/sm_12237.jpg" title="vn19"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55846">
+                 тщета
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/12237">
+                vn19
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    237
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  30
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55914#msgs" title="комментарии (24)">
+                 <i>
+                 </i>
+                 24
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/5796">
+                 <img src="u/users/sm_5796.jpg" title="Яночка Вечер"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55914">
+                 Как вам выживать под палачами…
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/5796">
+                Яночка Вечер
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    148
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  30
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55881#msgs" title="комментарии (3)">
+                 <i>
+                 </i>
+                 3
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/86836">
+                 <img src="u/users/sm_86836.jpg" title="solveig13"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55881">
+                 Детям атомного мира
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/86836">
+                solveig13
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    138
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  28
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="lyrics/55889#msgs" title="комментарии (3)">
+                 <i>
+                 </i>
+                 3
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/12237">
+                 <img src="u/users/sm_12237.jpg" title="vn19"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="lyrics/55889">
+                 мог бы в полслова сказать
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/12237">
+                vn19
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_text colN2" id="block_622">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <p>
+          <a href="/news2.news-litcult/8904">
+           <img src="/u/ed/undefined/undefined/text/1516590956.jpg"/>
+          </a>
+         </p>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN2" id="block_262">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/konkursy">
+            Новые Конкурсы на ЛитКульте
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_konkursy">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/konkursy/18961">
+                <img src="/u/dd/konkursy/18961/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="konkursy/18961">
+                 Пятый прозаический блиц «Мундиаль» (итоги!)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="konkursy/18961#msgs" title="комментарии (10)">
+                 <i>
+                 </i>
+                 10
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="konkursy/t2.rub.itogi-konkursov">
+                итоги конкурсов
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/konkursy/18960">
+                <img src="/u/dd/konkursy/18960/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="konkursy/18960">
+                 Седьмой поэтический блиц «Сны о спорте» (итоги!)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="konkursy/18960#msgs" title="комментарии (4)">
+                 <i>
+                 </i>
+                 4
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="konkursy/t2.rub.itogi-konkursov">
+                итоги конкурсов
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/konkursy/18959">
+                <img src="/u/dd/konkursy/18959/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="konkursy/18959">
+                 Пятый прозаический блиц «Мундиаль» (голосование!)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="konkursy/18959#msgs" title="комментарии (13)">
+                 <i>
+                 </i>
+                 13
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="konkursy/t2.rub.literaturnie-konkursi">
+                литературные конкурсы
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/konkursy/18958">
+                <img src="/u/dd/konkursy/18958/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="konkursy/18958">
+                 Седьмой поэтический блиц «Сны о спорте» (голосование!)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="konkursy/18958#msgs" title="комментарии (8)">
+                 <i>
+                 </i>
+                 8
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="konkursy/t2.rub.literaturnie-konkursi">
+                литературные конкурсы
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/konkursy/18957">
+                <img src="/u/dd/konkursy/18957/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="konkursy/18957">
+                 Третий Летний Кубок ЛитКульта
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="konkursy/18957#msgs" title="комментарии (107)">
+                 <i>
+                 </i>
+                 107
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="konkursy/t2.rub.literaturnie-konkursi">
+                литературные конкурсы
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN2" id="block_90">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/forum">
+            Последние обсуждения на Форуме
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_forum">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/forum/9610">
+                <img src="/u/dd/forum/9610/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="forum/9610#msgs" title="комментарии (6721)">
+                 <i>
+                 </i>
+                 6721
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="forum/9610">
+                 Вольная тема
+                </a>
+               </h2>
+              </div>
+              <div class="element f_forum t_tagsSelect">
+               <b class="title">
+                Форум:
+               </b>
+               <a href="forum/t2.forum.diskussionnij-klub">
+                Дискуссионный клуб
+               </a>
+              </div>
+              <div class="element f_userId t_author">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/">
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/forum/18336">
+                <img src="/u/dd/forum/18336/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="forum/18336#msgs" title="комментарии (70)">
+                 <i>
+                 </i>
+                 70
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="forum/18336">
+                 Ошиблись звездочкой? Вам сюда!
+                </a>
+               </h2>
+              </div>
+              <div class="element f_forum t_tagsSelect">
+               <b class="title">
+                Форум:
+               </b>
+               <a href="forum/t2.forum.o-sajte">
+                О сайте
+               </a>
+              </div>
+              <div class="element f_userId t_author">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/86972">
+                priyateli
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/forum/10446">
+                <img src="/u/dd/forum/10446/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="forum/10446#msgs" title="комментарии (54)">
+                 <i>
+                 </i>
+                 54
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="forum/10446">
+                 За что ты не любишь графоманов?
+                </a>
+               </h2>
+              </div>
+              <div class="element f_forum t_tagsSelect">
+               <b class="title">
+                Форум:
+               </b>
+               <a href="forum/t2.forum.diskussionnij-klub">
+                Дискуссионный клуб
+               </a>
+              </div>
+              <div class="element f_userId t_author">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/31">
+                drdown
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="clear">
+        <!-- -->
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="span-8 last col">
+     <div class="body">
+      <div class="pageBlocks">
+       <div class="block size- pbt_pastItems colN3" id="block_92">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/prose">
+            Лучшие Прозаики за 2 недели
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_prose">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    217
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  47
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="prose/28622#msgs" title="комментарии (12)">
+                 <i>
+                 </i>
+                 12
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/75518">
+                 <img src="u/users/sm_75518.jpg" title="ellana"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28622">
+                 Без разницы
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/75518">
+                ellana
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    149
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  40
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="prose/28664#msgs" title="комментарии (8)">
+                 <i>
+                 </i>
+                 8
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/7707">
+                 <img src="u/users/sm_7707.jpg" title="nichto"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28664">
+                 бокал с Шопеном (Чемп.-8)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/7707">
+                nichto
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    73
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  34
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments shortComments" href="prose/28625#msgs" title="комментарии (1)">
+                 <i>
+                 </i>
+                 1
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/77379">
+                 <img src="u/users/sm_77379.jpg" title="Vetkina"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28625">
+                 Тень
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/77379">
+                Vetkina
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    215
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  31
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="prose/28600#msgs" title="комментарии (9)">
+                 <i>
+                 </i>
+                 9
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/14263">
+                 <img src="u/users/sm_14263.jpg" title="Сергей Павлов"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28600">
+                 А сейчас не вылетит птичка!
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/14263">
+                Сергей Павлов
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    201
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  30
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="prose/28640#msgs" title="комментарии (21)">
+                 <i>
+                 </i>
+                 21
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/87169">
+                 <img src="u/users/sm_87169.jpg" title="Мария Шелухина"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28640">
+                 Доброе утро! ( Майка с Анубисом) — Чемп
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/87169">
+                Мария Шелухина
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    138
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  26
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments2 shortComments" href="prose/28641#msgs" title="комментарии (6)">
+                 <i>
+                 </i>
+                 6
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/14263">
+                 <img src="u/users/sm_14263.jpg" title="Сергей Павлов"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28641">
+                 История Информации
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/14263">
+                Сергей Павлов
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_clicks">
+              <div class="element f_clicks t_clicks">
+               <table style="border:none;">
+                <tr>
+                 <td style="border:none;">
+                  <div class="smIcons">
+                   <span class="sm-view" title="Просмотров">
+                    <i>
+                    </i>
+                    109
+                   </span>
+                  </div>
+                 </td>
+                </tr>
+                <tr>
+                 <div class="smIcons">
+                  <img style="width: -3px;
+height: 10px;padding-right:13px;background:url(../../../i/img/icons/stars.png) no-repeat 0px 0px"/>
+                  25
+                 </div>
+                </tr>
+               </table>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments shortComments" href="prose/28685#msgs" title="комментарии (2)">
+                 <i>
+                 </i>
+                 2
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_userId t_author">
+               <div class="avatar hover">
+                <a href="http://litcult.ru/user/9100">
+                 <img src="u/users/sm_9100.jpg" title="twa@list.ru"/>
+                </a>
+               </div>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="prose/28685">
+                 Хоть сдохни, но живи (Чмп)
+                </a>
+               </h2>
+              </div>
+              <div class="element f_login t_static">
+               <b class="title">
+                Автор:
+               </b>
+               <a href="http://litcult.ru/user/9100">
+                twa@list.ru
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_text colN3" id="block_1236">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <p>
+          <a href="/konkursy/t2.tags.kultovij-avtor">
+           <img src="/u/ed/undefined/undefined/text/1500803185.jpg"/>
+          </a>
+         </p>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN3" id="block_89">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/news2">
+            Последние Новости
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_news">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item isImage">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_image">
+              <div class="element f_image t_image">
+               <a class="thumb" href="/news2/11166">
+                <img src="/u/dd/news/11166/sm_image.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2/11166">
+                 Топ-30 детских книг, которые любят перечитывать взрослые
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+               <div class="smIcons">
+                <a class="sm-comments shortComments" href="news2/11166#msgs" title="комментарии (1)">
+                 <i>
+                 </i>
+                 1
+                </a>
+                <div class="clear">
+                 <!-- -->
+                </div>
+               </div>
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2/t2.rub.literaturnie-novosti">
+                литературные новости
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item isImage">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_image">
+              <div class="element f_image t_image">
+               <a class="thumb" href="/news2/11165">
+                <img src="/u/dd/news/11165/sm_image.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2/11165">
+                 Джаред Лето вернётся к роли Джокера
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2/t2.rub.novosti-kino">
+                новости кино
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item isImage">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_image">
+              <div class="element f_image t_image">
+               <a class="thumb" href="/news2/11164">
+                <img src="/u/dd/news/11164/sm_image.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2/11164">
+                 Бекон, ломтики сыра и напильник: самые странные закладки, оставленные в библиотеках
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2/t2.rub.literaturnie-novosti">
+                литературные новости
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item isImage">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_image">
+              <div class="element f_image t_image">
+               <a class="thumb" href="/news2/11163">
+                <img src="/u/dd/news/11163/sm_image.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2/11163">
+                 Джеки Чан выпустит свои мемуары
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2/t2.rub.literaturnie-novosti">
+                литературные новости
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item isImage">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_image">
+              <div class="element f_image t_image">
+               <a class="thumb" href="/news2/11162">
+                <img src="/u/dd/news/11162/sm_image.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2/11162">
+                 Брендон Сандерсон создаст мультимедийный проект Dark One
+                </a>
+               </h2>
+              </div>
+              <div class="element f_commentsCount t_commentsCount">
+              </div>
+              <div class="element f_rub t_tagsSelect">
+               <b class="title">
+                Рубрика:
+               </b>
+               <a href="news2/t2.rub.literaturnie-novosti">
+                литературные новости
+               </a>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="block size- pbt_items colN3" id="block_198">
+        <div class="roundCorners top">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="bcont">
+         <div class="blockHeader">
+          <h2>
+           <a href="http://litcult.ru/news2.news3">
+            Новые Другие Новости
+           </a>
+          </h2>
+         </div>
+         <div>
+          <!-- Начало цикла вывода записей по списку полей структуры "" -->
+          <div class="items ddItems str_newstat">
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news3/10906">
+                <img src="/u/dd/newstat/10906/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news3/10906">
+                 Двери убертюре
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news3/10905">
+                <img src="/u/dd/newstat/10905/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news3/10905">
+                 Ремонт глушителей
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+           <!-- DdLayoutOutput.php: -->
+           <div class="item">
+            <div class="itemBody">
+             <!-- after title element -->
+             <!-- ttt -->
+             <!-- Open fields group -->
+             <div class="hgrp hgrp_foto">
+              <div class="element f_foto t_image">
+               <a class="thumb" href="/news2.news3/10904">
+                <img src="/u/dd/newstat/10904/sm_foto.jpg"/>
+               </a>
+              </div>
+              <div class="element f_title t_text">
+               <h2>
+                <a href="news2.news3/10904">
+                 Где купить оригинальную косметику и витамины из Японии недорого?
+                </a>
+               </h2>
+              </div>
+             </div>
+             <!-- Close fields group -->
+             <div class="clear">
+              <!-- -->
+             </div>
+            </div>
+           </div>
+          </div>
+          <!-- Конец цикла вывода записей по списку полей структуры "" -->
+         </div>
+        </div>
+        <div class="roundCorners bottom">
+         <i class="l">
+         </i>
+         <i class="r">
+         </i>
+         <div class="clear">
+         </div>
+        </div>
+       </div>
+       <div class="clear">
+        <!-- -->
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="clear span-24 last" id="footer">
+     <div class="body">
+      <a href="http://litcult.ru/o-proekte">
+       О Проекте
+      </a>
+      |
+      <a href="http://litcult.ru/contact">
+       Наша Команда
+      </a>
+      |
+      <a href="http://litcult.ru/pravila">
+       Правила ЛитКульта
+      </a>
+      |
+      <a href="http://litcult.ru/o-proekte/1434">
+       Победители Конкурсов
+      </a>
+      <br/>
+      © 2007—2018 Литературный Портал "ЛитКульт". Все права защищены.
+      <img src="http://litcult.ru/u/ed/news_litcult/8505/text/lc16.png"/>
+      <br/>
+      <p>
+       <a href="/">
+        литературный портал
+       </a>
+       ,
+       <a href="/konkursy">
+        литературные конкурсы
+       </a>
+       ,
+       <a href="/">
+        сетература
+       </a>
+       ,
+       <a href="/lyrics">
+        опубликовать стихи
+       </a>
+       ,
+       <br/>
+       <a href="/prose">
+        опубликовать прозу
+       </a>
+       ,
+       <a href="/blog">
+        литературные блоги
+       </a>
+       ,
+       <a href="/news2/t2.rub.88">
+        новости литературы
+       </a>
+       ,
+       <a href="/lyrics.ljubimie-stihi">
+        любимые стихи
+       </a>
+      </p>
+      <!--LiveInternet counter-->
+      <script type="text/javascript">
+       <!--
+document.write("<a href='http://www.liveinternet.ru/click' "+
+"target=_blank><img src='//counter.yadro.ru/hit?t26.6;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random()+
+"' alt='' title='LiveInternet: показано число посетителей за"+
+" сегодня' "+
+"border='0' width='88' height='15'><\/a>")
+//-->
+      </script>
+      <!--/LiveInternet-->
+      <!-- Yandex.Metrika informer -->
+      <a href="https://metrika.yandex.ru/stat/?id=22030033&amp;from=informer" rel="nofollow" target="_blank">
+       <img alt="Яндекс.Метрика" onclick="try{Ya.Metrika.informer({i:this,id:22030033,lang:'ru'});return false}catch(e){}" src="https://informer.yandex.ru/informer/22030033/3_1_FFFFFFFF_FFFFFFFF_0_uniques" style="width:88px; height:31px; border:0;" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)"/>
+      </a>
+      <!-- /Yandex.Metrika informer -->
+      <!-- Yandex.Metrika counter -->
+      <script type="text/javascript">
+       (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter22030033 = new Ya.Metrika({
+                    id:22030033,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+      </script>
+      <noscript>
+       <div>
+        <img alt="" src="https://mc.yandex.ru/watch/22030033" style="position:absolute; left:-9999px;"/>
+       </div>
+      </noscript>
+      <!-- /Yandex.Metrika counter -->
+     </div>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,2363 @@
+<html>
+ <head>
+  <style type="text/css">
+   BODY, P, TR, TD, INPUT, SELECT, OPTION, TEXTAREA {font-family: Tahoma, Verdana, Arial,  Courier, Helvetica,Times New Roman, sans-serif; font-size: 8pt;}
+A {text-decoration: none; color: #00008f}
+A:hover {color: #ff0000}
+.menus A {color: #ffffff}
+.menus A:hover {color: #ffffff}
+.menub A {color: #000000}
+.expandable {cursor:hand}
+.win_expandable {cursor:hand}
+.expanded {display:}
+.collapsed {display:none}
+.menug A {color: #555555}
+.redref A {color: #ff0000}
+  </style>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="elibrary, ebiblioteka, elektroninë biblioteka, electronic library, e-library, e-biblioteka, mokslinë biblioteka, online library" name="Keywords"/>
+  <meta content="Moksliniř leidiniř elektroninë biblioteka internete. Ţurnalai, straipsniai, disertacijos..." name="Description"/>
+  <meta content="Rimantas Staciokas, devel@bvva.lt " name="Author"/>
+  <link href="images/favicon.ico?v=2" rel="shortcut icon"/>
+  <script language="JavaScript1.2">
+   //window.onerror=null;
+w_down=new Image();
+w_down.src="pic/w_show.gif";
+w_up=new Image();
+w_up.src="pic/w_hide.gif";
+
+
+function outliner() {
+   var parent =  event.srcElement;
+   var child =  document.all[event.srcElement.getAttribute("child",false)];
+   if (null != child) child.className = child.className == "collapsed" ? "expanded" : "collapsed";
+   if (parent.className == "win_expandable") parent.src = child.className == "collapsed" ? w_down.src : w_up.src;
+}
+function check_all(){
+  jn=0;
+  if (document.forms["login"].login.value==""){jn=1};
+  if (document.forms["login"].password.value==""){jn=1};
+ if (jn==0){document.forms["login"].submit();
+            return true}
+ if (jn==1){alert("Neávestas vartotojo vardas");
+            return false}
+}
+function check_code(){
+  jn=0;
+  if (document.forms[0].org.value==""){jn=1};
+ if (jn==0){document.forms[0].submit();
+            return true}
+ if (jn==1){alert("Neávesta organizacija");
+            return false}
+}
+function check_qwd(){
+if (document.forms[0].qwd.value.length > 1) {
+   document.forms[0].submit();
+   return true}
+else {
+   alert("Fragmento ilgis ne maţiau kaip 2 simboliai");
+   return false}
+}
+function isreg(adr){
+
+  alert(" Reikia prisiregistruoti");
+  document.forms[0].login.focus();
+
+}
+function show_help(topic){
+  var frm = document.forms["results"];
+  anewwin=window.open("", "addwin", "resizable=yes,scrollbars=yes,height=300,width=500,top=0,left=0");
+  frm.action=topic;
+  frm.target="addwin";
+  frm.submit()
+}
+
+function rubrics_add(){
+  anewwin=window.open("user_rubric_add.phtml", "addwin", "resizable=yes,scrollbars=yes,height=300,width=500,top=0,left=0");
+}
+
+function rubrics_new(aid,anam){
+  var frm = document.forms["results"];
+  isinbox=0;
+  for (var i=0; i<frm.rubrics.length; i++){
+    if(frm.rubrics[i].value==aid){isinbox=1; break}
+  }
+  if (isinbox==0){
+    var el = document.createElement("OPTION");
+    el.text=anam;
+    el.value=aid;
+    frm.rubrics.options[frm.rubrics.options.length]=el;
+  }
+}
+
+function rubrics_del(){
+  var frm = document.forms["results"];
+  var sel=new Array();
+  var ind=0;
+  for (var i=0; i<frm.rubrics.length; i++){
+    if (frm.rubrics[i].selected){
+      ind=sel.length;
+      sel[ind]=new Object;
+      sel[ind].value=frm.rubrics[i].value;
+      sel[ind].index=i;
+    }
+  }
+  for (var i=0; i<sel.length; i++){
+    frm.rubrics[sel[i].index-i]=null;
+    if (sel[i].index-i<frm.rubrics.length){
+      frm.rubrics[sel[i].index-i].selected=true}
+  }
+}
+
+function sign_org(){
+  var frm = document.forms["results"];
+  frm.rubrics_all.value="";
+  for (var i=0; i<frm.rubrics.length; i++){
+    frm.rubrics_all.value = frm.rubrics_all.value + frm.rubrics[i].value + "|";}
+
+  if (frm.orgname.value=="" || frm.orgshort.value=="" || frm.orgnameeng.value=="" || frm.orgshorteng.value=="" || frm.address.value=="" || frm.addresseng.value=="" || frm.town.value=="" || frm.towneng.value=="" || frm.tel.value=="" || frm.email.value=="" || frm.sotrnumber.value=="" || frm.compnumber.value=="" || frm.vedomid.value=="" || frm.orgtype.value=="" || frm.rubrics_all.value==""){
+    alert("Blogai ávesti duomenys!");}
+  else{
+    frm.isnew.value=2;
+    frm.action="org_info.asp";
+    frm.target="";
+    frm.submit()}
+}
+function save_org(){
+  var frm = document.forms["results"];
+  frm.rubrics_all.value="";
+  for (var i=0; i<frm.rubrics.length; i++){
+    frm.rubrics_all.value = frm.rubrics_all.value + frm.rubrics[i].value + "|";}
+    frm.isnew.value=3;
+    frm.action="org_info.phtml";
+    frm.target="";
+    frm.submit()
+}
+
+function organizat_add(){
+  anewwin=window.open("user_org_add.phtml", "addwin", "resizable=yes,scrollbars=yes,height=300,width=500,top=0,left=0");
+}
+
+function save_user(){
+  var frm = document.forms["results"];
+    frm.isnew.value=2;
+    frm.action="save_user.phtml";
+    frm.target="";
+    frm.submit()
+}
+
+function save_user_txt(){
+  var frm = document.forms["results"];
+    frm.isnew.value=2;
+    frm.action="save_user_txt.phtml";
+    frm.target="";
+    frm.submit()
+}
+  </script>
+  <title>
+   MOKSLINÄ ELEKTRONINÄ BIBLIOTEKA
+  </title>
+ </head>
+ <body bgcolor="#f5f5f5" onclick="outliner();">
+  <!--onLoad="document.forms[0].login.focus();" -->
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+   <tr>
+    <td align="center" valign="top" width="100%">
+     <table background="bg5.gif" border="0" cellpadding="0" cellspacing="0" width="750">
+      <tr>
+       <td align="left" valign="top" width="165">
+        <table border="0" cellpadding="0" cellspacing="0" width="150">
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="135">
+                 <font color="#ffffff">
+                  Sveiki atvykÄ
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_sem" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="" id="win_sem">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                 <td>
+                  <img src="pic/1pix.gif" vspace="1"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top">
+                  <img hspace="5" src="pic/1pix.gif"/>
+                  <a href="news_culture.phtml">
+                   <font color="#000000">
+                   </font>
+                   <font color="#00008f">
+                    <br/>
+                    AÄiĹŤ,
+                    <br/>
+                    kad prisijungÄte prie
+                    <br/>
+                    mokslinÄs elektroninÄs bibliotekos eLIBRARY.LT Naudodamiesi Lietuvos ir viso pasaulio mokslininkĹł patirtimi semkimÄs naujĹł ĹžiniĹł kartu.
+                   </font>
+                  </a>
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <img src="pic/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top">
+                  <img height="90" src="images/Euro_02.jpg" vspace="1" width="120"/>
+                 </td>
+                </tr>
+                <tr align="center" bgcolor="#dddddd" valign="middle">
+                 <td class="menub" colspan="2">
+                  <img src="pic/1pix.gif"/>
+                  <!--<a href="news_science.phtml">Detaliau</a><br>-->
+                  <img src="pic/1pix.gif"/>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="pic/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <form action="start_session.phtml" method="POST" name="login" type="hidden" value="">
+          <tr>
+           <td align="center" valign="top" width="100%">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                <tr align="center" valign="middle">
+                 <td width="135">
+                  <font color="#ffffff">
+                   ÄŽÄjimas ÄŻ bibliotekÄ
+                  </font>
+                 </td>
+                 <td width="15">
+                  <img child="win_login" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+            <div class="expanded" id="win_login">
+             <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+              <tr valign="top">
+               <td align="center" bgcolor="#5c6aa6" width="100%">
+                <table bgcolor="#eeeeee" border="0" cellpadding="3" cellspacing="0" width="100%">
+                 <tr>
+                  <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                   <font color="#000000">
+                    JĹŤsĹł IP adresas:
+                   </font>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="center" valign="top" width="100%">
+                   <font color="#00008f">
+                    77.181.101.115
+                   </font>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="center" valign="top" width="100%">
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                   <font color="#000000">
+                    Vardas:
+                   </font>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="center" valign="top" width="100%">
+                   <input maxlength="255" name="login" size="10" style="width:120px; border-left: #5c6aa6 1px solid; border-right: #5c6aa6 1px solid; border-top: #5c6aa6 1px solid; border-bottom: #5c6aa6 1px solid" type="text" value=""/>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                   <font color="#000000">
+                    SlaptaĹžodis:
+                   </font>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="center" width="100%">
+                   <input maxlength="255" name="password" size="10" style="width:120px; border-left: #5c6aa6 1px solid; border-right: #5c6aa6 1px solid; border-top: #5c6aa6 1px solid; border-bottom: #5c6aa6 1px solid" type="password" value=""/>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="center" width="100%">
+                   <img src="pic/1pix.gif" vspace="2"/>
+                   <br/>
+                   <input style="color:#ff0000; width:50px; background:#dddddd; border-left: #555555 0px solid; border-right: #555555 0px solid; border-top: #555555 0px solid; border-bottom: #555555 0px solid" type="submit" value="ÄŽveskite"/>
+                  </td>
+                 </tr>
+                </table>
+                <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                 <tr>
+                  <td align="right" valign="middle" width="14">
+                   <img border="0" height="9" hspace="2" src="tr_gray.gif" width="5"/>
+                  </td>
+                  <td align="left" nowrap="" valign="middle">
+                   <a href="access_terms.phtml">
+                    PriÄjimo taisyklÄs
+                   </a>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="right" valign="middle" width="14">
+                   <img border="0" height="9" hspace="2" src="tr_gray.gif" width="5"/>
+                  </td>
+                  <td align="left" nowrap="" valign="middle">
+                   <a href="user_info.phtml?isnew=1">
+                    Registracija
+                   </a>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="right" valign="middle" width="14">
+                   <img border="0" height="9" hspace="2" src="tr_gray.gif" width="5"/>
+                  </td>
+                  <td align="left" nowrap="" valign="middle">
+                   <a href="pass_request.phtml">
+                    UĹžmirĹĄote slaptaĹžodÄŻ?
+                   </a>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td colspan="2">
+                   <img src="pic/1pix.gif"/>
+                  </td>
+                 </tr>
+                </table>
+               </td>
+              </tr>
+             </table>
+            </div>
+           </td>
+          </tr>
+         </form>
+         <tr>
+          <td>
+           <img src="pic/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="135">
+                 <font color="#ffffff">
+                  Interfeisas
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_lang" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="expanded" id="win_lang">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                <tr>
+                 <td align="right" valign="middle" width="14">
+                  <img border="0" height="9" hspace="2" src="tr_red.gif" width="5"/>
+                 </td>
+                 <td nowrap="" valign="middle">
+                  <a href="http://www.ebiblioteka.eu">
+                   English
+                  </a>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="right" valign="middle" width="14">
+                  <img border="0" height="9" hspace="2" src="tr_gray.gif" width="5"/>
+                 </td>
+                 <td align="left" nowrap="" valign="middle">
+                  <a href="http://www.elibrary.ru/defaultx.asp?lng=RU&amp;charset=windows-1251">
+                   Russian
+                  </a>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="right" valign="middle" width="14">
+                  <img border="0" height="9" hspace="2" src="tr_gray.gif" width="5"/>
+                 </td>
+                 <td nowrap="" valign="middle">
+                  <a href="tekstinis.phtml">
+                   TekstinÄ versija
+                  </a>
+                 </td>
+                </tr>
+                <tr>
+                 <td colspan="2">
+                  <img src="pic/1pix.gif"/>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="pic/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="135">
+                 <font color="#ffffff">
+                  Kontaktai
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_contact" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="expanded" id="win_contact">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td align="center" bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="1" cellspacing="0" width="100%">
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   El. paĹĄtas:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="mailto:info@elibrary.lt">
+                    info@elibrary.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   Telefonas:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   +370 5 248-1536
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   Mobilus:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   +370 699 16-184
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   PaĹĄto adresas:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   Ĺ˝emaitÄs g. 21, 3 ÄŻÄjimas,
+                   <br/>
+                   LT-03118,&amp;nbspVilnius
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   ServeriĹł adresai:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="http://www.elibrary.lt" target="_blank">
+                    http://elibrary.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="http://www.e-library.lt" target="_blank">
+                    http://e-library.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="http://www.ebiblioteka.lt" target="_blank">
+                    http://ebiblioteka.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="http://www.e-biblioteka.lt" target="_blank">
+                    http://e-biblioteka.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   Administratorius:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="mailto:editor@elibrary.lt">
+                    editor@elibrary.lt
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <img src="pic/1pix.gif" vspace="1"/>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="pic/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="135">
+                 <font color="#ffffff">
+                  AutorinÄs teisÄs
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_copyright" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="expanded" id="win_copyright">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td align="center" bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="1" cellspacing="0" width="100%">
+                <tr>
+                 <td>
+                  <img src="pic/1pix.gif" vspace="1"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <a href="pristatymas.phtml" target="_blank">
+                   <img border="0" height="100" src="images/Logo_2.gif" width="120"/>
+                  </a>
+                 </td>
+                </tr>
+                <tr>
+                 <td>
+                  <img src="pic/1pix.gif" vspace="1"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#eeeeee" valign="top" width="100%">
+                  <font color="#00008f">
+                   <a href="teises.phtml" target="_blank">
+                    © 2004 © 2012
+                    <br/>
+                    VĹĄÄŽ "Baltijos media centras"
+                   </a>
+                   <br/>
+                   Visos teisÄs saugomos.
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#eeeeee">
+                  <img src="pic/1pix.gif" vspace="1"/>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="pic/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="135">
+                 <font color="#ffffff">
+                  Skaitikliai
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_count" class="win_expandable" height="12" src="pic/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="expanded" id="win_count">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td align="center" bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="1" cellspacing="0" width="100%">
+                <tr>
+                 <td align="left" bgcolor="#dddddd" valign="top" width="100%">
+                  <font color="#000000">
+                   CQ Counter:
+                  </font>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" valign="top" width="100%">
+                  <!-- CQ Counter code start -->
+                  <script language="javascript" type="text/javascript">
+                   <!-- 
+_d=document; _n=navigator; _t=new Date(); function t() { _d.write( 
+"<img src=\"resursai/c.gif\" width=70 height=15 "+
+"border=0>");} _c="0"; _r="0"; _j="U"; _k="U"; _d.cookie="_c=y";
+_d.cookie.length>0?_k="Y":_k="N";//-->
+                  </script>
+                  <script language="javascript1.2" type="text/javascript">
+                   <!-- 
+_n.javaEnabled()?_j="Y":_j="N";_b=screen; _r=_b.width; 
+_n.appName!="Netscape"?_c=_b.colorDepth : _c=_b.pixelDepth;//-->
+                  </script>
+                  <a href="http://cqcounter.com/?_id=bvva&amp;_lo=lt2" target="_top" title="Web Counter">
+                   <script language="javascript" type="text/javascript">
+                    <!-- 
+t(); //-->
+                   </script>
+                  </a>
+                  <noscript>
+                   <img alt="Counter" border="0" height="15" src="http://lt.2.cqcounter.com/cgi-bin/c?_id=bvva&amp;_z=0" width="70"/>
+                   <br/>
+                   <a href="http://cqcounter.com/" title="Hit Counter">
+                    Free Counter
+                   </a>
+                  </noscript>
+                  <!-- CQ Counter code end -->
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="images/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr valign="top">
+             <td align="center" width="100%">
+              <object align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" height="59" id="elibrary_banner2" width="150">
+               <param name="allowScriptAccess" value="sameDomain">
+               </param>
+               <param name="movie" value="elibrary_banner2.swf?clickTAG=http://www.elibrary.lt&amp;clickTARGET=_self">
+               </param>
+               <param name="quality" value="high">
+               </param>
+               <param name="bgcolor" value="#ffffff">
+               </param>
+               <embed align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="59" name="elibrary_banner2" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" src="elibrary_banner2.swf?clickTAG=http://www.elibrary.lt&amp;clickTARGET=_self" type="application/x-shockwave-flash" width="150">
+               </embed>
+              </object>
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           <img src="images/1pix.gif" vspace="6"/>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" valign="top" width="100%">
+           <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td bgcolor="#5c6aa6" width="100%">
+              <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+               <tr align="center" valign="middle">
+                <td width="215">
+                 <font color="#ffffff">
+                  Apdovanojimai
+                 </font>
+                </td>
+                <td width="15">
+                 <img child="win_award" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <div class="expanded" id="win_award">
+            <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+             <tr valign="top">
+              <td bgcolor="#5c6aa6" width="100%">
+               <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                <tr>
+                 <td align="left" width="90%">
+                  <font color="#00008f">
+                   <a href="award.phtml?id=1">
+                    "Naujasis knygneĹĄys 2005"
+                   </a>
+                  </font>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+             <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+              <tr>
+               <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+               </td>
+              </tr>
+             </table>
+            </table>
+           </div>
+           <!--<tr><td><img src="images/1pix.gif" vspace=6></td></tr>
+</table>-->
+          </td>
+          <td align="left" valign="top" width="580">
+           <table border="0" cellpadding="0" cellspacing="0" width="580">
+            <tr>
+             <td align="left" height="94" valign="top" width="112">
+              <img hspace="5" src="images/1pix.gif"/>
+              <img border="0" height="87" src="images/logo_cdlib6.gif" width="79"/>
+             </td>
+             <td align="right" valign="top" width="468">
+              <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+               <tr>
+                <td align="right" class="menub" valign="top">
+                 <span style="background:#eeeeee">
+                  Mokslo progresas atvirkĹĄÄiai proporcingas leidĹžiamĹł ĹžurnalĹł skaiÄiui.
+                  <br/>
+                  <i>
+                   Ĺ eĹĄtasis Parkinsono dÄsnis
+                  </i>
+                 </span>
+                 <br/>
+                 <img src="images/1pix.gif" vspace="1"/>
+                 <br/>
+                 <img alt="Đeđtasis Parkinsono dësnis" border="0" height="53" src="images/eLIBRARY_LT.gif" width="459"/>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+           <img src="images/1pix.gif" vspace="3"/>
+           <br/>
+           <table border="0" cellpadding="0" cellspacing="0" width="580">
+            <tr>
+             <td align="right" valign="top" width="100%">
+              <img height="23" src="images/science_lib3 LT.gif" width="580"/>
+              <br/>
+              <span style="background:#eeeeee">
+               <font color="#000000">
+                El. paĹĄtas:
+                <a href="mailto:info@elibrary.lt">
+                 info@elibrary.lt
+                </a>
+                Tel.:
+                <font color="#00008f">
+                 (+370 5) 248-1536
+                </font>
+                Fax:
+                <font color="#00008f">
+                 (+370 5) 248-1629
+                </font>
+               </font>
+              </span>
+             </td>
+            </tr>
+           </table>
+           <table border="0" cellpadding="0" cellspacing="0" width="580">
+            <tr>
+             <td align="left" valign="top" width="350">
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news1" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_news.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news1" class="expandable">
+                   PASKUTINÄS NAUJIENOS
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news1">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="news_library.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="news_library.phtml">
+                     BIBLIOTEKOS NAUJIENOS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="news_science.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="news_science.phtml">
+                     MOKSLO NAUJIENOS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="news_culture.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="news_culture.phtml">
+                     Ĺ VIETIMAS IR KULTĹŞRA
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="skelbimai.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="skelbimai.phtml">
+                     SKELBIMAI
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="konferencijos.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="konferencijos.phtml">
+                     KONFERENCIJOS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news2" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_info.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news2" class="expandable">
+                   BENDROJI INFORMACIJA
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news2">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="project_info.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="project_info.phtml">
+                     INFORMACIJA APIE PROJEKTÄ
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    TEIKIAMOS PASLAUGOS
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    IĹ TEKLIAI ELIBRARY.LT
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="stat_detail.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="stat_detail.phtml">
+                     DETALI STATISTIKA
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="zin_tekstai.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="zin_tekstai.phtml">
+                     PUBLIKACIJOS APIE PROJEKTÄ
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="sponsors.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="sponsors.phtml">
+                     PARTNERIAI IR RÄMÄJAI
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news3" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_pers.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news3" class="expandable">
+                   INFORMACIJA SKAITYTOJAMS
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news3">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="user_info.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="user_info.phtml">
+                     SKAITYTOJĹ˛ REGISTRACIJA
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="access_terms.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="access_terms.phtml">
+                     NAUDOJIMOSI TAISYKLÄS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="pass_request.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="pass_request.phtml">
+                     JEI UĹ˝MIRĹ OTE SLAPTAĹ˝ODÄŽ
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="txt.phtml?id=69">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="txt.phtml?id=69">
+                     PROGRAMOS IĹ TEKLIAMS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    KLAUSIMAI IR ATSAKYMAI
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news4" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_org1.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news4" class="expandable">
+                   INFORMACIJA ORGANIZACIJOMS
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news4">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    ORGANIZACIJOS REGISTRACIJA
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="registration_org.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="registration_org.phtml">
+                     REGISTRACIJOS TAISYKLÄS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="registration_ip.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="registration_ip.phtml">
+                     IP ADRESĹ˛ REGISTRACIJA
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="agreement.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="agreement.phtml">
+                     LICENCINIS SUSITARIMAS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    ORGANIZACIJĹ˛ SÄRAĹ AS
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    KLAUSIMAI IR ATSAKYMAI
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news5" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_publ.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news5" class="expandable">
+                   INFORMACIJA LEIDYKLOMS
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news5">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    LEIDYKLOS REGISTRACIJA
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="patalpinimo_salygos.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="patalpinimo_salygos.phtml">
+                     PATALPINIMO SÄLYGOS
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    LEIDYKLĹ˛ SÄRAĹ AS
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    KLAUSIMAI IR ATSAKYMAI
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news6" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_seminar.gif" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news6" class="expandable">
+                   SCIENCE ONLINE SEMINARAI
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news6">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    SCIENCE ONLINE ELIBRARY.LT
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="so_ru.php">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="so_ru.php">
+                     SCIENCE ONLINE ELIBRARY.RU
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+              <img src="images/1pix.gif" vspace="2"/>
+              <br/>
+              <table border="0" cellpadding="0" cellspacing="0" width="330">
+               <tr>
+                <td height="11" width="10">
+                </td>
+                <td align="center" height="65" rowspan="5" valign="middle" width="75">
+                 <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="1" height="100%" width="100%">
+                  <tr>
+                   <td align="center" bgcolor="#eeeeee" height="100%" valign="middle" width="100%">
+                    <img border="0" child="menu_news7" class="expandable" height="63" onmouseout="this.filters.alpha.opacity=70" onmouseover="this.filters.alpha.opacity=90" src="images/menu_res.jpg" style="filter:alpha(opacity=70)" width="73"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td width="245">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#555555">
+                 <img src="images/1pix.gif"/>
+                </td>
+                <td align="right" bgcolor="#555555" child="menu_news$i" class="expandable" valign="middle">
+                 <font color="#ffffff">
+                  <div child="menu_news7" class="expandable">
+                   SCIENCE ONLINE MOKYMO CENTRAS
+                  </div>
+                 </font>
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#ffffff" height="1">
+                </td>
+                <td bgcolor="#ffffff">
+                </td>
+               </tr>
+               <tr>
+                <td bgcolor="#dddddd" height="10">
+                </td>
+                <td background="images/line1_gr.gif" bgcolor="#f5f5f5">
+                </td>
+               </tr>
+               <tr>
+                <td height="9">
+                </td>
+                <td>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="menu_news7">
+               <table border="0" cellpadding="1" cellspacing="4" width="330">
+                <tr>
+                 <td colspan="3">
+                  <img src="images/1pix.gif" vspace="2"/>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    MOKYMO CENTRAS ELIBRARY.LT
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+                <tr>
+                 <td width="80">
+                 </td>
+                 <td align="left" valign="top" width="21">
+                  <a href="training_about.phtml">
+                   <img border="0" height="17" src="images/but_e1.gif" width="18"/>
+                  </a>
+                 </td>
+                 <td align="left" bgcolor="#eeeeee" class="menug" valign="middle">
+                  <b>
+                   <font color="#555555">
+                    <a href="training_about.phtml">
+                     MOKYMO CENTRAS ELIBRARY.RU
+                    </a>
+                   </font>
+                  </b>
+                 </td>
+                </tr>
+               </table>
+              </div>
+             </td>
+             <td align="right" valign="top" width="230">
+              <img src="images/1pix.gif" vspace="10"/>
+              <br/>
+              <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+               <tr>
+                <td bgcolor="#5c6aa6" width="100%">
+                 <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                  <tr align="center" valign="middle">
+                   <td width="215">
+                    <font color="#ffffff">
+                     Skelbimai
+                    </font>
+                   </td>
+                   <td width="15">
+                    <img child="win_spinnews" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+               </tr>
+              </table>
+              <div class="expanded" id="win_spinnews">
+               <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                <tr valign="top">
+                 <td bgcolor="#5c6aa6" width="100%">
+                  <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                   <tr>
+                    <td align="center" valign="top" width="100%">
+                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                       <td align="left" valign="middle" width="100%">
+                        <img src="images/1pix.gif" vspace="1"/>
+                        <br/>
+                        <img src="images/1pix.gif" vspace="1"/>
+                        <br/>
+                        <font color="#00008f">
+                         <b>
+                          2017-09-28
+                         </b>
+                         LR KutĹŤros ministrÄ Liana RuokytÄ-Jonsson savo sprendimu neskyrÄ finansavimo Mokslinei elektroninei bibliotekai eLibrary.lt plÄtoti lietuviĹł iĹĄeivijos elektroniniĹł iĹĄtekliĹł bibliotekÄ. Rekomendacinio pobĹŤdĹžio
+                         <font color="#ff0000">
+                          <a href="parama/KUM_Autoriu_teisiu_ir_gretutiniu_teisiu_apsaugos_programos_komisijos_sudetis.pdf" target="_blank">
+                           <b>
+                            komisijos sudÄtis.
+                           </b>
+                          </a>
+                         </font>
+                         <br/>
+                         Biblioteka eLibrary.lt nuo 2004-12-02 finansuojama ÄŻstaigos ir privaÄiĹł remÄjĹł lÄĹĄomis.
+                        </font>
+                        <a href="" target="_blank">
+                         <font color="#ff0000">
+                         </font>
+                        </a>
+                        <img src="images/1pix.gif" vspace="2"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                   <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                    <tr>
+                     <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                      <a href="skelbimai.phtml" target="_blank" title="Patalpinkite Äia savo skelbimÄ!">
+                       Kiti skelbimai
+                      </a>
+                     </td>
+                    </tr>
+                   </table>
+                  </table>
+                  <img src="images/1pix.gif" vspace="6"/>
+                  <br/>
+                  <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+                   <tr>
+                    <td bgcolor="#5c6aa6" width="100%">
+                     <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                      <tr align="center" valign="middle">
+                       <td width="215">
+                        <font color="#ffffff">
+                         Bibliotekos naujienos
+                        </font>
+                       </td>
+                       <td width="15">
+                        <img child="win_libnews" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                  <div class="expanded" id="win_libnews">
+                   <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                    <tr valign="top">
+                     <td bgcolor="#5c6aa6" width="100%">
+                      <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" valign="top" width="100%">
+                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                          <tr>
+                           <td valign="middle" width="100%">
+                            <font color="#00008f">
+                             <font color="#00008f">
+                              <b>
+                               2018-06-20
+                              </b>
+                              eBibliotekoje pradedama kaupti filosofo Arvydo JuozaiÄio
+                              <a href="inf_res3.phtml?id=22584">
+                               <font color="#ff0000">
+                                kĹŤriniĹł biblioteka
+                               </font>
+                              </a>
+                             </font>
+                            </font>
+                            <img src="images/1pix.gif" vspace="1"/>
+                            <br/>
+                            <font color="#00008f">
+                             <b>
+                              2018-04-20
+                             </b>
+                             eBiblioteka tÄsia kaupti
+                             <a href="inf_res2.phtml?id=82999">
+                              <font color="#ff0000">
+                               Moksleivio bibliotekÄ
+                              </font>
+                             </a>
+                            </font>
+                            <img src="images/1pix.gif" vspace="2"/>
+                           </td>
+                          </tr>
+                         </table>
+                        </td>
+                       </tr>
+                      </table>
+                      <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                         <a href="news_library.phtml" target="_blank">
+                          Kitos naujienos
+                         </a>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                   </table>
+                  </div>
+                  <img src="images/1pix.gif" vspace="6"/>
+                  <br/>
+                  <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+                   <tr>
+                    <td bgcolor="#5c6aa6" width="100%">
+                     <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                      <tr align="center" valign="middle">
+                       <td width="215">
+                        <font color="#ffffff">
+                         Esama padÄtis
+                        </font>
+                       </td>
+                       <td width="15">
+                        <img child="win_stat" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                  <div class="expanded" id="win_stat">
+                   <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                    <tr valign="top">
+                     <td bgcolor="#5c6aa6" width="100%">
+                      <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          Bendras iĹĄtekliĹł skaiÄius:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          106508
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          IĹĄtekliĹł apimtis GB:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          319.96
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          Papildyti iĹĄtekliai:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          18.06.22
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          ApsilankymĹł nuo 2004-12-02:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          2004000
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          PrisiregistravusiĹł skaitytojĹł:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          42812
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="75%">
+                         <font color="#00008f">
+                          Ĺ iuo metu prisijungusiĹł:
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom">
+                         <font color="#000000">
+                          20
+                         </font>
+                        </td>
+                       </tr>
+                       <!--<script src=http://fastonlineusers.com/online.php?d=www.elibrary.lt></script>-->
+                      </table>
+                      <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                         <a href="stat_detail.phtml">
+                          Detali statistika
+                         </a>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                   </table>
+                  </div>
+                  <img src="images/1pix.gif" vspace="6"/>
+                  <br/>
+                  <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+                   <tr>
+                    <td bgcolor="#5c6aa6" width="100%">
+                     <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                      <tr align="center" valign="middle">
+                       <td width="215">
+                        <font color="#ffffff">
+                         Nuorodos
+                        </font>
+                       </td>
+                       <td width="15">
+                        <img child="win_zin" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                  <div class="expanded" id="win_zin">
+                   <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                    <tr valign="top">
+                     <td bgcolor="#5c6aa6" width="100%">
+                      <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="zin_sar.phtml?id=1">
+                           Media naujienos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="10%">
+                         <font color="#000000">
+                          192
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="80%">
+                         <font color="#00008f">
+                          <a href="lib_lt.phtml">
+                           Lietuvos bibliotekos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          163
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="80%">
+                         <font color="#00008f">
+                          <a href="nuorodos_zin.phtml">
+                           Lietuvos Ĺžiniasklaida
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          589
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="80%">
+                         <font color="#00008f">
+                          <a href="webcam_all.php">
+                           TiesioginÄ transliacija
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          38
+                         </font>
+                        </td>
+                       </tr>
+                      </table>
+                      <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                         <a href="zin_tekstai.phtml">
+                          Tekstai
+                         </a>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                   </table>
+                  </div>
+                  <img src="images/1pix.gif" vspace="6"/>
+                  <br/>
+                  <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+                   <tr>
+                    <td bgcolor="#5c6aa6" width="100%">
+                     <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                      <tr align="center" valign="middle">
+                       <td width="215">
+                        <font color="#ffffff">
+                         Partneriai
+                        </font>
+                       </td>
+                       <td width="15">
+                        <img child="win_ep" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                  <div class="expanded" id="win_ep">
+                   <!--
+</td>
+<td width=15><img src="images/w_hide.gif" width=12 height=12 class="win_expandable" child="win_ep">
+
+</td>
+</tr>
+</table>
+</td></tr>
+</table>
+
+<div ID="win_ep" class="expanded">
+-->
+                   <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                    <tr valign="top">
+                     <td bgcolor="#5c6aa6" width="100%">
+                      <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="ep1.phtml?id=1">
+                           Lietuvos ÄŻmonÄs
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          2005.04
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="ep1.phtml?id=2">
+                           Asociuotos organizacijos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          2005.06
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="ep1.phtml?id=3">
+                           ValstybÄs institucijos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          2005.08
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="ep1.phtml?id=4">
+                           UĹžsienio organizacijos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          2005.09
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="90%">
+                         <font color="#00008f">
+                          <a href="ep1.phtml?id=18">
+                           Mokslo ir ĹĄvietimo ÄŻstaigos
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="20%">
+                         <font color="#000000">
+                          2006.03
+                         </font>
+                        </td>
+                       </tr>
+                      </table>
+                      <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                   </table>
+                  </div>
+                  <img src="images/1pix.gif" vspace="6"/>
+                  <br/>
+                  <table bgcolor="#5c6aa6" border="0" cellpadding="0" cellspacing="0" width="100%">
+                   <tr>
+                    <td bgcolor="#5c6aa6" width="100%">
+                     <table bgcolor="#5c6aa6" border="0" cellpadding="3" cellspacing="0" width="100%">
+                      <tr align="center" valign="middle">
+                       <td width="215">
+                        <font color="#ffffff">
+                         eProjektai
+                        </font>
+                       </td>
+                       <td width="15">
+                        <img child="win_esaug" class="win_expandable" height="12" src="images/w_hide.gif" width="12"/>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                  <div class="expanded" id="win_esaug">
+                   <table bgcolor="#5c6aa6" border="0" cellpadding="1" cellspacing="0" width="100%">
+                    <tr valign="top">
+                     <td bgcolor="#5c6aa6" width="100%">
+                      <table bgcolor="#eeeeee" border="0" cellpadding="4" cellspacing="0" width="100%">
+                       <!----<tr><td width=85% align=left><font color=#00008f>
+<a href="http://www.elibrary.lt/ep.phtml?id=39" target="_blank">Rinkimai: Transporto lyderiai </a>
+<td width=15% align=left valign=bottom><font color=#00008f><b>Akcija</b></font></td></tr> ---->
+                       <tr>
+                        <td align="left" width="85%">
+                         <font color="#00008f">
+                          <a href="http://www.elibrary.lt/inf_res2.phtml?id=77162">
+                           Populiariausi projektai
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="15%">
+                         <font color="#00008f">
+                          <b>
+                           Naujiena
+                          </b>
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="85%">
+                         <font color="#00008f">
+                          <a href="parama.php" target="_blank">
+                           Parama eBibliotekai
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="15%">
+                         <font color="red">
+                          <b>
+                           Akcija
+                          </b>
+                         </font>
+                        </td>
+                       </tr>
+                       <tr>
+                        <td align="left" width="85%">
+                         <font color="#00008f">
+                          <a href="https://esaugumas.lt/lt" target="_blank">
+                           Apsaugok savo kompiuterÄŻ !
+                          </a>
+                         </font>
+                        </td>
+                        <td align="left" valign="bottom" width="15%">
+                         <font color="#00008f">
+                          <b>
+                           Akcija
+                          </b>
+                         </font>
+                        </td>
+                       </tr>
+                      </table>
+                      <table bgcolor="#eeeeee" border="0" cellpadding="2" cellspacing="0" width="100%">
+                       <tr>
+                        <td align="center" bgcolor="#dddddd" class="menub" valign="top" width="100%">
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                   </table>
+                  </div>
+                 </td>
+                </tr>
+               </table>
+               <br/>
+              </div>
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+        </table>
+        <br/>
+       </td>
+      </tr>
+     </table>
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>

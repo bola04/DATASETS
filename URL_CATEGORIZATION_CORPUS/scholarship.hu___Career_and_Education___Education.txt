@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <link href="/favico/favico.ico" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Tempus Közalapítvány
+  </title>
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="Workflow platform." name="description"/>
+  <link href="./resources_page/Main_customized.css" rel="stylesheet" type="text/css"/>
+  <!--[if lt IE 9]><script src="responsive_design/js/vendor/html5shiv.js"></script><![endif]-->
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script language="javascript">
+   // definition of global variables
+// include this file in the html header, not at the beginning of the file.
+var gImgDir = '/look/CWP_v3/img';
+var Language_English = 1;
+var Language_Hungarian = 2;
+  </script>
+  <script src="./resources_page/Functions.js">
+  </script>
+  <link href="./resources_page/bootstrap.css" rel="stylesheet"/>
+  <link href="./resources_page/Main_full.css" rel="stylesheet"/>
+  <link href="./resources_nanoScroller/nanoscroller.css" rel="stylesheet"/>
+  <link href="./resources_nanoScroller/main.css" rel="stylesheet"/>
+  <link href="./resources_nanoScroller/style.css" rel="stylesheet"/>
+  <script language="javascript">
+   var mstatus = 0;
+  var mstatus_kiskep = 0;
+  var mstatus_nagykep = 0;
+
+  function ok() {
+    if(!checkForm()) { return; }
+     frmSubmit_welcome.submit();
+  }//function ok()
+
+  function cancel() {
+    // parent.document.location.href = frmSubmit_welcome.hidBackURL.value;
+    if(window.event)window.event.returnValue=false;
+    parent.document.location.href = 'Job_Overview_page.asp';
+  }//function cancel()
+
+  function checkForm() {
+   
+    if (frmSubmit_welcome.txtOldPassword.value == '' ) 
+    {
+          alertCompulsory('Old Password');
+          return false;
+    }//if
+  
+    if (frmSubmit_welcome.txtNewPassword.value == '' ) 
+    {
+      alertCompulsory('New Password');
+      return false;
+    }//if
+    if (frmSubmit_welcome.txtConfNewPassword.value == '' ) 
+    {
+      alertCompulsory('Confirm New Password');
+      return false;
+    }//if
+    if (frmSubmit_welcome.txtNewPassword.value != frmSubmit_welcome.txtConfNewPassword.value) {
+      alert('The confirmation of the new Password failed.');
+      return false;
+    }//if
+    return true;
+  }//checkForm()
+  </script>
+ </head>
+ <body style="max-width: 100%;
+    overflow-x: hidden;">
+  <!-- DO NOT MOVE! The following AllWebMenus linking code section must always be placed right AFTER the BODY tag-->
+  <!-- ******** BEGIN ALLWEBMENUS CODE FOR menu ******** -->
+  <!--link rel="stylesheet" href="json_ajax_scripts/menu_css/style.css" type="text/css" media="screen, projection"/-->
+  <!--[if lte IE 7]>
+<link rel="stylesheet" type="text/css" href="json_ajax_scripts/menu_css/ie.css" media="screen" />
+<![endif]-->
+  <script src="./resources_page/jquery-1.9.1.js" type="text/javascript">
+  </script>
+  <script src="./resources_page/jquery-ui.min.js" type="text/javascript">
+  </script>
+  <script src="./resources_page/bootstrap-maxlength.js" type="text/javascript">
+  </script>
+  <script src="./resources_page/jquery_CWP_functions.js" type="text/javascript">
+  </script>
+  <!--script type="text/javascript" language="javascript" src="json_ajax_scripts/jquery.dropdownPlain.js"></script-->
+  <!-- ******** END ALLWEBMENUS CODE FOR menu ******** -->
+  <link href="./resources_page/Main_full.css" rel="stylesheet"/>
+  <link href="./resources_page/font-awesome.css" rel="stylesheet"/>
+  <link href="./resources_page/dd.css" rel="stylesheet" type="text/css"/>
+  <script src="./resources_page/jquery.dd.min.js">
+  </script>
+  <link href="./resources_page/flags.css" rel="stylesheet" type="text/css"/>
+  <script>
+   var feedtomb;
+var feedcurrentpos = 0;
+
+	$.fn.toHtml=function(){
+       return $(this).html($(this).text())
+    }
+
+$(document).ready(function() 
+{
+  $("#frame_div").load("/Balassi_Job_Lister_2_new.asp?lang_id=2", function(){$(".nano").nanoScroller({ alwaysVisible: true });});
+  current_row = 1;
+  $("#frame_detail_div").load("/View_Scholarship.asp?job_id=282839&lang_id=2", function(){$(".nano").nanoScroller({ alwaysVisible: true });}) ;  
+  $("#elfelejtettjelszofejlec").hide();
+  $("#gotolink_belepes").hide();
+  $("#elfelejtettjelszo_emailmezo").hide();
+  $("#elfelejtettjelszo_gomb").hide();
+  $("#badusername").hide();
+  $("#emailsent").hide();
+  
+ $('input').on("keypress", function(e) {
+            /* ENTER PRESSED*/
+            if (e.keyCode == 13) {
+                //alert($(this).attr('id'));
+                
+                switch($(this).attr('id')){
+                
+                  case "main_user":
+                    if (belepes_status == 0){
+                      log_in_the_user_here();
+                    } else {
+                      $('#sendbutton').click();
+                    }
+                    break;
+                  case "main_email":
+                    $('#sendbutton').click();
+                    break;
+                  case "main_pass" :
+                    log_in_the_user_here();
+                    break;
+                    
+                  case "pass_02":
+                  case "pass_01":
+                  case "email_address":
+                  case "last_name":
+                  case "first_name": 
+                  case "user_login_name":
+                    register_new_user();
+                    break;
+                  
+                } 
+                /* FOCUS ELEMENT */
+                /*
+                var inputs = $(this).parents("form").eq(0).find(":input");
+                var idx = inputs.index(this);
+
+                if (idx == inputs.length - 1) {
+                    inputs[0].select()
+                } else {
+                    inputs[idx + 1].focus(); //  handles submit buttons
+                    inputs[idx + 1].select();
+                }
+                */
+                return false;
+            }
+        }); 
+  
+ $('#sendbutton').on("click", function(e){
+    e.preventDefault();
+  	var data = {};
+		data["action"] = "forget_password";
+		data["forget_user"] = $("#main_user").val();
+		data["forget_email"] = $("#main_email").val();
+		
+  	$.ajax({
+			
+			async:false,
+			url: "feed_request_forgotten_password.asp",
+			//data: JSON.stringify(data),
+			data: "main_usr="+$("#main_user").val()+"&main_email="+ $("#main_email").val(),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			
+		})
+		.done(function (response) {
+			feedtomb = response["uziData"];
+			if (feedtomb[0]["ered"] == "ok"){
+         $("#badusername").hide();
+         $("#emailsent").show();
+         goto_belepes();
+			}
+			else {
+        $("#badusername").show();
+        $("#emailsent").hide();
+			}
+			
+		//alert(response["uziData"][0]["ered"]);
+
+		})
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			if(errorThrown.name == "NETWORK_ERR")
+				alert("Network error. You have to connect to Internet for login!");
+			else
+				alert("Error during fetch feed: " + errorThrown+"\nResponse: "+jqXHR.responseText);
+		});
+  
+   
+  });
+// nothing
+
+})
+
+
+   function show_message_board_detail()
+   {
+      
+	  //$("#message_board").animate({height: "90%", width:"90%"});
+	   $("#message_board").animate({height: "60%"});
+	    $("#message_board").animate({ width:"90%"});
+	  $("#message_board_top_left_minimize").show();
+	  $("#message_board_detail_link").hide();
+	  
+	  $("#message_board_text_short").hide();
+	  $("#message_board_text_normal").show();
+	  $("#message_board_text_bold").show();
+	  $("#kiskep").hide();
+	  if (mstatus_nagykep == 1) {
+      $("#nagykep").show();
+       $("#mbkepcella").show();
+    }  else {
+       $("#mbkepcella").hide();
+    }
+    
+	  mstatus = 1;
+
+   }
+   
+   function show_message_board_minimize()
+   {
+
+	  //$("#message_board").animate({height: "30%", width:"33%"});
+	  $("#message_board").animate({height: "30%"});
+	  $("#message_board").animate({width:"33%"});
+	  
+      $("#message_board_top_left_minimize").hide();
+	  $("#message_board_detail_link").show();
+	    
+      $("#message_board_text_short").show();
+	  $("#message_board_text_normal").hide();
+	  $("#message_board_text_bold").hide();
+	  if (mstatus_kiskep ==1 ){
+      $("#kiskep").show();
+       $("#mbkepcella").show();
+    }  else {
+       $("#mbkepcella").hide();
+	  }
+	  $("#nagykep").hide();	  
+	  mstatus = 0;
+   }
+   
+
+   var current_board_index=0;
+   
+
+   
+   function load_message_board(  board_index ) 
+  { 
+  
+  	$.ajax({
+			
+			async:false,
+			url: "feed_fast_message_board.asp",
+			//data: JSON.stringify(data),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			
+		})
+		.done(function (response) {
+			feedtomb = response["uziData"];
+			feedcurrentpos = 0;
+			change_message_board_content();
+		if ("0"==response["uziData"][0]["Job_ID"]){
+      $("#message_board").hide();
+		}
+
+		})
+		.fail(function (jqXHR, textStatus, errorThrown) {
+			if(errorThrown.name == "NETWORK_ERR")
+				alert("Network error. You have to connect to Internet for login!");
+			else
+				alert("Error during fetch feed: " + errorThrown+"\nResponse: "+jqXHR.responseText);
+		});
+  
+   
+  }
+
+	function change_message_board_content(){
+	
+	if ("1"=="2") {
+		$("#message_board_top_right_text").text(feedtomb[feedcurrentpos]["cim_angol"]);
+		$("#message_board_text_bold").text(feedtomb[feedcurrentpos]["cim_angol"]);
+		$("#message_board_text_short").text(feedtomb[feedcurrentpos]["short_text_eng"]);
+		$("#message_board_text_normal").html(feedtomb[feedcurrentpos]["szoveg_angol"]);
+		
+	} else {
+	
+		$("#message_board_top_right_text").text(feedtomb[feedcurrentpos]["cim_magyar"]);
+		$("#message_board_text_bold").text(feedtomb[feedcurrentpos]["cim_magyar"]);
+		$("#message_board_text_short").text(feedtomb[feedcurrentpos]["short_text_hun"]);
+		$("#message_board_text_normal").html(feedtomb[feedcurrentpos]["szoveg_magyar"]);
+	}
+	$("#message_board_text_normal").html($("#message_board_text_normal").text());
+	 $("#mbkepcella").hide();
+	if (feedtomb[feedcurrentpos]["kiskep64"] && feedtomb[feedcurrentpos]["kiskep64"].length > 0 ){
+    $("#kiskep").attr('src', "data:image/jpeg;base64," + feedtomb[feedcurrentpos]["kiskep64"]);
+    mstatus_kiskep = 1;
+    if (mstatus==0) {
+      $("#kiskep").show();
+      $("#mbkepcella").show();
+    }  
+   } else {
+    mstatus_kiskep = 0;
+    $("#kiskep").hide();
+   } 
+  if (feedtomb[feedcurrentpos]["nagykep64"] && feedtomb[feedcurrentpos]["nagykep64"].length > 0 ){ 
+    $("#nagykep").attr('src', "data:image/jpeg;base64," + feedtomb[feedcurrentpos]["nagykep64"]);
+    if (mstatus==1) {
+      $("#nagykep").show();
+      $("#mbkepcella").show();
+    }  
+	  mstatus_nagykep = 1;
+   } else {
+    $("#nagykep").hide();
+    mstatus_nagykep = 0;
+   } 
+	
+	$("#message_board_navigator_panel_square").text((feedcurrentpos+1)+"/"+feedtomb.length);
+   }
+  
+   function show_message_board_prev()
+   {
+      if (feedcurrentpos == 0) feedcurrentpos = feedtomb.length;
+	  feedcurrentpos--;
+	  change_message_board_content();
+   }
+   
+   function show_message_board_next()
+   {
+      feedcurrentpos++;
+	  if (feedcurrentpos>=feedtomb.length) feedcurrentpos = 0;
+      change_message_board_content();
+   }
+   
+  var belepes_status = 0;
+ 
+  function goto_elfelejtettjelszo(){
+    $("#belepesfejlec").hide();
+    $("#elfelejtettjelszofejlec").show();
+    $("#gotolink_elfelejtettjelszo").hide();
+    $("#gotolink_belepes").show();
+    
+    $("#belepes_jelszomezo").hide();
+    $("#belepes_gomb").hide();
+    
+    $("#elfelejtettjelszo_emailmezo").show();
+    $("#elfelejtettjelszo_gomb").show();
+    
+    belepes_status = 1;
+    //$("#badusername").hide();
+    $("#emailsent").hide();
+  } 
+   
+  function goto_belepes(){
+    
+    $("#elfelejtettjelszofejlec").hide();
+    $("#belepesfejlec").show();
+   
+    $("#gotolink_belepes").hide();
+    $("#gotolink_elfelejtettjelszo").show();
+    
+    $("#elfelejtettjelszo_emailmezo").hide();
+    $("#elfelejtettjelszo_gomb").hide();
+    
+    $("#belepes_jelszomezo").show();
+    $("#belepes_gomb").show();
+    
+    belepes_status = 0;
+    
+    $("#badusername").hide();
+    //$("#emailsent").hide();
+    
+  }    
+  
+  function scrollto_programok(){
+    $("html, body").animate({ scrollTop: $("#programok").offset().top }, 1000);
+  } 
+  
+  function scrollto_belepes(){
+    $("html, body").animate({ scrollTop: $("#belepes").offset().top }, 1000);
+  }  
+  
+  function scrollto_kapcsolat(){
+    $("html, body").animate({ scrollTop: $("#kapcsolat").offset().top }, 1000);
+  }  
+  
+  function scrollto_teto(){
+    $("html, body").animate({ scrollTop: $("#teto").offset().top }, 1000);
+  }  
+  
+  function scrollto_regisztracio(){
+    $("html, body").animate({ scrollTop: $("#regisztracio").offset().top }, 1000);
+  }  
+   
+	function goto_page(id,otype,call_name)
+			{
+          //var html_string= "Töltödik..";
+          //document.getElementById('frame_div').src = "data:text/html;charset=utf-8," + escape(html_string);
+          //$("#frame_div").attr("src","http://tempus-upgrade.chronossoftware.com/Balassi_Job_Lister.asp?process_id="+ id +"&type_id="+otype);
+          $("#frame_div").load("/Balassi_Job_Lister_new.asp?process_id="+ id +"&type_id="+otype, function(){$(".nano").nanoScroller({ alwaysVisible: true });});
+         // location.hash = "#CALLS_AGAIN" ;
+         // location.hash = "#CALLS" ;
+		  $("html, body").animate({ scrollTop: $("#programok").offset().top }, 1000);
+          //var element = document.getElementById("CALL_NAME");
+          //element.innerHTML = call_name;
+		  $("#CALL_NAME").html(call_name);
+	}
+			
+	function goto_search_page() {
+        //$("#frame_div").attr("src","http://tempus-upgrade.chronossoftware.com/Balassi_Job_Selector.asp");
+        $("#frame_div").load("/Balassi_Job_Selector.asp");
+	}
+      
+     function goto_actual_page() {
+        //$("#frame_div").attr("src","http://tempus-upgrade.chronossoftware.com/Balassi_Job_Lister_2.asp");     
+        $("#frame_div").load("/Balassi_Job_Lister_2_new.asp?lang_id=2", function(){$(".nano").nanoScroller({ alwaysVisible: true });});
+        //location.hash = "#CALLS_AGAIN" ;
+        //location.hash = "#CALLS" ;
+		$("html, body").animate({ scrollTop: $("#programok").offset().top }, 1000);
+        //var element = document.getElementById("CALL_NAME");
+        //element.innerHTML = "AKTUÁLIS PÁLYÁZATOK";
+		$("#CALL_NAME").html("AKTUÁLIS PÁLYÁZATOK");
+     }
+      
+      
+      function  goto_detail_back()
+      {
+        var elem = document.getElementById("det" +(current_row-1));
+        //alert(""+(current_row-1)+"");
+        //alert(elem);
+        if (elem!=null)
+        {
+            goto_detail(current_row-1,elem.value);
+        }
+      }
+      
+      function  goto_detail_next()
+      {
+        var elem = document.getElementById("det" +(current_row+1));
+        //alert(""+(current_row+1)+"");
+        //alert(elem);
+        if (elem!=null)
+        {
+            goto_detail(current_row+1,elem.value);
+        }
+      }
+      
+      var current_row=1;
+      function goto_detail(row_no,job_id_to_go)
+      {
+      
+        current_row=row_no;
+        $("#frame_detail_div").load("View_Scholarship.asp?job_id=" +job_id_to_go+"&lang_id=2", function(){$(".nano").nanoScroller({ alwaysVisible: true });}) ;
+         
+        //location.hash = "#SCHOLARSHIP_AGAIN" ;
+        //location.hash = "#SCHOLARSHIP" ;
+		$("html, body").animate({ scrollTop: $('#reszletek').offset().top }, 1000);
+      }
+      
+      function goto_default()
+      {
+       //$("#frame_div").attr("src","//scholarship.hu/welcome_default.asp");
+       //$("#frame_div").load("//scholarship.hu/welcome_default.asp");
+       goto_actual_page();
+      }
+      
+      function goto_home_page()
+      {
+        if (window.event) 
+        {
+        window.event.returnValue=false;
+        }
+        window.location.href='Welcome.asp?lang=hu';
+      }
+      
+      
+      function log_in_the_user_here()
+      {
+      
+      //   if (document.getElementById("main_user").value!="admin")
+      //{
+      //   alert("temporarily not available");
+      //return;
+      //}
+      
+        document.getElementById("frm_op").value="login_user";
+        //alert(frmSubmit_welcome.submit);
+        frmSubmit_welcome.submit();
+        //alert(1111);
+        
+      }
+      
+      
+      function go_to_cwp_site_as_loged_user()
+      {
+        //alert("go_to_cwp_site_as_loged_user");
+        document.getElementById("frm_op").value="redirect_to_cwp_page";
+        frmSubmit_welcome.submit();
+      }
+      
+        
+      function checkEmail(email_value) {
+
+
+          var filter=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+          if (filter.test(email_value))
+          {
+          return true;
+          }else{
+
+              return false;
+          }
+          
+          
+      }
+      
+      function isASCII(str) {
+           if(typeof(str)!=='string'){
+                return false;
+            }
+            for(var i=0;i<str.length;i++){
+                if(str.charCodeAt(i)>127){
+                    return false;
+                }
+            }
+            return true;
+      }
+      
+      function register_new_user()
+      {
+      
+        document.getElementById("frm_op").value="";
+        
+        var user_login_name = document.getElementById("user_login_name");
+        var first_name = document.getElementById("first_name");
+        var last_name = document.getElementById("last_name");
+        var email_address = document.getElementById("email_address");
+        var pass_01 = document.getElementById("pass_01");
+        var pass_02 = document.getElementById("pass_02");
+
+        if (user_login_name.value.length<2)
+        {
+          alert("A Felhasználónév túl rövid. \nThe User login name is too short.");
+          return;
+        }
+
+
+        if (!isASCII(user_login_name.value))
+        {
+          alert("A Felhasználónév nem angol betűket tartalmaz. \nThe Non English characters were used.");
+          return;       
+        }
+
+
+        if (first_name.value.length<2)
+        {
+          alert("A Keresztnév túl rövid.\nThe First name is too short.");
+          return;
+        }
+
+
+        if (last_name.value.length<2)
+        {
+          alert("A Vezetéknév túl rövid.\nThe Last name [Family name] is too short.");
+          return;
+        }
+
+
+        if (checkEmail(email_address.value)==false)
+        {
+          alert("A beírt e-mail cím nem helyes.\nPlease provide a valid email address.");
+          return;
+        }
+
+
+        if (pass_01.value.length<7)
+        {
+          alert("A beírt jelszó minimum 7 karakter kell hogy legyen.\nMinimum Password lenght is 7 characters.");
+          return;
+        }   
+            
+        if (pass_01.value!=pass_02.value)
+        {
+          alert("A beírt jelszó és a megerősítés nem egyezik meg.\nPassword confirmation and Password must match.");
+          return;
+        }
+        
+        document.getElementById("frm_op").value="register_new_user";
+
+
+        frmSubmit_welcome.submit();
+        
+     }
+      
+     function myFunction()
+     {
+        return false;
+     }
+  </script>
+  <script src="./resources_page/bootstrap.js" type="text/javascript">
+  </script>
+  <link href="./resources_page/ui.fancytree.css" rel="stylesheet"/>
+  <script src="./resources_page/jquery.fancytree.js">
+  </script>
+  <style>
+   #selLanguage 
+{
+  position: relative;
+  right: 3px;
+  top: 0;
+}
+.row-fluid:before,
+.row-fluid:after,
+.row:before,
+.row:after	
+{
+  display: table;
+  line-height: 0;
+  content: "";
+}
+.row-fluid:after,.row:after 
+{
+  clear: both;
+}
+
+
+select.icon-menu option {
+  background-repeat:no-repeat;
+  background-position:bottom left;
+  padding-left:30px;
+}
+
+.dd .divider{
+  border-left: 0px;
+  border-right: 0px;
+}
+
+.borderRadiusTp{
+  -moz-border-radius: 0px 0px 0 0;
+  border-radius: 0px 0px 0 0;
+}
+
+a:hover{
+  text-decoration: none;
+}
+
+.navbar-nav > li > .dropdown-menu {
+  margin-top: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  margin-left: 0px;
+}
+
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color: #FFFFFF;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  color: #FFFFFF;
+  /*csf change slected menu background*/
+  /*background-color: rgba(0, 0, 0, 0.2);*/
+  background-color: #70c8e2;
+}
+
+.navbar-nav > li > a {
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+
+.dropup, .dropdown {
+  padding-left:0px;
+  padding-right:0px;
+  /* border-left: 2px solid #005793;  */
+}
+
+.glyphikon {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glyphikon-home:before {
+  content: "\e021";
+}
+
+
+[class^="ikon-"],
+[class*=" ikon-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+  *margin-right: .3em;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("/look/CWP_v3/styles/responsive_design/img/glyphicons-halflings.png");
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+}
+
+.ikon-home {
+  background-position: 0 -24px;
+}
+
+.ikon-white,
+.nav-pills > .active > a > [class^="ikon-"],
+.nav-pills > .active > a > [class*=" ikon-"],
+.nav-list > .active > a > [class^="ikon-"],
+.nav-list > .active > a > [class*=" ikon-"],
+.navbar-inverse .nav > .active > a > [class^="ikon-"],
+.navbar-inverse .nav > .active > a > [class*=" ikon-"],
+.dropdown-menu > li > a:hover > [class^="ikon-"],
+.dropdown-menu > li > a:focus > [class^="ikon-"],
+.dropdown-menu > li > a:hover > [class*=" ikon-"],
+.dropdown-menu > li > a:focus > [class*=" ikon-"],
+.dropdown-menu > .active > a > [class^="ikon-"],
+.dropdown-menu > .active > a > [class*=" ikon-"],
+.dropdown-submenu:hover > a > [class^="ikon-"],
+.dropdown-submenu:focus > a > [class^="ikon-"],
+.dropdown-submenu:hover > a > [class*=" ikon-"],
+.dropdown-submenu:focus > a > [class*=" ikon-"] {
+  background-image: url("/look/CWP_v3/styles/responsive_design/img/glyphicons-halflings-white.png");
+}
+
+.navbar .divider-vertical {
+  height: 40px;
+  margin: 0 9px;
+  border-left: 1px solid #f2f2f2;
+  border-right: 1px solid #ffffff;
+}
+
+@media all and (max-width:800px){
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+  color: #000000;
+  background-color: #FFFFFF;
+  }
+
+
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #333;
+    background-color: #F5F5F5
+  }
+
+
+  .almenu{
+    color: #000000;
+    background-color: #FFFFFF;
+  }
+
+  .almenuUL{
+    color: #000000;
+    background-color: #FFFFFF;
+  }
+
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+  border-color: #0884de;
+}
+
+.navbar-collapse {
+  -webkit-box-shadow: none;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #FFCC00;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+  background-color: #064674;
+}
+
+.navbar-default .navbar-toggle {
+  background-color: #076CB2;
+}
+
+@media (min-width:801px){
+  .navbar-toggle{
+    display:none
+  }
+}
+
+@media (min-width:7800px){
+  .navbar>.container .navbar-brand,.navbar>.container-fluid .navbar-brand{margin-left:-15px}
+}
+.navbar-toggle{position:relative;float:right;padding:9px 10px;margin-top:8px;margin-right:15px;margin-bottom:8px;background-color:transparent;background-image:none;border:1px solid transparent;border-radius:4px}
+.navbar-toggle:focus{outline:0}
+.navbar-toggle .icon-bar{display:block;width:22px;height:2px;border-radius:1px}
+.navbar-toggle .icon-bar+.icon-bar{margin-top:4px}
+
+.gi2{
+  font-size: 2em;
+}
+
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+top: 0;
+left: 100%;
+margin-top: -6px;
+margin-left: -1px;
+-webkit-border-radius: 0 6px 6px 6px;
+-moz-border-radius: 0 6px 6px;
+border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu.pull-left {
+float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+left: auto;
+right: 100%;
+margin-left: 10px;
+-webkit-border-radius: 6px 0 6px 6px;
+-moz-border-radius: 6px 0 6px 6px;
+border-radius: 6px 0 6px 6px;
+}
+
+@media (max-width:800px){
+.dropdown-submenu>.dropdown-menu {
+display: block;
+}
+}
+
+@media (min-width:801px){
+.dropdown-submenu:hover>.dropdown-menu {
+display: block;
+}
+
+.scrollable-menu {
+height: auto;
+max-height: 500px;
+overflow-x: hidden;
+}
+
+div.under-header {
+height:120px;
+}
+
+}
+
+input:focus 
+{
+  border-color: green;
+}
+
+/* **********************************************    7 6 7 alatt ************************************  */
+  
+@media (max-width:767px) 
+{
+  #kiskep, #nagykep {
+    display:none !important;
+  }
+  
+  #narancs_kor
+  {
+    width: 100px;
+    height: 100px;
+    margin-top: -55px;    
+  }
+  
+  #text_narancs_kor
+  { 
+   font-size:10px;
+   font-weight:bold;
+  }
+
+  .narancskereszt {
+    width:100px;
+    height:100px;
+    margin-top: -37px;  
+  }
+  
+  #arrow_left
+  {
+    width:15px;
+    position: relative;
+    left: -20px;
+  }
+  
+  #arrow_right
+  {
+    width:15px; 
+    position: relative;
+    right: -20px; 
+  }
+  
+ 
+  #arrow_left_span
+  {
+    top:200px;left:-5px;
+  }
+  
+   #arrow_right_span
+  {
+    top:200px;left:5px;
+  }
+  
+  #scholarship_main_div
+  {
+    width: 90%;
+    margin-left: 5%;
+  }
+  
+  .list_band
+  {
+    font-weight:normal;
+    font-size:9pt;
+    line-height:0.75;
+  }
+  
+  .list_band_p
+  {
+    line-height:0.75;
+  }
+  
+  .call_name , .cim_regisztracio, .cim_belepes
+  {
+    font-weight:bold;
+    font-size:12pt;
+    margin-left:20px;
+  }
+  
+  .nav a , menulang
+  {
+    font-weight:normal !important;
+    font-size:12pt !important;
+  }   
+  
+  .lejart{
+      font-weight:bold !important;
+      font-size:10pt !important;
+  }
+
+  .uzinyil {
+    height:18px  !important;
+  }  
+
+ .uzidetailnyil {
+    width:25px ;
+  }
+
+  .uzilapozo {
+    height:18px;
+    width:30px;
+    background-color:#3274c1;
+    text-align:center;
+    font-size:10pt;
+    line-height:18px;    
+    color:#FFFFFF;
+  }  
+
+  #message_board_top_right_text
+  {
+   top: 0px;
+   right: 5px;
+   font-size:10px;
+  }
+  
+  #message_board_paragraph
+  { display:none;
+    margin-left:5px;
+    margin-right:5px;
+    font-size:10px;
+  }
+  
+  #message_board_text_bold, #message_board_text_short{
+    font-size:12px;
+  }
+   
+  #message_board_text_normal {
+    font-size:12px;
+  }  
+  
+  #reszletek #main {
+    top:-40px;
+    width: 100%;
+  }  
+
+  .felfelenyil{
+    width:120px;
+    height:120px;
+    margin-top: 0%;
+    margin-right: 40%;
+    left:0px;
+    
+  }   
+  
+  
+  .felfeleszoveg {
+    top:-30%
+  }
+  
+  .felfeleszoveg p {
+     font-size:10pt;
+  } 
+
+  
+  .cimke{
+    text-align:left;
+    font-size:12px;
+    font-weight:bold;
+  } 
+  .tartalom{
+    text-align:left;
+    font-size:12px;
+  }  
+  #kapcsolat_bal, #kapcsolat_jobb {
+    height:125px;
+  }
+  #contact_data {
+    margin-top:10px;
+    font-weight:bold;
+    font-size:11px;
+    color:#FFFFFF;
+    line-height:0.75;
+    }  
+  #kapcsolati_oszlop {
+    padding-top:0;
+  }  
+  #gmap {
+    display:none;
+  }
+  
+  #logo_image {
+    width:50px;
+  }
+}
+
+/* **********************************************    7 6 8  felett ************************************  */
+
+@media (min-width:768px) 
+{
+
+
+  
+  #narancs_kor
+  {
+    width: 130px;
+    height: 130px;
+    margin-top: -72px;
+  }
+  
+  #text_narancs_kor
+  { 
+   font-size:12px;
+   font-weight:bold;
+  }
+
+  .narancskereszt {
+    width:130px;
+    height:130px;
+    margin-top: -49px;  
+  }
+  
+  #arrow_left
+  {
+    width:25px;
+    position: relative;
+    left: -25px;
+  }
+  
+  #arrow_right
+  {
+    width:25px; 
+    position: relative;
+    right: -25px; 
+  }
+  
+ 
+  #arrow_left_span
+  {
+    top:200px;left:-5px;
+  }
+  
+   #arrow_right_span
+  {
+    top:200px;left:5px;
+  }
+  
+  #scholarship_main_div
+  {
+    width: 80%;
+    margin-left: 5%;
+  }
+  
+  .list_band
+  {
+    font-weight:normal;
+    font-size:11pt;
+    line-height:0.75;
+  }
+  
+  .list_band_p
+  {
+    line-height:0.75;
+  }
+  
+  .call_name , .cim_regisztracio, .cim_belepes
+  {
+    font-weight:bold;
+    font-size:14pt;
+    margin-left:20px;
+  }
+  .nav a ,menulang
+  {
+    font-weight:normal !important;
+    font-size:10pt !important;
+  }    
+  
+  .lejart{
+      font-weight:bold !important;
+      font-size:12pt !important;
+  }
+  
+  .uzinyil {
+    height:24px  !important;
+  }  
+
+ .uzidetailnyil {
+    width:35px ;
+  }
+  .uzilapozo {
+    height:24px;
+    width:34px;
+    background-color:#3274c1;
+    text-align:center;
+    font-size:12pt;
+    line-height:24px;
+    color:#FFFFFF;
+  } 
+
+  #message_board_top_right_text
+  {
+   top: 0px;
+   right: 5px;
+   font-size:12px;
+  }
+  
+  #message_board_paragraph
+  {
+    display:none;
+    margin-left:5px;
+    margin-right:5px;
+    font-size:12px;
+  }  
+  
+  #message_board_text_bold, #message_board_text_short{
+    font-size:14px;
+  }
+   
+  #message_board_text_normal {
+
+    font-size:14px;
+  }  
+  
+  #reszletek #main {
+    top:-60px;
+    width: 100%;
+  }  
+ 
+  .felfelenyil{
+    width:120px;
+    height:120px;
+    margin-top: 0%;
+    margin-right: 40%;
+    left: 180%;
+  }   
+  
+  
+  .felfeleszoveg {
+    top:-50%
+  }
+  
+  .felfeleszoveg p {
+     font-size:14pt;
+  }  
+
+  
+  .cimke{
+    text-align:right;
+    font-size:14px;
+    font-weight:bold;
+  } 
+  .tartalom{
+    text-align:left;
+    font-size:14px;
+  }  
+  #kapcsolat_bal, #kapcsolat_jobb {
+    height:135px;
+  }
+  #contact_data {
+    margin-top:20px;
+    font-weight:bold;
+    font-size:14px;
+    color:#FFFFFF;
+    }
+  #kapcsolati_oszlop {
+    padding-top:0;
+  }      
+  #gmap {
+    display:none;
+  }    
+  
+  #logo_image {
+    width:70px;
+  }
+}
+
+/* **********************************************    1 0 2 4 felett ************************************  */
+
+@media (min-width:1024px)
+{
+  #narancs_kor
+  {
+    width: 200px;
+    height: 200px;
+    margin-top: -120px;    
+  }
+  
+  #text_narancs_kor
+  { 
+   font-size:large;
+   font-weight:bold;
+  }
+  
+  .narancskereszt {
+    width:200px;
+    height:200px;
+    margin-top: -75px;  
+  }
+  
+  #arrow_left
+  {
+    width:40px;
+    position: relative;
+    left: 30px !important;
+  }
+  
+  #arrow_right
+  {
+    width:40px; 
+    position: relative;
+    right: 30px; 
+  }
+  
+   #arrow_left_span
+  {
+    top:200px;left:-50px;
+  }
+  
+   #arrow_right_span
+  {
+    top:200px;left:50px;
+  }
+  
+    #scholarship_main_div
+  {
+    width: 50%;
+    margin-left: 15%;
+  }
+  
+  .list_band
+  {
+    font-weight:bold;
+    font-size:16pt;
+    line-height:1;
+  }
+  
+  .list_band_p
+  {
+    line-height:1;
+  }
+
+  .call_name , .cim_regisztracio, .cim_belepes
+  {
+    font-weight:bold;
+    font-size:20pt;
+    margin-left:20px;
+  }
+  
+ 
+  
+  .nav a , menulang
+  {
+    font-weight:normal !important;
+    font-size:15pt !important;
+  }
+  
+  .lejart{
+      font-weight:bold !important; 
+      font-size:15pt !important;
+  }
+  
+  .uzinyil {
+    height:30px !important;
+  }
+  
+  .uzidetailnyil {
+    width:50px ;
+  }
+  
+  .uzilapozo {
+    height:30px;
+    width:40px;
+    background-color:#3274c1;
+    text-align:center;
+    font-size:16pt;
+    line-height:30px;
+    color:#FFFFFF;
+  }
+
+ #message_board_top_right_text
+  {
+   top: 8px;
+   right: 15px;
+   font-size:20px;
+  }
+  
+  #message_board_paragraph
+  {
+    margin-left:15px;
+    margin-right:15px;
+    font-size:15px;
+  }
+  
+  #message_board_text_bold, #message_board_text_short{
+    font-size:18px;
+  }
+   
+  #message_board_text_normal {
+    font-size:16px;
+  }
+  
+  #reszletek #main {
+    top:-130px;
+    width: 90%;
+  }
+  
+  .felfelenyil{
+    width:200px;
+    height:200px;
+    margin-top: 60%;
+    margin-right: 3%;
+    left: 0%;
+  }  
+  
+  .felfeleszoveg {
+    top:-40%
+  }
+  
+  .felfeleszoveg p {
+     font-size:20pt;
+  }
+  
+  .keret cimke{
+    text-align:right;
+    font-size:14px;
+    font-weight:bold;
+  } 
+  .keret tartalom{
+    text-align:left;
+    font-size:14px;
+  }  
+  
+  #kapcsolat_bal, #kapcsolat_jobb {
+    height:160px;
+  }
+  #contact_data {
+  padding-top:20px;
+    margin-top:20px;
+    font-weight:bold;
+    font-size:16px;
+    color:#FFFFFF;
+    }
+  #kapcsolati_oszlop {
+    padding-top:15px;
+  }      
+  #gmap {
+    display:block;
+  }    
+  
+  #logo_image {
+    width:90px;
+  }
+}
+
+
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  white-space:pre-line;   
+  position:relative;
+  top:-7px;
+  
+}
+::-moz-placeholder { /* Firefox 19+ */
+     white-space:pre-line;  
+  position:relative;
+  top:-7px;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    white-space:pre-line;  
+  position:relative;
+  top:-7px;
+}
+:-moz-placeholder { /* Firefox 18- */
+     white-space:pre-line;  
+  position:relative;
+  top:-7px;
+}
+  </style>
+  <script src="./resources_page/bootstrap-datepicker.min.js" type="text/javascript">
+  </script>
+  <script src="./resources_page/bootstrap-datepicker.en-GB.min.js" type="text/javascript">
+  </script>
+  <div class="container-fluid fixed-header" style="background-color: #FFFFFF; border-left: 0px; border-right: 0px;padding-left: 0px;">
+   <a name="TOP_OF_PAGE">
+   </a>
+   <div class="row" id="teto" style="margin-left: -5px; margin-right: 0px;">
+    <!--   MENU  -->
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="vertical-align:middle;padding-left:5px;padding-right:0px;">
+     <nav class="navbar navbar-default aramkor" style="background-color: #ffffff;border-color: #ffffff; border-bottom: 0px;border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;margin-right: -15px;margin-top: 0px;">
+      <div class="container-fluid">
+       <div class="navbar-header aramkor" style="margin-left: 0px;">
+        <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#MainMenu" data-toggle="collapse" style="margin-right: 40px; " type="button">
+         <span class="sr-only">
+          Menu - Click to open
+         </span>
+         <span class="icon-bar">
+         </span>
+         <span class="icon-bar">
+         </span>
+         <span class="icon-bar">
+         </span>
+        </button>
+        <a class="navbar-brand" href="" style="width: auto;display: inline-block; margin-left: 0px;padding-top:10px; padding-bottom: 0px;">
+         <span>
+          <img alt="Brand" id="logo_image" src="./resources_image/tempus-logo.png" style="vertical-align: top;"/>
+         </span>
+         <span class="brandname" style="display:inline-block">
+          .
+          <span style="font-size:50%">
+           <br/>
+           .
+          </span>
+         </span>
+        </a>
+       </div>
+       <div class="navbar-collapse collapse" id="MainMenu" style="float:right;height: 50px;vertical-align: top;height: auto; ">
+        <ul class="nav navbar-nav pull-right" style="vertical-align:top;vertical-align:text-bottom;padding-top:0px;">
+         <li>
+          <a class="dropdown-toggle" href="javascript:scrollto_programok()">
+           PÁLYÁZATOK
+          </a>
+         </li>
+         <li style="display:none">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="">
+           ÖSZTÖNDÍJ PROGRAMOK
+          </a>
+         </li>
+         <li>
+          <a class="dropdown-toggle" href="javascript:scrollto_belepes()">
+           BELÉPÉS
+          </a>
+         </li>
+         <li>
+          <a href="javascript:scrollto_kapcsolat()">
+           KAPCSOLAT
+          </a>
+         </li>
+         <li>
+          <a class="menulang" href="Welcome.asp?lang=eng">
+           IN ENGLISH
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </nav>
+    </div>
+   </div>
+  </div>
+  <!--  FORM -->
+  <div class="container-fluid" style="background-color: rgba(0,0,0,0.2); margin-right:-15px;margin-left:-15px;">
+   <form class="form-horizontal" id="frmSubmit_welcome" method="POST" name="frmSubmit_welcome" style="padding-left:0px;padding-right:0px;background-color:#ffffff;">
+    <!-- BLUE BAND UNDER MENU -->
+    <div class="row" style="padding-left:10px;padding-right:0px;background-color:#ffffff;">
+     <div class="col-xs-12" style="vertical-align:middle;padding-left:0px;padding-right:0px;background-color:#70c8e2;">
+     </div>
+    </div>
+    <!-- TOP IMAGE(IMG) + GENERAL CALLS TRANSPARENT PANEL LEFT -->
+    <div class="row">
+     <div class="col-xs-12">
+      <div style="padding-left:2%;padding-right:2%;position:absolute;background:rgba(112, 200, 226,0.60);height:100%;width:33%;">
+       <br/>
+       <!--Aktuális pályazatok-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_actual_page();" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         AKTUÁLIS PÁLYÁZATOK
+        </a>
+       </p>
+       <!--Magyar Állami Eötvös Ösztöndíj-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_page(562,'maeo','MAGYAR ÁLLAMI EÖTVÖS ÖSZTÖNDÍJ');" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         MAGYAR ÁLLAMI EÖTVÖS ÖSZTÖNDÍJ
+        </a>
+       </p>
+       <!--Államközi ösztöndíjak-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_page(562,'ao12','ÁLLAMKÖZI ÖSZTÖNDÍJAK');" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         ÁLLAMKÖZI ÖSZTÖNDÍJAK
+        </a>
+       </p>
+       <!--Államközi ösztöndíjak I.
+<p class="list_band_p">
+<a class="list_band"  style="color:#ffffff;text-decoration:none!important;border:0;outline:none;" 
+href="javascript:goto_page(562,'ao1','ÁLLAMKÖZI ÖSZTÖNDÍJAK I.');">ÁLLAMKÖZI ÖSZTÖNDÍJAK I.</a>
+</p>-->
+       <!--Államközi ösztöndíjak II.
+<p class="list_band_p">
+<a class="list_band"  style="color:#ffffff;text-decoration:none!important;border:0;outline:none;" 
+href="javascript:goto_page(562,'ao2','ÁLLAMKÖZI ÖSZTÖNDÍJAK II.');">ÁLLAMKÖZI ÖSZTÖNDÍJAK II.</a>
+</p>-->
+       <!--DAAD ösztöndíjak
+<p class="list_band_p">
+<a class="list_band"  style="color:#ffffff;text-decoration:none!important;border:0;outline:none;" 
+href="javascript:goto_page(562,'daad','DAAD ÖSZTÖNDÍJAK');">DAAD ÖSZTÖNDÍJAK</a>
+</p>
+-->
+       <!--Collegium Hungaricum-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_page(562,'ch','COLLEGIUM HUNGARICUM');" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         COLLEGIUM HUNGARICUM
+        </a>
+       </p>
+       <!--Campus Mundi-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_page(643,'cm','CAMPUS MUNDI');" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         CAMPUS MUNDI
+        </a>
+       </p>
+       <!--Egyéb ösztöndíjak-->
+       <p class="list_band_p">
+        <a class="list_band" href="javascript:goto_page(588,'egyeb','EGYÉB ÖSZTÖNDÍJAK');" style="color:#ffffff;text-decoration:none!important;border:0;outline:none;">
+         EGYÉB ÖSZTÖNDÍJAK
+        </a>
+       </p>
+      </div>
+      <!-- message board /uzenofal -->
+      <div id="message_board" style="overflow:hidden;z-index:1000;position:absolute;right:0; margin-top:20px;margin-right:20px;background:rgba(255, 255, 255,1);height:30%;min-width:225px;width:33%;min-height:100px;">
+       <img height="30%" src="./resources_image/yellow_bkg.png" width="100%"/>
+       <div id="message_board_top_right_text" style="position: absolute;color:black">
+       </div>
+       <div id="message_board_top_left_minimize" style="position: absolute;top: 0px;left: 5px;display:none;">
+        <a class="uzidetailnyil" href="javascript:show_message_board_minimize();">
+         <img class="uzidetailnyil" src="./resources_image/rsz_nyil_jobbra_darkkek.png"/>
+        </a>
+       </div>
+       <p id="message_board_paragraph" style="">
+       </p>
+       <div class="row" style="margin-left:1px !important;margin-right:1px !important;">
+        <div class="col-sm-3" id="mbkepcella">
+         <img id="kiskep" src="" style="display:none;" width="100%"/>
+         <img id="nagykep" src="" style="display:none;" width="100%"/>
+        </div>
+        <div class="col-sm-9">
+         <span id="message_board_text_bold" style="font-weight:bold;display:none;">
+         </span>
+         <span id="message_board_text_short" onclick="show_message_board_detail();" style="font-weight:normal;cursor:pointer">
+         </span>
+         <span id="message_board_text_normal" onclick="show_message_board_minimize();" style="font-weight:normal;display:none;cursor:pointer">
+         </span>
+         <a href="javascript:show_message_board_detail();" id="message_board_detail_link">
+          <img class="uzidetailnyil" src="./resources_image/rsz_nyil_jobbra_darkkek.png"/>
+         </a>
+        </div>
+       </div>
+       <br/>
+       <div id="message_board_navigator_panel" style="position: absolute;bottom: 8px;right: 16px;text-align:center;display:flex;">
+        <a href="javascript:show_message_board_prev();">
+         <img class="uzinyil" id="message_board_navigator_panel_left_img" src="./resources_image/nyil_bal.png"/>
+        </a>
+        <div class="uzilapozo" id="message_board_navigator_panel_square">
+        </div>
+        <a href="javascript:show_message_board_next();">
+         <img class="uzinyil" id="message_board_navigator_panel_right_img" src="./resources_image/nyil_jobbra.png"/>
+        </a>
+       </div>
+      </div>
+      <img src="./resources_image/lany_HU_tempus.jpg" style="margin-left:0px;width:100%;min-height:250px;"/>
+     </div>
+    </div>
+    <!-- OPEN CALLS -->
+    <a name="CALLS">
+    </a>
+    <a name="CALLS_AGAIN">
+    </a>
+    <div class="row" id="programok">
+     <div class="col-xs-12">
+      <div style="background-image:url('./resources_image/lightblue_bkg.png');min-height:700px; height: 0;padding-bottom: 50% ;background-repeat: no-repeat;">
+       <a href="javascript:scrollto_belepes()">
+        <div id="narancs_kor" style="background-image:url('./resources_image/narancs_kor.png');background-size:contain; background-repeat: no-repeat;z-index: 999;clear: both; float:right;position: relative;margin-left: -200px;margin-right:10%;text-align: center;">
+         <div id="text_narancs_kor" style="position:relative;top:35%;color:#FFFFFF">
+          REGISZTRÁCIÓ
+          <br/>
+          <br/>
+          BELÉPÉS
+         </div>
+        </div>
+       </a>
+       <div id="main" style="height: 400px;width: 80%;z-index: 999;clear: both;margin-left: 10%;position: relative;">
+        <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+         PÁLYÁZATOK
+        </p>
+        <p class="call_name" id="CALL_NAME">
+         AKTUÁLIS PÁLYÁZATOK
+        </p>
+        <div class="nano has-scrollbar" style="margin-bottom: 200px;">
+         <div class="nano-content" id="frame_div" style="padding-right:50px;">
+          <!--<img src="./resources_image/loading.gif">-->
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- SCHOLARSHIP PROGRAMMES -->
+    <a name="SCHOLARSHIP_AGAIN">
+    </a>
+    <a name="SCHOLARSHIP">
+    </a>
+    <div class="row" id="reszletek">
+     <div class="col-xs-12">
+      <div style="background-image:url('./resources_image/yellow_bkg.png');min-height:700px; height: 0;padding-bottom: 50% ;background-repeat: no-repeat;">
+       <div class="narancskereszt" style="background-image:url('./resources_image/narancs_kereszt.png');background-size:contain; background-repeat: no-repeat;z-index: 999;clear: both;float:left;position: relative;margin-left: 10px;text-align: center;">
+       </div>
+       <div class="col-sm-9 col-xs-12" id="scholarship_main_div" style="height: 500px;float:left;clear: both;position: relative;margin-top:10px;margin-bottom:50px;">
+        <span id="arrow_left_span" style="float:left;position:relative;">
+         <a href="javascript:goto_detail_back();" style="z-index:999;">
+          <img id="arrow_left" src="./resources_image/nyil_bal.png"/>
+         </a>
+        </span>
+        <span id="arrow_right_span" style="float:right;position:relative;">
+         <a href="javascript:goto_detail_next();" style="z-index:999;">
+          <img id="arrow_right" src="./resources_image/nyil_jobbra.png"/>
+         </a>
+        </span>
+        <div id="main" style="position:relative;height: 500px;background:#ffffff;border-style: solid;border-width: 10px 10px 10px 10px;border-color: #70c8e2;overflow:auto;text-align: center;">
+         <div class="nano has-scrollbar">
+          <div class="nano-content" id="frame_detail_div">
+           <!--<img src="./resources_image/loading.gif">-->
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="col-sm-3">
+        <a href="javascript:scrollto_teto()" style="color:#000000;">
+         <div class="felfelenyil" style="background-image:url('./resources_image/kek_nyil.png');background-size:contain; background-repeat: no-repeat;float:right;position: relative;text-align: center;">
+          <div class="felfeleszoveg" style="position: relative;">
+           <p style="font-weight:bold;">
+            ÖSZTÖNDÍJ
+            <br/>
+            PROGRAMOK
+           </p>
+          </div>
+         </div>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!--REGISTRATION -->
+    <a name="REG">
+    </a>
+    <div class="row" id="regisztracio">
+     <div class="col-xs-12">
+      <div style="background-image:url('./resources_image/orange_bkg.png');min-height:650px; height: 0;padding-bottom: 50% ;background-repeat: no-repeat;">
+       <div style="float:left;clear: both;position: relative;margin-left: 5%;margin-top: 100px;margin-bottom: 30px;background:#ffffff;width:85%;height:600px;">
+        <div class="row" style="display:none">
+         <div class="col-xs-12">
+          <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+           REGISZTRÁCIÓ
+          </p>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-xs-12">
+          <p class="cim_regisztracio">
+           REGISZTRÁCIÓ
+          </p>
+         </div>
+        </div>
+        <div class="row" style="display:none;">
+         <div class="col-xs-12">
+          <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+           <span style="font-weight:bold;">
+            A megadott "" címre küldtünk egy visszaigazoló e-mailt.
+           </span>
+           <br/>
+           Kérjük, hogy kattintson az e-mailben megadott linkre a regisztrácíó véglegesítéséhez, mert csak ezt követően tud belépni.
+          </p>
+          <a href="javascript:scrollto_belepesk()">
+           <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+            BELÉPÉS
+           </p>
+          </a>
+         </div>
+        </div>
+        <div class="row" style="display:none;">
+         <div class="col-xs-12">
+          <p style="color:#EE0000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:20px;">
+           Ez a felhasználónév már regisztrálva van. Kérjük válasszon más felhasználónevet.
+          </p>
+         </div>
+        </div>
+        <div class="row" style="display:none;">
+         <div class="col-xs-12">
+          <p style="color:#EE0000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:20px;">
+           Ez a felhasználónév már regisztrálva van. Kérjük használja a "Belépés" részt.
+          </p>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-sm-3">
+          <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+           Már regisztráltam,
+          </p>
+          <a href="javascript:scrollto_belepes()">
+           <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+            BELÉPÉS
+           </p>
+          </a>
+          <!--<a href=""><p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">ELFELEJTETT JELSZÓ</p></a>-->
+         </div>
+         <div class="col-sm-9" style="padding-right:50px;">
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="user_login_name" name="user_login_name" placeholder="FELHASZNÁLÓNÉV: (Csak ékezet nélküli betűket vagy számokat használjon)" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="first_name" name="first_name" placeholder="KERESZTNÉV:" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="last_name" name="last_name" placeholder="VEZETÉKNÉV:" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="email_address" name="email_address" placeholder="E-MAIL CÍM (ELLENŐRIZZE KÉTSZER A MEGADOTT CÍMET):" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="pass_01" name="pass_01" placeholder="JELSZÓ:" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="password"/>
+           </div>
+          </div>
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="pass_02" name="pass_02" placeholder="JELSZÓ MEGERŐSÍTÉSE:" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="password"/>
+           </div>
+          </div>
+          <div class="row" style="margin-top:30px;">
+           <div class="col-xs-12">
+            <div style="float:right;">
+             <a href="javascript:register_new_user();">
+              <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+               REGISZTRÁCIÓ
+               <img src="./resources_image/rsz_narancs_kor_arr.png"/>
+              </p>
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- SIGN IN -->
+    <a name="SIGNIN_BY_REDIRECT">
+    </a>
+    <a name="SIGNIN">
+    </a>
+    <div class="row" id="belepes">
+     <div class="col-xs-12">
+      <div style="background-image:url('./resources_image/orange_bkg.png');min-height:200px; height: 0;background-repeat: no-repeat;">
+       <div style="float:left;clear: both;position: relative;margin-left: 5%;margin-top: 100px;margin-bottom: 30px;background:#ffffff;width:85%;height:350px;">
+        <div class="row" style="display:none">
+         <div class="col-xs-12">
+          <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+           REGISZTRÁCIÓ
+          </p>
+         </div>
+        </div>
+        <div class="row" id="belepesfejlec">
+         <div class="col-xs-12">
+          <p class="cim_belepes">
+           BELÉPÉS
+          </p>
+         </div>
+        </div>
+        <div class="row" id="elfelejtettjelszofejlec">
+         <div class="col-xs-12">
+          <p class="cim_belepes">
+           ELFELEJTETT JELSZÓ
+          </p>
+         </div>
+        </div>
+        <div class="row" id="badusername">
+         <div class="col-xs-12">
+          <p style="color:#EE0000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:20px;">
+           A megadott felhasználónév vagy email cím nem létezik
+          </p>
+         </div>
+        </div>
+        <div class="row" id="emailsent">
+         <div class="col-xs-12">
+          <p style="color:#EE0000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:20px;">
+           Az új jelszót a megadott email címre kiküldtük
+          </p>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-sm-3">
+          <p style="font-size:12pt;margin-left:20px;margin-top:20px;">
+           Még nem regisztráltam,
+          </p>
+          <a href="javascript:scrollto_regisztracio()">
+           <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+            REGISZTRÁCIÓ
+           </p>
+          </a>
+          <a href="javascript:goto_elfelejtettjelszo()" id="gotolink_elfelejtettjelszo">
+           <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+            ELFELEJTETT JELSZÓ
+           </p>
+          </a>
+          <a href="javascript:goto_belepes()" id="gotolink_belepes">
+           <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+            BELÉPÉS
+           </p>
+          </a>
+         </div>
+         <div class="col-sm-9" style="padding-right:50px;">
+          <div class="row">
+           <div class="col-xs-12">
+            <input id="main_user" name="main_user" placeholder="FELHASZNÁLÓNÉV: (Csak ékezet nélküli betűket vagy számokat használjon)" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row" id="belepes_jelszomezo">
+           <div class="col-xs-12">
+            <input id="main_pass" name="main_pass" placeholder="JELSZÓ:" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="password"/>
+           </div>
+          </div>
+          <div class="row" id="belepes_gomb" style="margin-top:30px;">
+           <div class="col-xs-12">
+            <div style="float:right;">
+             <a href="javascript:log_in_the_user_here();">
+              <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+               BELÉPÉS
+               <img src="./resources_image/rsz_narancs_kor_arr.png"/>
+              </p>
+             </a>
+            </div>
+           </div>
+          </div>
+          <div class="row" id="elfelejtettjelszo_emailmezo">
+           <div class="col-xs-12">
+            <input id="main_email" name="main_email" placeholder="E-MAIL CÍM (amit a regisztrációhoz használt)" style="margin-left:20px;width:100%; height:50px;outline: 0;border-width: 0 0 2px 0;border-radius: 0px;border-color: #f68620;" type="text"/>
+           </div>
+          </div>
+          <div class="row" id="elfelejtettjelszo_gomb" style="margin-top:30px;">
+           <div class="col-xs-12">
+            <div id="sendbutton" style="float:right;cursor:pointer;">
+             <p style="color:#000000;font-weight:bold;font-size:12pt;margin-left:20px;margin-top:0px;margin-bottom:0px;">
+              ELKÜLD
+              <img src="./resources_image/rsz_narancs_kor_arr.png"/>
+             </p>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- cONTACT -->
+    <a name="cONTACT">
+    </a>
+    <div class="row" id="kapcsolat">
+     <div class="col-xs-3" id="kapcsolat_bal" style="background-color:#21ad4c;">
+     </div>
+     <div class="col-xs-9" id="kapcsolat_jobb" style="background-color:#aed13b;">
+      <div class="row">
+       <div class="col-sm-5">
+        <div class="mapouter" id="gmap">
+         <div class="gmap_canvas" style="margin-top:20px;">
+          <iframe frameborder="0" height="140" id="gmap_canvas" marginheight="0" marginwidth="0" scrolling="no" src="https://maps.google.com/maps?q=Tempus közalapítvány&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed" width="300">
+          </iframe>
+         </div>
+         <a href="https://www.pureblack.de/webdesign-regensburg/">
+         </a>
+         <style>
+          .mapouter{overflow:hidden;height:140px;width:300px;}.gmap_canvas {background:none!important;height:140px;width:300px;}
+         </style>
+        </div>
+       </div>
+       <div class="col-sm-7" id="kapcsolati_oszlop">
+        <span id="contact_data">
+         TEMPUS KÖZALAPÍTVÁNY
+         <br/>
+         1077 BUDAPEST, KÉTHLY ANNA TÉR 1.
+         <br/>
+         • TELEFON: (+36 1) 237-1300
+         <br/>
+         • FAX: (+36 1) 239-1329
+         <br/>
+         • INFÓVONAL: (+36 1) 237-1320
+         <br/>
+         • E-MAIL:
+         <a href="javascript:void(location.href='mailto:'+String.fromCharCode(105,110,102,111,64,116,112,102,46,104,117)+'?')">
+          E-mail
+         </a>
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <input id="frm_op" name="frm_op" type="hidden"/>
+   </form>
+  </div>
+  <script async="" src="./resources_nanoScroller/ga.js" type="text/javascript">
+  </script>
+  <script src="./resources_nanoScroller/overthrow.min.js" type="text/javascript">
+  </script>
+  <script src="./resources_nanoScroller/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="./resources_nanoScroller/jquery.nanoscroller.js" type="text/javascript">
+  </script>
+  <script src="./resources_nanoScroller/main.js" type="text/javascript">
+  </script>
+  <script src="./resources_nanoScroller/ga_custom.js" type="text/javascript">
+  </script>
+  <script>
+   $(".nano").nanoScroller({ alwaysVisible: true });
+  </script>
+  <script>
+   //goto_default();
+ 
+    
+  load_message_board(0);
+  </script>
+ </body>
+</html>

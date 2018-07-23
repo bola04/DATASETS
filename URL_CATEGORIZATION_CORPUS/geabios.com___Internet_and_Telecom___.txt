@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   GeaBios - Geo Enabled And Better Internet Oriented Services
+  </title>
+  <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="GeaBios is a free (non-profit) Slovene Citizen Oriented Information Service and the name stands for Geo Enabled And Better Internet Oriented Services. All the information are somehow connected to the Earth and Space (geocoded). The Internet applications, which are running mostly on client side, enable the viewing of maps, aerial photography and satellite imagery. They reveal the Earth from above and the Space from below. Many specific layers of different content can be pasted over those maps and images. Time dependent information is calculated on-line." name="description"/>
+  <meta content="gis,geographic,map,maps,public,service,public service,atomic,atomic clock,weather,viewer,weather viewer,better internet,better service,J2EE,formal logic,logic,formal,mda,model,driven,architecture,model driven,rule,rule engine,engine,postgres,postgresql,oracle,db2,academa,academa server,server,framework,spring,spring framework,transaction,tx,context,transaction context,xml,xml pipeline,pipeline,object,object oriented,object oriented pipeline,xslt" name="Keywords"/>
+  <meta content="ACADEMA (http://www.academa.si/)" name="author"/>
+  <link href="http://www.geabios.com/services/meteo/server2.11/rss.xml.asp?feed=rss" rel="alternate" title="GeaBios RSS Feed" type="application/rss+xml"/>
+  <script src="dhtml/apiloader.js" type="text/javascript">
+  </script>
+ </head>
+ <body>
+  <script type="text/javascript">
+   academaLayout.writeHeader('gblogo.gif','Geo Enabled And Better Internet Oriented Services');
+academaLayout.writeMenu();
+  </script>
+  <div class="academa-main-body">
+   <div id="content">
+    <!-- Content starts here -->
+    <p>
+     This page was designed and tested in
+     <a href="http://www.microsoft.com/ie/" target="_top">
+      IE5.5+
+     </a>
+     ,
+     <a href="http://www.mozilla.org" target="_top">
+      Mozilla 1.3+
+     </a>
+     ,
+     <a href="http://www.mozilla.org" target="_top">
+      Firefox 0.9+
+     </a>
+     ,
+     <a href="http://www.netscape.com" target="_top">
+      Netscape 7.1+
+     </a>
+     and
+     <a href="http://www.opera.com" target="_top">
+      Opera 7.5+
+     </a>
+     . Other W3C
+compliant browsers might work but these are the one tested.
+    </p>
+    <noscript>
+     <b>
+      JavaScript must be enabled
+     </b>
+    </noscript>
+    <script>
+     document.write("<p>You are using a " + navigator.userAgent + " browser</p>"
++"<p>If you see this message (no menu, picures, content, but with JavaScript error)"
++" and you're using one of the browsers mentioned above with JavaScript enabled,"
++" means that your proxy is not configured properly or Disk Cache is not working properly. "
++" Clear Cache or just try to reload the page. "
++"If the problem remains, contact your system administrator.</p>");
+    </script>
+    <!-- Content ends here -->
+   </div>
+   <script type="text/javascript">
+    academaLayout.writeFooter();
+if( !academaDeploy ) { academaLayout.loadMapComponent(); }
+if( academaLayout.getParameter('content') ) academaLayout.loadContent(academaLayout.getParameter('content'));
+else if(academaLayout.getParameter('lat') && !isNaN(parseFloat(academaLayout.getParameter('lat'))) ) {
+	if(academaLayout.getParameter('fov')) setTimeout("worldMapSwf("+academaLayout.getParameter('lat')+","+academaLayout.getParameter('lon')+","+academaLayout.getParameter('fov')+")",5000);
+	else if(academaLayout.getParameter('level')) setTimeout("mapPosition("+academaLayout.getParameter('lat')+","+academaLayout.getParameter('lon')+","+academaLayout.getParameter('level')+")",5000);
+	else setTimeout("mapPosition("+academaLayout.getParameter('lat')+","+academaLayout.getParameter('lon')+","+(""+(17-parseInt(academaLayout.getParameter('z'))))+")",5000);
+	academaLayout.loadContent('first.htm');
+}
+else academaLayout.loadContent('first.htm');
+var now=new Date();var today=now.getDate()+'.'+(now.getMonth()+1)+'.'+((now.getFullYear()<2000)?now.getFullYear()+1900:now.getFullYear());
+if( !academaDeploy ) {
+	academaLayout.loadTableComponent();academaLayout.loadTabPaneComponent();academaLayout.loadHelpTipComponent();
+	academaLayout.loadWordnetComponent();
+}
+/* function siteAlert() {return '<div class="alert" align="justify" style="margin:0px"><span class="note"><b>Troubleshoot:</b> This is Java based applications` site, so, <b>Java and Cookies must be enabled</b>. No Java, No Cookies means NO DATA and NO MAPS, Check for supported browsers (index).</span></div>';} */
+function makeCloudsForSlot() {if( (weather = academaLayout.FindWindow('Weather Viewer 2.11')) == null ) weather = new WindowClass('Weather Viewer 2.11',CHILDIWINDOWNOSCROLL,100,200,800,640); weather.url( pathToRoot+'services/meteo/wv2.11/wv.htm?model=unibas&picurl=http://pages.unibas.ch/geo/mcr/3d/meteo/nmm22/00CLC03_&picext=.jpg&picset=003;006;009;012;015;018;021;024;027;030;033;036;039;042;045;048&tmodel=hoursFromTodayInt3' ); weather.show();}
+function makePrecipitationForSlot() {if( (weather = academaLayout.FindWindow('Weather Viewer 2.11')) == null ) weather = new WindowClass('Weather Viewer 2.11',CHILDIWINDOWNOSCROLL,100,200,800,640); weather.url( pathToRoot+'services/meteo/wv2.11/wv.htm?model=unibas&picurl=http://pages.unibas.ch/geo/mcr/3d/meteo/nmm22/00PCP03_&picext=.jpg&picset=003;006;009;012;015;018;021;024;027;030;033;036;039;042;045;048&tmodel=hoursFromTodayInt3' ); weather.show();}
+function makeEarthquakesForSlot() {if( (earthquakes = academaLayout.FindWindow('Earthquakes (update every 5 minutes)')) == null ) earthquakes = new WindowClass('Earthquakes (update every 5 minutes)',CHILDIWINDOWNOSCROLL,100,100,640,420); earthquakes.url( pathToRoot+'html/services/quakes/quakes.htm' ); earthquakes.show();}
+//setTimeout("academaLayout.postContentToSlot('<div style=\"background:#000000;width:200px;\"><center><img id=\"powered\" src=\"html/powered.jpg\" border=0></center></div>')",10000);
+/* academaLayout.postContentToSlot(siteAlert()); */
+academaLayout.postContentToSlot('<a href=\"http://www.geabios.com/services/meteo/server2.11/rss.xml.asp\"><img id=\"rss\" src=\"html/xml.gif\" border=0>&nbsp;Weather&nbsp;RSS&nbsp;Feed</a>');
+//academaLayout.postContentToSlot('<div style=\"width:200px;height:160px;\"><a href=\"javascript://\" onclick=\"makeCloudsForSlot()\"><img id=\"cloud\" style=\"position:absolute;top:-60px;left:-40px;clip:rect(60px 240px 210px 40px);\" src=\"http://pages.unibas.ch/geo/mcr/3d/meteo/meteoblue/MESOIMAGE/CLOUD24.JPG\" border=0></a></div>');
+//academaLayout.postContentToSlot('<div style=\"width:200px;height:160px;\"><a href=\"javascript://\" onclick=\"makePrecipitationForSlot()\"><img id=\"preci\" style=\"position:absolute;top:-60px;left:-40px;clip:rect(60px 240px 210px 40px);\" src=\"http://pages.unibas.ch/geo/mcr/3d/meteo/meteoblue/MESOIMAGE/PRECI24.JPG\" border=0></a></div>');
+//academaLayout.postContentToSlot('<a href=\"javascript://\" onclick=\"makeEarthquakesForSlot()\"><img id=\"quakes\" src=\"html/services/quakes/quakes.gif\" border=0></a>')
+setTimeout("academaLayout.postContentToSlot(mapsForSlot())",10000);
+/*if(ie)*/{var html = '<div style="text-align:center;font-size:10px;font-weight:bold;color:#ff0000;width:100px;height:100px;"><br/><br/><br/>'+today+'</div><div style="position:absolute;top:0px;left:0px;zIndex:0"><OBJECT id=clock3d codeBase=http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0 height=100 width=100 vspace=1 classid=clsid:D27CDB6E-AE6D-11cf-96B8-444553540000 name=clock3d><PARAM NAME="movie" VALUE="html/services/atomicclock/clock.swf"><PARAM NAME="quality" VALUE="medium"><PARAM NAME="menu" VALUE="false"><PARAM NAME="BGCOLOR" VALUE="#ffffff"><param name="wmode" value="transparent">'
++'<embed id=clock3d src="html/services/atomicclock/clock.swf" width=100 height=100 vspace=1 quality=medium pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" bgcolor="#ffffff" menu="false" name="clock3d" wmode="transparent"></embed>'
++'</OBJECT><img id=\"moonphasetoday\" alt=\"Moon Phase Today\" width=100 src=\"html/services/astronomy/moonphasetoday.gif\" border=0></div>'; setTimeout("academaLayout.postContentToSlot(html)",12000);}
+setTimeout("academaLayout.postContentToSlot('<img id=\"pipeline\" src=\"html/as01.gif\" border=0>')",14000);
+if( splash ) setTimeout( "splash.hide()",5000);
+   </script>
+   <!-- end academa-main-body -->
+  </div>
+  <div style="display:none">
+   <a href="http://www.geabios.com/sitenews.htm">
+    What's new on the page
+   </a>
+   ,
+   <a href="http://www.geabios.com/first.htm">
+    Index page
+   </a>
+   ,
+   <a href="http://www.geabios.com/http://www.geabios.com/services/meteo/server2.11/rss.xml/asp">
+    Weather Viewer RSS Feed
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/atomicclock/atomicclock.htm">
+    Atomic Clock
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/skyview/skyviewpreview.htm">
+    Sky View Café Preview
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/solarsystemsimulator/solarsystemsimulator.htm">
+    Solar System Simulator
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/sunandmoon.htm">
+    Sun &amp; Moon Rise/Set
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/simulation.htm">
+    Simulation
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/yoursky.htm">
+    Your Telescope
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/pictureoftheday.htm">
+    Picture of the Day
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/planets/mars/index.htm">
+    Views of the Solar System
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/eclipsemoon20041028/eclipsemoon20041028.htm">
+    Total Moon Eclipse
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/astronautphotography.htm">
+    Astronaut Photography
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/adriatic.htm">
+    Adriatic Sea &amp; Italy from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/alps.htm">
+    Alps from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/ljubljana.htm">
+    Ljubljana from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/sloveniaistra.htm">
+    Slovenia &amp; Istra from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/sezanaporec.htm">
+    Sežana to Poreč from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/greece.htm">
+    Greece from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/trzaskizaliv.htm">
+    Gulf of Trieste from Satellite
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/yourearth.htm">
+    Your Earth
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/gpspreview.htm">
+    How To Connect Your GPS With The Map
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastAddresses.htm">
+    Fast Addresses 4 Slovenia
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastContent.htm">
+    Restaurants, Hotels, Doctors, ...
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastContentAdvanced.htm">
+    ... Advanced Search
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/maps/terrain.htm">
+    Slovenian Mountains &amp; Hills
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/roads/roads.htm">
+    Slovenian Roads
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/sloveniainbrief.htm">
+    Slovenia In Brief
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/sea/tide.htm">
+    Tide Tables for Mediterranean Sea
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0001/index.htm">
+    Kamniška Bistrica
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0002/index.htm">
+    Korena nad Horjulom
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0003/index.htm">
+    Sveti Peter (Kočevska gora)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0004/index.htm">
+    Sankaški dom nad Begunjami
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/painter/painterpreview.htm">
+    Painter Preview
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/tools/whois.htm">
+    Who Is
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/tools/wysiwygmain.htm">
+    Wysiwyg Editor
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/news.asp">
+    World's Latest News
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/scitech.asp">
+    Science and Technology
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/entertainment.asp">
+    Entertainment
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/health.asp">
+    Health
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/radio/radio.htm">
+    European Radio Stations
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/articles/vukojebina.htm">
+    Slovenian Internet In Vukojebina
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/articles/emajliranje.htm">
+    E-ma(i)l-treatment
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/postabrezpostarja.htm">
+    Pošta brez poštarja (humoresque)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/pajebilojutro.htm">
+    Pa je bilo jutro (humoresque)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/wv2.11.geabios.htm">
+    Weather OnLine Preview
+   </a>
+   ,
+   <a href="http://www.geabios.com/services/meteo/server2.11/adriatic.asp">
+    Adriatic Sea - Data
+   </a>
+   ,
+   <a href="http://www.geabios.com/services/meteo/server2.11/europe.asp">
+    Europe - Data
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/google.htm">
+    Search With Google
+   </a>
+   ,
+   <a href="http://www.geabios.com/sitenews.htm">
+    What's New on the Site
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/atomicclock/atomicclock.htm">
+    Atomska ura
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/skyview/skyviewpreview.htm">
+    Predogled iz "Nebesne kavarne"
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/solarsystemsimulator/solarsystemsimulator.htm">
+    Simulator solarnega sistema
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/sunandmoon.htm">
+    Sonce in Luna - vzhod/zahod
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/simulation.htm">
+    Simulacija
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/yoursky.htm">
+    Vaš teleskop
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/pictureoftheday.htm">
+    Slika dneva
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/planets/mars/index.htm">
+    Pogledi na solarni sistem
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/eclipsemoon20041028/eclipsemoon20041028.htm">
+    Popoln Lunin mrk
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/astronautphotography.htm">
+    Astronavtova fotografija
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/adriatic.htm">
+    Jadransko morje in Italija iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/alps.htm">
+    Alpe iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/ljubljana.htm">
+    Ljubljana iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/sloveniaistra.htm">
+    Slovenija in Istra iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/sezanaporec.htm">
+    Od Sežane do Poreča iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/greece.htm">
+    Grčija iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/astronomy/satellitepictures/trzaskizaliv.htm">
+    Tržaški zaliv iz satelita
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/yourearth.htm">
+    Vaša zemlja
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/gpspreview.htm">
+    Kako povezati svoj GPS z zemljevidom
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastAddresses.htm">
+    Hitri naslovi - Slovenija
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastContent.htm">
+    Gostilne, hoteli, zdravniki, ...
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/fastContentAdvanced.htm">
+    ... Napredno iskanje
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/maps/terrain.htm">
+    Slovenske gore in griči
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/roads/roads.htm">
+    Slovenske ceste
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/sloveniainbrief.htm">
+    O Sloveniji na kratko
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/sea/tide.htm">
+    Bibavica za Mediteran
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0001/index.htm">
+    Kamniška Bistrica
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0002/index.htm">
+    Korena nad Horjulom
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0003/index.htm">
+    Sveti Peter (Kočevska gora)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/littlehelp/0004/index.htm">
+    Sankaški dom nad Begunjami
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/painter/painterpreview.htm">
+    Sam svoj "Malar" Predogled
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/tools/whois.htm">
+    IP/Domena - kdo je?
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/tools/wysiwygmain.htm">
+    Wysiwyg Editor
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/news.asp">
+    Zadnje novice iz sveta
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/scitech.asp">
+    Znanost in tehnologija
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/entertainment.asp">
+    Iz sveta zabave
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/health.asp">
+    Zdravje
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/radio/radio.htm">
+    Evropske radijske postaje
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/articles/vukojebina.htm">
+    Slovenski Internet v Vukojebini
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/articles/emajliranje.htm">
+    Emajliranje
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/postabrezpostarja.htm">
+    Pošta brez poštarja (humoreska)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/misc/pajebilojutro.htm">
+    Pa je bilo jutro (humoreska)
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/services/wv2.11.geabios.htm">
+    Vreme OnLine Predogled
+   </a>
+   ,
+   <a href="http://www.geabios.com/services/meteo/server2.11/adriatic.asp">
+    Jadransko morje - Podatki
+   </a>
+   ,
+   <a href="http://www.geabios.com/services/meteo/server2.11/europe.asp">
+    Europa - Podatki
+   </a>
+   ,
+   <a href="http://www.geabios.com/html/search/google.htm">
+    Išči z Google-om
+   </a>
+   ,
+   <a href="http://www.geabios.com/sitenews.htm">
+    Kaj je novega na strani?
+   </a>
+   ,
+
+Satellite Images Adriatic Sea Area:
+Venezia, Trieste, Ankaran, Izola, Piran, Savudrija, Umag, Novigrad, Poreč, Zadar, Pakoštane, Split, Dubrovnik, 
+Mt. Everest, Nanga Parbat, Copacabana, Pyramides, Arc de Triomphe, and more.
+   <a href="http://www.geabios.com/html/services/maps/PublicMap.htm">
+    GeaBios Tiny WMS/WFS Client
+   </a>
+   - Satellite imagery and maps,
+   <a href="http://www.academa.si/">
+    ACADEMA
+   </a>
+   ,
+   <a href="http://www.academa.net/">
+    ACADEMA Net.,
+   </a>
+   ,
+   <a href="http://www.academa.org/">
+    ACADEMA Org.
+   </a>
+   ,
+   <a href="http://www.slomap.com/">
+    Find Your Research, Development and Business Partner in Slovenia
+   </a>
+   ,
+   <a href="http://www.geabios.com/first.htm">
+    GeaBios First
+   </a>
+   ,
+   <a href="http://en.wikipedia.org/wiki/GeaBios">
+    Wikipedia about GeaBios
+   </a>
+   ,
+   <a href="http://tools.wikimedia.de/~magnus/geo/geohack.php?params=17_40_S_149_30_W_">
+    GeaBios as Wikipedia Map Source
+   </a>
+   ,
+   <a href="http://whois.domaintools.com/geabios.com">
+    GeaBios (WhoIs)
+   </a>
+   ,
+   <a href="http://help.com/wiki/GeaBios">
+    GeaBios (Help)
+   </a>
+   ,
+   <a href="http://www.answers.com/topic/geabios">
+    GeaBios (Answers)
+   </a>
+   .
+  </div>
+  <br/>
+ </body>
+</html>

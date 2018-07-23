@@ -1,0 +1,3412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+ <head id="ctl00_Head1">
+  <title>
+   Valutakurser.dk - Valutakurser, valuta, valutaomregner, valutakurs, dollar, euro, pund, yen
+  </title>
+  <meta content="initial-scale=1.0, width=device-width" name="viewport"/>
+  <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+  <meta content="Copyright (C) 1995-2018, EuroInvestor.com A/S" id="ctl00_metacopyright" name="copyright"/>
+  <link href="/httpcombiner.ashx?s=set_css&amp;t=text/css&amp;v=LiveBranchBuild_20180619.1" rel="stylesheet" type="text/css"/>
+  <link href="/styles/valuta_flag.css" rel="stylesheet" type="text/css"/>
+  <script data-culture="da" id="CookieConsent" src="https://policy.app.cookieinformation.com/uc.js" type="text/javascript">
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="/js/skyscrapertobottom.js?v=LiveBranchBuild_20180619.1" type="text/javascript">
+  </script>
+  <!-- this script is neccessary for Xaxis to be able to buy wallpapers through prebid -->
+  <script src="https://macro.adnami.io/adsm.macro.8035fa6a-67c0-4bcc-bf84-f0d729936e91.js">
+  </script>
+  <script>
+   var adsmtag = adsmtag || {};
+                          adsmtag.cmd = adsmtag.cmd || [];
+  </script>
+  <script type="text/javascript">
+   var slotIds = {
+'div-gpt-ad-201-107':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600',
+'div-gpt-ad-201-108':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600',
+'div-gpt-ad-201-117':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600',
+'div-gpt-ad-201-101':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180',
+'div-gpt-ad-201-103':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90',
+'div-gpt-ad-201-111':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90',
+'div-gpt-ad-201-112':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90',
+'div-gpt-ad-201-308':'/56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50',
+'div-gpt-ad-201-305':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60',
+'div-gpt-ad-201-306':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60',
+'div-gpt-ad-201-307':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60',
+'div-gpt-ad-201-104':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250',
+'div-gpt-ad-201-105':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250',
+'div-gpt-ad-201-106':'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250',
+};
+
+
+        var search = window.location.search;
+        var PROTOCOL = window.location.protocol;
+
+        // a very basic test to check if we're on a mobile device; CMS might have
+        // something based on useragent
+        var isMobile = (window.matchMedia && window.matchMedia('(max-width: 720px)').matches) || screen.width < 720;
+
+        // timeout is in milliseconds
+        var TIMEOUT_DURATION = 1400;
+
+        // create the prebid async queue so we can load prebid
+        window.pbjs = window.pbjs || { que: [] };
+
+        function hasQueryParam(param) {
+            return search.indexOf(param) !== -1;
+        }                
+        function loadScript(src, callback) {
+            var script = document.createElement('SCRIPT');
+            callback = callback || function () { };
+            script.async = true;
+            script.type = 'text/javascript';
+            script.src = PROTOCOL + src;
+            script.onload = function () {
+                callback(null, script);
+            };
+
+            script.onerror = function (e) {
+                callback(e, script);
+            };
+
+            (document.head || document.getElementsByTagName('HEAD')[0]).appendChild(script);
+        }
+
+        /**
+         * Helper function to "unload" an async
+         * queue
+         *
+         * @param {function} fn to call immediately
+         */
+        function immediate(fn) {
+            try {
+                fn();
+            } catch (e) {
+                console.error('error executing queue:', e);
+            }
+        }
+
+        // to be executed when the header auction
+        // is complete
+        var displayQueue = [];
+        var auctionFinished = false;        
+
+        function callDFP() {
+            if (auctionFinished) {
+                return;
+            }
+            auctionFinished = true;
+
+            window.pbjs.que.push(function () {
+                // this sets the key-value pairs representing
+                // the bids received by prebid;
+                // we need to do this before we display()
+                // the ads (e.g., fetch ads from DFP)
+                window.pbjs.setTargetingForGPTAsync();
+            });
+
+            for (var i = 0, l = displayQueue.length; i < l; i++) {
+                immediate(displayQueue[i]);
+            }
+
+            // from now on this will execute immediately
+            displayQueue.push = immediate;
+
+            // call the lazy-loaded ads     
+            console.log('lazy-loading ads');
+            var handle = setInterval(function () { loadVisibleAds(true); }, 500);
+            $(window).on("adsloaded", function () {
+                clearInterval(handle);
+            });
+            
+        }
+
+        /**
+         * When we load GPT, we want to override
+         * the googletag.display() method so we can prevent
+         * ads from being fetched from DFP (and defer it until)
+         * we've finished the header auction
+         */
+        function loadGPT() {
+            window.googletag = window.googletag || { cmd: [] };
+            window.googletag.cmd.push(function () {
+                // shim googeltag.display so the display call
+                // won't fetch ads from the server immediately --
+                // it will wait until we call `callDfp()`
+                var _display = window.googletag.display;
+                window.googletag.display = function (elementId) {
+                    displayQueue.push(function () {
+                        _display.call(window.googletag, elementId);
+                    });
+                };
+            });
+
+            // actually load GPT script
+            loadScript('//www.googletagservices.com/tag/js/gpt.js');
+        }
+
+        // begin loading prebid & GPT -- we want to do this as early as possible
+        loadGPT();
+        loadScript('//i.euroinvestor.com/prebid/prebid-0.31.js', function (err) {
+            // there was an error loading prebid;
+            // we want to exit early and allow DFP to load normally
+            if (err) {
+                console.log('error occurred: ' + err + ' -> callDFP');
+                callDFP();
+            }
+        });
+
+        var RUBICON_ACCOUNT_ID = '13766';
+        var RUBICON_SITE_ID = '67530'; 
+        var ADFORM_TEST_MODE = hasQueryParam('adform_test') ? 1 : 0;
+        var PUBMATIC_PUBLISHER_ID = '132110';
+        var RUBICON_ACTIVE = hasQueryParam('rubicon_test');
+        var PUBMATIC_ACTIVE = hasQueryParam('pubmatic_test');
+        
+        /**
+         * A function that returns a rubicon bid;
+         * defined as a function to factor out parameters common
+         * to all rubicon bids (eg., accountId, siteId)
+         *
+         * @param {string} zoneId the zone (tag) we're targeting
+         *
+         * @return {object} bid for rubicon fastlane
+         */
+        function rubiconBid(zoneId) {
+            //if (!RUBICON_ACTIVE) return {};
+            return {
+                bidder: 'rubicon',
+                params: {
+                    accountId: RUBICON_ACCOUNT_ID,
+                    siteId: RUBICON_SITE_ID,
+                    zoneId: zoneId,
+                },
+            };
+        }
+
+        /**
+         * Return a bid formatted for adForm
+         * this lets us easily change the value of their
+         * "test" parameter, which we'll have set as a constant
+         *
+         * @param {string} mid the identifier for this tag
+         *
+         * @return {object} a bid for adform
+         */
+        function adformBid(mid) {
+            return {
+                bidder: 'adform',
+                params: {
+                    mid: mid,
+                    rcur: 'USD'
+                    //test: ADFORM_TEST_MODE,
+                }
+            };
+        }
+
+        /**
+         * Return a pubmatic bid
+         * this factors out the 'publisherId'
+         * which is common to all bids
+         *
+         * @param {string} adSlot the pubmatic adunit we're using
+         *
+         * @return {object} a pubmatic prebid bid definition
+         */
+        function pubmaticBid(adSlot) {
+            //if (!PUBMATIC_ACTIVE) return {};
+            return {
+                bidder: 'pubmatic',
+                params: {
+                    publisherId: PUBMATIC_PUBLISHER_ID,
+                    adSlot: adSlot,
+                },
+            };
+        }
+
+        /**
+         * Return a Criteo bid
+         *
+         * @param {string} zoneId
+         *
+         * @return {object} a criteo prebid definition
+         */
+        function criteoBid(zoneId) {
+            return {
+                bidder: 'criteo',
+                params: {
+                    zoneId: zoneId
+                }
+            }
+        }
+
+        /**
+         * Return an AppNexus bid
+         *
+         * @param placementId
+         *
+         * @return {object} an AppNexus prebid definition
+         */
+        function appNexusBid(placementId) {
+            return {
+                bidder: 'appnexus',
+                params: {
+                    placementId: placementId
+                }
+            }
+        }
+
+        /**
+         * Return an xAxis bid
+         *
+         * @param placementId
+         *
+         * @return {object} an xAxis prebid definition
+         */
+        function xAxisBid(placementId) {
+            return {
+                bidder: 'xhb',
+                params: {
+                    placementId: placementId
+                }
+            }
+        }
+
+        var adSlotDefinitions = {
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600': {sizes: [[160, 600],[300, 600],[200, 600]],bids: [rubiconBid('359094'),adformBid('281768'),appNexusBid('11999280'),xAxisBid('11564760')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600': {sizes: [[200, 600], [160, 602], [300, 600], [160, 600]],bids: [rubiconBid('557214'),adformBid('281773'),appNexusBid('11998551'),xAxisBid('11564763')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600': {sizes: [[160, 600],[ 300, 600]],bids: [rubiconBid('583902'),adformBid('317484'),appNexusBid('11999286'),xAxisBid('11564767')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180': {sizes: [[930, 180],[950, 200],[ 728, 90],[ 728, 180],[ 2, 2]],bids: [rubiconBid('359090'),adformBid('281764'),appNexusBid('11999282'),xAxisBid('12547465')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90': {sizes: [[728, 90],[728, 180],[940, 40]],bids: [rubiconBid('359092'),adformBid('281767'),appNexusBid('11999283'),xAxisBid('11564758')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90': {sizes: [[150, 90], [150, 230]],bids: []},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90': {sizes: [[150, 90], [150, 230]],bids: []},
+'/56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50': {sizes: [[140, 50],[ 150, 90],[ 160, 50],[ 210, 50]],bids: []},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60': {sizes: [[468, 60]],bids: [rubiconBid('359096'),adformBid('281770'),]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60': {sizes: [[468, 60]],bids: [rubiconBid('359102'),adformBid('281774'),]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60': {sizes: [[468, 60]],bids: [rubiconBid('359120'),adformBid('281776'),]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250': {sizes: [[300, 250]],bids: [rubiconBid('359098'),adformBid('281771'),appNexusBid('11999281'),xAxisBid('11564761')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250': {sizes: [[300, 250]],bids: [rubiconBid('557210'),adformBid('281772'),appNexusBid('11998550'),xAxisBid('11564762')]},
+'/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250': {sizes: [[300, 250]],bids: [rubiconBid('359112'),adformBid('281775'),appNexusBid('11999285'),xAxisBid('11564765')]},
+};
+
+
+        // the above configuration isn't in the prebid format; this is because we have it configured
+        // by adunit path. It's possible (although unlikely) that we define the same slot multiple times
+        // on the page as separate divs. Here we want to iterate the list of ad divs that we've defined on the page
+        // this might be provided by the application (eg., the rendering code calls a helper that ads defined IDs to a static array)
+        // or we could also use DFP to fetch the defined slots.
+        // note that if we use DFP, we have to call prebid after we've loaded GPT, which adds more latency.
+
+        // this doesn't have to contain all of the units we have configured above. For example,
+        // some pages might only have one mrect, so it wouldn't show up here        
+        var definedAdUnitsElements = [
+'div-gpt-ad-201-107',
+'div-gpt-ad-201-108',
+'div-gpt-ad-201-117',
+'div-gpt-ad-201-101',
+'div-gpt-ad-201-103',
+'div-gpt-ad-201-111',
+'div-gpt-ad-201-112',
+'div-gpt-ad-201-308',
+'div-gpt-ad-201-305',
+'div-gpt-ad-201-306',
+'div-gpt-ad-201-307',
+'div-gpt-ad-201-104',
+'div-gpt-ad-201-105',
+'div-gpt-ad-201-106',
+];
+        
+        var i = 0;
+        var length = definedAdUnitsElements.length;
+
+        var adUnits = [];
+        for (; i < length; i++) {
+            var elementId = definedAdUnitsElements[i];
+            var slotId = slotIds[elementId];
+
+            if (!slotId) {
+                console.warn('displayed slot without mapping it to a adunit:', elementId);
+                continue;
+            }
+
+            var definition = adSlotDefinitions[slotId];
+            if (!definition) {
+                console.warn('attempted to setup header bidding for ad without configuration: ', slotId);
+                continue;
+            }
+
+            // if we have the same slot used twice on the page,
+            // we need to clone the definition so we can safeuly reuse it
+            // (since we need to set the 'code' parameter)
+
+            // this is a very basic clone operation leveraging JSON
+            // since the object is known to only contain primative values
+            var adUnitDefinition = JSON.parse(JSON.stringify(definition));
+            adUnitDefinition.code = elementId; // now prebid knows which specific slot this set of bids is for
+
+            adUnits.push(adUnitDefinition);
+        }
+                
+        // now that we have the adunits,
+        // we can set up the prebid auction and start our timeout
+        window.pbjs.que.push(function () {
+            window.pbjs.addAdUnits(adUnits);
+            
+            window.pbjs.requestBids({
+                // everything has come back before the timeout
+                // so now we can call DFP
+                bidsBackHandler: function (bidResponses) {
+                    var stop = new Date().getTime();                    
+                    if (!auctionFinished)
+                        console.info('all bids received before timeout: ', bidResponses);
+                    else {
+                        console.warn('bids were not received before timeout. Elapsed: ' + (stop - start));
+                    }
+                    
+                    callDFP();
+                },
+            });
+        });
+
+        // enable google analytics
+        pbjs.que.push(function () {
+            pbjs.enableAnalytics({
+                provider: 'ga',
+                options: {
+                    global: 'ga',
+                    enableDistribution: false
+                }
+            });
+        });
+
+        // set a timeout outside of prebid so that we
+        // don't have to worry about any errors in prebid
+        // breaking all ads on the page  
+        var start = new Date().getTime();
+        setTimeout(callDFP, TIMEOUT_DURATION);
+  </script>
+  <script type="text/javascript">
+   var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+
+
+                if (!''.contains) {
+                    String.prototype.contains = function(it) {
+                        return this.indexOf(it) != -1;
+                    };
+                }
+                if (!''.endsWith) {
+                    String.prototype.endsWith = function (pattern) {
+                        var d = this.length - pattern.length;
+                        return d >= 0 && this.lastIndexOf(pattern) === d;
+                    };
+                }
+            
+
+                function getParameterByName(name) {
+                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                    results = regex.exec(location.search);
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, " "));
+                }
+            
+var bannerdebug = location.href.contains('bannerdebug');
+var urlTargeting = getParameterByName('target');
+var adGroupId = Math.round(Math.random() * 1000);
+var adsCount = 14;
+var slots = {}
+var slotsRendered = 0;
+var CookieInformation = window.CookieInformation || null;
+googletag.cmd.push(function() {
+googletag.pubads().enableAsyncRendering();
+googletag.pubads().setRequestNonPersonalizedAds(1);
+if (CookieInformation && CookieInformation.getConsentGivenFor && CookieInformation.getConsentGivenFor('cookie_cat_marketing'))
+{
+ googletag.pubads().setRequestNonPersonalizedAds(0);
+};
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180', [[930, 180],[950, 200],[ 728, 90],[ 728, 180],[ 2, 2]], 'div-gpt-ad-201-101').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90', [[728, 90],[728, 180],[940, 40]], 'div-gpt-ad-201-103').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250', [[300, 250]], 'div-gpt-ad-201-104').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250', [[300, 250]], 'div-gpt-ad-201-105').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250', [[300, 250]], 'div-gpt-ad-201-106').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600', [[160, 600],[300, 600],[200, 600]], 'div-gpt-ad-201-107').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600', [[200, 600], [160, 602], [300, 600], [160, 600]], 'div-gpt-ad-201-108').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90', [[150, 90], [150, 230]], 'div-gpt-ad-201-111').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90', [[150, 90], [150, 230]], 'div-gpt-ad-201-112').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600', [[160, 600],[ 300, 600]], 'div-gpt-ad-201-117').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60', [[468, 60]], 'div-gpt-ad-201-305').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60', [[468, 60]], 'div-gpt-ad-201-306').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60');
+slots['/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60'] = googletag.defineSlot('/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60', [[468, 60]], 'div-gpt-ad-201-307').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+if(bannerdebug) debug('Defining banner slot: /56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50');
+slots['/56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50'] = googletag.defineSlot('/56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50', [[140, 50],[ 150, 90],[ 160, 50],[ 210, 50]], 'div-gpt-ad-201-308').addService(googletag.pubads()).setTargeting('url', urlTargeting).setTargeting('adgroupid', adGroupId);
+
+
+                    (function() {
+                        var maxReloads = 1, reloadCount = 1, refreshRate = 40000, reloadHandle, infiniteReload = false;
+                        reloadHandle = setInterval(function() { 
+                            if(reloadCount <= maxReloads || infiniteReload) {
+                                EI.Global.refreshAdDfp();
+                                reloadCount++;
+                            } else {                                
+                                clearInterval(reloadHandle);
+                            }                            
+                        }, refreshRate);
+                    })();
+                
+googletag.pubads().addEventListener('slotRenderEnded', function(event) {
+     slotsRendered++;
+     var slotName = getSlotName(event);
+     if(bannerdebug) debug(slotName + ' has rendered');
+     EI.Global.slotRendered(slotName);
+});
+function getSlotName(e) {
+    for (var prop in e.slot) {
+        try {
+           if(e.slot[prop].match(/\/\d*\/.*\/.*\/.*/g))
+                return e.slot[prop];
+        } catch(ex) {}
+    }
+    return null;
+}
+googletag.pubads().disableInitialLoad();
+googletag.enableServices();
+});
+
+                function loadVisibleAds(first){                         
+                    var divSlots = $('div[data-cu-name]'), isForumPage = $('.top_banner_placeholder_debat').length > 0              
+                    var checkVisibility = function(){
+                        var adsLoaded = false;
+                        divSlots.each(function(){
+                            var slotName = $(this).data('cu-name');
+                            var elem = null;
+
+                            if($(this).attr('id').endsWith('101') && $('.top_banner_placeholder').length > 0){
+                                elem = $('.top_banner_placeholder');
+                            } else if ($(this).attr('id').endsWith('101') && $('.top_banner_placeholder_debat').length > 0) {
+                                isForumPage = true;
+                                elem = $('.top_banner_placeholder_debat');
+                            } else {
+                                elem = $(this);
+                            }
+
+                            if(slots[slotName] != null && !slots[slotName].hasLoaded && elem.isInScreen({ elementShouldBeVisibleToTrigger: isForumPage })) {
+                                console.log('Async loading ' + slotName);                                
+                                if(isForumPage) {
+                                    slots[slotName].hasLoaded = true;
+                                }
+
+                                googletag.cmd.push(function() {
+                                    googletag.pubads().refresh([slots[slotName]]);                            
+                                });
+
+                                // remove from slots so we don't reload positions on scroll
+                                if(!isForumPage) {
+                                    delete slots[slotName];                                    
+                                }
+                                adsLoaded = true;
+                            } 
+                            // debug
+                            else {
+                                //console.log('Could not load ' + slotName);
+                                //console.log('slots[slotName]:', slots[slotName]);
+                                //console.log('elem.isInScreen():', elem.isInScreen());                                
+                            }
+                        });                        
+                        if(adsLoaded) $(window).trigger('adsloaded');
+            
+                    }
+                    // hook function to scroll
+                    if(first) {
+                        $(window).on('scroll', checkVisibility);
+                        if(isForumPage) $('#DViewport').on('scroll', checkVisibility);
+                    }
+                    checkVisibility();                    
+                }
+  </script>
+  <script src="/js/stickytopbanner.js" type="text/javascript">
+  </script>
+  <script src="/js/load.js.axd?o=702039959&amp;v=LiveBranchBuild_20180619.1" type="text/javascript">
+  </script>
+  <!-- Google Tag Manager -->
+  <script>
+   (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-KCMD8TB');
+  </script>
+  <!-- End Google Tag Manager -->
+  <script src="//eas8.emediate.eu/EAS_tag.1.0.js" type="text/javascript">
+  </script>
+  <!-- Adform Header Bidding - test på valutakurser -->
+  <!-- shim the _gaq.push from old GA to redirect calls to GTM -->
+  <script type="text/javascript">
+   if (typeof _gaq === 'undefined' || typeof _gaq !== 'object') { 
+            var _gaq = {}; 
+            _gaq.push =  function(array){
+                if(array[0] === '_trackPageview'){
+                    dataLayer.push({
+                        'event': 'pageview',
+                        'pagePath': array[1] 
+                    });
+                }else if(array[0] === '_trackEvent'){
+                    dataLayer.push({
+                        'event': 'event',
+                        'category': array[1],
+                        'action': array[2], 
+                        'label': array[3], 
+                        'value': array[4] 
+                    });
+                } else if(array[0] === '_addTrans') {
+                    dataLayer.push({
+                        'event': '_addTrans',
+                        'transactionId': array[1],
+                        'affiliation': array[2],
+                        'total': array[3],
+                        'tax': array[4],
+                        'shipping': array[5],
+                        'city': array[6],
+                        'state': array[7],
+                        'country': arrray[8]
+                    });                    
+                } else if(array[0] === '_addItem') {
+                    dataLayer.push({
+                        'event': '_addItem',
+                        'transactionId': array[1],
+                        'sku': array[2],
+                        'name': array[3],
+                        'category': array[4],
+                        'price': array[5],
+                        'quantity': '1'
+                    });                    
+                } else if(array[0] === '_trackTrans') {
+                    dataLayer.push({
+                        'event': '_trackTrans'
+                    });
+                }
+            }
+        }
+  </script>
+  <meta content="Valutakurser.dk indeholder information om valuta (euro, dollar, pund), forex, valutaomregner og valutakurs" name="description"/>
+  <meta content="Valuta, valutaomregner, valutakurser, realtidskurser" name="keywords"/>
+ </head>
+ <body class="top-sky-sticky" id="ctl00_masterbody">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+   <iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-KCMD8TB" style="display:none;visibility:hidden" width="0">
+   </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <div class="scyscraper_banner_placeholder_left collapsable" id="ctl00_BannerContainerSkyScraperLeft">
+   <!-- PlacementId: 107<br/>SiteID: 201<br/>Content unit: 78<br/>Left1-160x600<br/>/Left1-160x600 -->
+   <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Left1-160x600" id="div-gpt-ad-201-107">
+    <script type="text/javascript">
+     googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-107');                            
+                        });
+    </script>
+   </div>
+  </div>
+  <div class="scyscraper_banner_placeholder_left_float collapsable" id="ctl00_BannerContainerSkyScraperLeftFloat">
+  </div>
+  <div class="scyscraper_banner_placeholder collapsable" id="ctl00_BannerContainerSkyScraper">
+   <!-- PlacementId: 108<br/>SiteID: 201<br/>Content unit: 79<br/>Right3-160x600<br/>/Right3-160x600 -->
+   <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right3-160x600" id="div-gpt-ad-201-108">
+    <script type="text/javascript">
+     googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-108');                            
+                        });
+    </script>
+   </div>
+  </div>
+  <div class="scyscraper_banner_placeholder_float collapsable" id="ctl00_BannerContainerSkyScraperFloat">
+   <!-- PlacementId: 117<br/>SiteID: 201<br/>Content unit: 612<br/>160x600 Skyscraper right floating<br/>/Right2-160x600 -->
+   <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right2-160x600" id="div-gpt-ad-201-117">
+    <script type="text/javascript">
+     googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-117');                            
+                        });
+    </script>
+   </div>
+  </div>
+  <form action="./" id="aspnetForm" method="post" name="aspnetForm">
+   <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value=""/>
+   <div class="top_banner_placeholder collapsable" id="ctl00_BannerContainerTop" style="text-align: center; line-height: 0px;">
+    <div class="top_banner_div">
+     <!-- PlacementId: 101<br/>SiteID: 201<br/>Content unit: 82<br/>Top1-930x180<br/>/Top1-930x180 -->
+     <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top1-930x180" id="div-gpt-ad-201-101">
+      <script type="text/javascript">
+       googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-101');                            
+                        });
+      </script>
+     </div>
+    </div>
+   </div>
+   <div id="ei_logo_container">
+    <div id="ctl00_ei_logo" style="margin: auto; width: 950px;">
+     <a href="http://www.valutakurser.dk">
+      <img alt="Valutakurser.dk" class="IE6Fix" src="https://i.euroinvestor.com/toplogos/valutakurser_nyt.png" style="float: left; padding: 10px 0 0 0; bottom: 4px; border: solid 0px white;"/>
+     </a>
+    </div>
+   </div>
+   <div id="MenuBarDiv">
+    <div id="ei_menu_container">
+     <div id="ei_menu">
+      <div style="position: relative;">
+       <div class="autocomplete" id="completionbox" style="display: none; right: 0px; position: absolute; top: -14px;">
+       </div>
+       <ul class="new_menu">
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl00_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/" id="ctl00_MenuTopBar_FirstLevelMenu_ctl00_FirstLevelHyperLink">
+          Forside
+         </a>
+        </li>
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl01_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/markeder/aktier/europa/danmark" id="ctl00_MenuTopBar_FirstLevelMenu_ctl01_FirstLevelHyperLink">
+          Markeder
+         </a>
+        </li>
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl02_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/portfolio/" id="ctl00_MenuTopBar_FirstLevelMenu_ctl02_FirstLevelHyperLink">
+          Mine porteføljer
+         </a>
+        </li>
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl03_ItemContainer">
+         <a class="last selected" href="http://www.valutakurser.dk/" id="ctl00_MenuTopBar_FirstLevelMenu_ctl03_FirstLevelHyperLink">
+          Valuta
+         </a>
+        </li>
+        <li class="item webshop-menu-item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl04_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/webshop" id="ctl00_MenuTopBar_FirstLevelMenu_ctl04_FirstLevelHyperLink">
+          Webshop
+         </a>
+        </li>
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl05_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/debat" id="ctl00_MenuTopBar_FirstLevelMenu_ctl05_FirstLevelHyperLink">
+          Debat
+         </a>
+        </li>
+        <li class="item" id="ctl00_MenuTopBar_FirstLevelMenu_ctl06_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/nyheder" id="ctl00_MenuTopBar_FirstLevelMenu_ctl06_FirstLevelHyperLink">
+          Nyheder
+         </a>
+        </li>
+        <li class="item last" id="ctl00_MenuTopBar_FirstLevelMenu_ctl07_ItemContainer">
+         <a class="last" href="http://www.euroinvestor.dk/markeder/kryptovaluta" id="ctl00_MenuTopBar_FirstLevelMenu_ctl07_FirstLevelHyperLink">
+          Kryptovaluta
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="kantspace">
+    <div id="ei_content" style="background-color: #fafafa;">
+     <!-- Submenu with logos -->
+     <div class="CONTROL_WIDTH_12_FIRST collapsable" id="ctl00_SponsorSubmenuContainer" style="text-align: center; line-height: 0px; float: none; width: auto">
+      <div class="sponsor_submenu_placeholder">
+       <!-- PlacementId: 103<br/>SiteID: 201<br/>Content unit: 74<br/>Top2-728x90<br/>/Top2-728x90 -->
+       <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Top2-728x90" id="div-gpt-ad-201-103">
+        <script type="text/javascript">
+         googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-103');                            
+                        });
+        </script>
+       </div>
+      </div>
+     </div>
+     <div class="CONTROL_WIDTH_12_FIRST" id="ctl00_masterContentDiv">
+      <!-- Adform DMP -->
+      <!-- Tag for Profiling Pixel -->
+      <!-- Please refer to manual if you want to modify this tag -->
+      <script type="text/javascript">
+       (function(p){
+ p.src = '//dmp.adform.net/dmp/profile/?pid=10089&sg=eur2';
+})(document.createElement("img"));
+      </script>
+      <noscript>
+       <img src="//dmp.adform.net/dmp/profile/?pid=10089&amp;sg=eur2" style="display:none !important"/>
+      </noscript>
+      <!-- Menu Column -->
+      <div class="CONTROL_WIDTH_2_FIRST">
+       <div class="content_box_network" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_divContainer" style="padding-bottom: 10px;">
+        <div class="header" style="background: url('https://i.euroinvestor.com/global/header_top.png')">
+         <span class="header_top_left" style="background-image: url(https://i.euroinvestor.com/global/header_top_left.png)">
+         </span>
+         <h3 class="boxheader">
+          Valuta
+         </h3>
+         <span class="header_top_right" style="background-image: url(https://i.euroinvestor.com/global/header_top_right.png)">
+         </span>
+        </div>
+        <div class="contentbox width_2" style="padding-top: 5px;">
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://valutakurser.dk" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_SecondLevelMenu_ctl00_SecondLevelMenuHyperLink">
+            Valutakurser.dk
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/forex/overview.aspx" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_SecondLevelMenu_ctl01_SecondLevelMenuHyperLink">
+            Valuta i realtid
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.valutakurser.dk/currency/showgraph.aspx?valutaid=638311" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_SecondLevelMenu_ctl02_SecondLevelMenuHyperLink">
+            USD / DKK
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.valutakurser.dk/currency/showgraph.aspx?valutaid=638319" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_SecondLevelMenu_ctl03_SecondLevelMenuHyperLink">
+            GBP / DKK
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.valutakurser.dk/currency/showgraph.aspx?valutaid=638325" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_SecondLevelMenu_ctl04_SecondLevelMenuHyperLink">
+            SEK / DKK
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="footer">
+         <span class="bottom_empty_left">
+         </span>
+         <span class="bottom_empty_right">
+         </span>
+        </div>
+       </div>
+       <div class="collapsable" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl02_MenuCommercial" style="padding-bottom:5px">
+        <!-- PlacementId: 111<br/>SiteID: 201<br/>Content unit: 75<br/>Knap1-150x90<br/>/Knap1-150x90 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap1-150x90" id="div-gpt-ad-201-111">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-111');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="content_box_network" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_divContainer" style="padding-bottom: 10px;">
+        <div class="header" style="background: url('https://i.euroinvestor.com/global/header_top.png')">
+         <span class="header_top_left" style="background-image: url(https://i.euroinvestor.com/global/header_top_left.png)">
+         </span>
+         <h3 class="boxheader">
+          Tjenester
+         </h3>
+         <span class="header_top_right" style="background-image: url(https://i.euroinvestor.com/global/header_top_right.png)">
+         </span>
+        </div>
+        <div class="contentbox width_2" style="padding-top: 5px;">
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/webshop/product.aspx?pId=20644" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl00_SecondLevelMenuHyperLink">
+            EuroInvestor Plus
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/trenden" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl01_SecondLevelMenuHyperLink">
+            Trenden
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/pengemaskinen" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl02_SecondLevelMenuHyperLink">
+            Pengemaskinen
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/notification/usernotifications.aspx" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl03_SecondLevelMenuHyperLink">
+            Aktie alarm
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/rss" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl04_SecondLevelMenuHyperLink">
+            RSS Feeds
+           </a>
+          </div>
+         </div>
+         <div style="clear:left">
+          <div style="float:left;width:24px">
+           <img height="16" src="https://i.euroinvestor.com/icons/bullet_lblue.png" style="vertical-align:middle;" width="16"/>
+          </div>
+          <div style="margin-left: 24px;">
+           <a href="http://www.euroinvestor.dk/ei-nyheder/2012/09/01/euroinvestor-aktieskole-videos/21269" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_SecondLevelMenu_ctl05_SecondLevelMenuHyperLink">
+            Aktieskole
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="footer">
+         <span class="bottom_empty_left">
+         </span>
+         <span class="bottom_empty_right">
+         </span>
+        </div>
+       </div>
+       <div class="collapsable" id="ctl00_content_ctl00_leftMenu2_FirstLevelMenu_ctl03_MenuCommercial" style="padding-bottom:5px">
+        <!-- PlacementId: 112<br/>SiteID: 201<br/>Content unit: 76<br/>Knap2-150x90<br/>/Knap2-150x90 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Knap2-150x90" id="div-gpt-ad-201-112">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-112');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="content_box">
+        <div class="header">
+         <span class="header_top_left">
+         </span>
+         <h3 class="boxheader">
+          Alle markeder
+         </h3>
+         <span class="header_top_right">
+         </span>
+        </div>
+        <div class="contentbox width_2_nopadding">
+         <div onclick="javascript:showHideMarkets('euContinentNameLabel','euMarketsDiv','euArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="euContinentNameLabel">
+            Europa
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="euArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="euMarketsDiv" style="display: none;">
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-eu">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl00_marketCountryName">
+            Europa
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-be">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/belgien" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl01_marketCountryName">
+            Belgien
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-dk">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/danmark" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl02_marketCountryName">
+            Danmark
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-fi">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/finland" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl03_marketCountryName">
+            Finland
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-fr">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/frankrig" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl04_marketCountryName">
+            Frankrig
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-gr">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/graekenland" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl05_marketCountryName">
+            Grækenland
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-nl">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/holland" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl06_marketCountryName">
+            Holland
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-is">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/island" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl07_marketCountryName">
+            Island
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-it">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/italien" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl08_marketCountryName">
+            Italien
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-no">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/norge" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl09_marketCountryName">
+            Norge
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-pt">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/portugal" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl10_marketCountryName">
+            Portugal
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-ch">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/schweiz" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl11_marketCountryName">
+            Schweiz
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-es">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/spanien" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl12_marketCountryName">
+            Spanien
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-gb">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/storbritannien" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl13_marketCountryName">
+            Storbritannien
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-se">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/sverige" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl14_marketCountryName">
+            Sverige
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-cz">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/tjekkiet" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl15_marketCountryName">
+            Tjekkiet
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-de">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/europa/tyskland" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl00_marketsRepeater_ctl16_marketCountryName">
+            Tyskland
+           </a>
+          </div>
+         </div>
+         <div style="height: 1px; background-color: #C8C8C8;">
+         </div>
+         <div onclick="javascript:showHideMarkets('naContinentNameLabel','naMarketsDiv','naArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="naContinentNameLabel">
+            Nordamerika
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="naArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="naMarketsDiv" style="display: none;">
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-na">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/nordamerika" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl02_marketsRepeater_ctl00_marketCountryName">
+            Nordamerika
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-ca">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/nordamerika/canada" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl02_marketsRepeater_ctl01_marketCountryName">
+            Canada
+           </a>
+          </div>
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-us">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/nordamerika/usa" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl02_marketsRepeater_ctl02_marketCountryName">
+            USA
+           </a>
+          </div>
+         </div>
+         <div style="height: 1px; background-color: #C8C8C8;">
+         </div>
+         <div onclick="javascript:showHideMarkets('asContinentNameLabel','asMarketsDiv','asArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="asContinentNameLabel">
+            Asien
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="asArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="asMarketsDiv" style="display: none;">
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-sg">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/asien/singapore" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl04_marketsRepeater_ctl00_marketCountryName">
+            Singapore
+           </a>
+          </div>
+         </div>
+         <div style="height: 1px; background-color: #C8C8C8;">
+         </div>
+         <div onclick="javascript:showHideMarkets('saContinentNameLabel','saMarketsDiv','saArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="saContinentNameLabel">
+            Sydamerika
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="saArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="saMarketsDiv" style="display: none;">
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-ar">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/sydamerika/argentina" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl06_marketsRepeater_ctl00_marketCountryName">
+            Argentina
+           </a>
+          </div>
+         </div>
+         <div style="height: 1px; background-color: #C8C8C8;">
+         </div>
+         <div onclick="javascript:showHideMarkets('meContinentNameLabel','meMarketsDiv','meArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="meContinentNameLabel">
+            Mellemøsten
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="meArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="meMarketsDiv" style="display: none;">
+          <div style="padding-left: 10px; padding-top: 2px; height: 25px; clear: left; ">
+           <span class="flag flag-il">
+           </span>
+           <a href="http://www.euroinvestor.dk/markeder/aktier/mellemoesten/israel" id="ctl00_content_ctl00_ContinentMenu_continentsRepeater_ctl08_marketsRepeater_ctl00_marketCountryName">
+            Israel
+           </a>
+          </div>
+         </div>
+         <div style="height: 1px; background-color: #C8C8C8;">
+         </div>
+         <div onclick="javascript:showHideMarkets('ocContinentNameLabel','ocMarketsDiv','ocArrowImage', false);" style="padding-left:10px; padding-right: 10px; height: 25px; width: 128px;  cursor:pointer;">
+          <div style="clear: both; float:left; line-height: 25px; ">
+           <span id="ocContinentNameLabel">
+            Oceanien
+           </span>
+          </div>
+          <div style="float:right; line-height: 25px;">
+           <img alt="" id="ocArrowImage" src="https://i.euroinvestor.com/marketoverview/MO_arrow.jpg"/>
+          </div>
+         </div>
+         <div id="ocMarketsDiv" style="display: none;">
+         </div>
+        </div>
+        <div class="footer">
+         <span class="bottom_empty_left">
+         </span>
+         <span class="bottom_empty_right">
+         </span>
+        </div>
+       </div>
+      </div>
+      <!-- Center column -->
+      <div class="CONTROL_WIDTH_6" style="margin-bottom: 0px;">
+       <div class="CONTROL_WIDTH_6_FIRST" style="margin-bottom: 0px;">
+        <style type="text/css">
+         #imgSwitch  {
+  background:url(https://i.euroinvestor.com/currency/currencyswitchnew.png) no-repeat;
+  width:20px;height:25px;
+  cursor: pointer;
+  display:inline-block;
+  background-position: 0 0;
+}
+#imgSwitch:hover {
+  background-position: 0 -27px;
+  text-decoration:none;
+}
+        </style>
+        <script type="text/javascript">
+         var ddlfrom;
+    var ddlto;
+    var textfrom;
+    var textto;
+    var lastActiveInputElement;
+
+    $(function ()
+    {
+        $("#switchimg").mouseenter(function () { $(this).attr("src", "https://i.euroinvestor.com/icons/switch.png"); });
+        $("#switchimg").mouseleave(function () { $(this).attr("src", "https://i.euroinvestor.com/icons/switchon.png"); });
+
+        ddlfrom = $("#ctl00_content_ctl00_ctl02_DDLCalculatorFromCurr2").children();
+        ddlto = $("#ctl00_content_ctl00_ctl02_DDLCalculatorToCurr2").children();
+        textfrom = $("#tbfrom");
+        textto = $("#tbto");
+
+        $("#cdd_1_inp").keyup(ConvertCalcNew);
+        $("#cdd_2_inp").keyup(ConvertCalcNew);
+    });
+
+    function SwitchDDLsNew() {
+        var curFrom = $("#cdd_1_selected").val();
+        var curTo = $("#cdd_2_selected").val();
+
+        curdd_selectitem(1, '' + curTo + '');
+        curdd_selectitem(2, '' + curFrom + '');
+
+    }
+
+    function SwitchDDLs()
+    {
+        var selIndexFrom = ddlfrom.index(ddlfrom.filter(":selected"));
+        var selIndexTo = ddlto.index(ddlto.filter(":selected"));
+
+        ddlfrom.get(selIndexTo).selected = true;
+        ddlto.get(selIndexFrom).selected = true;
+
+        ConvertCalc(false);
+    }
+
+    function ConvertCalc(tofrom)
+    {
+       
+        var amount = tofrom ? parseFloat(textto.val().replace(',', '.')) : parseFloat(textfrom.val().replace(',', '.'));
+        if (isNaN(amount) || amount == undefined)
+        {
+            if (tofrom) textfrom.val("");
+            else textto.val("");
+            return;
+        }
+
+        var curFrom = parseFloat(ddlfrom.filter(":selected").val());
+        var curTo = parseFloat(ddlto.filter(":selected").val());
+        var res = (tofrom ? curTo / curFrom : curFrom / curTo) * amount;
+        res = (Math.round(res * 100) / 100).toFixed(2);
+        if (tofrom) textfrom.val(("" + res).replace('.', EI.Localization.decimalSeparator()));
+        else textto.val(("" + res).replace('.', EI.Localization.decimalSeparator()));
+    }
+
+    function ConvertCalcNew(e) {        
+        // don't process when user types decimal separator        
+        if (e.keyCode == 188 || e.keyCode == 190 || e.keyCode == 110) return;
+
+        var switchdir = typeof (e) != "object";
+        if (!switchdir) lastActiveInputElement = $(this); // update last active element on user keypress
+        //var fromelem = switchdir ? $("#cdd_" + e + "_inp") : $(this);
+        var fromelem = lastActiveInputElement || $("#cdd_" + e + "_inp");
+        var numberfrom = fromelem.attr("id").split('_')[1];
+        var numberto = numberfrom == "1" ? "2" : "1";
+        var toelem = $("#cdd_" + numberto + "_inp");
+
+        //switch direction when dropdown is used
+//        if (switchdir)
+//        {
+//            var temp = numberfrom;
+//            numberfrom = numberto;
+//            numberto = temp;
+
+//            temp = fromelem;
+//            fromelem = toelem;
+//            toelem = temp;
+//        }
+
+        if (fromelem.val() == "")
+        {
+            toelem.val("");
+            return;
+        }
+
+        var curFrom = parseFloat($("#cdd_" + numberfrom + "_value").val());
+        var curTo = parseFloat($("#cdd_" + numberto + "_value").val());
+        //var amount = parseFloat(fromelem.val().replace(',', '.'));
+        var amount = EI.Localization.LocalizedStringToJSFloat(fromelem.val());
+        var res = (curFrom / curTo) * amount;
+        res = (Math.round(res * 100) / 100).toFixed(2);        
+        //toelem.val(("" + res).replace('.', EI.Localization.decimalSeparator()));
+        if (amount % 1 != 0) // dont delete trailing zeros as soon as user types them
+            fromelem.val(EI.Localization.JSFloatToLocalizedString(amount));
+        toelem.val(EI.Localization.JSFloatToLocalizedString(res));
+    }
+
+    function addToPageViewCount() {
+        if (typeof pp_gemius_identifier !== "undefined" && $.isFunction(pp_gemius_hit)) {
+            pp_gemius_nhit = 1;
+            pp_gemius_hit(pp_gemius_identifier.replace("USED_", ""));              
+        }
+        _gaq.push(['_trackPageview']);
+    }
+
+    function resetInputFields() {
+        $("#cdd_1_inp").val('');
+        $("#cdd_2_inp").val('');        
+    };
+
+    function OpenDatePicker()
+    {
+        var dp = $(".ui-datepicker");
+        if (dp.length > 0)
+        {
+            if (dp.is(":visible")) dp.hide();
+            else dp.show();
+        }
+        else
+        {
+            EI.DelayLoad.loadScriptFile("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js", function () {
+                EI.DelayLoad.loadStyleSheet("https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/base/jquery-ui.css", function () {
+                    $.datepicker.setDefaults($.datepicker.regional[EI.Localization.siteCountry()]);
+
+                    $("#dateselector").datepicker({
+                        dateFormat: EI.Localization.shortDateFormat(),
+                        maxDate: 0,
+                        onSelect: function (dateText, inst) {
+                            //dropdowns selected (number should not be hardcoded... oh well)
+                            var sel1 = $("#cdd_1_selected").val();
+                            var sel2 = $("#cdd_2_selected").val();
+                            var cp = $("#divCP");
+
+                            var header = cp.find("div.read_more span");
+                            if (header.html().indexOf("(") > -1) {
+                                var newHeader = header.html().substring(0, header.html().indexOf("(")) + "(" + dateText + ")";
+                                header.html(newHeader);
+                            }
+
+                            EI.Global.getJson("GetConverterData", [["date", dateText]], function (json) {
+                                var items = $("div[id^=cdditem]");
+                                for (var i = 0; i < json.length; i++) {
+
+                                    items.filter("div[id$=" + json[i].Currency + "]").each(function (index, elem) { $(elem).attr("val", json[i].Value); });
+                                    if (json[i].Currency == sel1) $("#cdd_1_value").val(json[i].Value);
+                                    if (json[i].Currency == sel2) $("#cdd_2_value").val(json[i].Value);
+                                    cp.find("[id$=" + json[i].Currency + "]").html(json[i].Value);
+                                }
+                                $("#datedest").text(dateText);
+                                $(".ui-datepicker").hide();
+                                ConvertCalcNew("1");
+                                addToPageViewCount();
+                            });
+                            //CP if date<dags dato, skjul red and green
+
+                            if (dateText < new Date().format("d")) {
+                                $('#divCP .percentChange span').hide();
+                            }
+                            else {
+                                $('#divCP .percentChange span').show();
+                            }                            
+                        }
+                    });
+
+                    $(".ui-datepicker").css("position", "absolute").css("top", "5px");
+                });
+            });
+        }
+    }
+        </script>
+        <div style="position:relative;">
+         <div style="width: 232px; float:left;">
+          <div class="header_top_left">
+          </div>
+          <div style='background: url("https://i.euroinvestor.com/global/header_top.png") repeat-x scroll 0 0 transparent; height: 30px;'>
+           <h3 class="boxheader">
+            Valutaomregner
+           </h3>
+          </div>
+          <div style="height: 155px; background-color: #F2F2F2; border-left: 1px solid #CCCCCC">
+           <div style="padding: 10px;">
+            <div id="cdd_1_outer" style="position: relative;">
+             <input id="cdd_1_selected" type="hidden" value="USD"/>
+             <input id="cdd_1_value" type="hidden" value="639.8200"/>
+             <input id="cdd_1_pending" type="hidden" value="USD"/>
+             <input id="cdd_1_spending" type="hidden" value=""/>
+             <div onclick="curdd_dropdown(1)" style="cursor: pointer;">
+              <img src="https://i.euroinvestor.com/currency/curddleft.png" style="float:left;"/>
+              <div style='background: url("https://i.euroinvestor.com/currency/curddmiddle.png") repeat-x scroll 0 0 transparent; float: left; width: 190px; height: 34px; color: #333333; font-size: 13px; font-weight: bold;'>
+               <div style=" float:left; line-height: 32px;">
+                <img class="sprite USD_lille" id="cdd_1_selimage" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle;"/>
+               </div>
+               <div style=" float:right; line-height: 32px;">
+                <img src="https://i.euroinvestor.com/currency/curddarrow.png" style="vertical-align: middle;"/>
+               </div>
+               <div id="cdd_1_selname" style="margin-left: 25px; margin-right: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 32px;">
+                US dollar
+               </div>
+              </div>
+              <img src="https://i.euroinvestor.com/currency/curddright.png" style="float:left;"/>
+              <div style="clear:both;">
+              </div>
+             </div>
+             <div id="cdd_1_dropdown" style="position: absolute; z-index: 100000; top: 36px; -moz-box-shadow: 5px 5px 5px #ccc; -webkit-box-shadow: 5px 5px 5px #ccc; box-shadow: 5px 5px 5px #ccc; display: none;">
+              <img src="https://i.euroinvestor.com/currency/curddtopleft.png" style=" float:left;"/>
+              <img src="https://i.euroinvestor.com/currency/curddtopright.png" style=" float:right;"/>
+              <div style="height: 2px; border-top: 1px solid #CCCCCC; margin-left: 3px; margin-right: 3px; background-color: White;">
+              </div>
+              <div style="border-left: 1px solid #CCCCCC; border-right: 1px solid #CCCCCC; background-color: White; padding-top: 3px;">
+               <img src="https://i.euroinvestor.com/currency/curddsearchleft.png" style=" float: left; margin-left: 5px;"/>
+               <img src="https://i.euroinvestor.com/currency/curddsearchright.png" style="float: right; margin-right: 5px;"/>
+               <div style='background: url("https://i.euroinvestor.com/currency/curddsearchmiddle.png") repeat-x; height: 30px; line-height: 20px; padding: 5px 5px 0px 5px;margin: 0px 17px 0px 32px;'>
+                <input id="cdd_1_search" style="border:none; font-size: 12px; width:100%; padding: 0px; border-width: 0px; font-weight: bold; outline: none;"/>
+               </div>
+               <div id="cdd_1_items">
+                <div style="border-top: 1px solid #CCCCCC; padding-top: 8px; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+                 Populære
+                </div>
+                <div class="cdditem" id="cdditem_1_DKK" jump="1" onclick="curdd_selectitem(1,'DKK')" val="100">
+                 <img class="sprite DKK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Danske Kroner
+                 </span>
+                </div>
+                <div class="cdditem cddselected" id="cdditem_1_USD" jump="0" onclick="curdd_selectitem(1,'USD')" val="639.8200">
+                 <img class="sprite USD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  US dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_EUR" jump="0" onclick="curdd_selectitem(1,'EUR')" val="745.2600">
+                 <img class="sprite EUR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Euro
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_CHF" jump="0" onclick="curdd_selectitem(1,'CHF')" val="646.1400">
+                 <img class="sprite CHF_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Schweizisk franc
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_SEK" jump="0" onclick="curdd_selectitem(1,'SEK')" val="72.3900">
+                 <img class="sprite SEK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Svensk krone
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_NOK" jump="0" onclick="curdd_selectitem(1,'NOK')" val="79.0100">
+                 <img class="sprite NOK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Norsk krone
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_GBP" jump="2" onclick="curdd_selectitem(1,'GBP')" val="850.1400">
+                 <img class="sprite GBP_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Pund sterling
+                 </span>
+                </div>
+                <div style="border-top: 1px solid #CCCCCC; margin-top: 5px; padding-top: 8px; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+                 Alfabetisk
+                </div>
+                <div class="cdditem" id="cdditem_1_AUD" jump="3" onclick="curdd_selectitem(1,'AUD')" val="475.2600">
+                 <img class="sprite AUD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Australsk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_BRL" jump="0" onclick="curdd_selectitem(1,'BRL')" val="170.8600">
+                 <img class="sprite BRL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Brasilianske real
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_BGN" jump="0" onclick="curdd_selectitem(1,'BGN')" val="381.0500">
+                 <img class="sprite BGN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Bulgarsk lev
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_CAD" jump="0" onclick="curdd_selectitem(1,'CAD')" val="482.0900">
+                 <img class="sprite CAD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Canadisk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_EEK" jump="0" onclick="curdd_selectitem(1,'EEK')" val="47.6400">
+                 <img class="sprite EEK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Estisk kroon
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_PHP" jump="0" onclick="curdd_selectitem(1,'PHP')" val="12.0100">
+                 <img class="sprite PHP_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Filippinsk peso
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_HKD" jump="0" onclick="curdd_selectitem(1,'HKD')" val="81.5400">
+                 <img class="sprite HKD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Hong Kong Dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_INR" jump="0" onclick="curdd_selectitem(1,'INR')" val="9.4300">
+                 <img class="sprite INR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Indiske rupee
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_IDR" jump="0" onclick="curdd_selectitem(1,'IDR')" val="0.0454">
+                 <img class="sprite IDR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Indonesiske rupiah
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_ISK" jump="0" onclick="curdd_selectitem(1,'ISK')" val="5.8870">
+                 <img class="sprite ISK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Islandske kroner
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_ILS" jump="0" onclick="curdd_selectitem(1,'ILS')" val="176.8800">
+                 <img class="sprite ILS_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  israelsk shekel
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_JPY" jump="0" onclick="curdd_selectitem(1,'JPY')" val="5.8087">
+                 <img class="sprite JPY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Japansk yen
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_CNY" jump="0" onclick="curdd_selectitem(1,'CNY')" val="98.4600">
+                 <img class="sprite CNY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Kinesiske Yuan renminbi
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_HRK" jump="0" onclick="curdd_selectitem(1,'HRK')" val="101.0000">
+                 <img class="sprite HRK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Kroatiske kuna
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_LVL" jump="0" onclick="curdd_selectitem(1,'LVL')" val="1061.9600">
+                 <img class="sprite LVL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Lettisk lat
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_LTL" jump="0" onclick="curdd_selectitem(1,'LTL')" val="215.5800">
+                 <img class="sprite LTL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Litauiske litas
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_MYR" jump="0" onclick="curdd_selectitem(1,'MYR')" val="159.8600">
+                 <img class="sprite MYR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Malaysia ringgits
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_MXN" jump="0" onclick="curdd_selectitem(1,'MXN')" val="31.6500">
+                 <img class="sprite MXN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Mexicansk Peso
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_NZD" jump="0" onclick="curdd_selectitem(1,'NZD')" val="441.5000">
+                 <img class="sprite NZD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  New Zealandsk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_PLN" jump="0" onclick="curdd_selectitem(1,'PLN')" val="172.7200">
+                 <img class="sprite PLN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Polsk zloty
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_RON" jump="0" onclick="curdd_selectitem(1,'RON')" val="159.7100">
+                 <img class="sprite RON_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Rumænske lei
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_RUB" jump="0" onclick="curdd_selectitem(1,'RUB')" val="10.1400">
+                 <img class="sprite RUB_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Russiske rubel
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_SGD" jump="0" onclick="curdd_selectitem(1,'SGD')" val="471.0300">
+                 <img class="sprite SGD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Singapore dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_ZAR" jump="0" onclick="curdd_selectitem(1,'ZAR')" val="47.4200">
+                 <img class="sprite ZAR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Syd Afrikansk rand
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_KRW" jump="0" onclick="curdd_selectitem(1,'KRW')" val="0.5760">
+                 <img class="sprite KRW_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Sydkorea Won
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_THB" jump="0" onclick="curdd_selectitem(1,'THB')" val="19.4200">
+                 <img class="sprite THB_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Thailandsk baht
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_CZK" jump="0" onclick="curdd_selectitem(1,'CZK')" val="28.9000">
+                 <img class="sprite CZK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Tjekkiske koruna
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_TRY" jump="0" onclick="curdd_selectitem(1,'TRY')" val="136.4000">
+                 <img class="sprite TRY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Tyrkisk lira
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_1_HUF" jump="4" onclick="curdd_selectitem(1,'HUF')" val="2.3000">
+                 <img class="sprite HUF_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Ungarsk forint
+                 </span>
+                </div>
+               </div>
+               <div id="cdd_1_extendedcurrencies" style="display: none;">
+               </div>
+               <div id="cdd_1_sresult" style="display: none;">
+               </div>
+              </div>
+              <img src="https://i.euroinvestor.com/currency/curddbottomleft.png" style=" float:left;"/>
+              <img src="https://i.euroinvestor.com/currency/curddbottomright.png" style=" float:right;"/>
+              <div style="height: 2px; border-bottom: 1px solid #CCCCCC; margin-left: 3px; margin-right: 3px; background-color: White;">
+              </div>
+             </div>
+            </div>
+            <div style="margin-top: 14px;">
+             <img src="https://i.euroinvestor.com/currency/curddinputleft.png" style="float:left;"/>
+             <div style='float:left; width: 194px; height: 46px; line-height:52px; color: #333333; padding-left: 10px; background: url("https://i.euroinvestor.com/currency/curddinputmiddle.png") repeat-x scroll 0 0 transparent;'>
+              <input id="cdd_1_inp" placeholder="Skriv beløb" style=" border:none; font-size: 19px; width:79%; padding: 0px; border-width: 0px; font-weight: bold; outline: none;"/>
+              <div id="cdd_1_cur" style="font-weight: bold; font-size: 12px; font-family: Verdana; color: #5C5C5C; float: right; height: 40px; line-height: 46px; margin-right: 7px;">
+               USD
+              </div>
+             </div>
+             <img src="https://i.euroinvestor.com/currency/curddinputright.png" style="float: left;"/>
+            </div>
+            <div onclick="OpenDatePicker()" style="margin-top: 14px; cursor: pointer; float:left;">
+             <img src="https://i.euroinvestor.com/currency/curdddateleft.png" style="float:left;"/>
+             <div id="datedest" style='float:left; padding-right: 10px; height: 31px; line-height:31px; color: #333333; font-weight: bold; background: url("https://i.euroinvestor.com/currency/curdddatemiddle.png") repeat-x scroll 0 0 transparent;'>
+              I dag
+             </div>
+             <img src="https://i.euroinvestor.com/currency/curdddateright.png" style="float: left;"/>
+            </div>
+            <div onclick="resetInputFields()" style="margin-top: 14px; cursor: pointer; float:left; margin-left:10px">
+             <img src="https://i.euroinvestor.com/currency/curdddateleft_no_image.png" style="float:left;"/>
+             <div style="float:left; padding-left:10px; padding-right: 10px; height: 31px; line-height:31px; color: #333333; font-weight: bold; background: url(https://i.euroinvestor.com/currency/curdddatemiddle.png) repeat-x scroll 0 0 transparent;">
+              Nulstil
+             </div>
+             <img src="https://i.euroinvestor.com/currency/curdddateright.png" style="float: right;"/>
+            </div>
+            <div id="dateselector" style="clear: both; position: relative; z-index:9">
+            </div>
+           </div>
+          </div>
+          <div>
+           <div class="bottom_empty_left">
+           </div>
+           <div style="height: 5px; background-color: #F2F2F2; border-bottom: 1px solid #CCCCCC; float:left; width: 227px;">
+           </div>
+          </div>
+         </div>
+         <div style="position: absolute; top: 100px; left: 224px; width:20px;">
+          <a href="javascript:void(0);" id="imgSwitch" onclick="SwitchDDLsNew();">
+          </a>
+         </div>
+         <div style="width: 5px; height: 191px; background-color:Blue; float:left;">
+          <img src="https://i.euroinvestor.com/currency/convsplitter.png"/>
+         </div>
+         <div style="width: 231px; float:left;">
+          <div class="header_top_right">
+          </div>
+          <div style='background: url("https://i.euroinvestor.com/global/header_top.png") repeat-x scroll 0 0 transparent; height: 30px;'>
+          </div>
+          <div style="height: 155px; background-color: #FBFBFB; border-right: 1px solid #CCCCCC">
+           <div style="padding: 10px;">
+            <div id="cdd_2_outer" style="position: relative;">
+             <input id="cdd_2_selected" type="hidden" value="DKK"/>
+             <input id="cdd_2_value" type="hidden" value="100"/>
+             <input id="cdd_2_pending" type="hidden" value="DKK"/>
+             <input id="cdd_2_spending" type="hidden" value=""/>
+             <div onclick="curdd_dropdown(2)" style="cursor: pointer;">
+              <img src="https://i.euroinvestor.com/currency/curddleft.png" style="float:left;"/>
+              <div style='background: url("https://i.euroinvestor.com/currency/curddmiddle.png") repeat-x scroll 0 0 transparent; float: left; width: 190px; height: 34px; color: #333333; font-size: 13px; font-weight: bold;'>
+               <div style=" float:left; line-height: 32px;">
+                <img class="sprite DKK_lille" id="cdd_2_selimage" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle;"/>
+               </div>
+               <div style=" float:right; line-height: 32px;">
+                <img src="https://i.euroinvestor.com/currency/curddarrow.png" style="vertical-align: middle;"/>
+               </div>
+               <div id="cdd_2_selname" style="margin-left: 25px; margin-right: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 32px;">
+                Danske Kroner
+               </div>
+              </div>
+              <img src="https://i.euroinvestor.com/currency/curddright.png" style="float:left;"/>
+              <div style="clear:both;">
+              </div>
+             </div>
+             <div id="cdd_2_dropdown" style="position: absolute; z-index: 100000; top: 36px; -moz-box-shadow: 5px 5px 5px #ccc; -webkit-box-shadow: 5px 5px 5px #ccc; box-shadow: 5px 5px 5px #ccc; display: none;">
+              <img src="https://i.euroinvestor.com/currency/curddtopleft.png" style=" float:left;"/>
+              <img src="https://i.euroinvestor.com/currency/curddtopright.png" style=" float:right;"/>
+              <div style="height: 2px; border-top: 1px solid #CCCCCC; margin-left: 3px; margin-right: 3px; background-color: White;">
+              </div>
+              <div style="border-left: 1px solid #CCCCCC; border-right: 1px solid #CCCCCC; background-color: White; padding-top: 3px;">
+               <img src="https://i.euroinvestor.com/currency/curddsearchleft.png" style=" float: left; margin-left: 5px;"/>
+               <img src="https://i.euroinvestor.com/currency/curddsearchright.png" style="float: right; margin-right: 5px;"/>
+               <div style='background: url("https://i.euroinvestor.com/currency/curddsearchmiddle.png") repeat-x; height: 30px; line-height: 20px; padding: 5px 5px 0px 5px;margin: 0px 17px 0px 32px;'>
+                <input id="cdd_2_search" style="border:none; font-size: 12px; width:100%; padding: 0px; border-width: 0px; font-weight: bold; outline: none;"/>
+               </div>
+               <div id="cdd_2_items">
+                <div style="border-top: 1px solid #CCCCCC; padding-top: 8px; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+                 Populære
+                </div>
+                <div class="cdditem cddselected" id="cdditem_2_DKK" jump="1" onclick="curdd_selectitem(2,'DKK')" val="100">
+                 <img class="sprite DKK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Danske Kroner
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_USD" jump="0" onclick="curdd_selectitem(2,'USD')" val="639.8200">
+                 <img class="sprite USD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  US dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_EUR" jump="0" onclick="curdd_selectitem(2,'EUR')" val="745.2600">
+                 <img class="sprite EUR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Euro
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_CHF" jump="0" onclick="curdd_selectitem(2,'CHF')" val="646.1400">
+                 <img class="sprite CHF_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Schweizisk franc
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_SEK" jump="0" onclick="curdd_selectitem(2,'SEK')" val="72.3900">
+                 <img class="sprite SEK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Svensk krone
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_NOK" jump="0" onclick="curdd_selectitem(2,'NOK')" val="79.0100">
+                 <img class="sprite NOK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Norsk krone
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_GBP" jump="2" onclick="curdd_selectitem(2,'GBP')" val="850.1400">
+                 <img class="sprite GBP_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Pund sterling
+                 </span>
+                </div>
+                <div style="border-top: 1px solid #CCCCCC; margin-top: 5px; padding-top: 8px; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+                 Alfabetisk
+                </div>
+                <div class="cdditem" id="cdditem_2_AUD" jump="3" onclick="curdd_selectitem(2,'AUD')" val="475.2600">
+                 <img class="sprite AUD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Australsk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_BRL" jump="0" onclick="curdd_selectitem(2,'BRL')" val="170.8600">
+                 <img class="sprite BRL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Brasilianske real
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_BGN" jump="0" onclick="curdd_selectitem(2,'BGN')" val="381.0500">
+                 <img class="sprite BGN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Bulgarsk lev
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_CAD" jump="0" onclick="curdd_selectitem(2,'CAD')" val="482.0900">
+                 <img class="sprite CAD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Canadisk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_EEK" jump="0" onclick="curdd_selectitem(2,'EEK')" val="47.6400">
+                 <img class="sprite EEK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Estisk kroon
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_PHP" jump="0" onclick="curdd_selectitem(2,'PHP')" val="12.0100">
+                 <img class="sprite PHP_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Filippinsk peso
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_HKD" jump="0" onclick="curdd_selectitem(2,'HKD')" val="81.5400">
+                 <img class="sprite HKD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Hong Kong Dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_INR" jump="0" onclick="curdd_selectitem(2,'INR')" val="9.4300">
+                 <img class="sprite INR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Indiske rupee
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_IDR" jump="0" onclick="curdd_selectitem(2,'IDR')" val="0.0454">
+                 <img class="sprite IDR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Indonesiske rupiah
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_ISK" jump="0" onclick="curdd_selectitem(2,'ISK')" val="5.8870">
+                 <img class="sprite ISK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Islandske kroner
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_ILS" jump="0" onclick="curdd_selectitem(2,'ILS')" val="176.8800">
+                 <img class="sprite ILS_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  israelsk shekel
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_JPY" jump="0" onclick="curdd_selectitem(2,'JPY')" val="5.8087">
+                 <img class="sprite JPY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Japansk yen
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_CNY" jump="0" onclick="curdd_selectitem(2,'CNY')" val="98.4600">
+                 <img class="sprite CNY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Kinesiske Yuan renminbi
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_HRK" jump="0" onclick="curdd_selectitem(2,'HRK')" val="101.0000">
+                 <img class="sprite HRK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Kroatiske kuna
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_LVL" jump="0" onclick="curdd_selectitem(2,'LVL')" val="1061.9600">
+                 <img class="sprite LVL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Lettisk lat
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_LTL" jump="0" onclick="curdd_selectitem(2,'LTL')" val="215.5800">
+                 <img class="sprite LTL_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Litauiske litas
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_MYR" jump="0" onclick="curdd_selectitem(2,'MYR')" val="159.8600">
+                 <img class="sprite MYR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Malaysia ringgits
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_MXN" jump="0" onclick="curdd_selectitem(2,'MXN')" val="31.6500">
+                 <img class="sprite MXN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Mexicansk Peso
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_NZD" jump="0" onclick="curdd_selectitem(2,'NZD')" val="441.5000">
+                 <img class="sprite NZD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  New Zealandsk dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_PLN" jump="0" onclick="curdd_selectitem(2,'PLN')" val="172.7200">
+                 <img class="sprite PLN_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Polsk zloty
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_RON" jump="0" onclick="curdd_selectitem(2,'RON')" val="159.7100">
+                 <img class="sprite RON_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Rumænske lei
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_RUB" jump="0" onclick="curdd_selectitem(2,'RUB')" val="10.1400">
+                 <img class="sprite RUB_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Russiske rubel
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_SGD" jump="0" onclick="curdd_selectitem(2,'SGD')" val="471.0300">
+                 <img class="sprite SGD_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Singapore dollar
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_ZAR" jump="0" onclick="curdd_selectitem(2,'ZAR')" val="47.4200">
+                 <img class="sprite ZAR_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Syd Afrikansk rand
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_KRW" jump="0" onclick="curdd_selectitem(2,'KRW')" val="0.5760">
+                 <img class="sprite KRW_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Sydkorea Won
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_THB" jump="0" onclick="curdd_selectitem(2,'THB')" val="19.4200">
+                 <img class="sprite THB_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Thailandsk baht
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_CZK" jump="0" onclick="curdd_selectitem(2,'CZK')" val="28.9000">
+                 <img class="sprite CZK_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Tjekkiske koruna
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_TRY" jump="0" onclick="curdd_selectitem(2,'TRY')" val="136.4000">
+                 <img class="sprite TRY_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Tyrkisk lira
+                 </span>
+                </div>
+                <div class="cdditem" id="cdditem_2_HUF" jump="4" onclick="curdd_selectitem(2,'HUF')" val="2.3000">
+                 <img class="sprite HUF_lille" src="https://i.euroinvestor.com/flags/blank.png" style="width: 17px; height: 12px; vertical-align: middle; margin-right: 5px;"/>
+                 <span>
+                  Ungarsk forint
+                 </span>
+                </div>
+               </div>
+               <div id="cdd_2_extendedcurrencies" style="display: none;">
+               </div>
+               <div id="cdd_2_sresult" style="display: none;">
+               </div>
+              </div>
+              <img src="https://i.euroinvestor.com/currency/curddbottomleft.png" style=" float:left;"/>
+              <img src="https://i.euroinvestor.com/currency/curddbottomright.png" style=" float:right;"/>
+              <div style="height: 2px; border-bottom: 1px solid #CCCCCC; margin-left: 3px; margin-right: 3px; background-color: White;">
+              </div>
+             </div>
+            </div>
+            <div style="padding-top: 14px;">
+             <img src="https://i.euroinvestor.com/currency/curddinputleft.png" style="float:left;"/>
+             <div style='float:left; width: 194px; height: 46px; line-height:52px; padding-left: 10px; color: #333333; background: url("https://i.euroinvestor.com/currency/curddinputmiddle.png") repeat-x scroll 0 0 transparent;'>
+              <input id="cdd_2_inp" placeholder="Skriv beløb" style=" border:none; font-size: 19px; width:79%; padding: 0px; border-width: 0px; font-weight: bold; outline: none;"/>
+              <div id="cdd_2_cur" style="font-weight: bold; font-size: 12px; font-family: Verdana; color: #5C5C5C; float: right; height: 40px; line-height: 46px; margin-right: 7px;">
+               DKK
+              </div>
+             </div>
+             <img src="https://i.euroinvestor.com/currency/curddinputright.png" style="float: left;"/>
+             <div style="text-align: center;">
+              <!-- PlacementId: 308<br/>SiteID: 201<br/>Content unit: 138<br/>Fast-knap210x50<br/>/Fast-knap210x50 -->
+              <div data-cu-name="/56163043/Handelsknap/Valutakurser.dk/Forside/Fast-knap210x50" id="div-gpt-ad-201-308">
+               <script type="text/javascript">
+                googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-308');                            
+                        });
+               </script>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div>
+           <div class="bottom_empty_right">
+           </div>
+           <div style="height: 5px; background-color: #FBFBFB; border-bottom: 1px solid #CCCCCC; float:left; width: 226px;">
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_6_FIRST collapsable" id="ctl00_content_ctl00_currencyVideoAdd">
+       </div>
+       <!-- 468x60 Banner POS 1 -->
+       <div class="CONTROL_WIDTH_6_FIRST collapsable">
+        <!-- PlacementId: 305<br/>SiteID: 201<br/>Content unit: 71<br/>Middle1-468x60<br/>/Middle1-468x60 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Middle1-468x60" id="div-gpt-ad-201-305">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-305');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_6_FIRST" id="divCP">
+        <div class="content_box">
+         <div class="header">
+          <span class="header_top_left">
+          </span>
+          <h3 class="boxheader">
+           Valutakurser
+          </h3>
+          <span class="header_top_right">
+          </span>
+          <div class="read_more">
+           <span style="color: #4D4D4D;">
+            Fra Nationalbanken (22-06-2018)
+           </span>
+          </div>
+         </div>
+         <div class="contentbox width_6_nopadding">
+          <div style="line-height: 27px; background-color: #FAFAFA; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+           Populære
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite USD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233053">
+             US dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            USD
+           </div>
+           <div id="USD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            639,82
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,9%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite EUR_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233058">
+             Euro
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            EUR
+           </div>
+           <div id="EUR" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            745,26
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite CHF_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233070">
+             Schweizisk franc
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            CHF
+           </div>
+           <div id="CHF" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            646,14
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,3%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite SEK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233073">
+             Svensk krone
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            SEK
+           </div>
+           <div id="SEK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            72,39
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,3%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite NOK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233068">
+             Norsk krone
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            NOK
+           </div>
+           <div id="NOK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            79,01
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,1%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #F2F2F2; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite GBP_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233056">
+             Pund sterling
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            GBP
+           </div>
+           <div id="GBP" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            850,14
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,3%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div class="collapsable" id="CurrencyMiddleBanner" style="margin-top:-1px; margin-bottom:-5px; padding-top:10px; padding-bottom:10px">
+           <!-- PlacementId: 306<br/>SiteID: 201<br/>Content unit: 72<br/>Middle1BTF-468x60<br/>/Middle1-468x60 -->
+           <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle1-468x60" id="div-gpt-ad-201-306">
+            <script type="text/javascript">
+             googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-306');                            
+                        });
+            </script>
+           </div>
+          </div>
+          <div style="line-height: 27px; background-color: #FAFAFA; padding-left: 10px; font-size: 11px; font-weight: bold; color: #858585;">
+           Alfabetisk
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite AUD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233054">
+             Australsk dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            AUD
+           </div>
+           <div id="AUD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            475,26
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,1%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite BRL_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=6671645">
+             Brasilianske real
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            BRL
+           </div>
+           <div id="BRL" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            170,86
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,1%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite BGN_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=474572">
+             Bulgarsk lev
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            BGN
+           </div>
+           <div id="BGN" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            381,05
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite CAD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233057">
+             Canadisk dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            CAD
+           </div>
+           <div id="CAD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            482,09
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,5%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite EEK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328905">
+             Estisk kroon
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            EEK
+           </div>
+           <div id="EEK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            47,64
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite PHP_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492432">
+             Filippinsk peso
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            PHP
+           </div>
+           <div id="PHP" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            12,01
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,7%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite HKD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328911">
+             Hong Kong Dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            HKD
+           </div>
+           <div id="HKD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            81,54
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,9%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite INR_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=6671647">
+             Indiske rupee
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            INR
+           </div>
+           <div id="INR" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            9,430
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,7%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite IDR_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492433">
+             Indonesiske rupiah
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            IDR
+           </div>
+           <div id="IDR" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            0,0454
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,9%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite ISK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233064">
+             Islandske kroner
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            ISK
+           </div>
+           <div id="ISK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            5,887
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite ILS_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=6671648">
+             israelsk shekel
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            ILS
+           </div>
+           <div id="ILS" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            176,88
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,7%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite JPY_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233066">
+             Japansk yen
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            JPY
+           </div>
+           <div id="JPY" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            5,809
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,5%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite CNY_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492434">
+             Kinesiske Yuan renminbi
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            CNY
+           </div>
+           <div id="CNY" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            98,46
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,9%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite HRK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492428">
+             Kroatiske kuna
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            HRK
+           </div>
+           <div id="HRK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            101,00
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite LVL_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328906">
+             Lettisk lat
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            LVL
+           </div>
+           <div id="LVL" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            1.061,96
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,1%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite LTL_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328907">
+             Litauiske litas
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            LTL
+           </div>
+           <div id="LTL" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            215,58
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,0%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite MYR_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492431">
+             Malaysia ringgits
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            MYR
+           </div>
+           <div id="MYR" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            159,86
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,6%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite MXN_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=6671646">
+             Mexicansk Peso
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            MXN
+           </div>
+           <div id="MXN" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            31,65
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,1%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite NZD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=233067">
+             New Zealandsk dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            NZD
+           </div>
+           <div id="NZD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            441,50
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,2%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite PLN_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328908">
+             Polsk zloty
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            PLN
+           </div>
+           <div id="PLN" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            172,72
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,3%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite RON_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=474575">
+             Rumænske lei
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            RON
+           </div>
+           <div id="RON" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            159,71
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,1%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite RUB_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492429">
+             Russiske rubel
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            RUB
+           </div>
+           <div id="RUB" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            10,14
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,1%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite SGD_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328912">
+             Singapore dollar
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            SGD
+           </div>
+           <div id="SGD" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            471,03
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -0,7%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite ZAR_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=474580">
+             Syd Afrikansk rand
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            ZAR
+           </div>
+           <div id="ZAR" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            47,42
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,3%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite KRW_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=474579">
+             Sydkorea Won
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            KRW
+           </div>
+           <div id="KRW" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            0,5760
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -1,0%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite THB_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=492430">
+             Thailandsk baht
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            THB
+           </div>
+           <div id="THB" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            19,42
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="red">
+             -1,0%
+             <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite CZK_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328909">
+             Tjekkiske koruna
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            CZK
+           </div>
+           <div id="CZK" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            28,90
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,3%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite TRY_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=474578">
+             Tyrkisk lira
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            TRY
+           </div>
+           <div id="TRY" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            136,40
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,2%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+          <div style="height: 1px; border-top: 1px solid #CCCCCC;">
+          </div>
+          <div style="height: 34px; background-color: #FAFAFA; padding-left: 10px; padding-right: 10px; font-size: 12px; color: #333333">
+           <img class="sprite HUF_lille" style="width: 17px; float: left; margin-top: 11px; height: 12px;"/>
+           <div class="curpricesname">
+            <a href="/forex/details.aspx?id=328910">
+             Ungarsk forint
+            </a>
+           </div>
+           <div style="float:left; line-height: 33px; width: 60px;">
+            HUF
+           </div>
+           <div id="HUF" style="float:right; line-height: 33px; font-weight: bold; width: 120px; text-align: right;">
+            2,300
+           </div>
+           <div class="percentChange" style="float:right; line-height: 33px; width:55px; text-align:right">
+            <span class="green">
+             0,7%
+             <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+            </span>
+           </div>
+          </div>
+         </div>
+         <div class="footer">
+          <span class="bottom_empty_left">
+          </span>
+          <span class="bottom_empty_right">
+          </span>
+         </div>
+        </div>
+       </div>
+       <!-- 468x60 Banner POS 3 -->
+       <div class="CONTROL_WIDTH_6_FIRST collapsable">
+        <!-- PlacementId: 307<br/>SiteID: 201<br/>Content unit: 73<br/>Middle2BTF-468x60<br/>/Middle2-468x60 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Middle2-468x60" id="div-gpt-ad-201-307">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-307');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_6_FIRST">
+        <div class="content_box">
+         <div class="header">
+          <h3 class="boxheader">
+           Realtid FOREX satser
+          </h3>
+         </div>
+         <div class="contentbox width_6_nopadding">
+          <div id="ctl00_content_ctl00_ctl06_forexBox_tab00_content" style="clear: both;">
+           <div class="data_header">
+            <div class="data_line_left" style="width: 55px;">
+             Navn
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             Bud
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             Udbud
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             Ændring
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             %
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             Tid
+            </div>
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234251" title="EURJPY">
+              EURJPY
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234251">
+              128,29
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234251">
+              128,30
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234251" style="color: rgb(0,200,0)">
+              0,0050
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234251">
+              <span class="green">
+               0,00%
+               <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234251">
+              08:49:59
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234259" title="GBPUSD">
+              GBPUSD
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234259">
+              1,3267
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234259">
+              1,3269
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234259" style="color: rgb(0,200,0)">
+              0,0021
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234259">
+              <span class="green">
+               0,16%
+               <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234259">
+              23:33:19
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234268" title="USDDKK">
+              USDDKK
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234268">
+              6,3937
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234268">
+              6,3947
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234268" style="color:rgb(255,0,0)">
+              -0,0268
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234268">
+              <span class="red">
+               -0,42%
+               <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234268">
+              23:01:09
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234269" title="GBPDKK">
+              GBPDKK
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234269">
+              8,4795
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234269">
+              8,4845
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234269" style="color:rgb(255,0,0)">
+              -0,0220
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234269">
+              <span class="red">
+               -0,26%
+               <img alt="Fald i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/downsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234269">
+              23:13:59
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234273" title="EURUSD">
+              EURUSD
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234273">
+              1,1666
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234273">
+              1,1669
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234273" style="color: rgb(0,200,0)">
+              0,0062
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234273">
+              <span class="green">
+               0,54%
+               <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234273">
+              23:33:49
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234336" title="NOKDKK">
+              NOKDKK
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234336">
+              0,7892
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234336">
+              0,7908
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234336" style="color: rgb(0,200,0)">
+              0,0001
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234336">
+              <span class="green">
+               0,01%
+               <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234336">
+              22:59:49
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <div class="data_line_left" style="width: 55px;">
+             <a href="/forex/details.aspx?id=25234404" title="SEKDKK">
+              SEKDKK
+             </a>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="bid" stream="i25234404">
+              0,7218
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="ask" stream="i25234404">
+              0,7224
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="change" stream="i25234404">
+              0,0000
+             </span>
+            </div>
+            <div class="data_line_left_tright" style="width: 80px;">
+             <span field="pctchg" stream="i25234404">
+              <span class="green">
+               0,00%
+               <img alt="Stigning i aktiekurs" border="0" height="4px" src="https://i.euroinvestor.com/upsmall.gif" style="vertical-align:middle" width="8px"/>
+              </span>
+             </span>
+            </div>
+            <div class="data_line_right" style="width: 70px;">
+             <span field="time" stream="i25234404">
+              23:01:09
+             </span>
+            </div>
+           </div>
+           <div class="data_sep">
+           </div>
+           <div class="data_line">
+            <a href="/forex/overview.aspx" style="float: right;" title="Flere realtidskurser">
+             Flere realtidskurser »
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- Right column -->
+      <div class="CONTROL_WIDTH_4" style="margin-bottom: 0px;">
+       <div class="CONTROL_WIDTH_4_FIRST collapsable" id="ctl00_content_ctl00_currencyRightAdd" style="text-align:center">
+        <!-- PlacementId: 104<br/>SiteID: 201<br/>Content unit: 68<br/>Right1-300x250<br/>/Right1-300x250 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right1-300x250" id="div-gpt-ad-201-104">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-104');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_4_FIRST collapsable" style="text-align:center">
+        <!-- PlacementId: 105<br/>SiteID: 201<br/>Content unit: 69<br/>Right2-300x250<br/>/Right2-300x250 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/ATF/Right2-300x250" id="div-gpt-ad-201-105">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-105');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_4_FIRST collapsable">
+        <div class="content_box">
+         <div class="header">
+          <h3 class="boxheader">
+           US dollar
+          </h3>
+          <div class="read_more">
+           <a href="/currency/showgraph.aspx?currencyid=233053">
+            Se kursgraf
+           </a>
+          </div>
+         </div>
+         <div class="contentbox width_4_nopadding">
+          <div id="ctl00_content_ctl00_graphBoxTop_Tab2_content" style="clear: both;">
+           <div style="padding:10px">
+            <div class="tvWrapper" data-symbol="CUR:DKNBUSD">
+             <div id="chartContainer_233053" style="width: 285px">
+             </div>
+             <img class="chart-watermark tvBackgroundLogo-novol-min" src="https://i.euroinvestor.com/toplogos/ei_top_test.png" style="display:none"/>
+             <small>
+              Powered by
+              <a href="http://www.tradingview.com" target="_blank">
+               TradingView
+              </a>
+             </small>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_4_FIRST collapsable">
+        <div class="content_box">
+         <div class="header">
+          <h3 class="boxheader">
+           Euro
+          </h3>
+          <div class="read_more">
+           <a href="/currency/showgraph.aspx?currencyid=233058">
+            Se kursgraf
+           </a>
+          </div>
+         </div>
+         <div class="contentbox width_4_nopadding">
+          <div id="ctl00_content_ctl00_graphBoxMiddle_Tab1_content" style="clear: both;">
+           <div style="padding:10px">
+            <div class="tvWrapper" data-symbol="CUR:DKNBEUR">
+             <div id="chartContainer_233058" style="width: 285px">
+             </div>
+             <img class="chart-watermark tvBackgroundLogo-novol-min" src="https://i.euroinvestor.com/toplogos/ei_top_test.png" style="display:none"/>
+             <small>
+              Powered by
+              <a href="http://www.tradingview.com" target="_blank">
+               TradingView
+              </a>
+             </small>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_4_FIRST collapsable" style="text-align:center">
+        <!-- PlacementId: 106<br/>SiteID: 201<br/>Content unit: 70<br/>Right1BTF-300x250<br/>/Right1-300x250 -->
+        <div data-cu-name="/56163043/Valutakurser_network/Valutakurser.dk/Forside/BTF/Right1-300x250" id="div-gpt-ad-201-106">
+         <script type="text/javascript">
+          googletag.cmd.push(function() {
+                            googletag.display('div-gpt-ad-201-106');                            
+                        });
+         </script>
+        </div>
+       </div>
+       <div class="CONTROL_WIDTH_4_FIRST">
+        <div class="content_box">
+         <div class="header">
+          <h3 class="boxheader">
+           Schweizisk franc
+          </h3>
+          <div class="read_more">
+           <a href="/currency/showgraph.aspx?currencyid=233070">
+            Se kursgraf
+           </a>
+          </div>
+         </div>
+         <div class="contentbox width_4_nopadding">
+          <div id="ctl00_content_ctl00_graphBoxBottom_tab00_content" style="clear: both;">
+           <div style="padding:10px">
+            <div class="tvWrapper" data-symbol="CUR:DKNBCHF">
+             <div id="chartContainer_233070" style="width: 285px">
+             </div>
+             <img class="chart-watermark tvBackgroundLogo-novol-min" src="https://i.euroinvestor.com/toplogos/ei_top_test.png" style="display:none"/>
+             <small>
+              Powered by
+              <a href="http://www.tradingview.com" target="_blank">
+               TradingView
+              </a>
+             </small>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div style="clear: both;">
+     </div>
+     <div class="bottom_banner_placeholder collapsable" id="ctl00_BannerContainerBottom" style="display: block; text-align: center; line-height: 0px;">
+      <div class="bottom_banner_div">
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="footerContainer">
+    <div id="new_footer">
+     <div class="right_module">
+      <div class="logotype_partners IE6Fix">
+      </div>
+     </div>
+     <div class="bottom_module">
+      <span>
+       <a href="http://www.euroinvestor.dk/dk/euroinvestor/om/virksomhedsbeskrivelse.aspx" id="ctl00_Footer1_BottomMenuLeftBottom_ctl00_HyperLinkBottomMenuLeftBottom">
+        Firmaprofil
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://jobs.euroinvestor.com" id="ctl00_Footer1_BottomMenuLeftBottom_ctl02_HyperLinkBottomMenuLeftBottom">
+        Job
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://www.euroinvestor.dk/investor/" id="ctl00_Footer1_BottomMenuLeftBottom_ctl04_HyperLinkBottomMenuLeftBottom">
+        Investor
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://mediekit.euroinvestor.dk" id="ctl00_Footer1_BottomMenuLeftBottom_ctl06_HyperLinkBottomMenuLeftBottom">
+        Annoncering
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://www.euroinvestor.dk/dk/sitemap.aspx" id="ctl00_Footer1_BottomMenuLeftBottom_ctl08_HyperLinkBottomMenuLeftBottom">
+        Sitemap
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://www.euroinvestor.dk/dk/euroinvestor/om/kontakt.aspx" id="ctl00_Footer1_BottomMenuLeftBottom_ctl10_HyperLinkBottomMenuLeftBottom">
+        Kontakt
+       </a>
+      </span>
+      |
+      <span>
+       <a href="http://support.euroinvestor.com" id="ctl00_Footer1_BottomMenuLeftBottom_ctl12_HyperLinkBottomMenuLeftBottom">
+        Hjælp
+       </a>
+      </span>
+     </div>
+     <div style="clear: both;">
+      <div id="ctl00_Footer1_divFollowUs">
+       Følg os:
+       <a href="https://www.facebook.com/euroinvestorcom">
+        <img align="absmiddle" src="https://i.euroinvestor.com/Icons/socialmedia/facebook-16x16.png"/>
+        Facebook
+       </a>
+       <a href="https://twitter.com/#!/Euroinvestor">
+        <img align="absmiddle" src="https://i.euroinvestor.com/Icons/socialmedia/twitter-16x16.png"/>
+        Twitter
+       </a>
+       <a href="http://www.linkedin.com/groups/EuroInvestorcom-95259">
+        <img align="absmiddle" src="https://i.euroinvestor.com/Icons/socialmedia/linkedin-16x16.png"/>
+        LinkedIn
+       </a>
+      </div>
+     </div>
+    </div>
+    <div style="clear:both; padding-left:10px;">
+     <br/>
+     <span class="copyright">
+      Copyright Euroinvestor A/S 2018
+     </span>
+     <span>
+      <a href="https://i.euroinvestor.com/DisclaimerDKEuroinvestor.pdf">
+       Disclaimer
+      </a>
+      |
+      <a href="/cookie-politik">
+       Cookie- og privatlivspolitik
+      </a>
+      |
+      <a href="/persondatapolitik">
+       Persondatapolitik
+      </a>
+     </span>
+     <br/>
+     Aktieinformation leveres af Morningstar.
+     <br/>
+     Data er forsinket 15-20 minutter iht. de enkelte børsers regler om videredistribution.
+     <br/>
+    </div>
+    <div style="clear: both;">
+    </div>
+    <div id="footerTimezone">
+     24. juni 2018 08:50:04
+     <br/>
+     (UTC+01:00) Brussels, Copenhagen, Madrid, Paris
+    </div>
+   </div>
+   <div id="OverlayPlaceHolder" style="display: none">
+   </div>
+   <div class="serverinfo">
+    Version: LiveBranchBuild_20180619.1
+     - 
+    EUROWEB5
+     - 
+    2018-06-24 08:50:04
+     - 
+    2018-06-24 08:50:04
+     - 
+    201
+     - 
+    Website: OKAY
+   </div>
+   <script type="text/javascript">
+    EI.Global.IsDevelopment = false;
+            EI.Global.IsInternalSite = false;
+            EI.Global.UseGainerLoserStreaming =false;
+
+            (function () { 
+                var firstPartyDomains = ['euroinvestor.dk', 'valutakurser.dk', 'euroinvestorprivat.dk', 'euroinvestor.com', 'forexinvestor.com', 'euroinvestor.nl', 'wisselkoersen.nl', 'euroinvestor.se', 'valuta.se', 'euroinvestor.no', 'valuta.euroinvestor.no', 'euroinvestor.es', 'divisas.euroinvestor.es', 'euroinvestor.fr', 'devises.fr', 'euroinvestor.it', 'valute.it']; 
+                var pattern = new RegExp(firstPartyDomains.join('|').replace('.', '\.').replace('-', '\-')); 
+                $("a").filter(function () { 
+                    return (this.hostname && this.hostname !== window.location.hostname && pattern.test(this.hostname)); 
+                }).click(function (evt) { 
+                    var tracker = window._gat._getTrackerByName(); 
+                    var newUrl = tracker._getLinkerUrl(evt.target.href); 
+                    if(newUrl.contains("eurotrader")) return true;
+                    evt.target.href = newUrl.replace(/(\||,)/g, "&#124;"); 
+                    return true; 
+                }); 
+            })();
+   </script>
+  </form>
+  <div class="infoBox" id="ctl00_ctl06_InfoBox">
+  </div>
+  <script type="text/javascript">
+   var currencyDecimalSeparator = ',';var currencyGroupSeparator = '.';var numberDecimalSeparator = ',';var numberGroupSeparator = '.';var datetimeLongTimeFormat = 'HH:mm:ss';var datetimeShortDateFormat = 'dd-mm-yy';var instrumentLocalTimeOffset = 0;var UTCLocalTimeOffset = 7200000;var serverNowDay = new Date();serverNowDay.setUTCFullYear(2018, 5, 24);var siteCountry = 'dk'; 
+    $(function () {
+        EI.Tooltip.load();isUserAuthenticatedKeepAlive(480000);$('a[id$=Loginlnk]').click(function() {EI.Global.loadLogin(); return false;});$('a[id$=linkSignup]').click(function() {EI.Global.loadSignup(); return false;});var currencyAddObj = $("div[id$='currencyVideoAdd']").find("object"); if (currencyAddObj.html() != null){ currencyAddObj.attr("width", "470"); } var currencyRightAdd = $("#ctl00_content_ctl00_currencyRightAdd :not(script)"); if(currencyRightAdd.length == 0) currencyRightAdd.hide();Streaming.init('yuVVmj9B1f/PJYPFepHLfPmdVOPjQVR5kEW/G1J1csjN6SkOQ8srwFQfPQHIcJbWZCrU11DfGiNTAVLN6NQDYL8Y+naSbotSiWHWPRsQevpInP+OIDRmhUExi+3r1uuEha+JF13pNXMWeIwQpZUoywF1vOsaNatq431etGmyVfY=',2,2,2,4,2,4,4,2,2,'HH:mm:ss','dd-MM-yyyy',true,false,true,'#FAFAFA',120,0,1529823005000,1529822105000,false,false,true,'stream.euroinvestor.com',true,false,false);EI.TradingView.loadChart({"backgroundLogoClassName":"tvBackgroundLogo-novol-min","instrumentId":233053,"type":0,"link":"/boerser/national-bank-currencies/amerika-usd/233053","openTime":"0200","closeTime":"0159","isIndexOrStock":false}, {"width":289,"height":200,"symbol":"CUR:DKNBUSD","interval":"5","container_id":"chartContainer_233053","disabled_features":["use_localstorage_for_settings","link_to_tradingview","header_symbol_search","volume_force_overlay","header_widget_dom_node","left_toolbar","control_bar","timeframes_toolbar","context_menus","border_around_the_chart","show_chart_property_page"],"timezone":"Europe/Paris","overrides":{"paneProperties.legendProperties.showSeriesTitle":false,"paneProperties.legendProperties.showSeriesOHLC":false,"symbolWatermarkProperties.color":"rgba(0, 0, 0, 0)"}});EI.TradingView.loadChart({"backgroundLogoClassName":"tvBackgroundLogo-novol-min","instrumentId":233058,"type":0,"link":"/boerser/national-bank-currencies/euro-eur/233058","openTime":"0200","closeTime":"0159","isIndexOrStock":false}, {"width":289,"height":200,"symbol":"CUR:DKNBEUR","interval":"5","container_id":"chartContainer_233058","disabled_features":["use_localstorage_for_settings","link_to_tradingview","header_symbol_search","volume_force_overlay","header_widget_dom_node","left_toolbar","control_bar","timeframes_toolbar","context_menus","border_around_the_chart","show_chart_property_page"],"timezone":"Europe/Paris","overrides":{"paneProperties.legendProperties.showSeriesTitle":false,"paneProperties.legendProperties.showSeriesOHLC":false,"symbolWatermarkProperties.color":"rgba(0, 0, 0, 0)"}});EI.TradingView.loadChart({"backgroundLogoClassName":"tvBackgroundLogo-novol-min","instrumentId":233070,"type":0,"link":"/boerser/national-bank-currencies/schweiz-chf/233070","openTime":"0200","closeTime":"0159","isIndexOrStock":false}, {"width":289,"height":200,"symbol":"CUR:DKNBCHF","interval":"5","container_id":"chartContainer_233070","disabled_features":["use_localstorage_for_settings","link_to_tradingview","header_symbol_search","volume_force_overlay","header_widget_dom_node","left_toolbar","control_bar","timeframes_toolbar","context_menus","border_around_the_chart","show_chart_property_page"],"timezone":"Europe/Paris","overrides":{"paneProperties.legendProperties.showSeriesTitle":false,"paneProperties.legendProperties.showSeriesOHLC":false,"symbolWatermarkProperties.color":"rgba(0, 0, 0, 0)"}});
+    });
+  </script>
+ </body>
+</html>

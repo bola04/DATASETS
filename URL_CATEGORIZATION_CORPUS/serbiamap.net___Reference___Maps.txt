@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Mapa Srbije | Mapa Evrope
+  </title>
+  <link href="http://serbiamap.net/index.html" hreflang="sr" rel="alternate"/>
+  <link href="http://serbiamap.net/en/index.html" hreflang="en" rel="alternate"/>
+  <link href="http://serbiamap.net" hreflang="x-default" rel="alternate"/>
+  <meta content="mapa Srbije, karta Srbije, map of Serbia, gps, gps mapa, indeks ulica, mapa balkana, digitalna mapa srbije" name="keywords"/>
+  <meta content="Detaljna interaktivna karta Srbije sa bazom podataka geografskih lokacija." name="description"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="no-cache, max-age=1800" http-equiv="Cache-Control"/>
+  <meta content="no-cache" http-equiv="Pragma"/>
+  <meta content="-1" http-equiv="Expires"/>
+  <link href="js/jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+  <link href="css/default.css" rel="stylesheet" type="text/css"/>
+  <link href="css/notification.css" rel="stylesheet" type="text/css"/>
+  <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1573418-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  </script>
+  <link href="leaflet/leaflet.css" rel="stylesheet" type="text/css"/>
+  <!--[if lte IE 10]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.ie.css" />
+<![endif]-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <link href="css/L.Icon.NumberIcon.css" rel="stylesheet" type="text/css"/>
+  <link href="css/L.Icon.Pulse.css" rel="stylesheet" type="text/css"/>
+  <link href="css/leaflet.extra-markers.min.css" rel="stylesheet" type="text/css"/>
+  <script src="js/global.js" type="text/javascript">
+  </script>
+  <script src="js/mobiledetect.js" type="text/javascript">
+  </script>
+  <script src="leaflet/leaflet.js" type="text/javascript">
+  </script>
+  <script src="js/jquery/jquery-1.12.0.min.js" type="text/javascript">
+  </script>
+  <script src="js/jqueryui/jquery-ui.min.js" type="text/javascript">
+  </script>
+  <script src="js/ui/jquery.dialogextend.min.js" type="text/javascript">
+  </script>
+  <script src="js/leaflet.extra-markers.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var isMobile = DetectMobileQuick();
+  </script>
+  <style type="text/css">
+   html,body { height: 100%; margin: 0px; padding: 0px; }
+  </style>
+ </head>
+ <body>
+  <script src="js/L.Icon.NumberIcon.js" type="text/javascript">
+  </script>
+  <script src="js/L.Icon.Pulse.js" type="text/javascript">
+  </script>
+  <script src="js/webmap.js" type="text/javascript">
+  </script>
+  <script src="js/geodata.js" type="text/javascript">
+  </script>
+  <script src="js/tracking.js" type="text/javascript">
+  </script>
+  <script src="js/usermap.js" type="text/javascript">
+  </script>
+  <script src="js/login.js" type="text/javascript">
+  </script>
+  <script src="js/notifications.js" type="text/javascript">
+  </script>
+  <script src="js/search.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var map;
+var webMaps = [];
+var userTracks = [];
+var markers;
+var trackingMarkers;
+var isTrackingOn;
+
+var mapId;
+var initLatitude;
+var initLongitude;
+var initZoom;
+var sessionId = null;
+  </script>
+  <div class="fullwidth fullheight flex-column">
+   <div class="menubar float-left fullwidth small-padding" style="text-align:right">
+    <a class="menu" href="index.html">
+     Početna
+    </a>
+    <a class="menu" href="intro.html">
+     Intro
+    </a>
+    <a class="menu" href="locations.html">
+     Pretraživanje
+    </a>
+    <a class="menu" href="infotracking.html">
+     GPS
+    </a>
+    <a class="menu" href="download.html">
+     Download
+    </a>
+    <a class="menu" href="maps.html">
+     Mape
+    </a>
+    <a class="menu" href="contact.html">
+     Kontakt
+    </a>
+    <a class="menu" href="en/index.html">
+     English
+    </a>
+   </div>
+   <div id="dialog" style="display:none" title="Serbiamap.Net">
+    <div id="accordion">
+     <h3>
+      Mapa
+     </h3>
+     <div id="sm-toolspanel">
+      <b>
+       Markeri
+      </b>
+      <p>
+       <input id="clearMapButton" onclick="clearMap()" type="button" value="Obriši markere"/>
+      </p>
+      <p>
+       <b>
+        Napravi mapu
+       </b>
+      </p>
+      <table>
+       <tr>
+        <td>
+         Širina (px):
+        </td>
+        <td>
+         <input id="userMapWidth" type="text" value="400"/>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Visina (px):
+        </td>
+        <td>
+         <input id="userMapHeight" type="text" value="300"/>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Stil:
+        </td>
+        <td>
+         <select id="userMapStyle">
+          <option value="0">
+           Rich
+          </option>
+          <option value="1">
+           Urban
+          </option>
+          <option value="2">
+           Road
+          </option>
+          <option value="3">
+           Water
+          </option>
+          <option value="4">
+           Ivory
+          </option>
+          <option value="5">
+           Nature
+          </option>
+          <option selected="selected" value="6">
+           Archivo
+          </option>
+         </select>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Margina:
+        </td>
+        <td>
+         <select id="userMapMargin">
+          <option value="0">
+           0 px
+          </option>
+          <option selected="selected" value="5">
+           5 px
+          </option>
+          <option value="10">
+           10 px
+          </option>
+          <option value="15">
+           15 px
+          </option>
+         </select>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         Pismo:
+        </td>
+        <td>
+         <select id="userMapCyrilic">
+          <option selected="selected" value="false">
+           Latinica
+          </option>
+          <option value="true">
+           Ćirilica
+          </option>
+         </select>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <input id="createUserMapButton" onclick="createUserMap()" type="button" value="Napravi"/>
+        </td>
+        <td>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <h3>
+      Pretraživanje
+     </h3>
+     <div id="sm-searchpanel">
+      <form class="margin-top-10" id="SearchForm" onsubmit="search('', 'map', map )">
+       <table>
+        <tr>
+         <td>
+          Naziv:
+         </td>
+         <td>
+          <input id="query" name="query" type="text" value=""/>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Tip:
+         </td>
+         <td>
+          <select id="querytype" name="querytype">
+           <option selected="selected" value="">
+            ...
+           </option>
+           <option value="Populated places">
+            Naselja
+           </option>
+           <option value="Location">
+            Lokacije
+           </option>
+           <option value="Streets">
+            Ulice
+           </option>
+           <option value="Commercial">
+            Komercijalni objekti
+           </option>
+           <option value="Airports (civil)">
+            Aerodromi (civilni)
+           </option>
+           <option value="Airports (sport)">
+            Aerodromi (sportski)
+           </option>
+           <option value="Diplomatic">
+            Ambasade
+           </option>
+           <option value="Pharmacy">
+            Apoteke
+           </option>
+           <option value="Ruins">
+            Arheološke lokacije
+           </option>
+           <option value="Banks">
+            Banke
+           </option>
+           <option value="Spa">
+            Banje
+           </option>
+           <option value="Petrol stations">
+            Benzinske stanice
+           </option>
+           <option value="Libraries">
+            Biblioteke
+           </option>
+           <option value="Hospitals">
+            Bolnice
+           </option>
+           <option value="Events">
+            Događaji
+           </option>
+           <option value="Government">
+            Državne institucije
+           </option>
+           <option value="Energy">
+            Energetika
+           </option>
+           <option value="University">
+            Fakulteti
+           </option>
+           <option value="Galleries">
+            Galerije
+           </option>
+           <option value="Border points">
+            Granični prelazi
+           </option>
+           <option value="Hotels">
+            Hoteli
+           </option>
+           <option value="Industry">
+            Industrija
+           </option>
+           <option value="Battles">
+            Istorijske bitke
+           </option>
+           <option value="Camping">
+            Kampovanje
+           </option>
+           <option value="Clubs">
+            Klubovi
+           </option>
+           <option value="Lakes">
+            Jezera
+           </option>
+           <option value="Monasteries">
+            Manastiri
+           </option>
+           <option value="Museums">
+            Muzeji
+           </option>
+           <option value="National parks">
+            Nacionalni parkovi
+           </option>
+           <option value="Science">
+            Naučne ustanove
+           </option>
+           <option value="Peaks">
+            Planinski vrhovi
+           </option>
+           <option value="Caves">
+            Pećine
+           </option>
+           <option value="Green markets">
+            Pijace
+           </option>
+           <option value="Mountains">
+            Planine
+           </option>
+           <option value="Police">
+            Policija
+           </option>
+           <option value="Theatre">
+            Pozorišta
+           </option>
+           <option value="Travel">
+            Putovanja
+           </option>
+           <option value="Rivers">
+            Reke
+           </option>
+           <option value="Restaurants">
+            Restorani
+           </option>
+           <option value="Mines">
+            Rudnici
+           </option>
+           <option value="Monuments">
+            Spomenici
+           </option>
+           <option value="Sport">
+            Sportski objekti
+           </option>
+           <option value="Student accomodation">
+            Studentski domovi
+           </option>
+           <option value="Education">
+            Škole
+           </option>
+           <option value="Fortress">
+            Tvrđave
+           </option>
+           <option value="Streets">
+            Ulice
+           </option>
+           <option value="FireDepartment">
+            Vatrogasna služba
+           </option>
+           <option value="Religious">
+            Verski objekti
+           </option>
+          </select>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Opština:
+         </td>
+         <td>
+          <select id="queryarea" name="queryarea">
+           <option selected="selected" value="">
+            ...
+           </option>
+           <option value="BG">
+            Beograd (Grad)
+           </option>
+           <option value="Ada">
+            Ada
+           </option>
+           <option value="Aerodrom (KG)">
+            Aerodrom (KG)
+           </option>
+           <option value="Aleksandrovac">
+            Aleksandrovac
+           </option>
+           <option value="Aleksinac">
+            Aleksinac
+           </option>
+           <option value="Alibunar">
+            Alibunar
+           </option>
+           <option value="Apatin">
+            Apatin
+           </option>
+           <option value="Aranđelovac">
+            Aranđelovac
+           </option>
+           <option value="Arilje">
+            Arilje
+           </option>
+           <option value="Babušnica">
+            Babušnica
+           </option>
+           <option value="Bač">
+            Bač
+           </option>
+           <option value="Bačka Palanka">
+            Bačka Palanka
+           </option>
+           <option value="Bačka Topola">
+            Bačka Topola
+           </option>
+           <option value="Bački Petrovac">
+            Bački Petrovac
+           </option>
+           <option value="Bajina Bašta">
+            Bajina Bašta
+           </option>
+           <option value="Barajevo (BG)">
+            Barajevo (BG)
+           </option>
+           <option value="Batočina">
+            Batočina
+           </option>
+           <option value="Bečej">
+            Bečej
+           </option>
+           <option value="Bela Crkva">
+            Bela Crkva
+           </option>
+           <option value="Bela Palanka">
+            Bela Palanka
+           </option>
+           <option value="BG">
+            Beograd (Grad)
+           </option>
+           <option value="Beočin">
+            Beočin
+           </option>
+           <option value="Blace">
+            Blace
+           </option>
+           <option value="Bogatić">
+            Bogatić
+           </option>
+           <option value="Bojnik">
+            Bojnik
+           </option>
+           <option value="Boljevac">
+            Boljevac
+           </option>
+           <option value="Bor">
+            Bor
+           </option>
+           <option value="Bosilegrad">
+            Bosilegrad
+           </option>
+           <option value="Brus">
+            Brus
+           </option>
+           <option value="Bujanovac">
+            Bujanovac
+           </option>
+           <option value="Crna Trava">
+            Crna Trava
+           </option>
+           <option value="Crveni Krst (NI)">
+            Crveni Krst (NI)
+           </option>
+           <option value="Čačak">
+            Čačak
+           </option>
+           <option value="Čajetina">
+            Čajetina
+           </option>
+           <option value="Čoka">
+            Čoka
+           </option>
+           <option value="Čukarica (BG)">
+            Čukarica (BG)
+           </option>
+           <option value="Ćićevac">
+            Ćićevac
+           </option>
+           <option value="Ćuprija">
+            Ćuprija
+           </option>
+           <option value="Dečani">
+            Dečani
+           </option>
+           <option value="Despotovac">
+            Despotovac
+           </option>
+           <option value="Dimitrovgrad">
+            Dimitrovgrad
+           </option>
+           <option value="Doljevac">
+            Doljevac
+           </option>
+           <option value="Đakovica">
+            Đakovica
+           </option>
+           <option value="Gadžin Han">
+            Gadžin Han
+           </option>
+           <option value="Glogovac">
+            Glogovac
+           </option>
+           <option value="Gnjilane">
+            Gnjilane
+           </option>
+           <option value="Golubac">
+            Golubac
+           </option>
+           <option value="Gora">
+            Gora
+           </option>
+           <option value="Gornji Milanovac">
+            Gornji Milanovac
+           </option>
+           <option value="Grocka">
+            Grocka
+           </option>
+           <option value="Inđija">
+            Inđija
+           </option>
+           <option value="Irig">
+            Irig
+           </option>
+           <option value="Istok">
+            Istok
+           </option>
+           <option value="Ivanjica">
+            Ivanjica
+           </option>
+           <option value="Jagodina">
+            Jagodina
+           </option>
+           <option value="Kačanik">
+            Kačanik
+           </option>
+           <option value="Kanjiža">
+            Kanjiža
+           </option>
+           <option value="Kikinda">
+            Kikinda
+           </option>
+           <option value="Kladovo">
+            Kladovo
+           </option>
+           <option value="Klina">
+            Klina
+           </option>
+           <option value="Knić">
+            Knić
+           </option>
+           <option value="Knjaževac">
+            Knjaževac
+           </option>
+           <option value="Koceljevo">
+            Koceljevo
+           </option>
+           <option value="Kosjerić">
+            Kosjerić
+           </option>
+           <option value="Kosovo Polje">
+            Kosovo Polje
+           </option>
+           <option value="Kosovska Kamenica">
+            Kosovska Kamenica
+           </option>
+           <option value="Kosovska Mitrovica">
+            Kosovska Mitrovica
+           </option>
+           <option value="Kovačica">
+            Kovačica
+           </option>
+           <option value="Kovin">
+            Kovin
+           </option>
+           <option value="KG">
+            Kragujevac (Grad)
+           </option>
+           <option value="Kraljevo">
+            Kraljevo
+           </option>
+           <option value="Krupanj">
+            Krupanj
+           </option>
+           <option value="Kruševac">
+            Kruševac
+           </option>
+           <option value="Kučevo">
+            Kučevo
+           </option>
+           <option value="Kula">
+            Kula
+           </option>
+           <option value="Kuršumlija">
+            Kuršumlija
+           </option>
+           <option value="Lajkovac">
+            Lajkovac
+           </option>
+           <option value="Lapovo">
+            Lapovo
+           </option>
+           <option value="Lazarevac">
+            Lazarevac
+           </option>
+           <option value="Lebane">
+            Lebane
+           </option>
+           <option value="Leposavić">
+            Leposavić
+           </option>
+           <option value="Leskovac">
+            Leskovac
+           </option>
+           <option value="Lipljan">
+            Lipljan
+           </option>
+           <option value="Loznica">
+            Loznica
+           </option>
+           <option value="Lučani">
+            Lučani
+           </option>
+           <option value="Ljig">
+            Ljig
+           </option>
+           <option value="Ljubovija">
+            Ljubovija
+           </option>
+           <option value="Majdanpek">
+            Majdanpek
+           </option>
+           <option value="Mali Iđoš">
+            Mali Iđoš
+           </option>
+           <option value="Mali Zvornik">
+            Mali Zvornik
+           </option>
+           <option value="Malo Crniće">
+            Malo Crniće
+           </option>
+           <option value="Medijana (NI)">
+            Medijana (NI)
+           </option>
+           <option value="Medveđa">
+            Medveđa
+           </option>
+           <option value="Merošina">
+            Merošina
+           </option>
+           <option value="Mionica">
+            Mionica
+           </option>
+           <option value="Mladenovac">
+            Mladenovac
+           </option>
+           <option value="Negotin">
+            Negotin
+           </option>
+           <option value="NI">
+            Niš (Grad)
+           </option>
+           <option value="Niška Banja (NI)">
+            Niška Banja (NI)
+           </option>
+           <option value="Nova Crnja">
+            Nova Crnja
+           </option>
+           <option value="Nova Varoš">
+            Nova Varoš
+           </option>
+           <option value="Novi Bečej">
+            Novi Bečej
+           </option>
+           <option value="Novi Beograd (BG)">
+            Novi Beograd (BG)
+           </option>
+           <option value="Novi Kneževac">
+            Novi Kneževac
+           </option>
+           <option value="Novi Pazar">
+            Novi Pazar
+           </option>
+           <option value="Novi Sad">
+            Novi Sad
+           </option>
+           <option value="Novo Brdo">
+            Novo Brdo
+           </option>
+           <option value="Obilić">
+            Obilić
+           </option>
+           <option value="Obrenovac">
+            Obrenovac
+           </option>
+           <option value="Odžaci">
+            Odžaci
+           </option>
+           <option value="Opovo">
+            Opovo
+           </option>
+           <option value="Orahovac">
+            Orahovac
+           </option>
+           <option value="Osečina">
+            Osečina
+           </option>
+           <option value="Palilula (NI)">
+            Palilula (NI)
+           </option>
+           <option value="Palilula (BG)">
+            Palilula (BG)
+           </option>
+           <option value="Pančevo">
+            Pančevo
+           </option>
+           <option value="Pantelej (NI)">
+            Pantelej (NI)
+           </option>
+           <option value="Paraćin">
+            Paraćin
+           </option>
+           <option value="Peć">
+            Peć
+           </option>
+           <option value="Pećinci">
+            Pećinci
+           </option>
+           <option value="Petrovac">
+            Petrovac
+           </option>
+           <option value="Petrovaradin">
+            Petrovaradin
+           </option>
+           <option value="Pirot">
+            Pirot
+           </option>
+           <option value="Pivara (KG)">
+            Pivara (KG)
+           </option>
+           <option value="Plandište">
+            Plandište
+           </option>
+           <option value="Podujevo">
+            Podujevo
+           </option>
+           <option value="Požarevac">
+            Požarevac
+           </option>
+           <option value="Požega">
+            Požega
+           </option>
+           <option value="Preševo">
+            Preševo
+           </option>
+           <option value="Priboj">
+            Priboj
+           </option>
+           <option value="Prijepolje">
+            Prijepolje
+           </option>
+           <option value="Priština">
+            Priština
+           </option>
+           <option value="Prizren">
+            Prizren
+           </option>
+           <option value="Prokuplje">
+            Prokuplje
+           </option>
+           <option value="Rača">
+            Rača
+           </option>
+           <option value="Rakovica (BG)">
+            Rakovica (BG)
+           </option>
+           <option value="Raška">
+            Raška
+           </option>
+           <option value="Ražanj">
+            Ražanj
+           </option>
+           <option value="Rekovac">
+            Rekovac
+           </option>
+           <option value="Ruma">
+            Ruma
+           </option>
+           <option value="Savski Venac (BG)">
+            Savski Venac (BG)
+           </option>
+           <option value="Sečanj">
+            Sečanj
+           </option>
+           <option value="Senta">
+            Senta
+           </option>
+           <option value="Sjenica">
+            Sjenica
+           </option>
+           <option value="Smederevo">
+            Smederevo
+           </option>
+           <option value="Smederevska Palanka">
+            Smederevska Palanka
+           </option>
+           <option value="Sokobanja">
+            Sokobanja
+           </option>
+           <option value="Sombor">
+            Sombor
+           </option>
+           <option value="Sopot">
+            Sopot
+           </option>
+           <option value="Srbica">
+            Srbica
+           </option>
+           <option value="Sremska Mitrovica">
+            Sremska Mitrovica
+           </option>
+           <option value="Sremski Karlovci">
+            Sremski Karlovci
+           </option>
+           <option value="Stanovo (KG)">
+            Stanovo (KG)
+           </option>
+           <option value="Stara Pazova">
+            Stara Pazova
+           </option>
+           <option value="Stari Grad (KG)">
+            Stari Grad (KG)
+           </option>
+           <option value="Stari Grad (BG)">
+            Stari Grad (BG)
+           </option>
+           <option value="Stragari">
+            Stragari
+           </option>
+           <option value="Subotica">
+            Subotica
+           </option>
+           <option value="Surčin (BG)">
+            Surčin (BG)
+           </option>
+           <option value="Surdulica">
+            Surdulica
+           </option>
+           <option value="Suva Reka">
+            Suva Reka
+           </option>
+           <option value="Svilajnac">
+            Svilajnac
+           </option>
+           <option value="Svrljig">
+            Svrljig
+           </option>
+           <option value="Šabac">
+            Šabac
+           </option>
+           <option value="Šid">
+            Šid
+           </option>
+           <option value="Štimlje">
+            Štimlje
+           </option>
+           <option value="Štrpce">
+            Štrpce
+           </option>
+           <option value="Temerin">
+            Temerin
+           </option>
+           <option value="Titel">
+            Titel
+           </option>
+           <option value="Topola">
+            Topola
+           </option>
+           <option value="Trgovište">
+            Trgovište
+           </option>
+           <option value="Trstenik">
+            Trstenik
+           </option>
+           <option value="Tutin">
+            Tutin
+           </option>
+           <option value="Ub">
+            Ub
+           </option>
+           <option value="Uroševac">
+            Uroševac
+           </option>
+           <option value="Užice">
+            Užice
+           </option>
+           <option value="Valjevo">
+            Valjevo
+           </option>
+           <option value="Varvarin">
+            Varvarin
+           </option>
+           <option value="Velika Plana">
+            Velika Plana
+           </option>
+           <option value="Veliko Gradište">
+            Veliko Gradište
+           </option>
+           <option value="Vitina">
+            Vitina
+           </option>
+           <option value="Vladičin Han">
+            Vladičin Han
+           </option>
+           <option value="Vladimirci">
+            Vladimirci
+           </option>
+           <option value="Vlasotince">
+            Vlasotince
+           </option>
+           <option value="Voždovac (BG)">
+            Voždovac (BG)
+           </option>
+           <option value="Vračar (BG)">
+            Vračar (BG)
+           </option>
+           <option value="Vranje">
+            Vranje
+           </option>
+           <option value="Vrbas">
+            Vrbas
+           </option>
+           <option value="Vrnjačka Banja">
+            Vrnjačka Banja
+           </option>
+           <option value="Vršac">
+            Vršac
+           </option>
+           <option value="Vučitrn">
+            Vučitrn
+           </option>
+           <option value="Zaječar">
+            Zaječar
+           </option>
+           <option value="Zemun (BG)">
+            Zemun (BG)
+           </option>
+           <option value="Zrenjanin">
+            Zrenjanin
+           </option>
+           <option value="Zubin Potok">
+            Zubin Potok
+           </option>
+           <option value="Zvečan">
+            Zvečan
+           </option>
+           <option value="Zvezdara (BG)">
+            Zvezdara (BG)
+           </option>
+           <option value="Žabalj">
+            Žabalj
+           </option>
+           <option value="Žabari">
+            Žabari
+           </option>
+           <option value="Žagubica">
+            Žagubica
+           </option>
+           <option value="Žitište">
+            Žitište
+           </option>
+           <option value="Žitorađa">
+            Žitorađa
+           </option>
+          </select>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Država :
+         </td>
+         <td>
+          <select id="querycountry" name="querycountry">
+           <option selected="selected" value="Serbia">
+            Srbija
+           </option>
+           <option value="World">
+            Sve države
+           </option>
+           <option value="Others">
+            Inostranstvo
+           </option>
+          </select>
+         </td>
+        </tr>
+        <tr>
+         <td colspan="2">
+          <input onclick="javascript:clearSearch()" type="button" value="Poništi"/>
+          <input id="searchButton" type="submit" value="Pretraži"/>
+          <input name="lang" type="hidden" value="sr"/>
+         </td>
+        </tr>
+       </table>
+      </form>
+      <div class="margin-bottom-10" id="Results">
+       <p>
+       </p>
+      </div>
+     </div>
+     <h3>
+      Interaktivne mape
+     </h3>
+     <div id="sm-webmapspanel">
+      <p>
+       Interaktivne mape
+      </p>
+     </div>
+     <h3>
+      GPS praćenje
+     </h3>
+     <div id="sm-gpstrackingpanel">
+      <input id="toggleTrackingButton" onclick="toggleTracking()" type="button" value="Start"/>
+      <div id="gpstracks">
+      </div>
+     </div>
+     <h3>
+      Korisnički nalog
+     </h3>
+     <div id="sm-userpanel">
+      <div class="fullwidth">
+       <div class="float-left">
+        <input id="loginButton" onclick="loginButtonClick()" type="button" value="Prijava"/>
+       </div>
+       <div class="float-right" id="sm-register">
+        Nemate nalog?
+        <input id="registerButton" onclick="showRegister()" type="button" value="Registracija"/>
+       </div>
+       <br class="cb"/>
+      </div>
+      <div class="margin-top-10" id="sm-mytrackspanel">
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="loginDialog" style="display:none" title="Login">
+    <form id="loginForm">
+     <table>
+      <tr>
+       <td>
+        Username :
+       </td>
+       <td>
+        <input name="username" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Password :
+       </td>
+       <td>
+        <input name="password" type="password" value=""/>
+       </td>
+       <td>
+       </td>
+      </tr>
+     </table>
+    </form>
+   </div>
+   <div id="registerDialog" style="display:none" title="Register">
+    <form id="registerForm">
+     <table>
+      <tr>
+       <td>
+        Name* :
+       </td>
+       <td>
+        <input name="name" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Location :
+       </td>
+       <td>
+        <input name="location" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Email* :
+       </td>
+       <td>
+        <input name="email" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Username* :
+       </td>
+       <td>
+        <input name="username" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Password* :
+       </td>
+       <td>
+        <input name="password" type="password" value=""/>
+       </td>
+       <td>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        Repeat Password* :
+       </td>
+       <td>
+        <input name="repeatPassword" type="password" value=""/>
+       </td>
+       <td>
+       </td>
+      </tr>
+     </table>
+    </form>
+   </div>
+   <div id="messageDialog" style="display:none;text-align:center">
+    Message
+   </div>
+   <div class="notification-dialog" id="notificationDialog" onclick="clickNotification()" style="display:none">
+    <div class="fullwidth no-margin notification-title" id="notificationTitle">
+    </div>
+    <div class="fullwidth no-margin notification-text" id="notificationText">
+     Text
+    </div>
+   </div>
+   <div class="fullwidth fullheight" id="map">
+   </div>
+   <div class="footer fullwidth float-left small-padding">
+    Serbiamap.Net 2009-2018.
+   </div>
+  </div>
+  <script type="text/javascript">
+   // get url parameters
+mapId = getUrlParameter('mapId');
+initLatitude = getUrlParameter('lat');
+initLongitude = getUrlParameter('lon');
+initZoom = getUrlParameter('zoom');
+
+// get session, if present
+if( hasLocalStorage() ) {
+    sessionId = localStorage.getItem( "serbiamap.session.id" );
+}
+
+// create map
+map = L.map('map', { attributionControl: false, zoomControl: false });
+if ( initLatitude && initLongitude && initZoom ) {
+	map.setView( [ initLatitude, initLongitude ], initZoom );
+} else {
+	map.setView([44.8, 20.5], 10);
+}
+
+L.tileLayer('http://serbiamap.net/Tiles.ashx?z={z}&x={x}&y={y}', { maxZoom: 16, minZoom: 2 } ).addTo( map );
+
+L.control.zoom( { position: 'topright' }).addTo( map );
+
+markers = new L.FeatureGroup().addTo( map );
+trackingMarkers = new L.FeatureGroup().addTo( map );
+
+$( document ).ready(function() {
+	if (!isMobile) {  
+		$( "#dialog" ).dialog( { height: 480, width: 250 } ).dialogExtend( { collapsable: true} ).css( 'padding', '2px' );
+		positionDialog();
+	    $( "#accordion" ).accordion( { heightStyle: "fill" } );
+		
+		loadMaps('data/maps.xml', webMaps, '#sm-webmapspanel');
+		setLoginState();
+		focusInitLocation();
+		getNotifications('');
+	}
+});
+
+$(window).resize(function() {
+	if (!isMobile) {
+		positionDialog();
+		positionNotificationDialog();
+	}   	
+});
+
+function positionDialog() {
+	$("#dialog").dialog("option", "position", { my: "left top", at: "left+5 top+5", of: "#map" } );
+}
+
+function positionNotificationDialog() {
+	$("#notificationDialog").dialog("option", "position", { my: "right bottom", at: "right-5 bottom-5", of: "#map" } );
+}
+
+
+// AJAX callback functions
+function onMapsLoad(){
+	if ( mapId ) {
+		loadMap( mapId );
+	}
+}
+
+function setLoginState() {
+	if ( sessionId !== null ) {
+		$('#loginButton').val( 'Logout' );
+		$('#sm-register').hide();
+		loadUserTracks( sessionId, '#sm-mytrackspanel');
+	} else {
+		$('#loginButton').val( 'Login' );
+		$('#sm-register').show();
+		$('#sm-mytrackspanel').empty();
+	}
+}
+
+function focusInitLocation(){
+	if ( initLatitude && initLongitude) {
+		markLocation( initLongitude, initLatitude );
+	}
+}
+  </script>
+ </body>
+</html>

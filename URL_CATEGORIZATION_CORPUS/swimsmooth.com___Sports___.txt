@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <!--REPLACE_META-->
+  <base href="/"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="/assets/favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon"/>
+  <link href="/assets/favicons/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizez="114x114"/>
+  <link href="/assets/favicons/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120"/>
+  <link href="/assets/favicons/apple-touch-icon-144x144.png" rel="apple-touch-icon" sizes="144x144"/>
+  <link href="/assets/favicons/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152"/>
+  <link href="/assets/favicons/apple-touch-icon-57x57.png" rel="apple-touch-icon" sizes="57x57"/>
+  <link href="/assets/favicons/apple-touch-icon-60x60.png" rel="apple-touch-icon" sizes="60x60"/>
+  <link href="/assets/favicons/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"/>
+  <link href="/assets/favicons/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76"/>
+  <link href="/assets/favicons/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="/assets/favicons/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="/assets/favicons/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
+  <link href="/assets/favicons/favicon-128.png" rel="icon" sizes="128x128" type="image/png"/>
+  <link href="/assets/favicons/favicon-196x196.png" rel="icon" sizes="196x196" type="image/png"/>
+  <meta content="#000028" name="msapplication-TileColor"/>
+  <meta content="/assets/favicons/mstile-144x144.png" name="msapplication-TileImage"/>
+  <link href="/assets/loader.css" rel="stylesheet"/>
+  <script src="http://www.visitorjs.com/visitor.js?key=QqPKtfuJ2L">
+  </script>
+  <!--<script>document.write('<script src="http://www.visitorjs.com/visitor.js?key=QqPKtfuJ2L&version=' + Math.floor(Math.random() * 10000) + '"\><\/script>');</script>-->
+  <link href="styles.1c14a81f308d26c67eaa.bundle.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <app-root>
+   <div id="initial_loading_screen">
+    <div class="loader">
+    </div>
+    <img alt="" src="/assets/images/logo_reversed.png"/>
+   </div>
+  </app-root>
+  <script>
+   (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-28629686-9', 'auto');  // <- add the UA-ID 
+                                           // <- remove the last line
+  </script>
+  <script>
+   //(function() { 
+    var Calculator = {
+      css: {
+        changemyCSSds: function changemyCSSds(frm) {
+          var pl = frm.pl.options[frm.pl.selectedIndex].value;
+          // 025 means yard pool so change labels to yards
+          if (pl == "025") {
+            document.getElementById('400mwords').innerHTML = '400yd timetrial:';
+            document.getElementById('200mwords').innerHTML = '200yd timetrial:';
+          } else {
+            document.getElementById('400mwords').innerHTML = '400m timetrial:';
+            document.getElementById('200mwords').innerHTML = '200m timetrial:';
+          }
+        },
+        calculatecss: function calculatecss(frm) {
+
+          var sec200 = parseInt(frm.sec200.value, 10); // not having the ,10 (base 10) seems to screw up Opera
+          var min200 = parseInt(frm.min200.value, 10);
+          var sec400 = parseInt(frm.sec400.value, 10);
+          var min400 = parseInt(frm.min400.value, 10);
+          var pl = frm.pl.options[frm.pl.selectedIndex].value;
+          var cssms = 200 / (min400 * 60 + sec400 * 1 - min200 * 60 - sec200 * 1);
+          var css100 = 100 / cssms;
+          var cssMins = parseInt(css100 / 60, 10);
+          var cssSecs = Math.round(css100 - cssMins * 60);
+          //var cssSecs = Math.round(css100 % 60);
+          if (pl == "025") { myd = 'yd' } else { myd = 'm' }
+          if (cssSecs <= 9) {
+            cssPace = cssMins + ":" + "0" + cssSecs;
+          }
+          else {
+            cssPace = cssMins + ":" + cssSecs;
+          }
+          if ((min400 * 60 + sec400) < ((min200 * 60 + sec200) * 2)) {
+            document.getElementById('csspace').innerHTML = 'Error: Your 200 pace is slower than your 400 pace!';
+            document.getElementById('ttsetting').innerHTML = '<a href="javascript:Calculator.css.explain();">(more about this error)</a>';
+          } else {
+            document.getElementById('csspace').innerHTML = cssPace + '/100' + myd;
+            ttsetting = css100 * pl / 100;
+            document.getElementById('ttsetting').innerHTML = ttsetting.toFixed(2).toString().replace(".", ":");
+          }
+        },
+        explain: function explain() {
+          // we need to reproduce this warning in some way on the form.
+          alert('It is not possible to have a 200 pace slower than your 400 pace because you must have swam a quicker 200 within the 400.\n\nRemember the 200 and 400 times should be well paced timetrial results - if these are your real times then we\'re sure you can swim a faster 200. Is it possible you started too fast and blew up?');
+        }
+      },
+
+      spm: {
+        calculatesr: function calculatesr() {
+          var strokes = document.strokerateForm.strokes10.value;
+          if (strokes > 0) {
+            var strokerate = parseInt(600 / strokes);
+            strokeratetext = strokerate + " SPM (strokes per minute)";
+          }
+          else {
+            strokeratetext = "error!";
+          }
+          document.getElementById('strokerate10text').innerHTML = strokeratetext;
+        }
+      },
+
+      spc: {
+        changemyds: function changemyds(form) {
+          var index = form.pl.selectedIndex
+          if (form.pl.options[index].value == "025") {
+            // 025 means yard pool so change labels to yards
+
+            document.getElementById('metersyards').innerHTML =
+              '<p style="text-align:right; margin-bottom: 20px; ">100yd time:</p>' +
+              '<p style="text-align:right; margin-bottom:20px; ">400yd time:</p>' +
+              '<p style= "text-align:right; margin-bottom:20px;" >1500yd time:</p>' +
+              '<p style="text-align:right; margin-bottom:0px; ">3800yd time:</p>';
+          }
+          else {
+            //change labels to meters
+
+            document.getElementById('metersyards').innerHTML =
+              '<p style="text-align:right; margin-bottom: 20px; ">100m time:</p>' +
+              '<p style="text-align:right; margin-bottom:20px; ">400m time:</p>' +
+              '<p style= "text-align:right; margin-bottom:20px;" >1500m time:</p>' +
+              '<p style="text-align:right; margin-bottom:0px; ">3800m time:</p>';
+          }
+          this.calculate();
+        },
+        calculate: function calculate() {
+          var pl = document.swimmingForm.pl.options[document.swimmingForm.pl.selectedIndex].value;
+          var spl = document.swimmingForm.spl.value;
+          var spm = document.swimmingForm.spm.value;
+          var pol = document.swimmingForm.pol.value;
+          var t100 = (100 / pl) * (pol / 1.6 + spl * 60 / spm);
+          var t400 = t100 * 4;
+          var t1500 = t100 * 15;
+          var t3800 = t100 * 38;
+          document.getElementById('t100TimeText').innerHTML = this.createTimeText(t100);
+          document.getElementById('t400TimeText').innerHTML = this.createTimeText(t400);
+          document.getElementById('t1500TimeText').innerHTML = this.createTimeText(t1500);
+          document.getElementById('t3800TimeText').innerHTML = this.createTimeText(t3800);
+        },
+        createTimeText: function createTimeText(Tsecs) {
+          // this function converts seconds to format m:ss
+          var Mins = parseInt(Tsecs / 60);
+          var Secs = parseInt(Tsecs) % 60;
+          if (Secs <= 9) {
+            Time = Mins + ":" + "0" + Secs;
+          }
+          else {
+
+            Time = Mins + ":" + Secs;
+
+          }
+          return Time;
+        }
+      }
+    };
+
+    //})();
+  </script>
+  <script src="inline.65ce44ed992910958f6b.bundle.js" type="text/javascript">
+  </script>
+  <script src="polyfills.43a735499ab326969318.bundle.js" type="text/javascript">
+  </script>
+  <script src="vendor.88b65d1449564faf038c.bundle.js" type="text/javascript">
+  </script>
+  <script src="main.abbd3369bf302bbc86ce.bundle.js" type="text/javascript">
+  </script>
+ </body>
+</html>

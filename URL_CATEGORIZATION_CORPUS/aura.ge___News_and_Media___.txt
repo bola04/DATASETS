@@ -1,0 +1,3256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+  <meta content="აურა - საინფორმაციო, შემეცნებით-ინტელექტუალური, გასართობი ინტერნეტ პორტალი - აურა.გე" name="description"/>
+  <meta content="აურა, საინფორმაციო, შემეცნებითი, ინტელექტუალური, გასართობი, ინტერნეტ, პორტალი" name="keywords"/>
+  <title>
+   Aura.ge
+  </title>
+  <meta content="HyqmY1WIgdAC3E4on4pu6iZtl2qI0F30yVduOUpfDkk" name="google-site-verification"/>
+  <meta content="70ffc3790e5a0e60" name="yandex-verification"/>
+  <meta content="index, follow" name="robots"/>
+  <link href="http://www.aura.ge/templates/default/style/main.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/main_news.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/left_menu.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/paginator.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/skinned_select.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/js/SpryAssets/SpryTabbedPanels.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/js/calendar/calenrad.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/liteaccordion.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/styles.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/templates/default/style/email_form/modal-contact-form.css" rel="stylesheet" type="text/css"/>
+  <link href="http://www.aura.ge/favicon.ico" rel="SHORTCUT ICON"/>
+  <script src="http://www.aura.ge/js/jquery-1.6.3.min.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/main.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/geo.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/left_menu/jquery.min.js" type="text/javascript">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/left_menu/ddaccordion.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/calendar/calendar.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/SpryAssets/SpryTabbedPanels.js">
+  </script>
+  <script language="javascript" src="http://code.jquery.com/jquery-1.4.3.min.js" type="text/javascript">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/jquery.flow.1.2.js" type="text/javascript">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/jquery.skinned-select.js" type="text/javascript">
+  </script>
+  <script src="http://www.aura.ge/js/slides.min.jquery.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/jquery.paginator.js">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/liteaccordion.jquery.js">
+  </script>
+  <script language="javascript">
+   //** Accordion Content script: By Dynamic Drive, at http://www.dynamicdrive.com
+//** Created: Jan 7th, 08'. Last updated: June 7th, 2010 to v1.9
+
+//Version 1.9: June 7th, 2010':
+//**1) Ajax content support added, so a given header's content can be dynamically fetched from an external file and on demand.
+//**2) Optimized script performance by caching header and content container references
+
+
+var ddaccordion={
+	ajaxloadingmsg: '<img src="loading2.gif" /><br />Loading Content...', //customize HTML to output while Ajax content is being fetched (if applicable)
+
+	headergroup: {}, //object to store corresponding header group based on headerclass value
+	contentgroup: {}, //object to store corresponding content group based on headerclass value
+
+	preloadimages:function($images){
+		$images.each(function(){
+			var preloadimage=new Image()
+			preloadimage.src=this.src
+		})
+	},
+
+	expandone:function(headerclass, selected){ //PUBLIC function to expand a particular header
+		this.toggleone(headerclass, selected, "expand")
+	},
+
+	collapseone:function(headerclass, selected){ //PUBLIC function to collapse a particular header
+		this.toggleone(headerclass, selected, "collapse")
+	},
+
+	expandall:function(headerclass){ //PUBLIC function to expand all headers based on their shared CSS classname
+		var $headers=this.headergroup[headerclass]
+		this.contentgroup[headerclass].filter(':hidden').each(function(){
+			$headers.eq(parseInt($(this).attr('contentindex'))).trigger("evt_accordion")
+		})
+	},
+
+	collapseall:function(headerclass){ //PUBLIC function to collapse all headers based on their shared CSS classname
+		var $headers=this.headergroup[headerclass]
+		this.contentgroup[headerclass].filter(':visible').each(function(){
+			$headers.eq(parseInt($(this).attr('contentindex'))).trigger("evt_accordion")
+		})
+	},
+
+	toggleone:function(headerclass, selected, optstate){ //PUBLIC function to expand/ collapse a particular header
+		var $targetHeader=this.headergroup[headerclass].eq(selected)
+		var $subcontent=this.contentgroup[headerclass].eq(selected)
+		if (typeof optstate=="undefined" || optstate=="expand" && $subcontent.is(":hidden") || optstate=="collapse" && $subcontent.is(":visible"))
+			$targetHeader.trigger("evt_accordion")
+	},
+
+	ajaxloadcontent:function($targetHeader, $targetContent, config, callback){
+		var ajaxinfo=$targetHeader.data('ajaxinfo')
+
+		function handlecontent(content){ //nested function
+			if (content){ //if ajax content has loaded
+				ajaxinfo.cacheddata=content //remember ajax content 
+				ajaxinfo.status="cached" //set ajax status to cached
+				if ($targetContent.queue("fx").length==0){ //if this content isn't currently expanding or collapsing
+					$targetContent.hide().html(content) //hide loading message, then set sub content's HTML to ajax content
+					ajaxinfo.status="complete" //set ajax status to complete
+					callback() //execute callback function- expand this sub content
+				}
+			}
+			if (ajaxinfo.status!="complete"){
+				setTimeout(function(){handlecontent(ajaxinfo.cacheddata)}, 100) //call handlecontent() again until ajax content has loaded (ajaxinfo.cacheddata contains data)
+			}
+		} //end nested function
+
+		if (ajaxinfo.status=="none"){ //ajax data hasn't been fetched yet
+			$targetContent.html(this.ajaxloadingmsg)
+			$targetContent.slideDown(config.animatespeed)
+			ajaxinfo.status="loading" //set ajax status to "loading"
+			$.ajax({
+				url: ajaxinfo.url, //path to external menu file
+				error:function(ajaxrequest){
+					handlecontent('Error fetching content. Server Response: '+ajaxrequest.responseText)
+				},
+				success:function(content){
+					content=(content=="")? " " : content //if returned content is empty, set it to "space" is content no longer returns false/empty (hasn't loaded yet)
+					handlecontent(content)
+				}
+			})
+		}
+		else if (ajaxinfo.status=="loading")
+			handlecontent(ajaxinfo.cacheddata)
+	},
+
+	expandit:function($targetHeader, $targetContent, config, useractivated, directclick, skipanimation){
+		var ajaxinfo=$targetHeader.data('ajaxinfo')
+		if (ajaxinfo){ //if this content should be fetched via Ajax
+			if (ajaxinfo.status=="none" || ajaxinfo.status=="loading")
+				this.ajaxloadcontent($targetHeader, $targetContent, config, function(){ddaccordion.expandit($targetHeader, $targetContent, config, useractivated, directclick)})
+			else if (ajaxinfo.status=="cached"){
+				$targetContent.html(ajaxinfo.cacheddata)
+				ajaxinfo.cacheddata=null
+				ajaxinfo.status="complete"
+			}
+		}
+		this.transformHeader($targetHeader, config, "expand")
+		$targetContent.slideDown(skipanimation? 0 : config.animatespeed, function(){
+			config.onopenclose($targetHeader.get(0), parseInt($targetHeader.attr('headerindex')), $targetContent.css('display'), useractivated)
+			if (config.postreveal=="gotourl" && directclick){ //if revealtype is "Go to Header URL upon click", and this is a direct click on the header
+				var targetLink=($targetHeader.is("a"))? $targetHeader.get(0) : $targetHeader.find('a:eq(0)').get(0)
+				if (targetLink) //if this header is a link
+					setTimeout(function(){location=targetLink.href}, 200) //ignore link target, as window.open(targetLink, targetLink.target) doesn't work in FF if popup blocker enabled
+			}
+		})
+	},
+
+	collapseit:function($targetHeader, $targetContent, config, isuseractivated){
+		this.transformHeader($targetHeader, config, "collapse")
+		$targetContent.slideUp(config.animatespeed, function(){config.onopenclose($targetHeader.get(0), parseInt($targetHeader.attr('headerindex')), $targetContent.css('display'), isuseractivated)})
+	},
+
+	transformHeader:function($targetHeader, config, state){
+		$targetHeader.addClass((state=="expand")? config.cssclass.expand : config.cssclass.collapse) //alternate btw "expand" and "collapse" CSS classes
+		.removeClass((state=="expand")? config.cssclass.collapse : config.cssclass.expand)
+		if (config.htmlsetting.location=='src'){ //Change header image (assuming header is an image)?
+			$targetHeader=($targetHeader.is("img"))? $targetHeader : $targetHeader.find('img').eq(0) //Set target to either header itself, or first image within header
+			$targetHeader.attr('src', (state=="expand")? config.htmlsetting.expand : config.htmlsetting.collapse) //change header image
+		}
+		else if (config.htmlsetting.location=="prefix") //if change "prefix" HTML, locate dynamically added ".accordprefix" span tag and change it
+			$targetHeader.find('.accordprefix').html((state=="expand")? config.htmlsetting.expand : config.htmlsetting.collapse)
+		else if (config.htmlsetting.location=="suffix")
+			$targetHeader.find('.accordsuffix').html((state=="expand")? config.htmlsetting.expand : config.htmlsetting.collapse)
+	},
+
+	urlparamselect:function(headerclass){
+		var result=window.location.search.match(new RegExp(headerclass+"=((\\d+)(,(\\d+))*)", "i")) //check for "?headerclass=2,3,4" in URL
+		if (result!=null)
+			result=RegExp.$1.split(',')
+		return result //returns null, [index], or [index1,index2,etc], where index are the desired selected header indices
+	},
+
+	getCookie:function(Name, id){ 
+		var re=new RegExp(Name+"=[^;]+", "i") //construct RE to search for target name/value pair
+		if (document.cookie.match(re)) //if cookie found
+			if(id == 1)
+            {
+              return document.cookie.match(re)[0].split("=")[1] //return its value
+            }
+		return null
+	},
+
+	setCookie:function(name, value){
+		document.cookie = name + "=" + value + "; path=/"
+	},
+
+	init:function(config){
+	document.write('<style type="text/css">\n')
+	document.write('.'+config.contentclass+'{display: none}\n') //generate CSS to hide contents
+	document.write('a.hiddenajaxlink{display: none}\n') //CSS class to hide ajax link
+	document.write('<\/style>')
+	jQuery(document).ready(function($){
+		ddaccordion.urlparamselect(config.headerclass)
+		var persistedheaders=ddaccordion.getCookie(config.headerclass, 0)
+		ddaccordion.headergroup[config.headerclass]=$('.'+config.headerclass) //remember header group for this accordion
+		ddaccordion.contentgroup[config.headerclass]=$('.'+config.contentclass) //remember content group for this accordion
+		var $headers=ddaccordion.headergroup[config.headerclass]
+		var $subcontents=ddaccordion.contentgroup[config.headerclass]
+		config.cssclass={collapse: config.toggleclass[0], expand: config.toggleclass[1]} //store expand and contract CSS classes as object properties
+		config.revealtype=config.revealtype || "click"
+		config.revealtype=config.revealtype.replace(/mouseover/i, "mouseenter")
+		if (config.revealtype=="clickgo"){
+			config.postreveal="gotourl" //remember added action
+			config.revealtype="click" //overwrite revealtype to "click" keyword
+		}
+		if (typeof config.togglehtml=="undefined")
+			config.htmlsetting={location: "none"}
+		else
+			config.htmlsetting={location: config.togglehtml[0], collapse: config.togglehtml[1], expand: config.togglehtml[2]} //store HTML settings as object properties
+		config.oninit=(typeof config.oninit=="undefined")? function(){} : config.oninit //attach custom "oninit" event handler
+		config.onopenclose=(typeof config.onopenclose=="undefined")? function(){} : config.onopenclose //attach custom "onopenclose" event handler
+		var lastexpanded={} //object to hold reference to last expanded header and content (jquery objects)
+		var expandedindices=ddaccordion.urlparamselect(config.headerclass) || ((config.persiststate && persistedheaders!=null)? persistedheaders : config.defaultexpanded)
+		if (typeof expandedindices=='string') //test for string value (exception is config.defaultexpanded, which is an array)
+			expandedindices=expandedindices.replace(/c/ig, '').split(',') //transform string value to an array (ie: "c1,c2,c3" becomes [1,2,3]
+		if (expandedindices.length==1 && expandedindices[0]=="-1") //check for expandedindices value of [-1], indicating persistence is on and no content expanded
+			expandedindices=[]
+		if (config["collapseprev"] && expandedindices.length>1) //only allow one content open?
+			expandedindices=[expandedindices.pop()] //return last array element as an array (for sake of jQuery.inArray())
+		if (config["onemustopen"] && expandedindices.length==0) //if at least one content should be open at all times and none are, open 1st header
+			expandedindices=[0]
+		$headers.each(function(index){ //loop through all headers
+			var $header=$(this)
+			if (/(prefix)|(suffix)/i.test(config.htmlsetting.location) && $header.html()!=""){ //add a SPAN element to header depending on user setting and if header is a container tag
+				$('<span class="accordprefix"></span>').prependTo(this)
+				$('<span class="accordsuffix"></span>').appendTo(this)
+			}
+			$header.attr('headerindex', index+'h') //store position of this header relative to its peers
+			$subcontents.eq(index).attr('contentindex', index+'c') //store position of this content relative to its peers
+			var $subcontent=$subcontents.eq(index)
+			var $hiddenajaxlink=$subcontent.find('a.hiddenajaxlink:eq(0)') //see if this content should be loaded via ajax
+			if ($hiddenajaxlink.length==1){
+				$header.data('ajaxinfo', {url:$hiddenajaxlink.attr('href'), cacheddata:null, status:'none'}) //store info about this ajax content inside header
+			}
+			var needle=(typeof expandedindices[0]=="number")? index : index+'' //check for data type within expandedindices array- index should match that type
+			if (jQuery.inArray(needle, expandedindices)!=-1){ //check for headers that should be expanded automatically (convert index to string first)
+				ddaccordion.expandit($header, $subcontent, config, false, false, !config.animatedefault) //3rd last param sets 'isuseractivated' parameter, 2nd last sets isdirectclick, last sets skipanimation param
+				lastexpanded={$header:$header, $content:$subcontent}
+			}  //end check
+			else{
+				$subcontent.hide()
+				config.onopenclose($header.get(0), parseInt($header.attr('headerindex')), $subcontent.css('display'), false) //Last Boolean value sets 'isuseractivated' parameter
+				ddaccordion.transformHeader($header, config, "collapse")
+			}
+		})
+		$headers.bind("evt_accordion", function(e, isdirectclick){ //assign CUSTOM event handler that expands/ contacts a header
+				var $subcontent=$subcontents.eq(parseInt($(this).attr('headerindex'))) //get subcontent that should be expanded/collapsed
+				if ($subcontent.css('display')=="none"){
+					ddaccordion.expandit($(this), $subcontent, config, true, isdirectclick) //2nd last param sets 'isuseractivated' parameter
+					if (config["collapseprev"] && lastexpanded.$header && $(this).get(0)!=lastexpanded.$header.get(0)){ //collapse previous content?
+						ddaccordion.collapseit(lastexpanded.$header, lastexpanded.$content, config, true) //Last Boolean value sets 'isuseractivated' parameter
+					}
+					lastexpanded={$header:$(this), $content:$subcontent}
+				}
+				else if (!config["onemustopen"] || config["onemustopen"] && lastexpanded.$header && $(this).get(0)!=lastexpanded.$header.get(0)){
+					ddaccordion.collapseit($(this), $subcontent, config, true) //Last Boolean value sets 'isuseractivated' parameter
+				}
+ 		})
+		$headers.bind(config.revealtype, function(){
+			if (config.revealtype=="mouseenter"){
+				clearTimeout(config.revealdelay)
+				var headerindex=parseInt($(this).attr("headerindex"))
+				config.revealdelay=setTimeout(function(){ddaccordion.expandone(config["headerclass"], headerindex)}, config.mouseoverdelay || 0)
+			}
+			else{
+				$(this).trigger("evt_accordion", [true]) //last parameter indicates this is a direct click on the header
+				return false //cancel default click behavior
+			}
+		})
+		$headers.bind("mouseleave", function(){
+			clearTimeout(config.revealdelay)
+		})
+		config.oninit($headers.get(), expandedindices)
+		$(window).bind('unload', function(){ //clean up and persist on page unload
+			$headers.unbind()
+			var expandedindices=[]
+			$subcontents.filter(':visible').each(function(index){ //get indices of expanded headers
+				expandedindices.push($(this).attr('contentindex'))
+			})
+			if (config.persiststate==true && $headers.length>0){ //persist state?
+				expandedindices=(expandedindices.length==0)? '-1c' : expandedindices //No contents expanded, indicate that with dummy '-1c' value?
+				ddaccordion.setCookie(config.headerclass, expandedindices)
+			}
+		})
+	})
+	}
+}
+
+//preload any images defined inside ajaxloadingmsg variable
+ddaccordion.preloadimages(jQuery(ddaccordion.ajaxloadingmsg).filter('img'))
+  </script>
+  <script charset="utf-8" src="http://www.aura.ge/js/scrollTo.js" type="text/javascript">
+  </script>
+  <script charset="utf-8" type="text/javascript">
+   $(function () { // run this code on page load (AKA DOM load)
+			/* set variables locally for increased performance */
+			var scroll_timer;
+			var displayed = false;
+			var $message = $('#message');
+			var $window = $(window);
+			var top = $(document.body).children(0).position().top;
+
+			/* react to scroll event on window */
+			$window.scroll(function () {
+				window.clearTimeout(scroll_timer);
+				scroll_timer = window.setTimeout(function () { // use a timer for performance
+					if($window.scrollTop() <= top) // hide if at the top of the page
+					{
+						displayed = false;
+						$message.fadeOut(500);
+					}
+					else if(displayed == false) // show if scrolling down
+					{
+						displayed = true;
+						$message.stop(true, true).fadeIn(500).click(function () { $message.fadeOut(500); });
+					}
+				}, 100);
+			});
+			$('#top-link').click(function(e) { 
+				$("html, body").animate({ scrollTop: 0 }, "slow");
+				return false;
+			});
+		});
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/cufon/cufon-yui.js" type="text/javascript">
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/cufon/BPG_Nino_Mtavruli_italic_700.font.js" type="text/javascript">
+  </script>
+  <script>
+   Cufon.replace('.catalogue_border a', 'bpg_nino_mtavruli_normal');
+    Cufon.replace('.sub_catalogue_border a', 'bpg_nino_mtavruli_normal');
+  </script>
+  <script type="text/javascript">
+   var switchTo5x=false;
+  </script>
+  <script src="http://w.sharethis.com/button/buttons.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   stLight.options({publisher: "88a4617a-1ef0-49f2-b528-acf3aa30a23c", doNotHash: true, doNotCopy: false, hashAddressBar: false});
+  </script>
+  <script language="javascript" src="http://www.aura.ge/js/cufon/BPG_Glaho_400.font.js" type="text/javascript">
+  </script>
+  <script>
+   Cufon.replace('#letter', 'bpg_glaho');
+  </script>
+  <style>
+   .container {padding: 0 0 70px 0;}
+		#message
+		{
+			/* display: block before hiding */
+			display: block;
+			display: none;
+
+			/* link is above all other elements */
+			z-index: 999; 
+
+			/* link doesn't hide text behind it */
+			opacity: .8;
+
+			/* link stays at same place on page */
+			position: fixed;
+
+			/* link goes at the bottom of the page */
+			bottom: 150px;
+			margin-top: -80px; /* = height + preferred bottom margin */
+
+			/* link is centered */
+			left: 90%;
+			margin-left: -70px;
+
+			/* round the corners (to your preference) */
+			-moz-border-radius: 24px;
+			-webkit-border-radius: 24px;
+
+			/* make it big and easy to see (size, style to preferences) */
+			width: 300px;
+			line-height: 20px;
+			height: 20px;
+			padding: 10px;
+			font-size: 24px;
+			text-align: center;
+		}
+		#message a { color: #000; font-size: 14px; }
+  </style>
+  <script language="javascript">
+   ddaccordion.init({
+	headerclass: "submenuheader",
+	contentclass: "submenu",
+	revealtype: "click",
+	mouseoverdelay: 200,
+	collapseprev: true,
+	defaultexpanded: [],
+	onemustopen: false,
+	animatedefault: false,
+	persiststate: true,
+	toggleclass: ["", ""],
+	togglehtml: ["suffix", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+	animatespeed: "fast",
+	oninit:function(headers, expandedindices){
+	},
+	onopenclose:function(header, index, state, isuseractivated){
+
+	}
+})
+ddaccordion.init({
+	headerclass: "submenuheader2",
+	contentclass: "submenu2",
+	revealtype: "click",
+	mouseoverdelay: 200,
+	collapseprev: true,
+	defaultexpanded: [],
+	onemustopen: false,
+	animatedefault: false,
+	persiststate: true,
+	toggleclass: ["", ""],
+	togglehtml: ["suffix", ""], //Additional HTML added to the header when it's collapsed and expanded, respectively  ["position", "html1", "html2"] (see docs)
+	animatespeed: "fast",
+	oninit:function(headers, expandedindices){
+	},
+	onopenclose:function(header, index, state, isuseractivated){
+
+	}
+})
+  </script>
+  <script language="javascript" type="text/javascript">
+   $(function()
+{
+	$("#open_search_hospital").click(function(event) {
+	event.preventDefault();
+	$("#search_hospitals").slideToggle();
+	});
+
+
+	$("#rg_gaxsna").click(function(event) {
+	event.preventDefault();
+	$("#login_page").slideUp();
+	event.preventDefault();
+	$("#registration_page").slideToggle();
+	});
+
+	/*$("#lg_daxurva").click(function(event) {
+	event.preventDefault();
+	$("#login_page").slideUp();
+	});*/
+});
+
+
+
+
+(function($){
+	$.fn.extend ({
+		
+		options: {},
+
+		defaultOptions: {
+							months:	new Array("January","February","March","April","May","June","July","August","September","October","November","December"),
+							days:   new Array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"),
+	 					},
+		
+		
+		DisplayClock: function(opts){
+
+			var t = this;
+			
+			this.options =  $.extend(this.defaultOptions, opts);
+			
+			this.options.ServerDate =  new Date(this.options.CurTime);
+			
+			
+			setInterval(function(){
+				t.UpdateClock()	
+			}, 1000);
+			
+		},
+		
+		
+		UpdateClock: function(){
+			
+			this.options.ServerDate.setSeconds(this.options.ServerDate.getSeconds()+1)
+			
+			var datestring = this.options.days[this.options.ServerDate.getDay()]+ " " + this.LeadingZero(this.options.ServerDate.getDate()) + " " + this.options.months[this.options.ServerDate.getMonth()] + " " + this.options.ServerDate.getFullYear();
+			var timestring = this.LeadingZero(this.options.ServerDate.getHours())+":"+this.LeadingZero(this.options.ServerDate.getMinutes())+":"+this.LeadingZero(this.options.ServerDate.getSeconds());
+			
+			$(this).html(datestring + ', ' + timestring);
+			
+		},
+		
+		LeadingZero: function(str){
+			
+			return str.toString().length == 1 ? "0" + str : str;
+		
+		}
+		
+				
+	});
+})(jQuery);
+  </script>
+  <script>
+   function openContactForm(objId) {
+		document.getElementById('envelope').style.display='block';
+		var maskHeight = $(document).height();  
+		var maskWidth = $(window).width();
+		$('#fade').css({height:maskHeight, width:maskWidth}).show();
+		document.getElementById('contactForm').action = 'http://www.aura.ge/index.php?sendemail=' + objId;
+	}
+
+	function closeContactForm() {
+		document.getElementById('envelope').style.display='none';
+		document.getElementById('fade').style.display='none';
+	}
+  </script>
+ </head>
+ <body>
+  <div id="fb-root">
+  </div>
+  <script>
+   (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ka_GE/sdk.js#xfbml=1&version=v2.5";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div class="black-overlay" id="fade">
+  </div>
+  <center>
+   <div style="position: relative; width: 1074px; background-color: #fff; margin-top: 0px;">
+    <div align="center" style="border: 1px solid #fff; border-top: none; background-color: #fff;">
+     <div class="header_back">
+      <div align="center" style="position: relative; width: 1000px;">
+       <a href="http://www.aura.ge/main.html" style="z-index: 1000; position: absolute; width: 80px; height: 60px; left: 90px; top: 25px;">
+       </a>
+       <a href="http://www.aura.ge/main.html" style="z-index: 1000; position: absolute; width: 65px; height: 20px; left: 170px; top: 50px;">
+       </a>
+       <table align="center" border="0" cellpadding="0" cellspacing="0" class="top" width="1000">
+        <tr>
+         <td align="left" height="50" id="top_h" valign="top" width="174">
+         </td>
+         <td align="left" height="50" valign="top" width="826">
+          <table align="left" border="0" cellpadding="0" cellspacing="0" width="820">
+           <tr>
+            <td align="left" valign="top" width="400">
+            </td>
+            <td align="left" valign="bottom" width="170">
+             <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Ffacebook.com%2Faura.ge&amp;width=130&amp;layout=button_count&amp;action=like&amp;show_faces=true&amp;share=false&amp;height=21" style="border:none; overflow:hidden; width:130px; height:21px;">
+             </iframe>
+            </td>
+            <td align="left" height="46" valign="bottom" width="250">
+             <div class="clock-box left">
+             </div>
+             <script>
+              $(function() {
+				$('.clock-box').DisplayClock({
+					  months: new Array("იანვარი", "თებერვალი", "მარტი", "აპრილი", "მაისი", "ივნისი", "ივლისი", "აგვისტო", "სექტემბერი", "ოქტომბერი", "ნოემბერი", "დეკემბერი"),
+					  days: new Array("კვირა", "ორშაბათი", "სამშაბათი", "ოთხშაბათი", "ხუთშაბათი", "პარასკევი", "შაბათი"),
+					  CurTime: "Jun 21, 2018 10:58:47",
+				   });
+				});
+             </script>
+            </td>
+           </tr>
+          </table>
+         </td>
+        </tr>
+        <tr>
+         <td align="left" colspan="2" height="50" valign="top" width="1000">
+          <table align="left" border="0" cellpadding="0" cellspacing="0" width="1000">
+           <tr>
+            <td align="left" height="41" id="bottom_left" valign="top" width="174">
+            </td>
+            <td align="left" height="41" id="bottom_right" valign="top" width="826">
+             <table align="left" border="0" cellpadding="0" cellspacing="0" width="804">
+              <tr>
+               <td align="left" colspan="4" height="7" valign="top" width="804">
+               </td>
+              </tr>
+              <tr>
+               <td align="left" height="15" valign="middle" width="744">
+               </td>
+               <td align="center" height="15" valign="middle" width="20">
+                <a href="http://www.aura.ge/main.html">
+                 <img border="0" height="11" src="http://www.aura.ge/templates/default/style/home.png" width="15"/>
+                </a>
+               </td>
+               <td align="center" height="15" valign="middle" width="20">
+                <a href="http://www.aura.ge/sitemap.html">
+                 <img border="0" height="13" src="http://www.aura.ge/templates/default/style/map.png" width="13"/>
+                </a>
+               </td>
+               <td align="center" height="15" valign="middle" width="20">
+                <a href="http://www.aura.ge/contact.html" style="display: block; margin-top: 1px;">
+                 <img border="0" height="8" src="http://www.aura.ge/templates/default/style/contact.png" width="15"/>
+                </a>
+               </td>
+              </tr>
+             </table>
+            </td>
+           </tr>
+          </table>
+         </td>
+        </tr>
+       </table>
+      </div>
+     </div>
+     <div style="clear: both;">
+     </div>
+     <div style="height: 24px; clear: both;">
+     </div>
+     <table align="center" border="0" cellpadding="0" cellspacing="0" style="background: #FFF;" width="1000">
+      <tr>
+       <td align="left" valign="top" width="205">
+        <form action="http://www.aura.ge/main.html" method="get">
+         <input name="page" type="hidden" value="search"/>
+         <table align="left" border="0" cellpadding="0" cellspacing="0" class="search" width="192">
+          <tr>
+           <td align="center" height="23" valign="middle" width="30">
+            <input checked="checked" id="geoKeys" name="geo_key" title="ქართულად წერა" type="checkbox"/>
+           </td>
+           <td align="left" height="23" valign="top" width="132">
+            <input id="search_name" name="search" onkeypress="return makeGeo(this,event,'geoKeys');" type="text"/>
+           </td>
+           <td align="left" height="23" valign="top" width="20">
+            <input id="submit" name="" type="submit" value=""/>
+           </td>
+          </tr>
+         </table>
+        </form>
+       </td>
+       <td align="left" valign="top" width="795">
+        <table align="left" border="0" cellpadding="0" cellspacing="0" width="795">
+         <tr>
+          <td align="left" valign="top" width="795">
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/141-katalogebi.html" id="link">
+             ნავიგატორი
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/mcvane_xazi.png" width="130"/>
+            </div>
+           </div>
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/menu/archevani.html" id="link">
+             არჩევანი
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/tetri_xazi.png" width="130"/>
+            </div>
+           </div>
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/menu/istoriebi.html" id="link">
+             ისტორიები
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/mcvane_xazi.png" width="130"/>
+            </div>
+           </div>
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/menu/biografiebi.html" id="link">
+             ბიოგრაფიები
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/tetri_xazi.png" width="130"/>
+            </div>
+           </div>
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/menu/gantvirtva.html" id="link">
+             განტვირთვა
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/mcvane_xazi.png" width="130"/>
+            </div>
+           </div>
+           <div class="top_menu">
+            <div id="img">
+            </div>
+            <a href="http://www.aura.ge/menu/fotoaura.html" id="link">
+             ფოტოაურა
+            </a>
+            <div id="line">
+             <img border="0" height="4" src="http://www.aura.ge/templates/default/style/tetri_xazi.png" width="130"/>
+            </div>
+           </div>
+          </td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+     </table>
+     <div style="clear: both;">
+     </div>
+    </div>
+    <div align="center" class="background_1">
+     <div align="center" class="background_2">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" width="1000">
+       <tr>
+        <td align="left" height="37" valign="top" width="1000">
+        </td>
+       </tr>
+       <tr>
+        <td align="left" style="background: #fff;" valign="top" width="1000">
+         <div class="envelope" id="envelope">
+          <a class="close-btn" href="javascript:closeContactForm();" title="დახურვა">
+          </a>
+          <div class="top-title">
+           წერილის გაგზავნა!
+          </div>
+          <form action="" id="contactForm" method="post">
+           <input class="your-name" name="sender_name" onblur="this.value=!this.value?'* თქვენი სახელი':this.value;" onclick="this.value='';" onfocus="this.select()" type="text" value="* თქვენი სახელი"/>
+           <input class="email-address" name="sender_email" onblur="this.value=!this.value?'* თქვენი ელ-ფოსტა':this.value;" onclick="this.value='';" onfocus="this.select()" type="text" value="* თქვენი ელ-ფოსტა"/>
+           <textarea class="your-message" name="sender_text" placeholder="* ტექსტი">
+           </textarea>
+           <input class="send-message" name="send" type="submit" value="გაგზავნა"/>
+          </form>
+         </div>
+         <div id="left_side">
+          <table align="left" border="0" cellpadding="0" cellspacing="0" class="left_menu" width="184">
+           <tr>
+            <td align="left" height="38" valign="top" width="184">
+             <table align="left" border="0" cellpadding="0" cellspacing="0" id="top" width="184">
+              <tr>
+               <td align="left" height="38" valign="middle" width="34">
+               </td>
+               <th align="left" height="38" valign="middle" width="150">
+                თემატიკა
+               </th>
+              </tr>
+             </table>
+            </td>
+           </tr>
+           <tr>
+            <td align="center" valign="top" width="184">
+             <div align="left" class="glossymenu">
+              <a class="menuitem submenuheader">
+               ქალბატონებს
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/47-fexmdzimoba.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ფეხმძიმობა
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/124-deda-da-shvili.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  დედა და შვილი
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/117-dietebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  დიეტები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/17-tavis-movla.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  თავის მოვლა
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/168-kulinaria.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  კულინარია
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/18-urtiertobebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ურთიერთობები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               მამაკაცებს
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/121-statiebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სტატიები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ბავშვთა სამყარო
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/27-saxaliso-matematika.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სახალისო მათემატიკა
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/336-gramatika.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  გრამატიკა
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/73-stsrafi-kitxva.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სწრაფი კითხვა
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/314-sabavshvo-leqsebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  საბავშვო ლექსები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/120-enebis-shestsavla.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ენების შესწავლა
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ლიტერატურა
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/327-avtorebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ავტორები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/101-poezia.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  პოეზია
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/103-sabavshvo.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  საბავშვო
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/311-klasika.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  კლასიკა
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ჯანმრთელობა
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/3-statiebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სტატიები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/31-rchevebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  რჩევები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ფსიქოლოგია
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/111-arsi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  არსი
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               სექსი
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/338-seqsis-enciklopedia.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სექსის ენციკლოპედია
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ბიზნესი
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/29-rchevebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  რჩევები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ეტიკეტი
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/94-dziritadi-principebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ძირითადი პრინციპები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               რელიგია
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/23-locvebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ლოცვები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/183-statiebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სტატიები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/187-filmebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ფილმები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               შეუცნობელი
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/40-horoskopebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ჰოროსკოპები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/332-qirologia.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ქიროლოგია
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/39-amuletebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ამულეტები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ავტო+
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/42-avto-katalogi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ავტო კატალოგი
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               მოდა
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/114-istoriebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ისტორიები
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               ენციკლოპედიები
+              </a>
+              <span class="menu_line">
+              </span>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/138-sunamoebis-katalogi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  სუნამოების კატალოგი
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/179-alkoholuri-sasmelebis-katalogi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ალკოჰოლური სასმელების კატალოგი
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <a class="menuitem submenuheader">
+               საიტის შესახებ
+              </a>
+              <div class="submenu">
+               <ul>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/335-saavtoro-uflebebi.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  საავტორო უფლებები
+                 </a>
+                </li>
+                <li>
+                 <a class="menu_link" href="http://www.aura.ge/344-xelmomtserebistvis.html">
+                  <img border="0" height="1" src="http://www.aura.ge/templates/default/style/menu_line.png" style="float: left; margin-top: 10px;" width="7"/>
+                  ხელმომწერებისთვის
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </div>
+            </td>
+           </tr>
+          </table>
+          <div style="clear: both;">
+          </div>
+          <div style="clear: both;">
+          </div>
+          <form action="#email_id" method="post">
+           <table align="left" border="0" cellpadding="0" cellspacing="0" class="email" id="email_id" width="184">
+            <tr>
+             <td align="left" colspan="2" height="20" valign="middle" width="184">
+              <b style="color: #696969;">
+               სიახლის გამოწერა
+              </b>
+             </td>
+            </tr>
+            <tr>
+             <td align="left" colspan="2" style="color: #D70222;" valign="middle" width="184">
+             </td>
+            </tr>
+            <tr>
+             <td align="left" colspan="2" height="5" valign="middle" width="184">
+             </td>
+            </tr>
+            <tr>
+             <td align="center" height="23" valign="top" width="157">
+              <input id="email" name="email" onblur="if(this.value == ''){this.value = 'ელ-ფოსტა'}" onclick="if(this.value == 'ელ-ფოსტა'){this.value = ''}" type="text" value="ელ-ფოსტა"/>
+             </td>
+             <td align="center" height="23" valign="top" width="27">
+              <input id="submit_add_email" name="submit_add_email" type="submit" value=""/>
+             </td>
+            </tr>
+           </table>
+          </form>
+          <div style="clear: both;">
+          </div>
+          <table align="left" border="0" cellpadding="0" cellspacing="0" class="links" width="184">
+           <tr>
+            <td align="left" height="38" valign="top" width="184">
+             <table align="left" border="0" cellpadding="0" cellspacing="0" id="top" width="184">
+              <tr>
+               <td align="left" height="38" valign="middle" width="30">
+               </td>
+               <th align="left" height="38" valign="middle" width="154">
+                <div id="title">
+                 ბმულები
+                </div>
+               </th>
+              </tr>
+             </table>
+            </td>
+           </tr>
+           <tr>
+            <td align="left" height="5" valign="top" width="184">
+            </td>
+           </tr>
+           <tr>
+            <td align="left" valign="top" width="184">
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://time.is/ka/" title="ზუსტი დრო">
+                 ზუსტი დრო
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://time.is/ka/calendar" title="კალენდარი">
+                 კალენდარი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://web2.0calc.com/" title="კალკულატორი">
+                 კალკულატორი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://www.oanda.com/currency/converter/" title="ვალუტის კურსი">
+                 ვალუტის კურსი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://www.aura.ge/141-katalogebi/catalogue/53-stsrafi-sesxebi.html" title="ყველაზე ხელმისაწვდომი სწრაფი სესხები">
+                 სწრაფი სესხები
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://translate.google.com/#en/ka/Georgian%20Search%20Engine%20aura.ge" title="ტექსტებისა და საიტების თარგმნა">
+                 თარგმნა
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://www.aura.ge/141-katalogebi/catalogue/44-cxeli-xazi.html" title="ყველაზე საჭირო ცხელი ხაზის ნომრები">
+                 ცხელი ხაზი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://webcatalog.aura.ge/" title="ვებ კატალოგი - ყველა საჭირო საიტების ნაკრები">
+                 ვებ კატალოგი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://www.aura.ge/141-katalogebi/catalogue-4/806-didi-smailebi.html" title="ყველაზე დიდი სმაილების ნაკრები">
+                 სმაილები
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://www.rainymood.com/" title="თუ სიცხემ და გვალვამ შეგაწუხათ">
+                 წვიმა
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="http://ssa.gov.ge/index.php?lang_id=GEO&amp;sec_id=889" title="რა გეკუთვნით საყოველთაო დაზღვევით">
+                 დაზღვევა
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" width="180">
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+              <tr>
+               <td align="center" valign="middle" width="30">
+                <img border="0" height="5" src="http://www.aura.ge/templates/default/style/lenks.jpg" width="5"/>
+               </td>
+               <td align="left" valign="middle" width="150">
+                <a href="https://www.worldcoinindex.com/" title="კრიპტოვალუტის კურსი ონლაინ რეჟიმში">
+                 კრიპტო-კურსი
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="2" height="1" width="180">
+               </td>
+              </tr>
+             </table>
+            </td>
+           </tr>
+           <tr>
+            <td align="left" height="10" valign="top" width="184">
+            </td>
+           </tr>
+          </table>
+          <div style="clear: both;">
+          </div>
+          <p>
+           <a href="http://www.aura.ge/339-logikuri-amocanebi.html">
+            <img src="http://www.aura.ge/uploads/11111/logikuri_amocanebi_2.jpg" style="border: 1px solid #C8C9C4;padding:2px;"/>
+           </a>
+           <a href="http://www.aura.ge/339-logikuri-amocanebi.html">
+            <img src="http://www.aura.ge/uploads/11111/logikuri_amocanebi.gif" style="border: 1px solid #C8C9C4;padding:2px;"/>
+           </a>
+          </p>
+          <p>
+          </p>
+          <p>
+           <a href="http://www.aura.ge/141-katalogebi/catalogue-2/5251-rogor-movigot-fuli-bitkoinebi.html" target="_blank" title="ფული ინტერნეტით">
+            <img alt="ფული ინტერნეტით" height="169" src="http://www.aura.ge/uploads/11111/fuli_internetit.jpg" style="border: 1px solid #C8C9C4;padding:2px;" title="ფული ინტერნეტით" width="188"/>
+           </a>
+          </p>
+          <p>
+          </p>
+          <p>
+           <a href="http://webcatalog.aura.ge/" target="_blank">
+            <img alt="ვებ კატალოგი" height="188" src="http://www.aura.ge/uploads/11111/web-catalog_188.png" style="border: 1px solid #C8C9C4;padding:2px;" title="ვებ კატალოგი" width="188"/>
+           </a>
+          </p>
+          <p>
+          </p>
+          <p style="text-align: left;">
+           <a href="http://www.hipp.com/index.php?id=1482&amp;country_name=Georgien" target="_blank">
+            <img alt="ჰიპი - საქართველო - Aura.Ge" height="252" src="http://www.aura.ge/uploads/11111/hipp2.jpg" style="border: 1px solid #c8c9c4; padding: 2px;" title="ჰიპი - საქართველო - Aura.Ge" width="188"/>
+           </a>
+          </p>
+         </div>
+         <div id="main_content">
+          <div id="content">
+           <div style="clear: both;">
+           </div>
+           <div class="accordion" id="three">
+            <ol>
+             <li>
+              <h2>
+               <span style="background: #84B047;">
+                <b style="background: #84B047;">
+                 1
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/338-seqsis-enciklopedia/4421-potenciis-zrdis-metodebi-kompleqsuri-saxelmdzghvanelo.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/როგორ_ავიმაღლოთ_პოტენცია_1525615225.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/338-seqsis-enciklopedia/4421-potenciis-zrdis-metodebi-kompleqsuri-saxelmdzghvanelo.html" style="color: #13A354;">
+                  <b>
+                   პოტენციის ზრდის მეთოდები (კომპლექსური სახელმძღვანელო)
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  <span>
+                   მამაკაცისთვის მყარ პოტენციაზე სერიოზული საქმე არ არსებობს!..
+                  </span>
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #85B047;">
+                <b style="background: #85B047;">
+                 2
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/133-palitra/4178-tmebi.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/თმები_-_ყველაფერი_თმების_შესახებ_1457733797.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/133-palitra/4178-tmebi.html" style="color: #13A354;">
+                  <b>
+                   თმები
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  <span>
+                   <span>
+                    <span>
+                     <span>
+                      <span>
+                       <span>
+                        ყველაფერი თმების შესახებ ...
+                       </span>
+                      </span>
+                     </span>
+                    </span>
+                   </span>
+                  </span>
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #CFCD56;">
+                <b style="background: #CFCD56;">
+                 3
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/133-palitra/4428-saatebi.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/kvelaferi_saatebis_shesaxeb_1431422357.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/133-palitra/4428-saatebi.html" style="color: #13A354;">
+                  <b>
+                   საათები
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  ყველაფერი საათების შესახებ...
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #86B04C;">
+                <b style="background: #86B04C;">
+                 4
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/133-palitra/3578-tskali.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/ყველაფერი_წყლის_შესახებ_2_1447876834.png" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/133-palitra/3578-tskali.html" style="color: #13A354;">
+                  <b>
+                   წყალი
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  ყველაფერი წყლის შესახებ...
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #62C5A6;">
+                <b style="background: #62C5A6;">
+                 5
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/3-statiebi/5219-mudra--titebis-ioga.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/თითების_იოგა_ჯანმრთელობის_სამსახურში_1455381318.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/3-statiebi/5219-mudra--titebis-ioga.html" style="color: #13A354;">
+                  <b>
+                   მუდრა - თითების იოგა
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  <span>
+                   მუდრა, თავისი არსით არის უბრალოდ, გარკვეული სახით შეერთებული ხელის თითების ერთობლიობა...
+                  </span>
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #84B047;">
+                <b style="background: #84B047;">
+                 6
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/133-palitra/3566-tafli.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/ყველაფერი_თაფლის_შესახებ_1447875138.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/133-palitra/3566-tafli.html" style="color: #13A354;">
+                  <b>
+                   თაფლი
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p>
+                  ყველაფერი თაფლის და თაფლის პროდუქტების შესახებ...
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #85B047;">
+                <b style="background: #85B047;">
+                 7
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/17-tavis-movla/4183-varcxnilobis-shercheva-onlain-rezhimshi.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/varcxnilobis_shercheva_onlainshi_1423996244_1424118649.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/17-tavis-movla/4183-varcxnilobis-shercheva-onlain-rezhimshi.html" style="color: #13A354;">
+                  <b>
+                   ვარცხნილობის შერჩევა ონლაინ რეჟიმში
+                  </b>
+                 </a>
+                </div>
+                <div>
+                </div>
+               </div>
+              </div>
+             </li>
+             <li>
+              <h2>
+               <span style="background: #CFCD56;">
+                <b style="background: #CFCD56;">
+                 8
+                </b>
+               </span>
+              </h2>
+              <div>
+               <div align="center">
+                <a href="http://www.aura.ge/47-fexmdzimoba/3426-fexmdzimoba-da-bavshvis-sqesi.html">
+                 <img border="0" hspace="0" src="http://www.aura.ge/files/news/bavshvis_sqesis_dagegmva_da_gamotvla_1424001521.jpg" vspace="0"/>
+                </a>
+               </div>
+               <div style="margin-top: 4px; padding-left: 4px; padding-right: 4px;">
+                <div>
+                 <a href="http://www.aura.ge/47-fexmdzimoba/3426-fexmdzimoba-da-bavshvis-sqesi.html" style="color: #13A354;">
+                  <b>
+                   ფეხმძიმობა და ბავშვის სქესი
+                  </b>
+                 </a>
+                </div>
+                <div>
+                 <p style="text-align: left;">
+                  <span>
+                   მომავალ დედებს, სურვილი აქვთ რაც შეიძლება მალე გაიგონ მომავალი ბავშვის სქესი და დადგინონ ნაყოფი ვაჟია თუ გოგონა...
+                  </span>
+                 </p>
+                </div>
+               </div>
+              </div>
+             </li>
+            </ol>
+           </div>
+           <img border="0" height="21" src="http://www.aura.ge/templates/default/style/main_page/news_shadow.png" width="572"/>
+           <script>
+            // liteAccordion demos
+			$('#one').liteAccordion({
+					onActivate : function() {
+						this.find('figcaption').fadeOut();
+					},
+					slideCallback : function() {	
+						this.find('figcaption').fadeIn();
+					},
+					autoPlay : true,
+					pauseOnHover : true,
+					theme : 'dark',
+					rounded : true,
+					enumerateSlides : true					
+			}).find('figcaption:first').show();
+			$('#two').liteAccordion();
+			$('#three').liteAccordion({ theme : 'dark', containerWidth : 550, containerHeight : 250, slideSpeed : 600, firstSlide : 1 });
+           </script>
+           <div style="clear: both;">
+           </div>
+           <div style="clear: both;">
+           </div>
+           <span style="margin-left: 10px; color: #11a046; font-weight: bold;">
+            ბოლო სიახლეები
+           </span>
+           <div style="clear: both;">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/40-horoskopebi/303-indielebis-horoskopi.html">
+              ინდიელების ჰოროსკოპი
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/40-horoskopebi/303-indielebis-horoskopi.html">
+               <img border="0" src="http://www.aura.ge/files/news/ინდიელების_ჰოროსკოპი_1446502496.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/40-horoskopebi/303-indielebis-horoskopi.html">
+               <p>
+                ინდიელების ჰოროსკოპი - ჰოროსკოპი ინდიელების ზოდიაქოს ნიშნების მიხედვით...
+               </p>
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/40-horoskopebi/303-indielebis-horoskopi.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/308-milocvebi/3337-happy-belated-birthday.html">
+              happy belated birthday
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/308-milocvebi/3337-happy-belated-birthday.html">
+               <img border="0" src="http://www.aura.ge/files/news/happy_belated_birthday_1386876857.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/308-milocvebi/3337-happy-belated-birthday.html">
+               <p>
+                დაგვიანებით დაბადების დღის მისალოცი ლამაზი ფლეში.
+               </p>
+               <p>
+                მილოცვის დასაწყებად "მაუსის" ისარი დააჭირეთ შამპანურის ბოთლს...
+               </p>
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/308-milocvebi/3337-happy-belated-birthday.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/17-tavis-movla/5043-rogor-movishorot-zedmeti-tma.html">
+              როგორ მოვიშოროთ ზედმეტი თმა
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/17-tavis-movla/5043-rogor-movishorot-zedmeti-tma.html">
+               <img border="0" src="http://www.aura.ge/files/news/როგორ_მოვიშოროთ_ზედმეტი_თმა_1450189008.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/17-tavis-movla/5043-rogor-movishorot-zedmeti-tma.html">
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/17-tavis-movla/5043-rogor-movishorot-zedmeti-tma.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/64-webkontroli/5659-bitkoinebis-usafrtxo-mainingiinvesticia.html">
+              ბიტკოინების უსაფრთხო მაინინგი/ინვესტიცია
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/64-webkontroli/5659-bitkoinebis-usafrtxo-mainingiinvesticia.html">
+               <img border="0" src="http://www.aura.ge/files/news/ბიტკოინების_უსაფრთხო_ინვესტიცია_1508796399.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/64-webkontroli/5659-bitkoinebis-usafrtxo-mainingiinvesticia.html">
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/64-webkontroli/5659-bitkoinebis-usafrtxo-mainingiinvesticia.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div style="clear: both;">
+           </div>
+           <div align="center">
+            <div align="center" class="wrapper">
+             <div align="left" class="list_carousel">
+              <ul id="foo2">
+               <li>
+                <a class="img_link" href="http://www.aura.ge/101-poezia/1348-ana-kalandadze--o-me-ki-ara-guli-xarxarebs.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/o_me_ki_ara_guli_xarxarobs_1365326743.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/101-poezia/1348-ana-kalandadze--o-me-ki-ara-guli-xarxarebs.html">
+                 ანა კალანდაძე - ო, მე კი არა, გული ხარხარებს
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/326-leqsebi-zamtarze/4786-tamaz-tchiladze--zamtari.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/ზამთარი_-_თამაზ_ჭილაძე_1443377747.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/326-leqsebi-zamtarze/4786-tamaz-tchiladze--zamtari.html">
+                 თამაზ ჭილაძე - ზამთარი
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/186-msoflio-kinematografiis-istoria/2126-ameli--Amlie.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/amelie_1445809381.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/186-msoflio-kinematografiis-istoria/2126-ameli--Amlie.html">
+                 ამელი / Amélie
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/186-msoflio-kinematografiis-istoria/1811-viridiana--Viridiana.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/Viridiana_1371389499.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/186-msoflio-kinematografiis-istoria/1811-viridiana--Viridiana.html">
+                 ვირიდიანა / Viridiana
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/168-kulinaria/797-mavne-sakvebi-danamatebis-cxrili.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/მავნე_საკვები_დანამატების_ცხრილი_1429530890.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/168-kulinaria/797-mavne-sakvebi-danamatebis-cxrili.html">
+                 მავნე საკვები დანამატების ცხრილი
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/103-sabavshvo/4884-sulxansaba-orbeliani--kaci-da-gveli.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/სულხან-საბა_ორბელიანი_-_კაცი_და_გველი_1448820096.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/103-sabavshvo/4884-sulxansaba-orbeliani--kaci-da-gveli.html">
+                 სულხან-საბა ორბელიანი - კაცი და გველი
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/112-induri-horoskopi/833-induri-horoskopi--aridra.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/ინდური_ჰოროსკოპი_-_არიდრა_1446658376.png" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/112-induri-horoskopi/833-induri-horoskopi--aridra.html">
+                 ინდური ჰოროსკოპი - არიდრა
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/101-poezia/1172-otar-tchiladze--dzalian-male-icleba-tchiqa.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/zalian_male_icleba_chiqa_1361893296.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/101-poezia/1172-otar-tchiladze--dzalian-male-icleba-tchiqa.html">
+                 ოთარ ჭილაძე - ძალიან მალე იცლება ჭიქა
+                </a>
+               </li>
+               <li>
+                <a class="img_link" href="http://www.aura.ge/101-poezia/1365-moris-focxishvili--saxvalio.html">
+                 <img border="0" height="130" src="http://www.aura.ge/files/news/saxvalio_1365467125.jpg" width="166"/>
+                 <span class="collage_glow">
+                 </span>
+                </a>
+                <a class="title" href="http://www.aura.ge/101-poezia/1365-moris-focxishvili--saxvalio.html">
+                 მორის ფოცხიშვილი - სახვალიო
+                </a>
+               </li>
+              </ul>
+              <a class="prev" href="#" id="prev2">
+              </a>
+              <a class="next" href="#" id="next2">
+              </a>
+             </div>
+            </div>
+           </div>
+           <img border="0" height="21" src="http://www.aura.ge/templates/default/style/main_page/news_shadow.png" width="572"/>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/135-mtvaris-horoskopi/861-mtvaris-horoskopi--verdzi.html">
+              მთვარის ჰოროსკოპი - ვერძი
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/135-mtvaris-horoskopi/861-mtvaris-horoskopi--verdzi.html">
+               <img border="0" src="http://www.aura.ge/files/news/ვერძი_1446369334.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/135-mtvaris-horoskopi/861-mtvaris-horoskopi--verdzi.html">
+               <p>
+                მთვარის ჰოროსკოპი - ვერძი  21.03-20.04
+               </p>
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/135-mtvaris-horoskopi/861-mtvaris-horoskopi--verdzi.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/73-stsrafi-kitxva/2976-naxatisa-da-natseris-garcheva-ocdameore-mecadineoba.html">
+              ნახატისა და ნაწერის გარჩევა (ოცდამეორე მეცადინეობა)
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/73-stsrafi-kitxva/2976-naxatisa-da-natseris-garcheva-ocdameore-mecadineoba.html">
+               <img border="0" src="http://www.aura.ge/files/news/scrafi_kitxva_(5)_1382202410.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/73-stsrafi-kitxva/2976-naxatisa-da-natseris-garcheva-ocdameore-mecadineoba.html">
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/73-stsrafi-kitxva/2976-naxatisa-da-natseris-garcheva-ocdameore-mecadineoba.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/135-mtvaris-horoskopi/870-mtvaris-horoskopi--txis-rqa.html">
+              მთვარის ჰოროსკოპი - თხის რქა
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/135-mtvaris-horoskopi/870-mtvaris-horoskopi--txis-rqa.html">
+               <img border="0" src="http://www.aura.ge/files/news/თხის_რქა_1446369183.gif" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/135-mtvaris-horoskopi/870-mtvaris-horoskopi--txis-rqa.html">
+               <p>
+                მთვარის ჰოროსკოპი - თხის რქა  22.12-20.01
+               </p>
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/135-mtvaris-horoskopi/870-mtvaris-horoskopi--txis-rqa.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <div class="main_news">
+            <div class="title">
+             <a href="http://www.aura.ge/87-vikingebis-horoskopi/251-vikingebis-horoskopi--loki.html">
+              ვიკინგების ჰოროსკოპი - ლოკი
+             </a>
+            </div>
+            <div class="content">
+             <div class="img">
+              <a href="http://www.aura.ge/87-vikingebis-horoskopi/251-vikingebis-horoskopi--loki.html">
+               <img border="0" src="http://www.aura.ge/files/news/Loki_1362569670.jpg" width="175"/>
+              </a>
+             </div>
+             <div class="text">
+              <a href="http://www.aura.ge/87-vikingebis-horoskopi/251-vikingebis-horoskopi--loki.html">
+               <p>
+                ვიკინგების ჰოროსკოპი – ლოკი 21.01 - 19.02
+               </p>
+              </a>
+             </div>
+             <a class="more" href="http://www.aura.ge/87-vikingebis-horoskopi/251-vikingebis-horoskopi--loki.html">
+             </a>
+             <div style="clear: both;">
+             </div>
+            </div>
+           </div>
+           <div class="news_shadow">
+           </div>
+           <script language="javascript" src="js/jquery.carouFredSel-5.3.0-packed.js" type="text/javascript">
+           </script>
+           <script language="javascript" type="text/javascript">
+            $(function() {
+				//	Scrolled by user interaction
+				$('#foo2').carouFredSel({
+					prev: '#prev2',
+					next: '#next2',
+					auto: false
+				});
+				$(window).resize();
+			});
+           </script>
+           <script type="text/javascript">
+            $(".wrapper .list_carousel a.img_link").hover(function(){
+$(this).find(".collage_glow").fadeIn(300);
+},function(){
+$(this).find(".collage_glow").fadeOut(300);
+});
+           </script>
+           <p>
+           </p>
+           <p style="text-align: center;">
+           </p>
+           <div style="font-size: 8px;">
+           </div>
+          </div>
+          <div id="right_side">
+           <script language="javascript" type="text/javascript">
+            $(function()
+{
+	$("#js_login_gaxsna").click(function(event) {
+	event.preventDefault();
+	$("#js_registration").slideUp();
+	event.preventDefault();
+	$("#js_login").slideToggle();
+	});
+
+
+	$("#js_registration_gaxsna").click(function(event) {
+	event.preventDefault();
+	$("#js_login").slideUp();
+	event.preventDefault();
+	$("#js_registration").slideToggle();
+	});
+});
+           </script>
+           <table align="left" border="0" cellpadding="0" cellspacing="0" style="margin-top: 10px;" width="212">
+            <tr>
+             <td align="left" height="20" valign="top" width="212">
+              <table align="right" border="0" cellpadding="0" cellspacing="0" width="207">
+               <tr>
+                <td align="center" height="20" valign="top" width="207">
+                 <a class="aut_l" id="js_login_gaxsna">
+                 </a>
+                 <a class="reg_l" id="js_registration_gaxsna">
+                 </a>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+            <tr>
+             <td align="left" valign="top" width="212">
+              <div id="js_login" style="margin-left: 0px; display: none; margin-top: 5px; width: 212px; position: absolute; overflow: visible; background:#FFF; z-index: 4;">
+               <form action="http://www.aura.ge/login.html" method="post">
+                <input name="from_side" type="hidden"/>
+                <table align="left" border="0" cellpadding="0" cellspacing="0" class="shadow" width="212">
+                 <tr>
+                  <td align="left" id="left" valign="top" width="5">
+                  </td>
+                  <td align="left" valign="top" width="207">
+                   <table align="right" border="0" cellpadding="0" cellspacing="0" class="login" id="login" style="margin-top: 0px;" width="207">
+                    <tr>
+                     <th align="center" colspan="2" height="6" valign="top" width="207">
+                     </th>
+                    </tr>
+                    <tr>
+                     <td align="center" colspan="2" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input maxlength="150" name="username" onblur="if(this.value == ''){this.value = 'მომხმარებლის სახელი'}" onfocus="if(this.value == 'მომხმარებლის სახელი'){this.value = ''}" type="text" value="მომხმარებლის სახელი"/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" colspan="2" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input maxlength="150" name="password" onblur="if(this.value == ''){this.value = 'პაროლი'}" onfocus="if(this.value == 'პაროლი'){this.value = ''}" type="password" value="პაროლი"/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="30" valign="top" width="37">
+                      <input id="save" name="save" style="margin-left: 12px;" type="checkbox"/>
+                     </td>
+                     <td align="left" height="30" valign="top" width="170">
+                      <label for="save">
+                       დამახსოვრება
+                      </label>
+                     </td>
+                    </tr>
+                    <tr>
+                     <th align="left" colspan="2" height="30" valign="top" width="207">
+                      <input class="login_submit" name="login" style="margin-left: 15px;" type="submit" value=""/>
+                     </th>
+                    </tr>
+                    <tr>
+                     <td align="left" colspan="2" height="30" valign="top" width="207">
+                      <a href="http://www.aura.ge/lost_password.html" style="margin-left: 16px; color: #636363;;">
+                       პაროლის აღდგენა
+                      </a>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td colspan="2" height="10" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" colspan="2" width="207">
+                      <a href="https://www.facebook.com/v2.8/dialog/oauth?client_id=217561218725358&amp;state=a20549650c44399eb20cb6a31f0ee4ab&amp;response_type=code&amp;sdk=php-sdk-5.4.4&amp;redirect_uri=http%3A%2F%2Fwww.aura.ge%2Findex.php%3Fpage%3Dfb_register&amp;scope=email">
+                       <img src="http://www.aura.ge/templates/default/style/fb_login.png"/>
+                      </a>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td colspan="2" height="10" width="207">
+                     </td>
+                    </tr>
+                   </table>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="left" colspan="2" height="7" id="bottom" valign="top" width="212">
+                  </td>
+                 </tr>
+                </table>
+               </form>
+              </div>
+             </td>
+            </tr>
+            <tr>
+             <td align="left" valign="top" width="212">
+              <div id="js_registration" style="margin-left: 0px; margin-top: 5px; display: none; width: 209px; position: absolute; overflow: visible; background:#FFF; z-index: 4;">
+               <form action="http://www.aura.ge/registration.html" enctype="multipart/form-data" method="post">
+                <table align="left" border="0" cellpadding="0" cellspacing="0" class="shadow" width="212">
+                 <tr>
+                  <td align="left" id="left" valign="top" width="5">
+                  </td>
+                  <td align="left" valign="top" width="207">
+                   <table align="right" border="0" cellpadding="0" cellspacing="0" class="registration" id="registration" style="margin-top: 0px;" width="207">
+                    <tr>
+                     <td align="center" height="6" valign="top" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input maxlength="150" name="name" onblur="if(this.value == ''){this.value = 'სახელი და გვარი'}" onfocus="if(this.value == 'სახელი და გვარი'){this.value = ''}" type="text" value="სახელი და გვარი"/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input maxlength="150" name="username" onblur="if(this.value == ''){this.value = 'მომხმარებლის სახელი'}" onfocus="if(this.value == 'მომხმარებლის სახელი'){this.value = ''}" type="text" value="მომხმარებლის სახელი"/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input maxlength="150" name="email" onblur="if(this.value == ''){this.value = 'ელ-ფოსტა'}" onfocus="if(this.value == 'ელ-ფოსტა'){this.value = ''}" type="text" value="ელ-ფოსტა"/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input id="password_ps" maxlength="150" name="password" onfocus="javascript: return tp_password(this.value, 'პაროლი', 'password_ps', 'password_tx');" type="text" value="პაროლი"/>
+                       <input id="password_tx" maxlength="150" name="password" onblur="javascript: return tp_text(this.value, 'password_ps', 'password_tx');" style="display: none;" type="password" value=""/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="35" valign="top" width="207">
+                      <div class="input">
+                       <input id="re_password_ps" maxlength="150" name="re_password" onfocus="javascript: return tp_password(this.value, 'გაიმეორეთ პაროლი', 're_password_ps', 're_password_tx');" type="text" value="გაიმეორეთ პაროლი"/>
+                       <input id="re_password_tx" maxlength="150" name="re_enter_password" onblur="javascript: return tp_text(this.value, 're_password_ps', 're_password_tx');" style="display: none;" type="password" value=""/>
+                      </div>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="25" valign="top" width="207">
+                      <table align="left" border="0" cellpadding="0" cellspacing="0" width="197">
+                       <tr>
+                        <td align="left" valign="middle" width="63">
+                         სქესი:
+                        </td>
+                        <td align="left" valign="top" width="134">
+                         <div class="gender">
+                          <select name="gender">
+                           <option value="1">
+                            მამრობითი
+                           </option>
+                           <option value="2">
+                            მდედრობითი
+                           </option>
+                          </select>
+                         </div>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="10" valign="top" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="20" valign="top" width="207">
+                      დაბადების თარიღი
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="25" valign="top" width="207">
+                      <table align="left" border="0" cellpadding="0" cellspacing="0" width="198">
+                       <tr>
+                        <td align="left" valign="top" width="15">
+                        </td>
+                        <td align="left" valign="top" width="60">
+                         <div class="day_mounth">
+                          <select name="day">
+                           <option selected="selected" value="0">
+                            დღე
+                           </option>
+                           <option value="1">
+                            1
+                           </option>
+                           <option value="2">
+                            2
+                           </option>
+                           <option value="3">
+                            3
+                           </option>
+                           <option value="4">
+                            4
+                           </option>
+                           <option value="5">
+                            5
+                           </option>
+                           <option value="6">
+                            6
+                           </option>
+                           <option value="7">
+                            7
+                           </option>
+                           <option value="8">
+                            8
+                           </option>
+                           <option value="9">
+                            9
+                           </option>
+                           <option value="10">
+                            10
+                           </option>
+                           <option value="11">
+                            11
+                           </option>
+                           <option value="12">
+                            12
+                           </option>
+                           <option value="13">
+                            13
+                           </option>
+                           <option value="14">
+                            14
+                           </option>
+                           <option value="15">
+                            15
+                           </option>
+                           <option value="16">
+                            16
+                           </option>
+                           <option value="17">
+                            17
+                           </option>
+                           <option value="18">
+                            18
+                           </option>
+                           <option value="19">
+                            19
+                           </option>
+                           <option value="20">
+                            20
+                           </option>
+                           <option value="21">
+                            21
+                           </option>
+                           <option value="22">
+                            22
+                           </option>
+                           <option value="23">
+                            23
+                           </option>
+                           <option value="24">
+                            24
+                           </option>
+                           <option value="25">
+                            25
+                           </option>
+                           <option value="26">
+                            26
+                           </option>
+                           <option value="27">
+                            27
+                           </option>
+                           <option value="28">
+                            28
+                           </option>
+                           <option value="29">
+                            29
+                           </option>
+                           <option value="30">
+                            30
+                           </option>
+                           <option value="31">
+                            31
+                           </option>
+                          </select>
+                         </div>
+                        </td>
+                        <td align="left" valign="top" width="60">
+                         <div class="day_mounth">
+                          <select name="month">
+                           <option selected="selected" value="0">
+                            თვე
+                           </option>
+                           <option value="1">
+                            1
+                           </option>
+                           <option value="2">
+                            2
+                           </option>
+                           <option value="3">
+                            3
+                           </option>
+                           <option value="4">
+                            4
+                           </option>
+                           <option value="5">
+                            5
+                           </option>
+                           <option value="6">
+                            6
+                           </option>
+                           <option value="7">
+                            7
+                           </option>
+                           <option value="8">
+                            8
+                           </option>
+                           <option value="9">
+                            9
+                           </option>
+                           <option value="10">
+                            10
+                           </option>
+                           <option value="11">
+                            11
+                           </option>
+                           <option value="12">
+                            12
+                           </option>
+                          </select>
+                         </div>
+                        </td>
+                        <td align="left" valign="top" width="63">
+                         <div class="year">
+                          <select name="year">
+                           <option selected="selected" value="0">
+                            წელი
+                           </option>
+                           <option value="1901">
+                            1901
+                           </option>
+                           <option value="1902">
+                            1902
+                           </option>
+                           <option value="1903">
+                            1903
+                           </option>
+                           <option value="1904">
+                            1904
+                           </option>
+                           <option value="1905">
+                            1905
+                           </option>
+                           <option value="1906">
+                            1906
+                           </option>
+                           <option value="1907">
+                            1907
+                           </option>
+                           <option value="1908">
+                            1908
+                           </option>
+                           <option value="1909">
+                            1909
+                           </option>
+                           <option value="1910">
+                            1910
+                           </option>
+                           <option value="1911">
+                            1911
+                           </option>
+                           <option value="1912">
+                            1912
+                           </option>
+                           <option value="1913">
+                            1913
+                           </option>
+                           <option value="1914">
+                            1914
+                           </option>
+                           <option value="1915">
+                            1915
+                           </option>
+                           <option value="1916">
+                            1916
+                           </option>
+                           <option value="1917">
+                            1917
+                           </option>
+                           <option value="1918">
+                            1918
+                           </option>
+                           <option value="1919">
+                            1919
+                           </option>
+                           <option value="1920">
+                            1920
+                           </option>
+                           <option value="1921">
+                            1921
+                           </option>
+                           <option value="1922">
+                            1922
+                           </option>
+                           <option value="1923">
+                            1923
+                           </option>
+                           <option value="1924">
+                            1924
+                           </option>
+                           <option value="1925">
+                            1925
+                           </option>
+                           <option value="1926">
+                            1926
+                           </option>
+                           <option value="1927">
+                            1927
+                           </option>
+                           <option value="1928">
+                            1928
+                           </option>
+                           <option value="1929">
+                            1929
+                           </option>
+                           <option value="1930">
+                            1930
+                           </option>
+                           <option value="1931">
+                            1931
+                           </option>
+                           <option value="1932">
+                            1932
+                           </option>
+                           <option value="1933">
+                            1933
+                           </option>
+                           <option value="1934">
+                            1934
+                           </option>
+                           <option value="1935">
+                            1935
+                           </option>
+                           <option value="1936">
+                            1936
+                           </option>
+                           <option value="1937">
+                            1937
+                           </option>
+                           <option value="1938">
+                            1938
+                           </option>
+                           <option value="1939">
+                            1939
+                           </option>
+                           <option value="1940">
+                            1940
+                           </option>
+                           <option value="1941">
+                            1941
+                           </option>
+                           <option value="1942">
+                            1942
+                           </option>
+                           <option value="1943">
+                            1943
+                           </option>
+                           <option value="1944">
+                            1944
+                           </option>
+                           <option value="1945">
+                            1945
+                           </option>
+                           <option value="1946">
+                            1946
+                           </option>
+                           <option value="1947">
+                            1947
+                           </option>
+                           <option value="1948">
+                            1948
+                           </option>
+                           <option value="1949">
+                            1949
+                           </option>
+                           <option value="1950">
+                            1950
+                           </option>
+                           <option value="1951">
+                            1951
+                           </option>
+                           <option value="1952">
+                            1952
+                           </option>
+                           <option value="1953">
+                            1953
+                           </option>
+                           <option value="1954">
+                            1954
+                           </option>
+                           <option value="1955">
+                            1955
+                           </option>
+                           <option value="1956">
+                            1956
+                           </option>
+                           <option value="1957">
+                            1957
+                           </option>
+                           <option value="1958">
+                            1958
+                           </option>
+                           <option value="1959">
+                            1959
+                           </option>
+                           <option value="1960">
+                            1960
+                           </option>
+                           <option value="1961">
+                            1961
+                           </option>
+                           <option value="1962">
+                            1962
+                           </option>
+                           <option value="1963">
+                            1963
+                           </option>
+                           <option value="1964">
+                            1964
+                           </option>
+                           <option value="1965">
+                            1965
+                           </option>
+                           <option value="1966">
+                            1966
+                           </option>
+                           <option value="1967">
+                            1967
+                           </option>
+                           <option value="1968">
+                            1968
+                           </option>
+                           <option value="1969">
+                            1969
+                           </option>
+                           <option value="1970">
+                            1970
+                           </option>
+                           <option value="1971">
+                            1971
+                           </option>
+                           <option value="1972">
+                            1972
+                           </option>
+                           <option value="1973">
+                            1973
+                           </option>
+                           <option value="1974">
+                            1974
+                           </option>
+                           <option value="1975">
+                            1975
+                           </option>
+                           <option value="1976">
+                            1976
+                           </option>
+                           <option value="1977">
+                            1977
+                           </option>
+                           <option value="1978">
+                            1978
+                           </option>
+                           <option value="1979">
+                            1979
+                           </option>
+                           <option value="1980">
+                            1980
+                           </option>
+                           <option value="1981">
+                            1981
+                           </option>
+                           <option value="1982">
+                            1982
+                           </option>
+                           <option value="1983">
+                            1983
+                           </option>
+                           <option value="1984">
+                            1984
+                           </option>
+                           <option value="1985">
+                            1985
+                           </option>
+                           <option value="1986">
+                            1986
+                           </option>
+                           <option value="1987">
+                            1987
+                           </option>
+                           <option value="1988">
+                            1988
+                           </option>
+                           <option value="1989">
+                            1989
+                           </option>
+                           <option value="1990">
+                            1990
+                           </option>
+                           <option value="1991">
+                            1991
+                           </option>
+                           <option value="1992">
+                            1992
+                           </option>
+                           <option value="1993">
+                            1993
+                           </option>
+                           <option value="1994">
+                            1994
+                           </option>
+                           <option value="1995">
+                            1995
+                           </option>
+                           <option value="1996">
+                            1996
+                           </option>
+                           <option value="1997">
+                            1997
+                           </option>
+                           <option value="1998">
+                            1998
+                           </option>
+                           <option value="1999">
+                            1999
+                           </option>
+                           <option value="2000">
+                            2000
+                           </option>
+                           <option value="2001">
+                            2001
+                           </option>
+                           <option value="2002">
+                            2002
+                           </option>
+                           <option value="2003">
+                            2003
+                           </option>
+                           <option value="2004">
+                            2004
+                           </option>
+                           <option value="2005">
+                            2005
+                           </option>
+                           <option value="2006">
+                            2006
+                           </option>
+                           <option value="2007">
+                            2007
+                           </option>
+                           <option value="2008">
+                            2008
+                           </option>
+                           <option value="2009">
+                            2009
+                           </option>
+                           <option value="2010">
+                            2010
+                           </option>
+                           <option value="2011">
+                            2011
+                           </option>
+                           <option value="2012">
+                            2012
+                           </option>
+                           <option value="2013">
+                            2013
+                           </option>
+                           <option value="2014">
+                            2014
+                           </option>
+                           <option value="2015">
+                            2015
+                           </option>
+                           <option value="2016">
+                            2016
+                           </option>
+                           <option value="2017">
+                            2017
+                           </option>
+                           <option value="2018">
+                            2018
+                           </option>
+                          </select>
+                         </div>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" height="10" valign="top" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="left" height="25" valign="top" width="207">
+                      <table align="left" border="0" cellpadding="0" cellspacing="0" width="197">
+                       <tr>
+                        <td align="left" valign="top" width="100">
+                         <img border="0" hspace="0" src="http://www.aura.ge/classes/captcha.class.php" style="float: left; margin: 0px; margin-left: 14px;" vspace="0"/>
+                        </td>
+                        <td align="left" valign="top" width="97">
+                         <div align="center" id="security">
+                          <input maxlength="50" name="security_code" onblur="if(this.value == ''){this.value = 'დამცავი კოდი'}" onfocus="if(this.value == 'დამცავი კოდი'){this.value = ''}" type="text" value="დამცავი კოდი"/>
+                         </div>
+                        </td>
+                       </tr>
+                      </table>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td height="10" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" colspan="2" height="35" valign="top" width="207">
+                      <input class="registration_submit" name="registration" style="width: 120px; height: 25px; " type="submit" value=""/>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td height="10" width="207">
+                     </td>
+                    </tr>
+                    <tr>
+                     <td align="center" width="207">
+                      <a href="https://www.facebook.com/v2.8/dialog/oauth?client_id=217561218725358&amp;state=a20549650c44399eb20cb6a31f0ee4ab&amp;response_type=code&amp;sdk=php-sdk-5.4.4&amp;redirect_uri=http%3A%2F%2Fwww.aura.ge%2Findex.php%3Fpage%3Dfb_register&amp;scope=email">
+                       <img src="http://www.aura.ge/templates/default/style/fb_registration.png"/>
+                      </a>
+                     </td>
+                    </tr>
+                    <tr>
+                     <td height="10" width="207">
+                     </td>
+                    </tr>
+                   </table>
+                  </td>
+                 </tr>
+                 <tr>
+                  <td align="left" colspan="2" height="7" id="bottom" valign="top" width="212">
+                  </td>
+                 </tr>
+                </table>
+               </form>
+              </div>
+             </td>
+            </tr>
+           </table>
+           <div style="clear: both;">
+           </div>
+           <div style="clear: both;">
+           </div>
+           <table align="right" border="0" cellpadding="0" cellspacing="0" class="right_poll" width="209">
+            <tr>
+             <td align="left" height="38" valign="top" width="209">
+              <table align="left" border="0" cellpadding="0" cellspacing="0" id="top" width="209">
+               <tr>
+                <td align="left" height="38" valign="middle" width="49">
+                </td>
+                <th align="left" height="38" valign="middle" width="160">
+                 გამოკითხვა
+                </th>
+               </tr>
+              </table>
+             </td>
+            </tr>
+            <tr>
+             <td align="left" valign="top" width="209">
+              <script type="text/javascript">
+               $(function(){
+	var loader=$('#loader16');
+	var pollcontainer=$('#pollcontainer_16');
+	loader.fadeIn();
+	//Load the poll form
+	$.get('http://www.aura.ge/classes/poll.class.php?poll_id=16', '', function(data, status){
+		pollcontainer.html(data);
+		animateResults(pollcontainer);
+		pollcontainer.find('#viewresult').click(function(){
+			//if user wants to see result
+			loader.fadeIn();
+			$.get('http://www.aura.ge/classes/poll.class.php', 'result=16', function(data,status){
+				pollcontainer.fadeOut(1000, function(){
+					$(this).html(data);
+					animateResults(this);
+				});
+				loader.fadeOut();
+			});
+			//prevent default behavior
+			return false;
+		}).end()
+		.find('#pollform').submit(function(){
+			var selected_val=$(this).find('input[name=poll]:checked').val();
+			if(selected_val!=''){
+				//post data only if a value is selected
+				loader.fadeIn();
+				$.post('http://www.aura.ge/classes/poll.class.php', $(this).serialize(), function(data, status){
+					$(pollcontainer).fadeOut(100, function(){
+						$(this).html(data);
+						animateResults(this);
+						loader.fadeOut();
+					});
+				});
+			}
+			//prevent form default behavior
+			return false;
+		});
+		loader.fadeOut();
+	});
+
+	function animateResults(data){
+		$(data).find('.bar').hide().end().fadeIn('slow', function(){
+							$(this).find('.bar').each(function(){
+								$(this).css('display', 'block');
+								var bar_width=$(this).css('width');
+								$(this).css('width', '0').animate({ width: bar_width }, 1000);
+							});
+						});
+	}
+    });
+              </script>
+              <div class="poll" id="container">
+               <div id="pollcontainer_16">
+               </div>
+               <div style="clear: both;">
+               </div>
+               <p align="center" class="loader" id="loader16">
+                <img border="0" height="16" src="http://www.aura.ge/templates/default/style/loader.gif" width="16"/>
+               </p>
+              </div>
+             </td>
+            </tr>
+           </table>
+           <div style="clear: both;">
+           </div>
+           <table align="right" border="0" cellpadding="0" cellspacing="0" width="212">
+            <tr>
+             <td align="left" height="20" valign="top" width="212">
+             </td>
+            </tr>
+            <tr>
+             <td align="left" height="20" style="border-top: 1px solid #dbdbdb;" valign="top" width="212">
+              <div style="clear: both;">
+              </div>
+              <div class="TabbedPanels" id="TabbedPanels5">
+               <ul class="TabbedPanelsTabGroup">
+                <li class="TabbedPanelsTab" style="border-right: 1px solid #b2b2b2;" tabindex="0">
+                 რეკლამა
+                </li>
+                <li class="TabbedPanelsTab" style="border-right: 1px solid #b2b2b2;" tabindex="0">
+                 ჰორო
+                </li>
+                <li class="TabbedPanelsTab" tabindex="0">
+                 ტესტები
+                </li>
+               </ul>
+               <div class="TabbedPanelsContentGroup">
+                <div class="TabbedPanelsContent">
+                 <p style="text-align: center;">
+                 </p>
+                 <p style="text-align: right;">
+                  <a href="http://www.be.ge/?utm_source=aura&amp;utm_medium=banner&amp;utm_content=aurabannergeneral&amp;utm_campaign=aurabannergeneral" target="_blank">
+                   <img height="177" src="http://aura.ge/uploads/11111/Aura_BEGE_7.png" width="212"/>
+                  </a>
+                  <a href="http://www.be.ge/category-6489.html" target="_blank">
+                   <br/>
+                  </a>
+                  <a href="javascript:openContactForm(7);">
+                   <img height="63" src="http://www.aura.ge/uploads/11111/dagvisvit_shekitxva.jpg" width="212"/>
+                  </a>
+                 </p>
+                </div>
+                <div class="TabbedPanelsContent">
+                 <p>
+                 </p>
+                 <p>
+                  <a href="http://www.aura.ge/40-horoskopebi.html" target="_blank">
+                   <img height="210" src="http://www.aura.ge/uploads/11111/horo.jpg" width="212"/>
+                  </a>
+                 </p>
+                </div>
+                <div class="TabbedPanelsContent">
+                 <p>
+                 </p>
+                 <p style="text-align: center;">
+                  <a href="http://www.aura.ge/menu/18-gantvirtva/129-testebi.html">
+                   <img alt="" height="212" src="http://www.aura.ge/uploads/11111/testebi.png" width="212"/>
+                  </a>
+                 </p>
+                </div>
+               </div>
+              </div>
+              <script type="text/javascript">
+               <!--
+   var TabbedPanels1 = new Spry.Widget.TabbedPanels("TabbedPanels5");
+   //-->
+              </script>
+             </td>
+            </tr>
+           </table>
+           <div style="clear: both;">
+           </div>
+           <p>
+            <a href="http://www.aura.ge/menu/49-archevani/25-sakofacxovrebo-teqnika.html">
+             <br/>
+             <img alt="როგორ ავირჩიოთ საყოფაცხოვრებო ტექნიკა" height="253" src="http://www.aura.ge/uploads/11111/sakofacxovrebo_teqnika.jpg" style="border: 1px solid #c8c9c4; padding: 2px;" title="როგორ ავირჩიოთ საყოფაცხოვრებო ტექნიკა" width="213"/>
+             <br/>
+             <br/>
+            </a>
+           </p>
+           <p style="text-align: center;">
+            <a href="http://www.aura.ge/141-katalogebi/catalogue/53-stsrafi-sesxebi.html" target="_blank">
+             <img alt="სწრაფი სესხები" height="226" src="http://www.aura.ge/uploads/11111/scrafi_sesxebi.jpg" style="border: 1px solid #c8c9c4; padding: 2px;" title="სწრაფი სესხები" width="213"/>
+            </a>
+           </p>
+           <p>
+            <br/>
+           </p>
+           <table align="center" border="0">
+            <tbody>
+             <tr style="height: 40px;">
+              <td style="text-align: center; background-color: #37473a;">
+               <span style="font-size: medium; color: #ffffff;">
+                <strong>
+                 <a href="http://www.aura.ge/31-rchevebi/5557-rogor-gavizardot-simaghleshi-kompleqsuri-saxelmdzghvanelo.html">
+                  <span style="color: #ffffff;">
+                   როგორ გავიზარდოთ?
+                  </span>
+                 </a>
+                </strong>
+               </span>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a href="http://www.aura.ge/31-rchevebi/5557-rogor-gavizardot-simaghleshi-kompleqsuri-saxelmdzghvanelo.html">
+                <img alt="როგორ გავიზარდოთ სიმაღლეში" height="278" src="http://www.aura.ge/uploads/simagle_2.jpg" style="border: 1px solid #c8c9c4; padding: 2px;" title="როგორ გავიზარდოთ სიმაღლეში" width="213"/>
+               </a>
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <p>
+           </p>
+           <table align="left" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+             <tr>
+              <td>
+               <a href="http://ge.talizi.ge" target="_blank">
+                <p style="text-align: center;">
+                 <img alt="თალიზი - Aura.Ge" height="300" src="http://www.aura.ge/uploads/11111/talizi_1.jpg" style="border: 1px solid #c8c9c4; padding: 2px;" title="თალიზი - Aura.Ge" width="213"/>
+                </p>
+               </a>
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <p>
+            <a href="http://www.aura.ge/141-katalogebi/catalogue-2/5177-rogor-davagrovot-bitkoinebi.html">
+             <span style="color: #888888;">
+              <br/>
+              <br/>
+              <img alt="როგორ დავაგროვოთ ბიტკოინები" height="255" src="http://www.aura.ge/uploads/11111/daagrovet_martivad.jpg" style="border: 1px solid #ECCC75; padding: 1px;" title="როგორ დავაგროვოთ ბიტკოინები" width="215"/>
+             </span>
+            </a>
+           </p>
+           <p style="text-align: center;">
+           </p>
+           <table align="center" border="0" cellpadding="0" cellspacing="0">
+            <tbody>
+             <tr style="height: 40px;">
+              <td style="width: 228px; background-color: #0cab4e; text-align: center;">
+               <strong>
+                <span style="font-size: medium; color: #ffffff;">
+                 <span style="font-size: x-large;">
+                  დ
+                 </span>
+                </span>
+                <span style="font-size: medium; color: #ffffff;">
+                 ღის Aura
+                </span>
+               </strong>
+              </td>
+             </tr>
+            </tbody>
+           </table>
+           <iframe frameborder="0" height="230" src="https://www.youtube.com/embed/TWdzL955qnI?rel=0&amp;controls=0&amp;showinfo=0" width="213">
+           </iframe>
+           <div style="clear: both;">
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+       <tr>
+        <td align="left" style="background: #fff;" valign="top" width="1000">
+         <table align="left" border="0" cellpadding="0" cellspacing="0" width="1000">
+          <tr>
+           <td align="left" valign="top" width="1000">
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+       <tr>
+        <td align="left" style="background: #fff;" valign="top" width="1000">
+         <table align="center" border="0" cellpadding="0" cellspacing="0" class="footer" width="1000">
+          <tr>
+           <td align="left" height="11" id="top" valign="top" width="1000">
+           </td>
+          </tr>
+          <tr>
+           <td align="left" valign="top" width="1000">
+            <table align="right" border="0" cellpadding="0" cellspacing="0" width="280">
+             <tr>
+              <td align="center" height="20" valign="top" width="69">
+               <a href="http://www.aura.ge/main.html">
+                მთავარი
+               </a>
+              </td>
+              <td align="center" height="20" valign="top" width="3">
+               <span id="line">
+               </span>
+              </td>
+              <td align="center" height="20" valign="top" width="89">
+               <a href="http://www.aura.ge/sitemap.html">
+                საიტის რუქა
+               </a>
+              </td>
+              <td align="center" height="20" valign="top" width="3">
+               <span id="line">
+               </span>
+              </td>
+              <td align="center" height="20" valign="top" width="80">
+               <a href="http://www.aura.ge/contact.html">
+                კონტაქტი
+               </a>
+              </td>
+              <td align="center" height="20" valign="top" width="36">
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+          <tr>
+           <td align="left" height="22" id="bottom" valign="top" width="1000">
+           </td>
+          </tr>
+          <tr>
+           <td align="left" height="10" valign="top" width="1000">
+           </td>
+          </tr>
+          <tr>
+           <td align="left" valign="top" width="1000">
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="970">
+             <tr>
+              <td align="left" valign="top" width="200">
+               <a href="http://artmedia.ge" target="_blank">
+                <img border="0" height="45" src="http://www.aura.ge/templates/default/style/designed.jpg" width="89"/>
+               </a>
+              </td>
+              <td align="left" id="copy" valign="top" width="600">
+               <p>
+                <strong>
+                 <span style="color: #008000;">
+                  <span style="color: #008000;">
+                   <span style="color: #008000;">
+                    <a href="../index.php">
+                     <span style="color: #008000;">
+                      AURA.GE
+                     </span>
+                    </a>
+                   </span>
+                   <span style="color: #008000;">
+                    <strong>
+                     <span style="color: #008000;">
+                     </span>
+                     -
+                     <span style="color: #008000;">
+                     </span>
+                    </strong>
+                   </span>
+                  </span>
+                 </span>
+                </strong>
+                <strong>
+                 <span style="color: #008000;">
+                  2010-2017
+                  <strong>
+                  </strong>
+                  ©
+                 </span>
+                </strong>
+                ყველა უფლება დაცულია
+                <br/>
+                მასალის გადაბეჭდვა (ბმულის მითითებითაც) აკრძალულია.
+                <br/>
+                <a class="style_8" href="http://www.aura.ge/335-saavtoro-uflebebi.html">
+                 იხილეთ მასალის გამოყენების პირობები
+                </a>
+               </p>
+              </td>
+              <td align="right" valign="top" width="170">
+               <div>
+                Created By Studio
+                <a href="http://spar.ge" target="_blank">
+                 <b style="color: #037225;">
+                  SPAR
+                 </b>
+                </a>
+               </div>
+               <div style="margin-top: 5px;">
+                <!-- TOP.GE COUNTER CODE -->
+                <script language="JavaScript" src="http://counter.top.ge/cgi-bin/cod?100+86248" type="text/javascript">
+                </script>
+                <noscript>
+                 <a href="http://counter.top.ge/cgi-bin/showtop?86248" target="_top">
+                  <img alt="TOP.GE" border="0" src="http://counter.top.ge/cgi-bin/count?ID:86248+JS:false"/>
+                 </a>
+                </noscript>
+                <!-- / END OF COUNTER CODE -->
+               </div>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+          <tr>
+           <td align="left" height="10" valign="top" width="1000">
+            <script type="text/javascript">
+             var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21317187-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+            </script>
+            <div align="center">
+             <a href="http://www.aura.ge/sitemap.xml" style="color: #EEEEEE;">
+              View sitemap in xml format
+             </a>
+            </div>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <div id="message">
+       <a href="#top" id="top-link">
+        <img border="0" height="35" src="http://www.aura.ge/templates/default/style/up.png" width="35"/>
+        <div>
+        </div>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+  </center>
+  <!--<table width="990" align="center" cellpadding="0" cellspacing="0" border="0" class="main">
+  <tr>
+<td width="990" align="left" valign="top"></td>
+  </tr>
+</table>-->
+ </body>
+</html>

@@ -1,0 +1,4515 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   《女神之劍》 - 超好玩的線上RPG網頁遊戲 - 女神之劍官網
+  </title>
+  <meta content="女神之劍,女神遊戲,網路遊戲,神话遊戲,網頁遊戲,線上遊戲,RPG,魔幻遊戲,好玩的遊戲,熱門遊戲,女神之劍官網" name="Keywords"/>
+  <meta content="《女神之劍》是墨灿网络推出的西方魔幻戰爭题材策略網路遊戲。本遊戲是以西方神話為背景，超炫麗的3D戰鬥場景及華麗的技能特效，使戰鬥打擊感更真實。 多種特色英雄和美麗女神，將成為你魔幻之旅的親密夥伴。 「天神降世，給命運一次重來」， 快來體驗更為真實的魔幻世界！" name="Description"/>
+  <link href="/assets/img/tw_nvshen/new_favicon.ico?v=1" rel="icon" type="image/x-icon"/>
+  <link href="/assets/img/tw_nvshen/new_favicon.ico?v=1" rel="shortcut icon"/>
+  <link href="/assets/css/tw_nvshen/web_main.css?v=1529708806" media="screen" rel="stylesheet"/>
+  <!--[if IE 6]> 
+<script src="/assets/js/DD_belatedPNG_0.0.8a-min.js"></script>
+<script>
+  /* EXAMPLE */
+  DD_belatedPNG.fix('img,.index_nav li :hover,.png_bg,.regform,.nivo-prevNav,.nivo-nextNav');
+    /* string argument can be any CSS selector */
+    /* .png_bg example is unnecessary */
+    /* change it to what suits you! */
+  </script>
+<link href="/assets/css/tw_nvshen/ie6.css" rel="stylesheet" media="screen"/>
+<![endif]-->
+  <!--[if IE 8]>  
+<link href="/assets/css/tw_nvshen/ie8.css" rel="stylesheet" media="screen"/>
+<![endif]-->
+  <!--[if IE 7]>  
+<link href="/assets/css/tw_nvshen/ie7.css" rel="stylesheet" media="screen"/>
+<![endif]-->
+  <!-- liteAccordion css -->
+  <link defer="" href="/assets/css/liteaccordion.css?v=9" rel="stylesheet"/>
+  <link href="/assets/css/slider-default.css?v=9" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="/assets/css/nivo-slider.css?v=9" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="/assets/css/slider-style.css?v=9" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="/assets/css/lightbox.css?v=9" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="/assets/js/jquery-1.9.1.min.js" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/reg.js" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/lightbox.js" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/tw_nvshen/transword_lan.js" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/ajax.js" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/register.js?t=2" type="text/javascript">
+  </script>
+  <script defer="" src="/assets/js/tw_nvshen/shouye.js?v=9" type="text/javascript">
+  </script>
+  <!-- liteAccordion js -->
+  <script defer="" src="/assets/js/liteaccordion.jquery.js">
+  </script>
+  <script type="text/javascript">
+   $(document).ready(function(){
+	$('#login_password').bind('keypress',function(e){//键盘点击事件 
+	var keynum = 0;
+	if(window.event){ // IE 
+		keynum = event.keyCode; 
+	} 
+	else if(e.which){ // Netscape/Firefox/Opera 
+		keynum = e.which; 
+	}
+	if(keynum==13){
+		var dis = $("#showregform").css("display");
+		if('none' == dis){
+			homeReg.loginFrm('server', '');
+		}
+		else{
+			//homeReg.chkFrm('server', ''); 
+			//使用form 的onsubmit控制enter事件，所以这里就不用了
+		}
+	}
+	});
+});
+  </script>
+  <script type="text/javascript">
+   //点击侧边栏flash后的功能需要的函数
+function start_game(){//被flash中的as3调用，打开注册框
+	$("#showregform").fadeIn("fast");
+}
+function get_newest_server(){ //called by as3 in flash to enter the last server
+	var server_name = "https://www.twwebgame.com/nszj?server=";
+	$.ajax({
+        type: "post",
+        url: "/home/get_logined_user_info",
+        dataType: "json",
+        async: false,
+        success: function(data){
+        	if(data.error_code == 0){
+        		if(data.data.type == 1 || data.data.type == 2){
+        			server_name += data.data.server_list[0].server_track_name;
+		        }else{
+		        	server_name = '';
+		        }
+        	}
+        }
+    });
+    if(server_name == ''){
+    	return false;
+    }else{
+    	return server_name;
+    }
+}
+  </script>
+  <script type="text/javascript">
+   function get_login_status(){//被flash中as3调用，获取用户当前是否处于登陆状态
+	uid = 0;
+	$.ajax({
+        type: "post",
+        url: "/home/get_logined_user_info",
+        dataType: "json",
+        async: false,
+        success: function(data){     
+        	if(data.error_code == 0){
+        		if(data.data.type != 0 ){
+        			uid = 1;
+		        }
+        	}
+        }
+    });
+	if(uid>0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+  </script>
+  <script type="text/javascript">
+   //是否显示注册框
+	window.onload = function(){
+		var show_reg = document.getElementById('show_reg');
+		if(show_reg!=null && show_reg.value == 1){
+			document.getElementById('showregform').style.display = 'block';
+		}
+	}
+  </script>
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-114854197-5">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-114854197-5');
+  </script>
+ </head>
+ <body>
+  <!-- 视频背景 -->
+  <div class="video_div">
+   <div class="video">
+    <video autoplay="true" loop="true" src="/assets/img/tw_nvshen/top_video.mp4">
+    </video>
+   </div>
+  </div>
+  <!-- 导航栏 -->
+  <div class="top_back">
+   <div class="index_container">
+    <ul class="index_nav" id="index_nav">
+     <li class="head_title" style="margin-left:30px;">
+      <a class="n01" href="/">
+       官網首頁HOME
+      </a>
+     </li>
+     <li class="head_title" style="margin-left:15px;">
+      <a class="n02" href="/detail_content">
+       最新資訊NEWS
+      </a>
+     </li>
+     <li class="head_title" style="margin-left:10px;">
+      <a class="n03" href="http://bbs.twwebgame.com/forum.php?mod=forumdisplay&amp;fid=37" target="_blank">
+       遊戲資料INFO
+      </a>
+     </li>
+     <li class="head_title" style="margin-left:250px;">
+      <a class="n04" href="https://pay.twwebgame.com?game_id=8" target="_blank">
+       儲值購點RECHARGE
+      </a>
+     </li>
+     <li class="head_title" style="margin-left:10px;">
+      <a class="n05" href="mailto:cs@twwebgame.com" target="_blank">
+       聯係客服SERVICE
+      </a>
+     </li>
+     <li class="head_title" style="margin-left:5px;">
+      <a class="n06" href="http://bbs.twwebgame.com/member.php?mod=logging&amp;action=autologin&amp;loginsubmit=yes&amp;infloat=yes&amp;lssubmit=yes" target="_blank">
+       玩家論壇FORUM
+      </a>
+     </li>
+    </ul>
+   </div>
+  </div>
+  <!-- 主体部分 -->
+  <div id="bodybox">
+   <!-- 注册框 -->
+   <div class="showregform" id="showregform">
+    <div class="backone" id="backone">
+    </div>
+    <div class="regform" id="regform">
+     <div class="close_button" style="cursor: pointer;">
+      <a>
+       <img src="/assets/img/tw_nvshen/close.png"/>
+      </a>
+     </div>
+     <div class="input_form">
+      <form action="/" class="reg_submit" id="reg_submit" method="post" name="reg_submit" onsubmit="homeReg.FrmSubmit('server', '');return false;">
+       <input id="u" name="u" type="hidden" value="-1"/>
+       <input id="u2" name="u2" type="hidden" value="-1"/>
+       <input id="source" name="source" type="hidden" value="-1"/>
+       <table border="0" cellpadding="0" cellspacing="0" class="submit_table" width="448">
+        <tr>
+         <td align="right" height="45">
+          <div class="table_name">
+           帳       號：
+          </div>
+         </td>
+         <td width="320">
+          <input class="login_email" id="login_email" maxlength="128" name="login_email" style="width: 232px; height: 30px;" type="text" value=""/>
+          <br/>
+          <span id="name">
+           輸入電子信箱帳號！
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td align="right" height="45">
+          <div class="table_name">
+           登入密碼：
+          </div>
+         </td>
+         <td>
+          <input id="password" name="password" onblur="javascript:homeReg.checkPass();" onfocus="javascript:homeReg.checkRegName();" style="width: 232px; height: 30px;" type="password" value=""/>
+          <br/>
+          <span id="pass">
+           6-20位密碼(由英文、數字組成)
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td align="right" height="43">
+          <div class="table_name">
+           重複密碼：
+          </div>
+         </td>
+         <td>
+          <input id="repassword" name="repassword" onblur="javascript:homeReg.checkPass2();" style="width: 232px; height: 30px;" type="password" value=""/>
+          <br/>
+          <span id="pass2">
+           請再次輸入密碼
+          </span>
+         </td>
+        </tr>
+        <tr>
+         <td align="center" colspan="1" height="45">
+          <span style="width: 110px; height: 40px; float: left; margin-left: 40px;">
+           <input id="btnok_input" style="text-align: center; margin-top: 20px; margin-left: 80px; font-size: 22px; color: #8b4700;" type="submit" value="立即註冊"/>
+          </span>
+         </td>
+        </tr>
+       </table>
+      </form>
+     </div>
+     <span class="thirdLogin" id="thirdLogin">
+      <a href="/login/fb?u=-1&amp;u2=-1&amp;source=-1">
+       <img src="/assets/img/tw_nvshen/facebook.png" title="Facebook快速登入"/>
+      </a>
+      <a href="/login/yh?u=-1&amp;u2=-1&amp;source=-1">
+       <img src="/assets/img/tw_nvshen/yahoo.png" title="Yahoo快速登入"/>
+      </a>
+      <a href="/login/goo?u=-1&amp;u2=-1&amp;source=-1">
+       <img src="/assets/img/tw_nvshen/google.png" title="Google快速登入"/>
+      </a>
+      <a href="/login/wild_oauth?u=-1&amp;u2=-1&amp;source=-1">
+       <img src="/assets/img/tw_nvshen/gamer.png" title="巴哈快速登入"/>
+      </a>
+     </span>
+    </div>
+   </div>
+   <div class="main">
+    <!-- 保持距离 -->
+    <div style="float:left; width:100%; height: 600px;">
+     <div class="video_btn_out">
+      <i class="video_btn_in">
+      </i>
+     </div>
+    </div>
+    <!-- 左侧部分 -->
+    <div class="index_left">
+     <div class="left_container">
+      <div class="start_game png_bg">
+       <!-- 因视频文件较多，在js中延时加载文件 -->
+       <video autoplay="true" loop="true" style="display:block;position: absolute;width: 252px;height: 160px;background-color: transparent;">
+       </video>
+       <video autoplay="true" id="video_0" loop="true" style="display:block;position: absolute;width: 252px;height: 160px;background-color: transparent;">
+       </video>
+      </div>
+      <div class="login1">
+       <div class="conLogin" id="conLogin">
+        <div class="container ready_box" style="display:none">
+         <div class="uname">
+          <span>
+           會員：
+          </span>
+          <br/>
+          <span>
+           以下為您上次登入過的伺服器
+          </span>
+         </div>
+         <div class="server_list">
+         </div>
+         <div class="button">
+          <div class="choose_server_list png_bg" id="choice_server">
+           <div style="text-align: center; margin-top: 20px; font-size: 22px; color: #8b4700;">
+            選擇伺服器
+           </div>
+          </div>
+          <div class="button_list">
+           <div class="button_item">
+            <a href="https://pay.twwebgame.com?game_id=8" target="_blank">
+             【儲值購點】
+            </a>
+           </div>
+           <div class="button_item">
+            <a href="https://pay.twwebgame.com/member_center" target="_blank">
+             【帳號管理】
+            </a>
+           </div>
+           <div class="button_item">
+            <a href="https://pay.twwebgame.com/member_center/password" target="_blank">
+             【修改密碼】
+            </a>
+           </div>
+           <div class="button_item">
+            <a href="/login/out/">
+             【登出帳號】
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="newer_card_in png_bg" id="newer_card_in">
+          <div style="text-align: center; margin-top: 20px; font-size: 22px; color: #8b4700;">
+           領取新手卡
+          </div>
+         </div>
+        </div>
+        <div class="container login_box">
+         <form class="form-horizontal" id="login_submit">
+          <div class="data_container">
+           <div class="login_input">
+            <div class="controllers">
+             <span style="float:left;width:50px;text-align: right;">
+              Email：
+             </span>
+             <input id="email_or_username" name="email_or_username" onfocus="javascript:homeReg.clean();" type="text" value=""/>
+             <div class="help-inline">
+             </div>
+            </div>
+            <div class="controllers_password">
+             <span style="float:left;width:50px;text-align: right;">
+              密碼：
+             </span>
+             <input id="login_password" name="login_password" type="password" value=""/>
+             <div class="help-inline">
+             </div>
+            </div>
+           </div>
+           <div class="form-actions png_bg" id="form-actions" onclick="javascript:homeReg.loginFrm('server', '');">
+            <div style="position: relative; margin-top: 5px;">
+             登入
+             <br/>
+             Login
+            </div>
+           </div>
+          </div>
+          <div class="login_choice">
+           <div class="remember_password">
+            <input name="toremember" onclick="javascript:homeReg.IsStoreFrm('server', '');" type="checkbox"/>
+            記住密碼
+           </div>
+           <div class="forget_password">
+            <a class="fo_pa" href="https://pay.twwebgame.com/member_center/find_password" target="_blank">
+             【忘記密碼?】
+            </a>
+           </div>
+          </div>
+          <div class="reg png_bg" id="reg">
+           <div style="text-align: center; margin-top: 20px; font-size: 22px; color: #8b4700;">
+            立即註冊
+           </div>
+          </div>
+         </form>
+         <div class="third_login">
+          <div style="float: left; width: 54px;">
+           免註冊
+           <br/>
+           快速登入
+          </div>
+          <div style="float: left; margin-top: 6px; margin-left: 14px; width: 160px;">
+           <a href="/login/fb?u=-1&amp;u2=-1&amp;source=-1" style="display:inline-block;width: 36px;">
+            <img src="/assets/img/tw_nvshen/facebook.png" title="Facebook快速登入"/>
+           </a>
+           <a href="/login/yh?u=-1&amp;u2=-1&amp;source=-1" style="display:inline-block;width: 36px;">
+            <img src="/assets/img/tw_nvshen/yahoo.png" title="Yahoo快速登入"/>
+           </a>
+           <a href="/login/goo?u=-1&amp;u2=-1&amp;source=-1" style="display:inline-block;width: 36px;">
+            <img src="/assets/img/tw_nvshen/google.png" title="Google快速登入"/>
+           </a>
+           <a href="/login/wild_oauth?u=-1&amp;u2=-1&amp;source=-1" style="display:inline-block;width: 36px;">
+            <img src="/assets/img/tw_nvshen/gamer.png" title="巴哈快速登入"/>
+           </a>
+          </div>
+         </div>
+         <div class="newer_card png_bg" id="newer_card">
+          <div style="text-align: center; margin-top: 20px; font-size: 22px; color: #8b4700;">
+           領取新手卡
+          </div>
+         </div>
+        </div>
+        <div class="ad_server_list">
+         <div class="server_list_title">
+          伺服器列表
+         </div>
+         <div class="serverlist_button" id="server_button_out">
+          更多+
+         </div>
+         <div class="ad_server_item_login">
+          <span class="server_item_png">
+           <img src="/assets/img/tw_nvshen/ad_server_item.png"/>
+          </span>
+          <span class="server_item_name">
+           <a href="https://www.twwebgame.com/nszj?server=S325" target="_blank">
+            S325 人魚皇后
+           </a>
+          </span>
+          <span class="server_item_status">
+           HOT
+          </span>
+         </div>
+         <div class="ad_server_item_login">
+          <span class="server_item_png">
+           <img src="/assets/img/tw_nvshen/ad_server_item.png"/>
+          </span>
+          <span class="server_item_name">
+           <a href="https://www.twwebgame.com/nszj?server=S324" target="_blank">
+            S324 七宿蒼龍
+           </a>
+          </span>
+          <span class="server_item_status">
+          </span>
+         </div>
+         <div class="ad_server_item_login">
+          <span class="server_item_png">
+           <img src="/assets/img/tw_nvshen/ad_server_item.png"/>
+          </span>
+          <span class="server_item_name">
+           <a href="https://www.twwebgame.com/nszj?server=S323" target="_blank">
+            S323 神之契約
+           </a>
+          </span>
+          <span class="server_item_status">
+          </span>
+         </div>
+         <div class="ad_server_item_login">
+          <span class="server_item_png">
+           <img src="/assets/img/tw_nvshen/ad_server_item.png"/>
+          </span>
+          <span class="server_item_name">
+           <a href="https://www.twwebgame.com/nszj?server=S322" target="_blank">
+            S322 智慧之神
+           </a>
+          </span>
+          <span class="server_item_status">
+          </span>
+         </div>
+         <div class="ad_server_item_login">
+          <span class="server_item_png">
+           <img src="/assets/img/tw_nvshen/ad_server_item.png"/>
+          </span>
+          <span class="server_item_name">
+           <a href="https://www.twwebgame.com/nszj?server=S321" target="_blank">
+            S321 羈絆同行
+           </a>
+          </span>
+          <span class="server_item_status">
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="left_banner">
+       <div style="margin-top: 0px;">
+        <a href="/vip" target="_blank">
+         <img src="/assets/img/tw_nvshen/left_banner01.png"/>
+        </a>
+       </div>
+       <div style="margin-top: 2px;">
+        <a href="/article/get_content/94/" target="_blank">
+         <img src="/assets/img/tw_nvshen/left_banner02.png"/>
+        </a>
+       </div>
+       <div style="margin-top: 2px;">
+        <a href="http://bbs.twwebgame.com/member.php?mod=logging&amp;action=autologin&amp;loginsubmit=yes&amp;infloat=yes&amp;lssubmit=yes" target="_blank">
+         <img src="/assets/img/tw_nvshen/left_banner03.png"/>
+        </a>
+       </div>
+      </div>
+      <div class="left_media">
+       <iframe allow="encrypted-media" allowtransparency="true" frameborder="0" height="160" scrolling="no" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FTWNSZJ%2F&amp;tabs=timeline&amp;width=252&amp;height=160&amp;small_header=true&amp;adapt_container_width=true&amp;hide_cover=true&amp;show_facepile=true&amp;appId=1312657132212191" style="border:none;overflow:hidden" width="252">
+       </iframe>
+      </div>
+      <div class="kefu_contact">
+       <h2 style="position: relative; margin-top: 20px; color: #4a4a4a; font-weight: bold; font-size: 20px; padding-bottom: 1px;">
+        客戶服務
+       </h2>
+       <div class="kefu_content">
+        <span style="margin-left: 20px;">
+         客服在線信箱
+        </span>
+        <span>
+         <a href="mailto:cs@twwebgame.com" target="_blank">
+          cs@twwebgame.com
+         </a>
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- 服务器列表，因设计与右侧重叠，应注意include的位置 -->
+    <div class="total_server_list" id="total_server_list">
+     <!-- <div id="server_backone" class="server_backone"></div> -->
+     <div class="choice_server_list " id="choice_server_list">
+      <div class="server_header png_bg" id="server_header">
+       <div class="close_server_button png_bg" id="close_server_button">
+       </div>
+      </div>
+      <div class="server_middle png_bg">
+       <div class="server_title">
+        我登入過的伺服器
+       </div>
+       <hr/>
+       <div class="played_server server_item png_bg" style="height: 60px;">
+       </div>
+       <div class="server_title">
+        推薦伺服器
+       </div>
+       <hr/>
+       <div class="recommend_server server_item png_bg" style="height: 60px;">
+        <div class="server_div">
+         <a class="server_button png_bg" href="/nszj/?server=S325" target="_blank">
+          S325 人魚皇后
+          <span class="new">
+          </span>
+         </a>
+        </div>
+        <div class="server_div">
+         <a class="server_button png_bg" href="/nszj/?server=S324" target="_blank">
+          S324 七宿蒼龍
+          <span class="hot">
+          </span>
+         </a>
+        </div>
+       </div>
+       <div class="server_title">
+        所有伺服器
+       </div>
+       <hr/>
+       <!-- 服务器类别选择 -->
+       <div class="server_change_tab">
+        <div class="choose_common_server">
+         <li>
+          普通服務器
+         </li>
+        </div>
+        <div class="choose_world_server">
+         <li>
+          地區服務器
+         </li>
+        </div>
+       </div>
+       <div class="total_server server_item png_bg">
+        <div class="index_bar">
+         <div class="index0 banner_index" onclick="javascript: choose_server_list(0);">
+          S1-S50
+         </div>
+         <div class="index1 banner_index" onclick="javascript: choose_server_list(1);">
+          S51-S100
+         </div>
+         <div class="index2 banner_index" onclick="javascript: choose_server_list(2);">
+          S101-S150
+         </div>
+         <div class="index3 banner_index" onclick="javascript: choose_server_list(3);">
+          S151-S200
+         </div>
+         <div class="index4 banner_index" onclick="javascript: choose_server_list(4);">
+          S201-S250
+         </div>
+         <div class="index5 banner_index" onclick="javascript: choose_server_list(5);">
+          S251-S300
+         </div>
+         <div class="index6 banner_index_now" onclick="javascript: choose_server_list(6);">
+          S301-S350
+         </div>
+        </div>
+        <div class="server_button_box">
+         <div class="banner_area" id="banner0">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=T0" target="_blank">
+            T0 光之女神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S1" target="_blank">
+            S1 天使之淚
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S2" target="_blank">
+            S2  光明使者
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S3" target="_blank">
+            S3  惡魔獵手
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S4" target="_blank">
+            S4  暗夜平原
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S5" target="_blank">
+            S5  恐懼之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S6" target="_blank">
+            S6  不老神泉
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S7" target="_blank">
+            S7  愛之古樹
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S8" target="_blank">
+            S8  太陽之子
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S9" target="_blank">
+            S9  霸氣天下
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S10" target="_blank">
+            S10 冰封峽谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S11" target="_blank">
+            S11 死亡騎士
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S12" target="_blank">
+            S12 復活神殿
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S13" target="_blank">
+            S13 精靈守衛
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S14" target="_blank">
+            S14 騎士之都
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S15" target="_blank">
+            S15 霜之絕境
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S16" target="_blank">
+            S16 巨龍之爪
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S17" target="_blank">
+            S17 吟遊詩人
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S18" target="_blank">
+            S18 主宰之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S19" target="_blank">
+            S19 守護之盾
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S20" target="_blank">
+            S20 旅狐外傳
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S21" target="_blank">
+            S21 輪迴峽谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S22" target="_blank">
+            S22 先祖要塞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S23" target="_blank">
+            S23 命運祭壇
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S24" target="_blank">
+            S24 靈魂泉水
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S25" target="_blank">
+            S25 裁決之杖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S26" target="_blank">
+            S26 狂暴叢林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S27" target="_blank">
+            S27 鮮血泥沼
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S28" target="_blank">
+            S28 不朽神殿
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S29" target="_blank">
+            S29 永恆之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S30" target="_blank">
+            S30 寧靜海岸
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S31" target="_blank">
+            S31 重生之杖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S32" target="_blank">
+            S32 光明勳章
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S33" target="_blank">
+            S33 巨龍之翼
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S34" target="_blank">
+            S34 無主之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S35" target="_blank">
+            S35 魔龍之心
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S36" target="_blank">
+            S36 烈焰要塞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S37" target="_blank">
+            S37 潮汐女神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S38" target="_blank">
+            S38 泰坦之力
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S39" target="_blank">
+            S39 火焰紋章
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S40" target="_blank">
+            S40 王者之劍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S41" target="_blank">
+            S41 弒神之力
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S42" target="_blank">
+            S42 黎明曙光
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S43" target="_blank">
+            S43 正義審判
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S44" target="_blank">
+            S44 寂靜之城
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S45" target="_blank">
+            S45 血色浪漫
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S46" target="_blank">
+            S46 遠古守護
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S47" target="_blank">
+            S47 命運之輪
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S48" target="_blank">
+            S48 真理之杖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S49" target="_blank">
+            S49 冰封萬里
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S50" target="_blank">
+            S50 無盡深淵
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="banner_area" id="banner1">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S51" target="_blank">
+            S51 暗黑森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S52" target="_blank">
+            S52 永恆國度
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S53" target="_blank">
+            S53 沙漠領主
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S54" target="_blank">
+            S54 末日天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S55" target="_blank">
+            S55 靈魂獻祭
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S56" target="_blank">
+            S56 征戰之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S57" target="_blank">
+            S57 璀璨星河
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S58" target="_blank">
+            S58 生命之泉
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S59" target="_blank">
+            S59 虛空魅影
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S60" target="_blank">
+            S60 鋼鐵古堡
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S61" target="_blank">
+            S61 神之禱告
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S62" target="_blank">
+            S62 光明祭司
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S63" target="_blank">
+            S63 墮落山谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S64" target="_blank">
+            S64 拓荒使者
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S65" target="_blank">
+            S65 月之皎潔
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S66" target="_blank">
+            S66 龍之雪域
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S67" target="_blank">
+            S67 空谷絕響
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S68" target="_blank">
+            S68 罪惡之都
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S69" target="_blank">
+            S69 遠古意志
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S70" target="_blank">
+            S70 勝利之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S71" target="_blank">
+            S71 時空之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S72" target="_blank">
+            S72 未來守護
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S73" target="_blank">
+            S73 戰爭洗禮
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S74" target="_blank">
+            S74 空谷幽夢
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S75" target="_blank">
+            S75 審判之矛
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S76" target="_blank">
+            S76 血色年華
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S77" target="_blank">
+            S77 滿天星河
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S78" target="_blank">
+            S78 異能主宰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S79" target="_blank">
+            S79 光明護衛
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S80" target="_blank">
+            S80 狂風勇士
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S81" target="_blank">
+            S81 爆裂火焰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S82" target="_blank">
+            S82 決戰銀河
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S83" target="_blank">
+            S83 沙漠之鷹
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S84" target="_blank">
+            S84 生死之戰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S85" target="_blank">
+            S85 迷霧森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S86" target="_blank">
+            S86 正義召喚
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S87" target="_blank">
+            S87 寂靜峽谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S88" target="_blank">
+            S88 光榮使命
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S89" target="_blank">
+            S89 勇氣之盾
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S90" target="_blank">
+            S90 鋼鐵烈焰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S91" target="_blank">
+            S91 破碎虛空
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S92" target="_blank">
+            S92 沙漠風暴
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S93" target="_blank">
+            S93 幽魂鐵鏈
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S94" target="_blank">
+            S94 命運枷鎖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S95" target="_blank">
+            S95 慾望之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S96" target="_blank">
+            S96 劍震蒼穹
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S97" target="_blank">
+            S97 威震蠻荒
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S98" target="_blank">
+            S98 聖光榮耀
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S99" target="_blank">
+            S99 絕對領域
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S100" target="_blank">
+            S100 百戰之光
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="banner_area" id="banner2">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S101" target="_blank">
+            S101 迷茫之刃
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S102" target="_blank">
+            S102 雪芷草原
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S103" target="_blank">
+            S103 輪迴魔箭
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S104" target="_blank">
+            S104 宿命記憶
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S105" target="_blank">
+            S105 復仇之海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S106" target="_blank">
+            S106 黎明之翼
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S107" target="_blank">
+            S107 暗月森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S108" target="_blank">
+            S108 神祗廢墟
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S109" target="_blank">
+            S109 末日風暴
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S110" target="_blank">
+            S110 萍兒第一
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S111" target="_blank">
+            S111 萬里雪山
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S112" target="_blank">
+            S112 北境之王
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S113" target="_blank">
+            S113 鹰巢山脉
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S114" target="_blank">
+            S114 月光雪池
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S115" target="_blank">
+            S115 巨龍之光
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S116" target="_blank">
+            S116 時光石林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S117" target="_blank">
+            S117 巨火聖杯
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S118" target="_blank">
+            S118 碧玉礦洞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S119" target="_blank">
+            S119 寒風瀑布
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S120" target="_blank">
+            S120 赤水聖殿
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S121" target="_blank">
+            S121 永望之石
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S122" target="_blank">
+            S122 裂石谷崖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S123" target="_blank">
+            S123 黑暗風暴
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S124" target="_blank">
+            S124 環礁之城
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S125" target="_blank">
+            S125 青青草原
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S126" target="_blank">
+            S126 冰原要塞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S127" target="_blank">
+            S127 火海森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S128" target="_blank">
+            S128 曼德牧場
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S129" target="_blank">
+            S129 姆洛斯島
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S130" target="_blank">
+            S130 雙木旋湖
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S131" target="_blank">
+            S131 葬影群海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S132" target="_blank">
+            S132 月神山脈
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S133" target="_blank">
+            S133 黑暗城堡
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S134" target="_blank">
+            S134 風暴死海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S135" target="_blank">
+            S135 千征神廟
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S136" target="_blank">
+            S136 斯卡小屋
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S137" target="_blank">
+            S137 蠻骨平原
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S138" target="_blank">
+            S138 黑崗寶山
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S139" target="_blank">
+            S139 灰燼之廊
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S140" target="_blank">
+            S140 黑木森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S141" target="_blank">
+            S141 烏鴉古樹
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S142" target="_blank">
+            S142 森林之子
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S143" target="_blank">
+            S143 冰雪巨人
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S144" target="_blank">
+            S144 神秘元素
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S145" target="_blank">
+            S145 詭秘原石
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S146" target="_blank">
+            S146 快活森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S147" target="_blank">
+            S147 虛無之境
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S148" target="_blank">
+            S148 貪婪之刃
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S149" target="_blank">
+            S149 暴躁鐵錘
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S150" target="_blank">
+            S150 黑氣湧動
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="banner_area" id="banner3">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S151" target="_blank">
+            S151 樊家大院
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S152" target="_blank">
+            S152 破壞之力
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S153" target="_blank">
+            S153 道玄之玄
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S154" target="_blank">
+            S154 荊棘之路
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S155" target="_blank">
+            S155 冰霜森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S156" target="_blank">
+            S156 冰晶石像
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S157" target="_blank">
+            S157 孤獨王國
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S158" target="_blank">
+            S158 破敗王座
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S159" target="_blank">
+            S159 左岸咖啡
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S160" target="_blank">
+            S160 黃金麻糬
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S161" target="_blank">
+            S161 月下起舞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S162" target="_blank">
+            S162 鏡子湖面
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S163" target="_blank">
+            S163 雙生天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S164" target="_blank">
+            S164 墮落源泉
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S165" target="_blank">
+            S165 神域之戰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S166" target="_blank">
+            S166 荒蕪戈壁
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S167" target="_blank">
+            S167 審判利刃
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S168" target="_blank">
+            S168 眾神之墓
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S169" target="_blank">
+            S169 微笑天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S170" target="_blank">
+            S170 蒼龍吞海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S171" target="_blank">
+            S171 死亡蓮華
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S172" target="_blank">
+            S172 希望之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S173" target="_blank">
+            S173 榮耀之光
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S174" target="_blank">
+            S174 幽閉峽谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S175" target="_blank">
+            S175 無垠沙海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S176" target="_blank">
+            S176 詛咒森林
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S177" target="_blank">
+            S177 森羅萬象
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S178" target="_blank">
+            S178 惡魔低語
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S179" target="_blank">
+            S179 深海夢魘
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S180" target="_blank">
+            S180 瘟疫沼澤
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S181" target="_blank">
+            S181 罪惡之眼
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S182" target="_blank">
+            S182  神魔審判
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S183" target="_blank">
+            S183 天地之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S184" target="_blank">
+            S184 絢爛霓虹
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S185" target="_blank">
+            S185 罪惡真相
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S186" target="_blank">
+            S186 邪惡龍族
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S187" target="_blank">
+            S187 銀月妖谷
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S188" target="_blank">
+            S188 獸族之王
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S189" target="_blank">
+            S189 地精城市
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S190" target="_blank">
+            S190 戰神之怒
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S191" target="_blank">
+            S191 鮮血薔薇
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S192" target="_blank">
+            S192 銀色時空
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S193" target="_blank">
+            S193 史前世界
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S194" target="_blank">
+            S194 孤獨人魚
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S195" target="_blank">
+            S195 藍色迷霧
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S196" target="_blank">
+            S196 黑暗之海
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S197" target="_blank">
+            S197 東方神龍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S198" target="_blank">
+            S198 春色三分
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S199" target="_blank">
+            S199 黑色狼王
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S200" target="_blank">
+            S200 紀念碑谷
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="banner_area" id="banner4">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S201" target="_blank">
+            S201 獸人遠征
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S202" target="_blank">
+            S202 紀元之子
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S203" target="_blank">
+            S203 艾澤拉斯
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S204" target="_blank">
+            S204 天啟騎士
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S205" target="_blank">
+            S205 夢遊仙境
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S206" target="_blank">
+            S206 一戰成神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S207" target="_blank">
+            S207 守護之塔
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S208" target="_blank">
+            S208 太古時代
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S209" target="_blank">
+            S209  三頭魔龍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S210" target="_blank">
+            S210 武道大會
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S211" target="_blank">
+            S211 終極戰爭
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S212" target="_blank">
+            S212 未來刺客
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S213" target="_blank">
+            S213 災龍降世
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S214" target="_blank">
+            S214 混沌之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S215" target="_blank">
+            S215 夏日狂歡
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S216" target="_blank">
+            S216 靜謐之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S217" target="_blank">
+            S217 光明聖魔
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S218" target="_blank">
+            S218 暗夜天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S219" target="_blank">
+            S219 魔翼天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S220" target="_blank">
+            S220 九天彩鳳
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S221" target="_blank">
+            S221 聖光之輝
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S222" target="_blank">
+            S222 聖靈之力
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S223" target="_blank">
+            S223 邪氣鬼影
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S224" target="_blank">
+            S224 天雷空破
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S225" target="_blank">
+            S225 暗黑領域
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S226" target="_blank">
+            S226 流星火雨
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S227" target="_blank">
+            S227 星沉地動
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S228" target="_blank">
+            S228 異界探秘
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S229" target="_blank">
+            S229 花月仙子
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S230" target="_blank">
+            S230 秋月盛宴
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S231" target="_blank">
+            S231 玉雪巨龍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S232" target="_blank">
+            S232 神兵天降
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S233" target="_blank">
+            S233 漫天花雨
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S234" target="_blank">
+            S234 清泉綠洲
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S235" target="_blank">
+            S235	 女神之愛
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S236" target="_blank">
+            S236 墮落天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S237" target="_blank">
+            S237 龍飛鳳舞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S238" target="_blank">
+            S238 皓月之靈
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S239" target="_blank">
+            S239 冰龍之咒
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S240" target="_blank">
+            S240 月照清流
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S241" target="_blank">
+            S241 仙靈女巫
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S242" target="_blank">
+            S242 飛鴻影下
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S243" target="_blank">
+            S243 魅惑女巫
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S244" target="_blank">
+            S244 赤影之舞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S245" target="_blank">
+            S245 蘿莉戰警
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S246" target="_blank">
+            S246 魔影重重
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S247" target="_blank">
+            S247 無光之盾
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S248" target="_blank">
+            S248 榮耀之城
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S249" target="_blank">
+            S249 凈魂之珠
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S250" target="_blank">
+            S250 銀翎女王
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="banner_area" id="banner5">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S251" target="_blank">
+            S251 深淵騎士
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S252" target="_blank">
+            S252 白銀之民
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S253" target="_blank">
+            S253 聞雞起舞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S254" target="_blank">
+            S254 黃金之民
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S255" target="_blank">
+            S255 禦龍而歸
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S256" target="_blank">
+            S256 高地騎士
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S257" target="_blank">
+            S257 黑鐵之民
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S258" target="_blank">
+            S258 布加巫師
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S259" target="_blank">
+            S259 天青之槍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S260" target="_blank">
+            S260 熔火之心
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S261" target="_blank">
+            S261 影之晶石
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S262" target="_blank">
+            S262 奪命薔薇
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S263" target="_blank">
+            S263 萬聖馬車
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S264" target="_blank">
+            S264 寰宇戰神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S265" target="_blank">
+            S265 神之領域
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S266" target="_blank">
+            S266 馴龍使者
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S267" target="_blank">
+            S267 眾神之主
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S268" target="_blank">
+            S268 天使之佑
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S269" target="_blank">
+            S269 屠龍戰神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S270" target="_blank">
+            S270 焚天火鳳
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S271" target="_blank">
+            S271 雙生龍魂
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S272" target="_blank">
+            S272 神劍之靈
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S273" target="_blank">
+            S273 月之天使
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S274" target="_blank">
+            S274 霸域英傑
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S275" target="_blank">
+            S275 皓月之影
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S276" target="_blank">
+            S276 漫天飛雪
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S277" target="_blank">
+            S277 止戰之殤
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S278" target="_blank">
+            S278 天后之怒
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S279" target="_blank">
+            S279  廢墟原野
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S280" target="_blank">
+            S280 龍魂降世
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S281" target="_blank">
+            S281 梅里雪山
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S282" target="_blank">
+            S282 影流神廟
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S283" target="_blank">
+            S283 天命祭壇
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S284" target="_blank">
+            S284 紅月魔宮
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S285" target="_blank">
+            S285 神界之門
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S286" target="_blank">
+            S286 極寒遺跡
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S287" target="_blank">
+            S287 光之喚神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S288" target="_blank">
+            S288 紫晶法陣
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S289" target="_blank">
+            S289 上古雷池
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S290" target="_blank">
+            S290 聖靈降世
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S291" target="_blank">
+            S291 神靈王座
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S292" target="_blank">
+            S292 命運之手
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S293" target="_blank">
+            S293 天神聖劍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S294" target="_blank">
+            S294 諸天聖界
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S295" target="_blank">
+            S295 四神之力
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S296" target="_blank">
+            S296 獵魔戰場
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S297" target="_blank">
+            S297 預言女神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S298" target="_blank">
+            S298 惡魔之主
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S299" target="_blank">
+            S299 雪國聖殿
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S300" target="_blank">
+            S300 女神之劍
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+         <div class="now" id="banner6">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S301" target="_blank">
+            S301 精靈之森
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S302" target="_blank">
+            S302 萬物伊始
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S303" target="_blank">
+            S303 遠古巨龍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S304" target="_blank">
+            S304 試煉之地
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S305" target="_blank">
+            S305 勇者之證
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S306" target="_blank">
+            S306 歡樂時光
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S307" target="_blank">
+            S307 新年快樂
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S308" target="_blank">
+            S308 巔峰魔煉
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S309" target="_blank">
+            S309 魔焰滔天
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S310" target="_blank">
+            S310 週年聖典
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S311" target="_blank">
+            S311 榮耀戰場
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S312" target="_blank">
+            S312 正義要塞
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S313" target="_blank">
+            S313 諸神黃昏
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S314" target="_blank">
+            S314 魔龍守望
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S315" target="_blank">
+            S315 領地之爭
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S316" target="_blank">
+            S316 巔峰聖戰
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S317" target="_blank">
+            S317 幸福家園
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S318" target="_blank">
+            S318 夢幻國度
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S319" target="_blank">
+            S319 萬物之母
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S320" target="_blank">
+            S320 魔法預言
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S321" target="_blank">
+            S321 羈絆同行
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S322" target="_blank">
+            S322 智慧之神
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S323" target="_blank">
+            S323 神之契約
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S324" target="_blank">
+            S324 七宿蒼龍
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=S325" target="_blank">
+            S325 人魚皇后
+           </a>
+          </div>
+         </div>
+         <!-- bannerid -->
+        </div>
+       </div>
+       <div class="total_server_world server_item png_bg" style="display:none">
+        <div class="index_bar">
+         <div class="index0 banner_index_now" onclick="javascript: choose_server_list_world(0);">
+          W1-W50
+         </div>
+        </div>
+        <div class="server_button_box">
+         <div class="now" id="banner0">
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=W1" target="_blank">
+            W1 台北一區
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=W2" target="_blank">
+            W2 台南一區
+            <span class="hot">
+            </span>
+           </a>
+          </div>
+          <div class="server_div">
+           <a class="server_button png_bg" href="/nszj/?server=W3" target="_blank">
+            W3 台中一區
+            <span class="new">
+            </span>
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- 右侧部分 -->
+    <div class="index_right">
+     <!-- banner和菜单 -->
+     <div class="banner_and_menu png_bg">
+      <!-- 首页bannner 采用插件-->
+      <div class="png_bg" id="wrapper" style="float: left; width: 435px; height: 237px; margin-left: 0px; margin-top: 0px;">
+       <div class="slider-wrapper theme-default">
+        <div class="nivoSlider" id="slider" style="box-shadow : none;">
+         <a href="http://www.twwebgame.com/nszj?server=S325" target="_blank">
+          <img alt="" src="https://mhome.twwebgame.com/assets/img/upload/8/xinfu3252.jpg"/>
+         </a>
+         <a href="https://www.twwebgame.com/nszj/?server=W3" target="_blank">
+          <img alt="" src="https://mhome.twwebgame.com/assets/img/upload/8/W3.jpg"/>
+         </a>
+         <a href="https://www.twwebgame.com/article/get_content/978/" target="_blank">
+          <img alt="" src="https://mhome.twwebgame.com/assets/img/upload/8/xiaoluoshangdian.jpg"/>
+         </a>
+         <a href="https://www.twwebgame.com/article/get_content/2847/#go_to_title" target="_blank">
+          <img alt="" src="https://mhome.twwebgame.com/assets/img/upload/8/xinfu325.jpg"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <script src="/assets/js/jquery.nivo.slider.js" type="text/javascript">
+      </script>
+      <script type="text/javascript">
+       jQuery(function() {
+                                $('#slider').nivoSlider({
+                                    effect: 'random', // Specify sets like: 'fold,fade,sliceDown'
+                                    slices: 15, // For slice animations
+                                    boxCols: 8, // For box animations
+                                    boxRows: 4, // For box animations
+                                    animSpeed: 700, // Slide transition speed
+                                    pauseTime: 3000, // How long each slide will show
+                                    startSlide: 0, // Set starting Slide (0 index)
+                                    directionNav: true, // Next & Prev navigation
+                                    controlNav: true, // 1,2,3... navigation
+                                    controlNavThumbs: false, // Use thumbnails for Control Nav
+                                    pauseOnHover: true, // Stop animation while hovering
+                                    manualAdvance: false, // Force manual transitions
+                                    prevText: 'Prev', // Prev directionNav text
+                                    nextText: 'Next', // Next directionNav text
+                                    randomStart: false, // Start on a random slide
+                                    beforeChange: function(){}, // Triggers before a slide transition
+                                    afterChange: function(){}, // Triggers after a slide transition
+                                    slideshowEnd: function(){}, // Triggers after all slides have been shown
+                                    lastSlide: function(){}, // Triggers when last slide is shown
+                                    afterLoad: function(){} // Triggers when slider has loaded
+                                });
+                            });
+      </script>
+      <!-- 右上角菜单，采用插件 -->
+      <div class="game_data">
+       <script language="javascript" src="/assets/js/jquery.msAccordion.js" type="text/javascript">
+       </script>
+       <div class="data_text" id="data_text" style="overflow: hidden;">
+        <div id="accordionGiftLelo">
+         <div class="set">
+          <!-- 菜单大类 -->
+          <div class="gamdata_title" style="background: url(/assets/img/tw_nvshen/game_data_back_guide.png) no-repeat;">
+           <div style="float: left; width: 22px; height: 100px; margin-top: 68px; margin-left: 15px;font-size: 20px;letter-spacing: 3px;">
+            新手指南
+           </div>
+          </div>
+          <!-- 菜单小类 -->
+          <div class="gamdata_content">
+           <ul>
+            <li>
+             <a href="/article/get_content/87/">
+              職業介紹
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/109/">
+              黃金徽章
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/88/">
+              佈陣功能
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/108/">
+              材料獲取
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/96/">
+              公會介紹
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/91/">
+              新手攻略
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+         <div class="set">
+          <!-- 菜单大类 -->
+          <div class="gamdata_title" style="background: url(/assets/img/tw_nvshen/game_data_back_progress.png) no-repeat;">
+           <div style="float: left; width: 22px; height: 100px; margin-top: 68px; margin-left: 15px;font-size: 20px;letter-spacing: 3px;">
+            高手進階
+           </div>
+          </div>
+          <!-- 菜单小类 -->
+          <div class="gamdata_content">
+           <ul>
+            <li>
+             <a href="/article/get_content/86/">
+              衝級攻略
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/92/">
+              世界BOSS
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/104/">
+              每日活動
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/110/">
+              招募夥伴
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/97/">
+              出手順序
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/98/">
+              精英副本
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+         <div class="set">
+          <!-- 菜单大类 -->
+          <div class="gamdata_title" style="background: url(/assets/img/tw_nvshen/game_data_back_unique.png) no-repeat;">
+           <div style="float: left; width: 22px; height: 100px; margin-top: 68px; margin-left: 15px;font-size: 20px;letter-spacing: 3px;">
+            特色玩法
+           </div>
+          </div>
+          <!-- 菜单小类 -->
+          <div class="gamdata_content">
+           <ul>
+            <li>
+             <a href="/article/get_content/94/">
+              女神系统
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/89/">
+              星座介紹
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/90/">
+              聖靈護送
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/99/">
+              莊園介紹
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/101/">
+              問星系統
+             </a>
+            </li>
+            <li>
+             <a href="/article/get_content/94/">
+              喚醒女神
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+        <script language="javascript" type="text/javascript">
+         $(document).ready(function() {
+                                            $("#accordionGiftLelo").msAccordion({defaultid:1});
+                                        }
+                                    );
+        </script>
+       </div>
+      </div>
+     </div>
+     <!-- 文章和排行榜 -->
+     <div class="info_and_rank">
+      <div class="news">
+       <div class="news_title">
+        <a href="/detail_content/event_page" target="_blank">
+         更多+
+        </a>
+       </div>
+       <div class="news_content">
+        <!-- 文章类别 -->
+        <ul class="nav_news">
+         <li class="now">
+          <span class="t01">
+           最新消息
+          </span>
+         </li>
+         <li>
+          <span class="t02">
+           活動通知
+          </span>
+         </li>
+         <li>
+          <span class="t03">
+           熱點新聞
+          </span>
+         </li>
+         <li>
+          <span class="t04">
+           媒體公告
+          </span>
+         </li>
+        </ul>
+        <!-- 下划杠和下划线 -->
+        <div class="news_nav_underline">
+        </div>
+        <hr/>
+        <!-- 文章列表 也可循环打印-->
+        <div class="newstxt">
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2851/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="最強輔助系喚神——人魚皇后！">
+           最強輔助系喚神——人魚皇后！
+          </a>
+          <span>
+           2018-06-22
+          </span>
+         </p>
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2853/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="【小洛福利社】☆全民瘋世足☆">
+           【小洛福利社】☆全民瘋世足☆
+          </a>
+          <span>
+           2018-06-22
+          </span>
+         </p>
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2859/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="六月小萌超級好康日！8重驚喜巔峰享受！小萌特別獻禮！！">
+           六月小萌超級好康日！8重驚喜巔峰享受！小萌特別獻禮！！
+          </a>
+          <span>
+           2018-06-22
+          </span>
+         </p>
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2849/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="5000檔超值驚喜！7重超值驚喜助力5000爆炸狂歡日！">
+           5000檔超值驚喜！7重超值驚喜助力5000爆炸狂歡日！
+          </a>
+          <span>
+           2018-06-21
+          </span>
+         </p>
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2847/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="6月22日上午11點女神之劍S325盛大開啟，新服好康等你拿">
+           6月22日上午11點女神之劍S325盛大開啟，新服好康等你拿
+          </a>
+          <span>
+           2018-06-21
+          </span>
+         </p>
+         <p>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2845/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="消費大狂歡助力1000金爆炸狂歡日！1000金6重超值驚喜！">
+           消費大狂歡助力1000金爆炸狂歡日！1000金6重超值驚喜！
+          </a>
+          <span>
+           2018-06-20
+          </span>
+         </p>
+        </div>
+        <div class="newstxt" style="display: none;">
+         <p>
+          <span>
+           2018-06-22
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2851/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="最強輔助系喚神——人魚皇后！">
+           最強輔助系喚神——人魚皇后！
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-22
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2853/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="【小洛福利社】☆全民瘋世足☆">
+           【小洛福利社】☆全民瘋世足☆
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-22
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2859/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="六月小萌超級好康日！8重驚喜巔峰享受！小萌特別獻禮！！">
+           六月小萌超級好康日！8重驚喜巔峰享受！小萌特別獻禮！！
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-21
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2849/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="5000檔超值驚喜！7重超值驚喜助力5000爆炸狂歡日！">
+           5000檔超值驚喜！7重超值驚喜助力5000爆炸狂歡日！
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-20
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2845/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="消費大狂歡助力1000金爆炸狂歡日！1000金6重超值驚喜！">
+           消費大狂歡助力1000金爆炸狂歡日！1000金6重超值驚喜！
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-19
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#0071d3">
+           【活動】
+          </span>
+          <a href="/article/get_content/2843/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="儲值大狂歡儲1000送好禮！資源8倍超級巔峰返利！">
+           儲值大狂歡儲1000送好禮！資源8倍超級巔峰返利！
+          </a>
+         </p>
+        </div>
+        <div class="newstxt" style="display: none;">
+         <p>
+          <span>
+           2018-04-10
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2641/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="榮耀戰場比賽簡介">
+           榮耀戰場比賽簡介
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-03-10
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2559/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="《女神之劍》名人堂詳解">
+           《女神之劍》名人堂詳解
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-03-08
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2551/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="《女神之劍》魔煉功能詳解">
+           《女神之劍》魔煉功能詳解
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-02-28
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2439/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="《女神之劍》四神之力詳解">
+           《女神之劍》四神之力詳解
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-02-16
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2501/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="《女神之劍》全新超級返利活動——女神秘寶">
+           《女神之劍》全新超級返利活動——女神秘寶
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-02-06
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#009439">
+           【新聞】
+          </span>
+          <a href="/article/get_content/2479/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="女神猜猜猜活動詳解 ">
+           女神猜猜猜活動詳解
+          </a>
+         </p>
+        </div>
+        <div class="newstxt" style="display: none;">
+         <p>
+          <span>
+           2018-06-21
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2847/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="6月22日上午11點女神之劍S325盛大開啟，新服好康等你拿">
+           6月22日上午11點女神之劍S325盛大開啟，新服好康等你拿
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-15
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2835/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="女神之劍【S1-S324】臨時維護公告">
+           女神之劍【S1-S324】臨時維護公告
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-14
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2831/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="女神之劍 【S1-S323】6月14日更新維護公告 ">
+           女神之劍 【S1-S323】6月14日更新維護公告
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-14
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2829/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="6月15日上午11點女神之劍S324盛大開啟，新服好康等你拿">
+           6月15日上午11點女神之劍S324盛大開啟，新服好康等你拿
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-14
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2827/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="【角色改名卡】正式上線">
+           【角色改名卡】正式上線
+          </a>
+         </p>
+         <p>
+          <span>
+           2018-06-12
+          </span>
+          <span style="width: 60px;font-weight: bold;float:left;margin-left:10px;color:#ee6136">
+           【公告】
+          </span>
+          <a href="/article/get_content/2821/#article_nav" style="margin-left:5px;color:#858380;width:100px;" title="女神之劍15:00-16:00斷線問題">
+           女神之劍15:00-16:00斷線問題
+          </a>
+         </p>
+        </div>
+       </div>
+      </div>
+      <!-- 排行榜 -->
+      <div class="game_rank">
+       <div class="rank_title">
+        <h2>
+         玩家排行榜
+        </h2>
+       </div>
+       <div class="rank_content">
+        <div class="select">
+         <select id="server_list" style="float:left;width: 115px;">
+          <option value="439">
+           S325 人魚皇后
+          </option>
+          <option value="437">
+           S324 七宿蒼龍
+          </option>
+          <option value="435">
+           S323 神之契約
+          </option>
+          <option value="433">
+           S322 智慧之神
+          </option>
+          <option value="431">
+           S321 羈絆同行
+          </option>
+          <option value="429">
+           S320 魔法預言
+          </option>
+          <option value="427">
+           S319 萬物之母
+          </option>
+          <option value="425">
+           S318 夢幻國度
+          </option>
+          <option value="423">
+           S317 幸福家園
+          </option>
+          <option value="421">
+           S316 巔峰聖戰
+          </option>
+          <option value="419">
+           S315 領地之爭
+          </option>
+          <option value="417">
+           S314 魔龍守望
+          </option>
+          <option value="415">
+           S313 諸神黃昏
+          </option>
+          <option value="413">
+           S312 正義要塞
+          </option>
+          <option value="411">
+           S311 榮耀戰場
+          </option>
+          <option value="409">
+           S310 週年聖典
+          </option>
+          <option value="407">
+           S309 魔焰滔天
+          </option>
+          <option value="405">
+           S308 巔峰魔煉
+          </option>
+          <option value="403">
+           S307 新年快樂
+          </option>
+          <option value="401">
+           S306 歡樂時光
+          </option>
+          <option value="399">
+           S305 勇者之證
+          </option>
+          <option value="397">
+           S304 試煉之地
+          </option>
+          <option value="395">
+           S303 遠古巨龍
+          </option>
+          <option value="393">
+           S302 萬物伊始
+          </option>
+          <option value="391">
+           S301 精靈之森
+          </option>
+          <option value="389">
+           S300 女神之劍
+          </option>
+          <option value="387">
+           S299 雪國聖殿
+          </option>
+          <option value="385">
+           S298 惡魔之主
+          </option>
+          <option value="383">
+           S297 預言女神
+          </option>
+          <option value="381">
+           S296 獵魔戰場
+          </option>
+          <option value="379">
+           S295 四神之力
+          </option>
+          <option value="377">
+           S294 諸天聖界
+          </option>
+          <option value="375">
+           S293 天神聖劍
+          </option>
+          <option value="373">
+           S292 命運之手
+          </option>
+          <option value="371">
+           S291 神靈王座
+          </option>
+          <option value="369">
+           S290 聖靈降世
+          </option>
+          <option value="367">
+           S289 上古雷池
+          </option>
+          <option value="365">
+           S288 紫晶法陣
+          </option>
+          <option value="363">
+           S287 光之喚神
+          </option>
+          <option value="361">
+           S286 極寒遺跡
+          </option>
+          <option value="359">
+           S285 神界之門
+          </option>
+          <option value="357">
+           S284 紅月魔宮
+          </option>
+          <option value="355">
+           S283 天命祭壇
+          </option>
+          <option value="353">
+           S282 影流神廟
+          </option>
+          <option value="351">
+           S281 梅里雪山
+          </option>
+          <option value="349">
+           W3 台中一區
+          </option>
+          <option value="347">
+           S280 龍魂降世
+          </option>
+          <option value="345">
+           S279  廢墟原野
+          </option>
+          <option value="343">
+           S278 天后之怒
+          </option>
+          <option value="341">
+           S277 止戰之殤
+          </option>
+          <option value="339">
+           S276 漫天飛雪
+          </option>
+          <option value="337">
+           S275 皓月之影
+          </option>
+          <option value="335">
+           S274 霸域英傑
+          </option>
+          <option value="333">
+           S273 月之天使
+          </option>
+          <option value="331">
+           S272 神劍之靈
+          </option>
+          <option value="329">
+           S271 雙生龍魂
+          </option>
+          <option value="327">
+           S270 焚天火鳳
+          </option>
+          <option value="325">
+           S269 屠龍戰神
+          </option>
+          <option value="323">
+           S268 天使之佑
+          </option>
+          <option value="321">
+           S267 眾神之主
+          </option>
+          <option value="319">
+           S266 馴龍使者
+          </option>
+          <option value="317">
+           S265 神之領域
+          </option>
+          <option value="315">
+           S264 寰宇戰神
+          </option>
+          <option value="313">
+           S263 萬聖馬車
+          </option>
+          <option value="311">
+           S262 奪命薔薇
+          </option>
+          <option value="309">
+           S261 影之晶石
+          </option>
+          <option value="307">
+           S260 熔火之心
+          </option>
+          <option value="305">
+           S259 天青之槍
+          </option>
+          <option value="303">
+           S258 布加巫師
+          </option>
+          <option value="301">
+           S257 黑鐵之民
+          </option>
+          <option value="299">
+           S256 高地騎士
+          </option>
+          <option value="297">
+           S255 禦龍而歸
+          </option>
+          <option value="295">
+           S254 黃金之民
+          </option>
+          <option value="293">
+           S253 聞雞起舞
+          </option>
+          <option value="291">
+           S252 白銀之民
+          </option>
+          <option value="289">
+           S251 深淵騎士
+          </option>
+          <option value="288">
+           S250 銀翎女王
+          </option>
+          <option value="287">
+           S249 凈魂之珠
+          </option>
+          <option value="286">
+           S248 榮耀之城
+          </option>
+          <option value="285">
+           S247 無光之盾
+          </option>
+          <option value="284">
+           S246 魔影重重
+          </option>
+          <option value="283">
+           S245 蘿莉戰警
+          </option>
+          <option value="282">
+           S244 赤影之舞
+          </option>
+          <option value="281">
+           S243 魅惑女巫
+          </option>
+          <option value="280">
+           S242 飛鴻影下
+          </option>
+          <option value="279">
+           S241 仙靈女巫
+          </option>
+          <option value="278">
+           S240 月照清流
+          </option>
+          <option value="277">
+           S239 冰龍之咒
+          </option>
+          <option value="276">
+           S238 皓月之靈
+          </option>
+          <option value="275">
+           S237 龍飛鳳舞
+          </option>
+          <option value="274">
+           S236 墮落天使
+          </option>
+          <option value="273">
+           S235	 女神之愛
+          </option>
+          <option value="272">
+           S234 清泉綠洲
+          </option>
+          <option value="271">
+           S233 漫天花雨
+          </option>
+          <option value="270">
+           S232 神兵天降
+          </option>
+          <option value="269">
+           S231 玉雪巨龍
+          </option>
+          <option value="268">
+           S230 秋月盛宴
+          </option>
+          <option value="267">
+           S229 花月仙子
+          </option>
+          <option value="266">
+           S228 異界探秘
+          </option>
+          <option value="265">
+           S227 星沉地動
+          </option>
+          <option value="264">
+           S226 流星火雨
+          </option>
+          <option value="263">
+           S225 暗黑領域
+          </option>
+          <option value="262">
+           S224 天雷空破
+          </option>
+          <option value="261">
+           S223 邪氣鬼影
+          </option>
+          <option value="260">
+           W2 台南一區
+          </option>
+          <option value="259">
+           S222 聖靈之力
+          </option>
+          <option value="258">
+           S221 聖光之輝
+          </option>
+          <option value="257">
+           S220 九天彩鳳
+          </option>
+          <option value="256">
+           S219 魔翼天使
+          </option>
+          <option value="255">
+           S218 暗夜天使
+          </option>
+          <option value="254">
+           S217 光明聖魔
+          </option>
+          <option value="253">
+           S216 靜謐之地
+          </option>
+          <option value="252">
+           S215 夏日狂歡
+          </option>
+          <option value="251">
+           S214 混沌之地
+          </option>
+          <option value="250">
+           S213 災龍降世
+          </option>
+          <option value="249">
+           S212 未來刺客
+          </option>
+          <option value="248">
+           S211 終極戰爭
+          </option>
+          <option value="247">
+           S210 武道大會
+          </option>
+          <option value="246">
+           S209  三頭魔龍
+          </option>
+          <option value="245">
+           S208 太古時代
+          </option>
+          <option value="244">
+           S207 守護之塔
+          </option>
+          <option value="243">
+           S206 一戰成神
+          </option>
+          <option value="242">
+           S205 夢遊仙境
+          </option>
+          <option value="241">
+           S204 天啟騎士
+          </option>
+          <option value="240">
+           S203 艾澤拉斯
+          </option>
+          <option value="239">
+           S202 紀元之子
+          </option>
+          <option value="238">
+           S201 獸人遠征
+          </option>
+          <option value="237">
+           S200 紀念碑谷
+          </option>
+          <option value="236">
+           S199 黑色狼王
+          </option>
+          <option value="235">
+           S198 春色三分
+          </option>
+          <option value="234">
+           S197 東方神龍
+          </option>
+          <option value="233">
+           S196 黑暗之海
+          </option>
+          <option value="232">
+           S195 藍色迷霧
+          </option>
+          <option value="231">
+           S194 孤獨人魚
+          </option>
+          <option value="230">
+           S193 史前世界
+          </option>
+          <option value="229">
+           W1 台北一區
+          </option>
+          <option value="228">
+           S192 銀色時空
+          </option>
+          <option value="227">
+           S191 鮮血薔薇
+          </option>
+          <option value="226">
+           S190 戰神之怒
+          </option>
+          <option value="225">
+           S189 地精城市
+          </option>
+          <option value="224">
+           S188 獸族之王
+          </option>
+          <option value="223">
+           S187 銀月妖谷
+          </option>
+          <option value="222">
+           S186 邪惡龍族
+          </option>
+          <option value="221">
+           S185 罪惡真相
+          </option>
+          <option value="220">
+           S184 絢爛霓虹
+          </option>
+          <option value="219">
+           S183 天地之門
+          </option>
+          <option value="218">
+           S182  神魔審判
+          </option>
+          <option value="217">
+           S181 罪惡之眼
+          </option>
+          <option value="216">
+           S180 瘟疫沼澤
+          </option>
+          <option value="215">
+           S179 深海夢魘
+          </option>
+          <option value="214">
+           S178 惡魔低語
+          </option>
+          <option value="213">
+           S177 森羅萬象
+          </option>
+          <option value="212">
+           S176 詛咒森林
+          </option>
+          <option value="211">
+           S175 無垠沙海
+          </option>
+          <option value="210">
+           S174 幽閉峽谷
+          </option>
+          <option value="209">
+           S173 榮耀之光
+          </option>
+          <option value="208">
+           S172 希望之門
+          </option>
+          <option value="207">
+           S171 死亡蓮華
+          </option>
+          <option value="206">
+           S170 蒼龍吞海
+          </option>
+          <option value="205">
+           S169 微笑天使
+          </option>
+          <option value="204">
+           S168 眾神之墓
+          </option>
+          <option value="203">
+           S167 審判利刃
+          </option>
+          <option value="202">
+           S166 荒蕪戈壁
+          </option>
+          <option value="201">
+           S165 神域之戰
+          </option>
+          <option value="200">
+           S164 墮落源泉
+          </option>
+          <option value="199">
+           S163 雙生天使
+          </option>
+          <option value="198">
+           S162 鏡子湖面
+          </option>
+          <option value="197">
+           S161 月下起舞
+          </option>
+          <option value="196">
+           S160 黃金麻糬
+          </option>
+          <option value="195">
+           S159 左岸咖啡
+          </option>
+          <option value="194">
+           S158 破敗王座
+          </option>
+          <option value="193">
+           S157 孤獨王國
+          </option>
+          <option value="192">
+           S156 冰晶石像
+          </option>
+          <option value="191">
+           S155 冰霜森林
+          </option>
+          <option value="190">
+           S154 荊棘之路
+          </option>
+          <option value="189">
+           S153 道玄之玄
+          </option>
+          <option value="188">
+           S152 破壞之力
+          </option>
+          <option value="187">
+           S151 樊家大院
+          </option>
+          <option value="186">
+           S150 黑氣湧動
+          </option>
+          <option value="185">
+           S149 暴躁鐵錘
+          </option>
+          <option value="184">
+           S148 貪婪之刃
+          </option>
+          <option value="183">
+           S147 虛無之境
+          </option>
+          <option value="182">
+           S146 快活森林
+          </option>
+          <option value="181">
+           S145 詭秘原石
+          </option>
+          <option value="180">
+           S144 神秘元素
+          </option>
+          <option value="179">
+           S143 冰雪巨人
+          </option>
+          <option value="178">
+           S142 森林之子
+          </option>
+          <option value="177">
+           S141 烏鴉古樹
+          </option>
+          <option value="176">
+           S140 黑木森林
+          </option>
+          <option value="175">
+           S139 灰燼之廊
+          </option>
+          <option value="174">
+           S138 黑崗寶山
+          </option>
+          <option value="173">
+           S137 蠻骨平原
+          </option>
+          <option value="172">
+           S136 斯卡小屋
+          </option>
+          <option value="171">
+           S135 千征神廟
+          </option>
+          <option value="170">
+           S134 風暴死海
+          </option>
+          <option value="169">
+           S133 黑暗城堡
+          </option>
+          <option value="168">
+           S132 月神山脈
+          </option>
+          <option value="167">
+           S131 葬影群海
+          </option>
+          <option value="163">
+           S130 雙木旋湖
+          </option>
+          <option value="162">
+           S129 姆洛斯島
+          </option>
+          <option value="161">
+           S128 曼德牧場
+          </option>
+          <option value="160">
+           S127 火海森林
+          </option>
+          <option value="159">
+           S126 冰原要塞
+          </option>
+          <option value="158">
+           S125 青青草原
+          </option>
+          <option value="157">
+           S124 環礁之城
+          </option>
+          <option value="156">
+           S123 黑暗風暴
+          </option>
+          <option value="155">
+           S122 裂石谷崖
+          </option>
+          <option value="154">
+           S121 永望之石
+          </option>
+          <option value="153">
+           S120 赤水聖殿
+          </option>
+          <option value="152">
+           S119 寒風瀑布
+          </option>
+          <option value="151">
+           S118 碧玉礦洞
+          </option>
+          <option value="150">
+           S117 巨火聖杯
+          </option>
+          <option value="149">
+           S116 時光石林
+          </option>
+          <option value="148">
+           S115 巨龍之光
+          </option>
+          <option value="147">
+           S114 月光雪池
+          </option>
+          <option value="146">
+           S113 鹰巢山脉
+          </option>
+          <option value="145">
+           S112 北境之王
+          </option>
+          <option value="144">
+           S111 萬里雪山
+          </option>
+          <option value="143">
+           S110 萍兒第一
+          </option>
+          <option value="142">
+           S109 末日風暴
+          </option>
+          <option value="141">
+           S108 神祗廢墟
+          </option>
+          <option value="140">
+           S107 暗月森林
+          </option>
+          <option value="139">
+           S106 黎明之翼
+          </option>
+          <option value="138">
+           S105 復仇之海
+          </option>
+          <option value="137">
+           S104 宿命記憶
+          </option>
+          <option value="136">
+           S103 輪迴魔箭
+          </option>
+          <option value="135">
+           S102 雪芷草原
+          </option>
+          <option value="134">
+           S101 迷茫之刃
+          </option>
+          <option value="132">
+           S100 百戰之光
+          </option>
+          <option value="131">
+           S99 絕對領域
+          </option>
+          <option value="130">
+           S98 聖光榮耀
+          </option>
+          <option value="129">
+           S97 威震蠻荒
+          </option>
+          <option value="128">
+           S96 劍震蒼穹
+          </option>
+          <option value="127">
+           S95 慾望之門
+          </option>
+          <option value="124">
+           S94 命運枷鎖
+          </option>
+          <option value="123">
+           S93 幽魂鐵鏈
+          </option>
+          <option value="122">
+           S92 沙漠風暴
+          </option>
+          <option value="121">
+           S91 破碎虛空
+          </option>
+          <option value="120">
+           S90 鋼鐵烈焰
+          </option>
+          <option value="118">
+           S89 勇氣之盾
+          </option>
+          <option value="117">
+           S88 光榮使命
+          </option>
+          <option value="116">
+           S87 寂靜峽谷
+          </option>
+          <option value="115">
+           S86 正義召喚
+          </option>
+          <option value="114">
+           S85 迷霧森林
+          </option>
+          <option value="109">
+           S84 生死之戰
+          </option>
+          <option value="108">
+           S83 沙漠之鷹
+          </option>
+          <option value="107">
+           S82 決戰銀河
+          </option>
+          <option value="105">
+           S81 爆裂火焰
+          </option>
+          <option value="103">
+           S80 狂風勇士
+          </option>
+          <option value="102">
+           S79 光明護衛
+          </option>
+          <option value="101">
+           S78 異能主宰
+          </option>
+          <option value="99">
+           S77 滿天星河
+          </option>
+          <option value="98">
+           S76 血色年華
+          </option>
+          <option value="96">
+           S75 審判之矛
+          </option>
+          <option value="95">
+           S74 空谷幽夢
+          </option>
+          <option value="93">
+           S73 戰爭洗禮
+          </option>
+          <option value="91">
+           S72 未來守護
+          </option>
+          <option value="90">
+           S71 時空之門
+          </option>
+          <option value="86">
+           S70 勝利之門
+          </option>
+          <option value="85">
+           S69 遠古意志
+          </option>
+          <option value="83">
+           S68 罪惡之都
+          </option>
+          <option value="82">
+           S67 空谷絕響
+          </option>
+          <option value="81">
+           S66 龍之雪域
+          </option>
+          <option value="79">
+           S65 月之皎潔
+          </option>
+          <option value="77">
+           S64 拓荒使者
+          </option>
+          <option value="76">
+           S63 墮落山谷
+          </option>
+          <option value="75">
+           S62 光明祭司
+          </option>
+          <option value="73">
+           S61 神之禱告
+          </option>
+          <option value="72">
+           S60 鋼鐵古堡
+          </option>
+          <option value="70">
+           S59 虛空魅影
+          </option>
+          <option value="68">
+           S58 生命之泉
+          </option>
+          <option value="67">
+           S57 璀璨星河
+          </option>
+          <option value="65">
+           S56 征戰之地
+          </option>
+          <option value="64">
+           S55 靈魂獻祭
+          </option>
+          <option value="62">
+           S54 末日天使
+          </option>
+          <option value="61">
+           S53 沙漠領主
+          </option>
+          <option value="59">
+           S52 永恆國度
+          </option>
+          <option value="58">
+           S51 暗黑森林
+          </option>
+          <option value="56">
+           S50 無盡深淵
+          </option>
+          <option value="55">
+           S49 冰封萬里
+          </option>
+          <option value="53">
+           S48 真理之杖
+          </option>
+          <option value="52">
+           S47 命運之輪
+          </option>
+          <option value="51">
+           S46 遠古守護
+          </option>
+          <option value="49">
+           S45 血色浪漫
+          </option>
+          <option value="47">
+           S44 寂靜之城
+          </option>
+          <option value="46">
+           S43 正義審判
+          </option>
+          <option value="45">
+           S42 黎明曙光
+          </option>
+          <option value="44">
+           S41 弒神之力
+          </option>
+          <option value="43">
+           S40 王者之劍
+          </option>
+          <option value="42">
+           S39 火焰紋章
+          </option>
+          <option value="41">
+           S38 泰坦之力
+          </option>
+          <option value="40">
+           S37 潮汐女神
+          </option>
+          <option value="39">
+           S36 烈焰要塞
+          </option>
+          <option value="38">
+           S35 魔龍之心
+          </option>
+          <option value="37">
+           S34 無主之地
+          </option>
+          <option value="36">
+           S33 巨龍之翼
+          </option>
+          <option value="35">
+           S32 光明勳章
+          </option>
+          <option value="34">
+           S31 重生之杖
+          </option>
+          <option value="33">
+           S30 寧靜海岸
+          </option>
+          <option value="32">
+           S29 永恆之地
+          </option>
+          <option value="31">
+           S28 不朽神殿
+          </option>
+          <option value="30">
+           S27 鮮血泥沼
+          </option>
+          <option value="29">
+           S26 狂暴叢林
+          </option>
+          <option value="28">
+           S25 裁決之杖
+          </option>
+          <option value="27">
+           S24 靈魂泉水
+          </option>
+          <option value="26">
+           S23 命運祭壇
+          </option>
+          <option value="25">
+           S22 先祖要塞
+          </option>
+          <option value="24">
+           S21 輪迴峽谷
+          </option>
+          <option value="23">
+           S20 旅狐外傳
+          </option>
+          <option value="22">
+           S19 守護之盾
+          </option>
+          <option value="21">
+           S18 主宰之地
+          </option>
+          <option value="20">
+           S17 吟遊詩人
+          </option>
+          <option value="19">
+           S16 巨龍之爪
+          </option>
+          <option value="18">
+           S15 霜之絕境
+          </option>
+          <option value="17">
+           S14 騎士之都
+          </option>
+          <option value="16">
+           S13 精靈守衛
+          </option>
+          <option value="15">
+           S12 復活神殿
+          </option>
+          <option value="14">
+           S11 死亡騎士
+          </option>
+          <option value="13">
+           S10 冰封峽谷
+          </option>
+          <option value="12">
+           S9  霸氣天下
+          </option>
+          <option value="11">
+           S8  太陽之子
+          </option>
+          <option value="10">
+           S7  愛之古樹
+          </option>
+          <option value="9">
+           S6  不老神泉
+          </option>
+          <option value="8">
+           S5  恐懼之門
+          </option>
+          <option value="7">
+           S4  暗夜平原
+          </option>
+          <option value="6">
+           S3  惡魔獵手
+          </option>
+          <option value="5">
+           S2  光明使者
+          </option>
+          <option value="4">
+           S1 天使之淚
+          </option>
+          <option value="1">
+           T0 光之女神
+          </option>
+         </select>
+         <select id="rank_type" style="float:right;width: 60px;">
+          <option value="lev">
+           等級
+          </option>
+          <option value="attack">
+           戰鬥力
+          </option>
+         </select>
+        </div>
+        <div class="rank_list">
+         <div class="rank" id="rank_0">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_00.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_1">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_01.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_2">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_02.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_3">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_03.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_4">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_04.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_5">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_05.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_6">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_06.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_7">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_07.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_8">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_08.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+         <div class="rank" id="rank_9">
+          <div class="rank_img">
+           <img src="assets/img/tw_nvshen/rank_09.png"/>
+          </div>
+          <div class="rank_name">
+          </div>
+          <div class="rank_value">
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- 英雄介绍 采用插件-->
+     <div class="warrior">
+      <script language="javascript" src="/assets/js/jquery.msAccordion_warrior.js" type="text/javascript">
+      </script>
+      <div class="warrior_data">
+       <div class="warrior_text" id="warrior_text" style="float: left; margin-top: 0px;overflow: hidden;">
+        <div id="accordionGiftLelo_warrior">
+         <div class="set">
+          <div class="warrior_data_title">
+           <div style="float: left; width: 24px; height: 100px; margin-top: 120px; margin-left: 12px;font-size: 22px; letter-spacing: 3px;">
+            騎士
+           </div>
+          </div>
+          <div class="warrior_data_content" style="background: url(/assets/img/tw_nvshen/warrior_knight.png);">
+          </div>
+         </div>
+         <div class="set">
+          <div class="warrior_data_title">
+           <div style="float: left; width: 24px; height: 100px; margin-top: 120px; margin-left: 12px;font-size: 22px; letter-spacing: 3px;">
+            遊俠
+           </div>
+          </div>
+          <div class="warrior_data_content" style="background: url(/assets/img/tw_nvshen/warrior_ranger.png);">
+          </div>
+         </div>
+         <div class="set">
+          <div class="warrior_data_title">
+           <div style="float: left; width: 24px; height: 100px; margin-top: 120px; margin-left: 12px;font-size: 22px; letter-spacing: 3px;">
+            盜賊
+           </div>
+          </div>
+          <div class="warrior_data_content" style="background: url(/assets/img/tw_nvshen/warrior_robber.png);">
+          </div>
+         </div>
+         <div class="set">
+          <div class="warrior_data_title">
+           <div style="float: left; width: 24px; height: 100px; margin-top: 120px; margin-left: 12px;font-size: 22px; letter-spacing: 3px;">
+            银翼戰士
+           </div>
+          </div>
+          <div class="warrior_data_content" style="background: url(/assets/img/tw_nvshen/warrior_zhanshi.png);">
+          </div>
+         </div>
+         <div class="set">
+          <div class="warrior_data_title">
+           <div style="float: left; width: 24px; height: 100px; margin-top: 120px; margin-left: 12px;font-size: 22px; letter-spacing: 3px;">
+            幻羽法師
+           </div>
+          </div>
+          <div class="warrior_data_content" style="background: url(/assets/img/tw_nvshen/warrior_fashi.png);">
+          </div>
+         </div>
+        </div>
+        <script language="javascript" type="text/javascript">
+         $(document).ready(function() {
+                                            $("#accordionGiftLelo_warrior").msAccordion_warrior({defaultid:1});
+                                        }
+                                    )
+        </script>
+       </div>
+      </div>
+     </div>
+     <!-- 伙伴介绍，同德、俄自营 -->
+     <div class="friends">
+      <div class="friends_intro">
+       <span>
+        夥伴一覽
+       </span>
+      </div>
+      <hr/>
+      <!-- 伙伴类别 -->
+      <ul class="friend_nav_news">
+       <li class="h1 now">
+        聲望0-20萬
+       </li>
+       <li class="h2">
+        聲望20萬-60萬
+       </li>
+       <li class="h3">
+        聲望60萬-100萬
+       </li>
+       <li class="h4">
+        聲望100萬-180萬
+       </li>
+       <li class="h5">
+        聖域酒館
+       </li>
+       <li class="h6">
+        特殊酒館
+       </li>
+      </ul>
+      <!-- 伙伴内容 -->
+      <div class="friends_body_content">
+       <div class="friends_content" style="width:6600px;">
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/70000001_1.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/luobin.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/shenglinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/xuehou.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/anna.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/aimi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/andongni.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/weina.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/ajini.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/lisha.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/mengzhinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/mogen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/geluomu.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/dulongtan.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/bingyi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/bingxuenvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yeluo.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/luoni.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/xuefeng.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/fengdie.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/daianna.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/lvge.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/senlinnvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/bade.png"/>
+          </a>
+         </div>
+        </div>
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/salading.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/fajiruiqi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/fengzhinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/saina.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/feiyan.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/geligaoli.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yuehua.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/lilisi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/jiela.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/naixinwali.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yisela.png"/>
+          </a>
+         </div>
+        </div>
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/chaman.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/danenruiqi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/nanxi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/shengmingnvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/dadinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/haisewei.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/wanisha.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/laite.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yuezhinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/beila.png"/>
+          </a>
+         </div>
+        </div>
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/malianna.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/zhanzhennvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/milanda.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/guangmingnvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/tiankongnvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/xiwangnvshen.png"/>
+          </a>
+         </div>
+        </div>
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/akelaide.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/daila.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/lilisi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/longyaoniang.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/milana.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/qitianxiaosheng.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/wuyaoniang.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yelingeliezhe.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/zhiainvshen.png"/>
+          </a>
+         </div>
+        </div>
+        <div class="friends_type">
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/anyetianshi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/aruisi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/datianshi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/guangmingshengmo.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/hela.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/huazhinvshen.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/litianshi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/mengmeiyadianna.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/moyitianshi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/panduola.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/qitiandasheng.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/tumengmeng.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/weinasi.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yadianna.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/yingreng.png"/>
+          </a>
+         </div>
+         <div class="friend_pic_frame">
+          <a href="https://bbs.twwebgame.com/forum.php?mod=viewthread&amp;tid=320" target="_blank">
+           <img class="friend_pic" src="https://mhome.twwebgame.com/assets/img/upload/8/zhitianshi.png"/>
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- 图片展示 -->
+     <div class="library_banner">
+      <link href="/assets/swiper/swiper.min.css" rel="stylesheet" type="text/css"/>
+      <script src="/assets/swiper/swiper.jquery.umd.min.js" type="text/javascript">
+      </script>
+      <div class="swiper-container" id="pageShotsContainer" style="width: 100%;margin-left: 5px;">
+       <div class="swiper-wrapper">
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="1">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_1.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="2">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_2.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="3">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_3.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="4">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_4.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="5">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_5.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="6">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_6.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="7">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_7.jpg"/>
+        </div>
+        <div class="swiper-slide" style="cursor: pointer;" urlorder="8">
+         <img alt="NoPic" src="/assets/img/tw_nvshen/content_8.jpg"/>
+        </div>
+       </div>
+      </div>
+      <div class="swiper-button-prev swiper-button-white" style="left: 20px;">
+      </div>
+      <div class="swiper-button-next swiper-button-white" style="right: 20px;">
+      </div>
+      <script type="text/javascript">
+       new Swiper('#pageShotsContainer',{
+                                width : 840,
+                                freeMode : false,
+                                freeModeMomentumBounce : true,
+                                freeModeMomentumVelocityRatio : 0.5,
+                                effect : 'slide',
+                                slidesPerView: 4,
+                                centeredSlides: true,
+                                initialSlide : 1,
+                                nextButton:'.swiper-button-next',
+                                prevButton:'.swiper-button-prev',
+                                loop:true,
+                                slidesOffsetBefore : 100,
+                                slidesPerGroup : 2,
+                                speed : 500,
+                                autoplay : 3000,
+                            });
+      </script>
+     </div>
+    </div>
+    <div class="video_play_area">
+     <video controls="controls" id="video_ns" preload="auto" src="/assets/mp4/tw_nvshen.mp4" style="width:100%;height:100%;">
+      您的浏览器不支持 video 标签。
+     </video>
+     <div class="video_play_close zoom">
+     </div>
+    </div>
+   </div>
+   <!-- 底部开始按钮 -->
+   <div class="bottom">
+    <div class="start_game_btn">
+    </div>
+    <div style="position: relative;display:block;width: 400px;height: 50px;top:130px;margin-left:360px;font-size:12px;color: #fff;">
+     <a class="bottom_link" href="/article/get_content/2703/" target="_blank">
+      使用條款
+     </a>
+    </div>
+    <div style="position: relative;display:block;width: 400px;height: 50px;top:122px;margin-left:360px;font-size:12px;color: #fff;">
+     © 2018 www.twwebgame.com All Right Reserved
+    </div>
+   </div>
+  </div>
+  <input id="show_reg" type="hidden" value="0"/>
+  <div class="pixel_info_box" id="pixel_info_box" style="display: none">
+  </div>
+  <script type="text/javascript">
+   $(document).ready(function(){
+        $.getJSON('/game/get_pixel_info_to_send', {}, function(res){
+            if(typeof(res.pixel_info)!='undefined' && res.pixel_info!=''){
+                $('#pixel_info_box').html(res.pixel_info);
+            }
+        });
+    });
+
+    // 获取指定事件（创建角色、升到10级）的pixel并添加至页面
+    function get_event_pixel_info(event_type){
+        $.getJSON('/game/get_event_pixel_info/'+event_type, {}, function(res){
+            if(typeof(res.pixel_info)!='undefined' && res.pixel_info!=''){
+                $('#pixel_info_box').html(res.pixel_info);
+            }
+        });
+    }
+  </script>
+  <div class="media">
+   <div class="media_box_1">
+    <span class="media_left">
+     &lt;
+    </span>
+    <span class="media_right">
+     &gt;
+    </span>
+    <span class="media_close">
+     x
+    </span>
+    <div class="media_box_img">
+     <img alt="image" src="/assets/img/tw_nvshen/image_1.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_2.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_3.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_4.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_5.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_6.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_7.jpg" style="display:none;"/>
+     <img alt="image" src="/assets/img/tw_nvshen/image_8.jpg" style="display:none;"/>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

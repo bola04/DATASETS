@@ -1,0 +1,2502 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+  <meta content="lira.hu" name="author"/>
+  <meta content="info@lira.hu" name="contact"/>
+  <meta content="index, follow" name="robots"/>
+  <link href="https://www.lira.hu/res/favicon.ico" rel="icon"/>
+  <title>
+   Líra könyv - az online könyvesbolt
+  </title>
+  <meta content="könyv, könyvesbolt, könyvek, könyváruház, könyv vásárlás, könyvrendelés, könyv rendelés" name="keywords"/>
+  <meta content="Online könyváruház - állandó akciók, törzsvásárlói program, hatalmas kedvezmények. Online rendelés egyszerűen és gyorsan. Olvasson bele a könyveinkbe!" name="description"/>
+  <link href="https://www.lira.hu" rel="canonical"/>
+  <script src="https://apis.google.com/js/platform.js" type="text/javascript">
+   {lang: 'hu'}
+  </script>
+  <link href="https://www.lira.hu/res/stilusdef_130206.css" rel="stylesheet" type="text/css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript">
+  </script>
+  <!--script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script-->
+  <!-- Posta pontok-->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyByZ_WjdPcO90Lg2SYGA7y_v2fwq6uKigc&amp;language=hu&amp;region=HU" type="text/javascript">
+  </script>
+  <script charset="UTF-8" src="https://www.postapont.hu/static/javascripts/postapont-api.js" type="text/javascript">
+  </script>
+  <link href="https://www.postapont.hu/static/css/postapont-api.css" rel="stylesheet" type="text/css"/>
+  <link href="https://www.lira.hu/mobile/plugins/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet"/>
+  <script src="https://www.lira.hu/res/c_20170120.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var _gaq=_gaq || [];
+	_gaq.push(['_setAccount', 'UA-234315-1']);
+	_gaq.push(['_trackPageview']);
+	(function() {
+		var ga=document.createElement('script'); ga.type='text/javascript'; ga.async=true;
+		ga.src=('https:' == document.location.protocol ? 'https://ssl' : 'https://www') + '.google-analytics.com/ga.js';
+		var s=document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+  </script>
+  <script type="text/javascript">
+   $(document).ready(function() {
+		var onSite=true;
+		
+		$(document).mouseleave(function() {
+			onSite=false;
+			
+			var rxp=new RegExp(/pinpopup_confirm=1/);
+			if (document.cookie.length>0 && rxp.exec(document.cookie)===null && typeof($('#konyvespolcon').attr('value'))!="undefined" && $('#konyvespolcon').attr('value')!==null && $('#konyvespolcon').attr('value')>0) {
+				$('#pinpopup_content_mask').show();
+				$('#pinpopup_content_container').show();
+				
+				$('#pinpopup_content_yes').click(function() {
+					$('#pinpopup_content_mask').hide();
+					$('#pinpopup_content_container').hide();
+					
+					var expiredays=90, exdate=new Date(), lira_url=window.location.host;
+					exdate.setDate(exdate.getDate()+expiredays);
+					document.cookie='pinpopup_confirm=1'+((expiredays===false) ? '' : ';expires='+exdate.toGMTString())+';domain='+lira_url+';path=/;';
+				});
+			}
+		});
+		
+		//$(document).mouseenter(function() {
+		//	onSite=true;
+		//});
+		
+		//$(window).bind("beforeunload", function(event) {
+		//	if (!onSite) {
+		//		return "Biztos hogy elhagyja az oldalt? Könyvespolcra rakott termékei csak akkor maradnak meg, ha belép azonosítójával és jelszavával.";
+		//	}
+		//});
+		
+		$("A.konyvespolcpin").click(function() {
+			$.post("/konyvespolc_pin.php", {str: $(this).attr("id").substr(1)})
+				.done(function(data) {
+					var oldID=data;
+					
+					if (oldID.length>0) {
+						if (oldID.substr(1, 1)==1) {
+							$("#"+oldID).html("Könyvespolcra fel!");
+							$("#"+oldID).attr("title", "Könyvespolcra fel! Ahhoz, hogy a rendszer mentse a könyvespolcra rakott könyveket, és így következő látogatásánál is megmaradjon, kérjük jelentkezzen be.");
+							newID="_0"+oldID.substr(2);
+							$("#konyvespolcon").val(function(i, oldval) { return parseInt(oldval, 10)-1; });						} else {
+							$("#"+oldID).html("Könyvespolcról le.");
+							$("#"+oldID).attr("title", "Könyvespolcról le. Ahhoz, hogy a rendszer mentse a könyvespolcra rakott könyveket, és így következő látogatásánál is megmaradjon, kérjük jelentkezzen be.");
+							newID="_1"+oldID.substr(2);
+							$("#konyvespolcon").val(function(i, oldval) { return parseInt(oldval, 10)+1; });						}
+						
+						$("#"+oldID).attr("id", newID);
+					}
+				})
+				.fail(function(xhr, ajaxOptions, thrownError) { console.log(xhr.status); console.log(xhr.responseText); console.log(thrownError); });
+		});
+	});
+  </script>
+  <script async="" defer="" src="https://www.google.com/recaptcha/api.js?hl=hu">
+  </script>
+  <!--cript type="text/javascript" src="https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js"></script-->
+  <script src="/res/cookiebar/cookiebar-1.5.33.js?forceLang=hu" type="text/javascript">
+  </script>
+  <!--&showNoConsent=1-->
+ </head>
+ <body onload="extlink();" style="background: url('https://www.lira.hu/upload/M_109/rek1/1.jpg') center top fixed #FFFFFF no-repeat;">
+  <!-- Google Tag Manager -->
+  <noscript>
+   <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-PN7HB8" style="display:none;visibility:hidden" width="0">
+   </iframe>
+  </noscript>
+  <script>
+   (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-PN7HB8');
+  </script>
+  <!-- End Google Tag Manager -->
+  <input id="konyvespolcon" name="konyvespolcon" type="hidden" value="0"/>
+  <div id="pinpopup_content_mask" style="display: none;">
+  </div>
+  <div id="pinpopup_content_container" style="display: none;">
+   <h5>
+    <strong>
+     Kedves látogatónk!
+    </strong>
+    <br/>
+    <br/>
+    Ahhoz, hogy a rendszer mentse a könyvespolcra rakott könyveket, és így következő látogatásánál is megmaradjon, kérjük jelentkezzen be.
+    <br/>
+    <br/>
+    Üdvözlettel:
+    <br/>
+    Líra Könyv Zrt.
+   </h5>
+   <input class="pinpopup_btn" id="pinpopup_content_yes" type="submit" value="Bezár"/>
+  </div>
+  <style>
+   #pinpopup_content_mask {
+				background: #000;
+				height: 100%;
+				width: 100%;
+				z-index: 998;
+				position: fixed;
+				left: 0px;
+				top: 0px;
+			}
+			#pinpopup_content_container {
+				width: 600px;
+				padding: 40px;
+				border: 1px solid #000;
+				margin: 0 auto;
+				text-align: center;
+				background: #FFF;
+				position: fixed;
+				z-index: 999;
+				left: 1%;
+				right: 1%;
+				top: 10%;
+				border-radius: 6px;
+				-webkit-border-radius: 6px;
+				-moz-border-radius: 6px;
+			}
+			#pinpopup_content_container * {
+				margin: 0;
+				padding: 0;
+				height: auto;
+				width: auto;
+			}
+			#pinpopup_content_container .pinpopup_btn {
+				padding: 6px;
+				margin: 30px 2px 0px 2px;
+				font-size: 13px;
+				color: #000000;
+			}
+			#pinpopup_content_container H5 {
+				font-size: 16px;
+				font-weight: normal;
+				/* letter-spacing: -2px; */
+				margin: 10px 0 5px 0;
+				text-decoration: none;
+				color: #4c4c4c;
+				border: 0;
+			}
+			.pinpopup_object_hide {
+				visibility: hidden !important;
+			}
+  </style>
+  <a href="https://www.lira.hu/hu/szerzo/j-r-r-tolkien?kampany=hobbit-skin-20180618" style="display: block; position: fixed; cursor: pointer; left: 50%; top: 0; width: 2000px; height: 100%; margin-top: 0px; margin-left: 490px; background-color:#000000;
+
+" title="lira.hu">
+  </a>
+  <a href="https://www.lira.hu/hu/szerzo/j-r-r-tolkien?kampany=hobbit-skin-20180618" style="display: block; position: fixed; cursor: pointer; left: 50%; top: 0px; width: 710px; height: 2850px; margin-top: 0px; margin-left: 490px; border: 0px solid #CCC; background-color:#000000; background-image:url('https://www.lira.hu/landings/skin/2018_06_18_hobbit_jobb.jpg'); background-repeat:no-repeat;" title="lira.hu">
+  </a>
+  <a href="https://www.lira.hu/hu/szerzo/j-r-r-tolkien?kampany=hobbit-skin-20180618" style="display: block; position: fixed; cursor: pointer; left: 50%; top: 0; width: 2000px; height: 100%; margin-top: 0px; margin-left: -2491px; background-color:#000000;" title="lira.hu">
+  </a>
+  <a href="https://www.lira.hu/hu/szerzo/j-r-r-tolkien?kampany=hobbit-skin-20180618" style="display: block; position: fixed; cursor: pointer; left: 50%; top: 0px; width: 710px; height: 2850px; margin-top: 0px; margin-left: -1201px; border: 0px solid #CCC; background-color:#000000; background-image:url('https://www.lira.hu/landings/skin/2018_06_18_hobbit_bal.jpg'); background-repeat:no-repeat;" title="lira.hu">
+  </a>
+  <div class="slide">
+   <form action="https://www.lira.hu/hu/reszletes_kereso" enctype="multipart/form-data" id="proba" method="post" name="reszletes_kereso2" onsubmit="return kereses_inditas2();">
+    <div class="col1" style="border-top: 0;">
+     Kategória
+     <input name="kButton" type="hidden" value="2"/>
+    </div>
+    <div class="col2" style="border-top: 0;">
+     <select class="form" name="kereses">
+      <option value="000">
+       Mindenhol
+      </option>
+      <option value="001">
+       Könyv
+      </option>
+      <option value="002">
+       Film
+      </option>
+      <option value="003">
+       Zene
+      </option>
+      <option value="004">
+       Hangoskönyv
+      </option>
+      <option value="005">
+       Kotta
+      </option>
+      <option value="006">
+       eKönyv
+      </option>
+      <option value="009">
+       Antikvár
+      </option>
+      <option value="007">
+       Játék
+      </option>
+      <option value="008">
+       Műszaki
+      </option>
+      <option value="012">
+       Utazás
+      </option>
+     </select>
+    </div>
+    <div class="col1">
+     Szerző
+    </div>
+    <div class="col2">
+     <input class="form" maxlength="250" name="szerzo_keres" type="text" value=""/>
+    </div>
+    <div class="col1">
+     Cím
+    </div>
+    <div class="col2">
+     <input class="form" maxlength="250" name="cim_keres" type="text" value=""/>
+    </div>
+    <div class="col1">
+     Kiadó
+    </div>
+    <div class="col2">
+     <input class="form" maxlength="250" name="kiado_keres" type="text" value=""/>
+    </div>
+    <div class="col1">
+     Leírás
+    </div>
+    <div class="col2">
+     <input class="form" maxlength="250" name="leiras_keres" type="text" value=""/>
+    </div>
+    <div class="col1">
+     Évszám
+    </div>
+    <div class="col2">
+     <select class="form" name="evszam_keres">
+      <option selected="selected" value="0">
+       Nem számít
+      </option>
+      <option value="2018">
+       2018
+      </option>
+      <option value="2017">
+       2017
+      </option>
+      <option value="2016">
+       2016
+      </option>
+      <option value="2015">
+       2015
+      </option>
+      <option value="2014">
+       2014
+      </option>
+      <option value="2013">
+       2013
+      </option>
+      <option value="2012">
+       2012
+      </option>
+      <option value="2011">
+       2011
+      </option>
+      <option value="2010">
+       2010
+      </option>
+      <option value="2009">
+       2009
+      </option>
+      <option value="1999-2008">
+       1999-2008
+      </option>
+      <option value="1989-1998">
+       1989-1998
+      </option>
+      <option value="1979-1988">
+       1979-1988
+      </option>
+      <option value="1969-1978">
+       1969-1978
+      </option>
+      <option value="1959-1968">
+       1959-1968
+      </option>
+     </select>
+    </div>
+    <div class="col1">
+     Ár
+    </div>
+    <div class="col2">
+     <input class="form" maxlength="250" name="min_ar_keres" style="width: 95px;" type="text" value=""/>
+     -
+     <input class="form" maxlength="250" name="max_ar_keres" style="width: 95px;" type="text" value=""/>
+    </div>
+    <div class="col1">
+     Mezők között
+    </div>
+    <div class="col2" style="line-height: 27px;">
+     <input name="kozott" style="vertical-align: middle; margin: 0 5px 0 0;" type="radio" value="and"/>
+     ÉS
+     <input name="kozott" style="vertical-align: middle; margin: 0 5px 0 20px;" type="radio" value="or"/>
+     VAGY  kapcsolat
+    </div>
+    <div class="col1">
+    </div>
+    <div class="col2">
+     <input alt="" src="https://www.lira.hu/res/btn_kereses_right.jpg" type="image" value="Keresés"/>
+    </div>
+    <div class="col1" style="border-bottom: 0;">
+    </div>
+    <div class="col2" style="text-align: right; border-bottom: 0;">
+     <span id="slide_bezar">
+      űrlap bezárása
+     </span>
+     |
+     <span id="slide_urit">
+      mezők ürítése
+     </span>
+    </div>
+   </form>
+  </div>
+  <!-- PLACE START -->
+  <div class="place" style="top: 0px;">
+   <div id="head">
+   </div>
+   <div id="top">
+    <div id="topkosar">
+     <div id="az_on_kosara">
+     </div>
+     <div id="kosar_statusz">
+      jelenleg üres
+     </div>
+     <div id="links">
+      <a href="/hu/regisztracio" title="Regisztráció">
+       Regisztráció
+      </a>
+      <span>
+       |
+      </span>
+      <a href="/hu/elfelejtett_jelszo" title="Elfelejtett jelszó">
+       Elfelejtett jelszó
+      </a>
+      <span id="kosar_nyitas_zaras">
+       <span class="pipe">
+        |
+       </span>
+       <a href="javascript: void(0);" title="Kosár">
+        Kosár nyitása
+       </a>
+      </span>
+     </div>
+    </div>
+    <div id="top_infok_belepes">
+     <form action="" enctype="multipart/form-data" id="Myform" method="post" name="Myform">
+      <div>
+       E-mail cím:
+       <input class="form" id="name" maxlength="250" name="name" type="text" value=""/>
+       <input id="slc_postazva" name="slc_postazva" type="hidden" value="Belépés"/>
+      </div>
+      <div>
+       Jelszó:
+       <input class="form" id="pass" maxlength="250" name="pass" type="password" value=""/>
+       <input style="float: right; width: 0; height: 0; background: #FFF; border: 0; padding: 0; margin: 0;" type="submit"/>
+      </div>
+      <div>
+       <a href="javascript: void(0);" onclick="javascript: document.Myform.submit();" title="Bejelentkezem">
+        Bejelentkezem
+       </a>
+      </div>
+     </form>
+    </div>
+    <div id="top_logo">
+    </div>
+   </div>
+   <div id="kosar" style="display: none;">
+    <div id="az_on_kosara_title">
+     Az Ön kosara üres
+    </div>
+   </div>
+   <script type="text/javascript">
+    //<![CDATA[
+function isValidEmailAddress(emailAddress) {
+	var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
+	return pattern.test(emailAddress);
+};
+
+function lep3(szallitasi_opciok, szemelyes_adatok, jovahagyas, Szallitas_adat_kell) {
+	//console.log("lep3: ");
+	var mehet=1;
+	if (szallitasi_opciok==1) { // szállítási opciók
+		mehet=0;
+		var i=0;
+		var elemek=document.forms["frm_szallitasi_opciok"].elements;
+		var kulfold_hol=0;
+		var kulfold_mfiz=0;
+		var belfold_sz_fizmod=0;
+		var belfold_f_mikorhol=0;
+		var belfold_f_fizmod=0;
+		var belfold_atvetel=0;
+		var belfold_sz_bolt=0;
+		var lapker_id=0;
+		var belfold_l_fizmod=0;
+		
+		var webox_machine_id=0;
+		var foxpost_id=0;
+		var belfold_fp_fizmod=0;
+		var postapont_id=0;
+		var belfold_w_fizmod=0;
+		var belfold_pp_fizmod=0;
+		
+		var erzsebetkartya_code_belfold_sz=0;
+		var erzsebetkartya_code_belfold_f=0;
+		var erzsebetkartya_code_belfold_l=0;
+		var erzsebetkartya_code_belfold_w=0;
+		var erzsebetkartya_code_belfold_fp=0;
+		var erzsebetkartya_code_belfold_pp=0;
+		var erzsebetkartya_code_kulfold=0;
+		var belfold_pp_fizmod=0;
+
+		while (i<elemek.length) {
+			//console.log(elemek[i].name);
+			if ((elemek[i].name=='kulfold_hol')&&(elemek[i].checked))        kulfold_hol=elemek[i].value;
+			if ((elemek[i].name=='kulfold_mfiz')&&(elemek[i].checked))       kulfold_mfiz=elemek[i].value;
+			if ((elemek[i].name=='belfold_sz_fizmod')&&(elemek[i].checked))  belfold_sz_fizmod=elemek[i].value;
+			if ((elemek[i].name=='belfold_f_mikorhol')&&(elemek[i].checked)) belfold_f_mikorhol=elemek[i].value;
+			if ((elemek[i].name=='belfold_f_fizmod')&&(elemek[i].checked))   belfold_f_fizmod=elemek[i].value;
+			if ((elemek[i].name=='belfold_sz_bolt'))    belfold_sz_bolt=elemek[i].value;
+			if ((elemek[i].name=='belfold_atvetel')&&(elemek[i].checked))    belfold_atvetel=elemek[i].value;
+			
+			if ((elemek[i].name=='lapker_radio')&&(elemek[i].checked))       lapker_id=elemek[i].value;
+			if ((elemek[i].name=='belfold_l_fizmod')&&(elemek[i].checked))   belfold_l_fizmod=elemek[i].value;
+			if ((elemek[i].name=='foxpost_id'))                              foxpost_id=elemek[i].value;
+			if ((elemek[i].name=='belfold_fp_fizmod')&&(elemek[i].checked))  belfold_fp_fizmod=elemek[i].value;
+			if ((elemek[i].name=='belfold_pp_fizmod')&&(elemek[i].checked))   belfold_pp_fizmod=elemek[i].value;
+			
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_sz'))   erzsebetkartya_code_belfold_sz=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_f'))    erzsebetkartya_code_belfold_f=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_l'))    erzsebetkartya_code_belfold_l=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_w'))    erzsebetkartya_code_belfold_w=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_fp'))   erzsebetkartya_code_belfold_fp=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_belfold_pp'))   erzsebetkartya_code_belfold_pp=elemek[i].value;
+			if ((elemek[i].name=='erzsebetkartya_code_kulfold'))      erzsebetkartya_code_kulfold=elemek[i].value;
+			i++;
+		}
+		//alert("stop");
+		document.forms["rendeles_lepesek"].ful_BK.value=document.forms["frm_szallitasi_opciok"].ful_BK.value;
+		document.forms["rendeles_lepesek"].belfold_atvetel.value=belfold_atvetel;
+		document.forms["rendeles_lepesek"].kulfold_hol.value =kulfold_hol;
+		document.forms["rendeles_lepesek"].kulfold_mfiz.value=kulfold_mfiz;
+		document.forms["rendeles_lepesek"].belfold_sz_fizmod.value=belfold_sz_fizmod;
+		document.forms["rendeles_lepesek"].belfold_f_mikorhol.value=belfold_f_mikorhol;
+		document.forms["rendeles_lepesek"].belfold_f_fizmod.value=belfold_f_fizmod;
+		document.forms["rendeles_lepesek"].belfold_sz_bolt.value=belfold_sz_bolt;
+
+		document.forms["rendeles_lepesek"].lapker_bolt_id.value=lapker_id;
+		document.forms["rendeles_lepesek"].belfold_l_fizmod.value=belfold_l_fizmod;
+		
+//		document.forms["rendeles_lepesek"].webox_machine_id.value=webox_machine_id;
+		document.forms["rendeles_lepesek"].foxpost_id.value=foxpost_id;
+		document.forms["rendeles_lepesek"].belfold_fp_fizmod.value=belfold_fp_fizmod;
+
+		document.forms["rendeles_lepesek"].megjegyzes.value  =document.forms["frm_jovahagyas"].megjegyzes.value;
+		
+//		document.forms["rendeles_lepesek"].belfold_w_fizmod.value=belfold_w_fizmod;
+		document.forms["rendeles_lepesek"].belfold_pp_fizmod.value=belfold_pp_fizmod;
+		
+		document.forms["rendeles_lepesek"].erzsebetkartya_code_belfold_sz.value=erzsebetkartya_code_belfold_sz;
+		document.forms["rendeles_lepesek"].erzsebetkartya_code_belfold_f.value=erzsebetkartya_code_belfold_f;
+
+		if(erzsebetkartya_code_belfold_l==0){
+			if ($("#erzsebetkartya_code_belfold_l").val()!=0 && $("#erzsebetkartya_code_belfold_l").val()!="")
+			erzsebetkartya_code_belfold_l = $("#erzsebetkartya_code_belfold_l").val();
+		}
+		document.forms["rendeles_lepesek"].erzsebetkartya_code_belfold_l.value=erzsebetkartya_code_belfold_l;
+		
+		if(erzsebetkartya_code_belfold_pp==0){
+			if ($("#erzsebetkartya_code_belfold_pp").val()!=0 && $("#erzsebetkartya_code_belfold_pp").val()!="")
+			erzsebetkartya_code_belfold_pp = $("#erzsebetkartya_code_belfold_pp").val();
+		}
+		document.forms["rendeles_lepesek"].erzsebetkartya_code_belfold_pp.value=erzsebetkartya_code_belfold_pp;
+		
+
+		document.forms["rendeles_lepesek"].megjegyzes.value  =document.forms["frm_jovahagyas"].megjegyzes.value;
+
+		
+		if (typeof document.forms["frm_szallitasi_opciok"].postapont_id != "undefined") {
+			postapont_id = document.forms["frm_szallitasi_opciok"].postapont_id.value;
+			document.forms["rendeles_lepesek"].postapont_id.value  = postapont_id;
+			document.forms["rendeles_lepesek"].postapont_group.value  = document.forms["frm_szallitasi_opciok"].postapont_group.value;
+			document.forms["rendeles_lepesek"].postapont_name.value  = document.forms["frm_szallitasi_opciok"].postapont_name.value;
+			document.forms["rendeles_lepesek"].postapont_zip.value  = document.forms["frm_szallitasi_opciok"].postapont_zip.value;
+			document.forms["rendeles_lepesek"].postapont_county.value  = document.forms["frm_szallitasi_opciok"].postapont_county.value;
+			document.forms["rendeles_lepesek"].postapont_address.value  = document.forms["frm_szallitasi_opciok"].postapont_address.value;
+			document.forms["rendeles_lepesek"].postapont_phone.value  = document.forms["frm_szallitasi_opciok"].postapont_phone.value;
+			document.forms["rendeles_lepesek"].valasztott_postapont_txt.value  = document.forms["frm_szallitasi_opciok"].valasztott_postapont_txt.value;
+		}
+		
+		
+		//console.log("belfold_atvetel: " + belfold_atvetel);
+		if ((belfold_atvetel==0)&&(document.forms["frm_szallitasi_opciok"].ful_BK.value=='1'))
+			alert("Kérem adja meg a könyvátvétel helyét, fizetési módját");
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==1)) {                                                //személyesen
+			if (belfold_sz_bolt==0)        alert("Kérem adja meg a könyv átvételének helyét");
+			else if (belfold_sz_fizmod==0) alert("Kérem adja meg a fizetési módot");
+			else if (belfold_sz_fizmod==5 && erzsebetkartya_code_belfold_sz==0)  {  $('#erzsebetkartya_code_belfold_sz').show('fast',function(){alert("Kérem adja meg az Erzsébet-kártya típusát!");});     } 
+			else mehet=1;
+			
+			if (belfold_sz_bolt==0)                                         $('#megrendeles_btn').hide();
+			if (belfold_sz_fizmod==0)                                       $('#megrendeles_btn').hide();
+			if (belfold_sz_fizmod==5 && erzsebetkartya_code_belfold_sz==0)  $('#megrendeles_btn').hide();
+		}
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==2)) {                                                //futárkiszállítással
+			if (belfold_f_fizmod==0) alert("Kérem adja meg hogy milyen módon szeretne fizetni");
+			else if (belfold_f_fizmod==5 && erzsebetkartya_code_belfold_f==0)  {  $('#erzsebetkartya_code_belfold_f').show('fast',function(){alert("Kérem adja meg az Erzsébet-kártya típusát!");});     } 
+			else mehet=1;
+			
+			if (belfold_f_fizmod==5 && erzsebetkartya_code_belfold_f==0)    $('#megrendeles_btn').hide();
+		}
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==3)) {                                                //futárkiszállítással
+			mehet=1;
+		}
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==4)) {                                                //lapker
+				mehet = 0;
+				var stop = 0;
+				if (belfold_l_fizmod==0 && stop==0){
+					stop=1;  alert("Kérem adja meg a fizetési módot");
+				}
+				if (belfold_l_fizmod==5){
+					$('#erzsebetkartya_code_belfold_l').show('fast',function(){
+					});
+					if (erzsebetkartya_code_belfold_l==0 && $("#erzsebetkartya_code_belfold_l").val()==0 && stop==0){
+						stop=1; alert("Kérem adja meg az Erzsébet-kártya típusát!");
+					}
+					if(lapker_id==0 && stop==0){
+						stop=1; alert("Kérem adja meg Lapker átvételi helyet!");
+					}
+					
+				}else if(lapker_id==0 && stop==0){
+					$('#erzsebetkartya_code_belfold_l').hide();
+					stop=1; alert("Kérem adja meg Lapker átvételi helyet!");
+				}
+				if (stop==0) mehet=1;
+				console.log("stop: "+stop+", mehet: "+mehet);
+				
+				if (belfold_l_fizmod==5 && erzsebetkartya_code_belfold_l==0)    $('#megrendeles_btn').hide();
+		}
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==7)) {                                                //foxpost
+			console.log("foxpost_id: "+foxpost_id+", belfold_fp_fizmod: "+belfold_fp_fizmod);
+			if (foxpost_id==0)             alert("Kérem adja meg a könyv átvételének helyét");
+			else if (belfold_fp_fizmod==0) alert("Kérem adja meg a fizetési módot");
+			else if (belfold_fp_fizmod==5 && erzsebetkartya_code_belfold_fp==0)  {  $('#erzsebetkartya_code_belfold_fp').show('fast',function(){alert("Kérem adja meg az erzsébetkártya típusát!");});     } 
+			else mehet=1;
+			
+			if (foxpost_id==0) $('#megrendeles_btn').hide();
+			if (belfold_fp_fizmod==0) $('#megrendeles_btn').hide();
+			if (belfold_fp_fizmod==5 && erzsebetkartya_code_belfold_fp==0) $('#megrendeles_btn').hide();
+		}
+		
+		
+		if ((document.forms["frm_szallitasi_opciok"].ful_BK.value==1)&&            //belfold
+			(belfold_atvetel==6)) {                                                //postai szállítás
+					/*
+			if (belfold_pp_fizmod==0)                                            {  alert("Kérem adja meg a fizetési módot");     } 
+			else if (belfold_pp_fizmod==5 && erzsebetkartya_code_belfold_pp==0)  {  $('#erzsebetkartya_code_belfold_pp').show('fast',function(){alert("Kérem adja meg az Erzsébet-kártya típusát!");});     } 
+			else if (postapont_id==0)                                            {  alert("Kérem adja meg a könyv átvételének helyét");     } 
+			mehet = 1;
+			*/
+			
+			
+			mehet = 0;
+			var stop = 0;
+			if (belfold_pp_fizmod==0 && stop==0){
+				stop=1;  alert("Kérem adja meg a fizetési módot");
+			}
+			if (belfold_pp_fizmod==5){
+				$('#erzsebetkartya_code_belfold_pp').show('fast',function(){
+				});
+				if (erzsebetkartya_code_belfold_pp==0 && $("#erzsebetkartya_code_belfold_pp").val()==0 && stop==0){
+					stop=1; alert("Kérem adja meg az Erzsébet-kártya típusát!");
+				}
+				if(postapont_id==0 && stop==0){
+					stop=1; alert("Kérem adja meg a könyv átvételének helyét!");
+				}
+				
+			}else if(postapont_id==0 && stop==0){
+				$('#erzsebetkartya_code_belfold_pp').hide();
+				stop=1; alert("Kérem adja meg a könyv átvételének helyét!");
+			}
+			if (stop==0) mehet=1;
+			console.log("stop: "+stop+", mehet: "+mehet);			
+			
+			
+			if (belfold_pp_fizmod==5 && erzsebetkartya_code_belfold_pp==0)    $('#megrendeles_btn').hide();
+			if (belfold_pp_fizmod==0)                                         $('#megrendeles_btn').hide();
+			
+			
+			
+		}
+		if (document.forms["frm_szallitasi_opciok"].ful_BK.value==2) {             //kulfold
+			if (kulfold_hol==0)           alert("Kérem adja meg hogy milyen módon szeretné átvenni a könyvet.");
+			else if (kulfold_mfiz==0)     alert("Kérem adja meg hogy milyen módon szeretne fizetni");
+			else if (kulfold_mfiz==5     && erzsebetkartya_code_kulfold==0)  {  $('#erzsebetkartya_code_kulfold').show('fast',function(){alert("Kérem adja meg az Erzsébet-kártya típusát!");});     } 
+			else mehet=1;
+			
+			if (kulfold_mfiz==5     && erzsebetkartya_code_kulfold==0)  $('#megrendeles_btn').hide();
+		}
+		
+		if (mehet==1){
+			document.forms["rendeles_lepesek"].submit();
+		}
+	}
+	//**************************************************************************************************
+	if (szemelyes_adatok==1) { // személyes adatok
+		
+
+		mehet=0;
+		document.forms["rendeles_lepesek"].szam_nev.value=document.forms["frm_szemelyesadatok_opciok"].szam_nev.value;
+		document.forms["rendeles_lepesek"].szam_cegnev.value=document.forms["frm_szemelyesadatok_opciok"].szam_cegnev.value;
+		document.forms["rendeles_lepesek"].szam_adoszam.value=document.forms["frm_szemelyesadatok_opciok"].szam_adoszam.value;
+		document.forms["rendeles_lepesek"].szam_orszag.value=document.forms["frm_szemelyesadatok_opciok"].szam_orszag.value;
+		document.forms["rendeles_lepesek"].szam_varos.value=document.forms["frm_szemelyesadatok_opciok"].szam_varos.value;
+		document.forms["rendeles_lepesek"].szam_irsz.value=document.forms["frm_szemelyesadatok_opciok"].szam_irsz.value;
+		document.forms["rendeles_lepesek"].szam_utca.value=document.forms["frm_szemelyesadatok_opciok"].szam_utca.value;
+		
+		document.forms["rendeles_lepesek"].email.value=document.forms["frm_szemelyesadatok_opciok"].email.value;
+		
+		document.forms["rendeles_lepesek"].mobil.value=document.forms["frm_szemelyesadatok_opciok"].telefon_1_pre.value+document.forms["frm_szemelyesadatok_opciok"].telefon_1.value;
+		if (document.forms["frm_szemelyesadatok_opciok"].telefon_1_a.value=="1") {
+			document.forms["rendeles_lepesek"].mobil.value="36"+document.forms["rendeles_lepesek"].mobil.value;
+		}
+		
+		document.forms["rendeles_lepesek"].tel.value=document.forms["frm_szemelyesadatok_opciok"].telefon_2_pre.value+document.forms["frm_szemelyesadatok_opciok"].telefon_2.value;
+		if (document.forms["frm_szemelyesadatok_opciok"].telefon_2_a.value=="1") {
+			document.forms["rendeles_lepesek"].tel.value="36"+document.forms["rendeles_lepesek"].tel.value;
+		}
+		
+		document.forms["rendeles_lepesek"].telefon_1_a.value=document.forms["frm_szemelyesadatok_opciok"].telefon_1_a.value;
+		document.forms["rendeles_lepesek"].telefon_1_pre.value=document.forms["frm_szemelyesadatok_opciok"].telefon_1_pre.value;
+		document.forms["rendeles_lepesek"].telefon_1.value=document.forms["frm_szemelyesadatok_opciok"].telefon_1.value;
+		
+		document.forms["rendeles_lepesek"].telefon_2_a.value=document.forms["frm_szemelyesadatok_opciok"].telefon_2_a.value;
+		document.forms["rendeles_lepesek"].telefon_2_pre.value=document.forms["frm_szemelyesadatok_opciok"].telefon_2_pre.value;
+		document.forms["rendeles_lepesek"].telefon_2.value=document.forms["frm_szemelyesadatok_opciok"].telefon_2.value;
+		
+		document.forms["rendeles_lepesek"].skype.value=document.forms["frm_szemelyesadatok_opciok"].skype.value;
+		
+		document.forms["rendeles_lepesek"].szall_nev.value=document.forms["frm_szemelyesadatok_opciok"].szall_nev.value;
+		document.forms["rendeles_lepesek"].szall_cegnev.value=document.forms["frm_szemelyesadatok_opciok"].szall_cegnev.value;
+		document.forms["rendeles_lepesek"].szall_orszag.value=document.forms["frm_szemelyesadatok_opciok"].szall_orszag.value;
+		document.forms["rendeles_lepesek"].szall_varos.value=document.forms["frm_szemelyesadatok_opciok"].szall_varos.value;
+		document.forms["rendeles_lepesek"].szall_irsz.value=document.forms["frm_szemelyesadatok_opciok"].szall_irsz.value;
+		document.forms["rendeles_lepesek"].szall_utca.value=document.forms["frm_szemelyesadatok_opciok"].szall_utca.value;
+		
+		document.forms["rendeles_lepesek"].cim_ua.value=document.forms["frm_szemelyesadatok_opciok"].cim_ua.checked;
+
+		document.forms["rendeles_lepesek"].megjegyzes.value=document.forms["frm_jovahagyas"].megjegyzes.value;
+		
+		if (document.forms["rendeles_lepesek"].szam_nev.value=="")
+			alert("Számlázási név megadása kötelező.");
+		else if (document.forms["rendeles_lepesek"].szam_varos.value=="")
+			alert("Számlázási város megadása kötelező.");
+		else if (document.forms["rendeles_lepesek"].szam_irsz.value=="")
+			alert("Számlázási irányítószám megadása kötelező.");
+		else if (document.forms["rendeles_lepesek"].szam_utca.value=="")
+			alert("Számlázási utca, házszám megadása kötelező.");			
+		else if (document.forms["rendeles_lepesek"].email.value=="" || !isValidEmailAddress(document.forms["rendeles_lepesek"].email.value))
+			alert("Megfelelő formátumú email megadása kötelező.");
+
+		else if ((document.forms["rendeles_lepesek"].szall_nev.value=="")&&(Szallitas_adat_kell==1))
+			alert("Szállítási név megadása kötelező.");
+		else if ((document.forms["rendeles_lepesek"].szall_orszag.value!=93)&&(Szallitas_adat_kell==1)&&(document.forms["rendeles_lepesek"].ful_BK.value==1))
+			alert("Belföldi kiszállításnál Magyaroszági szállítási címet adjon meg, majd kattintson a Mentés gombra.");
+		else if ((document.forms["rendeles_lepesek"].szall_orszag.value==93)&&(Szallitas_adat_kell==1)&&(document.forms["rendeles_lepesek"].ful_BK.value==2))
+			alert("Külföldi kiszállításnál külföldi szállítási címet adjon meg, majd kattintson a Mentés gombra.");
+		else if ((document.forms["rendeles_lepesek"].szall_varos.value=="")&&(Szallitas_adat_kell==1))
+			alert("Szállítási város megadása kötelező.");
+		else if ((document.forms["rendeles_lepesek"].szall_irsz.value=="")&&(Szallitas_adat_kell==1))
+			alert("Szállítási irányítószám megadása kötelező.");
+		else if ((document.forms["rendeles_lepesek"].szall_utca.value=="")&&(Szallitas_adat_kell==1))
+			alert("Szállítási utca, házszám megadása kötelező.");
+
+			
+		else if (document.forms["rendeles_lepesek"].mobil.value=="")
+			alert("A telefonszám megadása kötelező.");
+
+		else
+			mehet=1;
+
+		if ((jovahagyas==0) && (mehet==1)) {
+			document.forms["rendeles_lepesek"].submit();
+		}
+
+	//**************************************************************************************************
+	}
+	if (jovahagyas==1) { // jóváhagyás
+		var i=0;
+		var elemek=document.forms["frm_jovahagyas"].elements;
+		var csomag=0;
+		var xmasdelivery=0;
+		var xmasstore=new Array('3', '6', '7', '8', '11', '13', '14', '18', '19', '20', '26', '29', '32', '33', '40', '49', '56', '61', '64', '86', '91', '104');
+		
+		while (i<elemek.length) {
+			if ((elemek[i].name=='csomag')&&(elemek[i].checked)) {
+				csomag=elemek[i].value;
+			}
+			
+			if (elemek[i].name=='h_csomag') {
+				csomag=elemek[i].value;
+			}
+			
+			if ((elemek[i].name=='xmasdelivery')&&(elemek[i].checked)) {
+				xmasdelivery=elemek[i].value;
+			}
+			
+			if (elemek[i].name=='h_xmasdelivery') {
+				xmasdelivery=elemek[i].value;
+			}
+			
+			i++;
+		}
+		
+		if (csomag==0) {
+			alert("Kérjük jelezze, hogy a könyv(ek) szállítását az előrendelt kiadványokkal együtt, vagy külön-külön kéri.");
+			return false;
+		} else if (xmasdelivery==0) {
+			alert("Kérjük jelezze, hogy a könyv(ek) szállítását karácsony előtt vagy után kéri.");
+			return false;
+		} else if (
+			xmasdelivery==1 && !(document.forms["frm_szallitasi_opciok"].ful_BK.value==1 && document.forms["frm_szallitasi_opciok"].belfold_atvetel.value==1 && xmasstore.indexOf(document.forms["frm_szallitasi_opciok"].belfold_sz_bolt.value)>-1)) {
+			alert("Kérjük az Átvételi, fizetési módoknál állítsa be, hol szeretné átvenni rendelését.\nKarácsony előtti szállítást már csak az alábbi listában szereplő boltokba tudunk vállalni.\n\n"+
+				"Buy-Way Líra Könyváruház\n1239 Budapest, Bevásárló u.\n\n"+
+				"Europark Líra Könyváruház\n1194 Budapest, Üllői út 201.\n\n"+
+				"Fókusz Könyváruház\n1072 Budapest , Rákóczi út 14.\n\n"+
+				"Hegyvidék Központ Líra Könyváruház\n1124 Budapest, Apor Vilmos tér 11-12.\n\n"+
+				"M5 Megapark Líra Könyvesbolt\n1204 Budapest, Mártírok u 281.\n\n"+
+				"Múzeum körút Líra Könyvesbolt\n1053 Budapest, Múzeum krt. 17.\n\n"+
+				"Récsei Könyváruház és Műszaki Antikvárium\n1146 Budapest, Istvánmezei út\n\n"+
+				"Rózsakert Líra Könyváruház\n1026 Budapest, Gábor Áron u. 74-78.\n\n"+
+				"Rózsavölgyi és Társa Zeneműbolt\n1052 Budapest, Szervita tér 5.\n\n"+
+				"Líra Könyváruház\n4025 Debrecen, Piac u. 57.\n\n"+
+				"Interspar Líra Könyvesbolt\n2049 Diósd, Balatoni út 2/a\n\n"+
+				"Buy-Way Líra Könyváruház\n2120 Dunakeszi, Nádas u. 8.\n\n"+
+				"Ady Könyvesbolt\n3200 Gyöngyös, Fő tér 8.\n\n"+
+				"Interspar Líra Könyváruház\n9021 Győr , Fehérvári út 3.\n\n"+
+				"Líra Könyvesbolt\n7400 Kaposvár, Fő utca 20.\n\n"+
+				"Líra Könyv- és Zeneszalon\n6000 Kecskemét, Hornyik krt. 2.\n\n"+
+				"Szinvapark Líra Könyváruház\n3530 Miskolc, Bajcsy- Zsilinszky u. 2-4.\n\n"+
+				"Fókusz Könyváruház\n7621 Pécs , Jókai u. 25.\n\n"+
+				"Líra Könyváruház\n2440 Százhalombatta, Vörösmarty utca 2/A\nVároskapu Üzletház\n\n"+
+				"Fókusz Könyváruház\n6720 Szeged , Tisza L. krt. 34.\n\n"+
+				"Family Center Líra Könyváruház\n9700 Szombathely , Varasd út 1.\n\n"+
+				"Market Central Líra Könyváruház\n2220 Vecsés, Fő út 246-248.");
+			return false;
+		} else {
+			document.forms["rendeles_lepesek"].megjegyzes.value=document.forms["frm_jovahagyas"].megjegyzes.value;
+			document.forms["rendeles_lepesek"].csomag.value=csomag;
+			document.forms["rendeles_lepesek"].xmasdelivery.value=xmasdelivery;
+			if (mehet==1) {
+				return true;
+			}
+		}
+		
+	//**************************************************************************************************
+	}
+}
+//]]>
+   </script>
+   <form action="https://www.lira.hu/hu/bejelentkezes" id="rendeles_lepesek" method="post" name="rendeles_lepesek">
+    <p style="width: 0; height: 0;">
+     <!-- Szállítási opciók -->
+     <input name="ful_BK" type="hidden" value=""/>
+     <input name="van_ebook" type="hidden" value="0"/>
+     <input name="van_nem_ebook" type="hidden" value="0"/>
+     <input name="belfold_atvetel" type="hidden" value=""/>
+     <input name="kulfold_hol" type="hidden" value=""/>
+     <input name="kulfold_mfiz" type="hidden" value=""/>
+     <input name="belfold_sz_fizmod" type="hidden" value=""/>
+     <input name="belfold_f_mikorhol" type="hidden" value=""/>
+     <input name="belfold_f_fizmod" type="hidden" value=""/>
+     <input name="belfold_sz_bolt" type="hidden" value=""/>
+     <input name="lapker_bolt_id" type="hidden" value=""/>
+     <input name="belfold_l_fizmod" type="hidden" value=""/>
+     <input name="webox_machine_id" type="hidden" value=""/>
+     <input name="foxpost_id" type="hidden" value=""/>
+     <input name="belfold_fp_fizmod" type="hidden" value=""/>
+     <input id="opciok_valt" name="opciok_valt" type="hidden" value="0"/>
+     <!-- Személyes adatok -->
+     <input name="szam_nev" type="hidden" value=""/>
+     <input name="szam_cegnev" type="hidden" value=""/>
+     <input name="szam_adoszam" type="hidden" value=""/>
+     <input name="szam_orszag" type="hidden" value=""/>
+     <input name="szam_varos" type="hidden" value=""/>
+     <input name="szam_irsz" type="hidden" value=""/>
+     <input name="szam_utca" type="hidden" value=""/>
+     <input name="email" type="hidden" value=""/>
+     <input name="mobil" type="hidden" value=""/>
+     <input name="tel" type="hidden" value=""/>
+     <input name="telefon_1_a" type="hidden" value=""/>
+     <input name="telefon_1_pre" type="hidden" value=""/>
+     <input name="telefon_1" type="hidden" value=""/>
+     <input name="telefon_2_a" type="hidden" value=""/>
+     <input name="telefon_2_pre" type="hidden" value=""/>
+     <input name="telefon_2" type="hidden" value=""/>
+     <input name="skype" type="hidden" value=""/>
+     <input name="szall_nev" type="hidden" value=""/>
+     <input name="szall_cegnev" type="hidden" value=""/>
+     <input name="szall_orszag" type="hidden" value=""/>
+     <input name="szall_varos" type="hidden" value=""/>
+     <input name="szall_irsz" type="hidden" value=""/>
+     <input name="szall_utca" type="hidden" value=""/>
+     <!-- Jóváhagyás -->
+     <input name="csomag" type="hidden" value=""/>
+     <input name="xmasdelivery" type="hidden" value=""/>
+     <input name="megjegyzes" type="hidden" value=""/>
+     <input name="cim_ua" type="hidden" value=""/>
+     <input name="postapont_id" type="hidden" value=""/>
+     <input name="postapont_group" type="hidden" value=""/>
+     <input name="postapont_name" type="hidden" value=""/>
+     <input name="postapont_zip" type="hidden" value=""/>
+     <input name="postapont_county" type="hidden" value=""/>
+     <input name="postapont_address" type="hidden" value=""/>
+     <input name="postapont_phone" type="hidden" value=""/>
+     <input name="valasztott_postapont_txt" type="hidden" value=""/>
+     <input name="belfold_pp_fizmod" type="hidden" value=""/>
+     <input name="erzsebetkartya_code_belfold_sz" type="hidden" value=""/>
+     <input name="erzsebetkartya_code_belfold_f" type="hidden" value=""/>
+     <input name="erzsebetkartya_code_belfold_l" type="hidden" value=""/>
+     <input name="erzsebetkartya_code_belfold_pp" type="hidden" value=""/>
+     <input id="szallitas_adat_kell" name="szallitas_adat_kell" type="hidden" value="1"/>
+     <input id="kovetkezo" style="width: 0; height: 0; background: #FFF; border: 0;" type="button" value=""/>
+    </p>
+   </form>
+   <div id="menu">
+    <h2 style="width: 62px; padding: 0;">
+     <a href="https://www.lira.hu/" style="width: 62px; padding: 0;" title="Főoldal">
+     </a>
+    </h2>
+    <!--
+		<h2 style="width: 48px; padding: 0;"><a href="https://www.lira.hu/" title="Főoldal" style="width: 48px; padding: 0;">&nbsp;</a></h2>
+		<style>DIV#menu H2.fokat, DIV#menu H2.fokat_on { padding: 3px 12px 0 !important; }</style>
+		-->
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/konyv" title="Könyv">
+      Könyv
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/film" title="Film">
+      Film
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/zene" title="Zene">
+      Zene
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/kotta" title="Kotta">
+      Kotta
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/hangoskonyv" title="Hangoskönyv">
+      Hangoskönyv
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/ekonyv" title="eKönyv">
+      eKönyv
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/antikvar" title="Antikvár">
+      Antikvár
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/jatek" title="Játék">
+      Játék
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/muszaki" title="Műszaki">
+      Műszaki
+     </a>
+    </h2>
+    <h2 class="fokat">
+     <a href="https://www.lira.hu/hu/ajandek" title="Ajándék">
+      Ajándék
+     </a>
+    </h2>
+    <!--div style="position: absolute; z-index: 10000; left: 50%; top: 110px; width: 170px; height: 42px; padding: 0; margin: 0 0 0 317px;"><a href="https://www.lira.hu/landings/karacsony2015/" title="Karácsonyi ajándék ötletek"><img src="https://www.lira.hu/res/karacsony_2015_gomb.png" width="170" height="42" alt="Karácsonyi ajándék ötletek" /></a></div-->
+    <!--div id="karacsony_ajandek_gomb" style="position: absolute; z-index: 10000; left: 50%; top: 110px; width: 170px; height: 42px; padding: 0; margin: 0 0 0 317px;"><a href="https://www.lira.hu/landings/karacsony2017/?kampany=karacsony-landing-2017-mano" title="Karácsonyi ajándék ötletek" target="_blank"><img src="https://www.lira.hu/res/2017_12_07_karacsony2017_menu_gomb.png" width="170" height="42" alt="Kar?csonyi aj?nd?k ?tletek" /></a></div-->
+   </div>
+   <div id="almenu">
+    <h3>
+     <a href="https://www.lira.hu/hu/akcios_termekek" title="Akciók">
+      Akciók
+     </a>
+    </h3>
+    <h3>
+     <a href="
+https://www.lira.hu/hu/cimke_list/ujdonsagok_cimlap		">
+      Újdonságok
+     </a>
+    </h3>
+    <h3>
+     <a href="https://www.lira.hu/hu/elorendelheto_konyvek" title="Előrendelhető">
+      Előrendelhető
+     </a>
+    </h3>
+    <h3>
+     <a href="https://www.lira.hu/hu/bolthalozat/magyarorszag" title="Líra bolthálózat">
+      Líra bolthálózat
+     </a>
+    </h3>
+    <h3 style="float: right;">
+     <a href="https://www.lira.hu/hu/ugyfelszolgalat" title="Segítség">
+      Segítség
+     </a>
+    </h3>
+    <h3 style="float: right;">
+     <a href="https://www.lira.hu/hu/vasarlasifeltetelek" title="Fizetés és szállítás">
+      Fizetés és szállítás
+     </a>
+    </h3>
+   </div>
+   <div id="kereses-torzsv">
+    <form action="https://www.lira.hu/hu/reszletes_kereso" name="gyorskereso">
+     <div id="ikon_kereses">
+     </div>
+     <div id="input_kereses">
+      <input id="h_gyorskereso1" name="h_gyorskereso" type="text" value="keresett mű szerzője vagy címe"/>
+      <input name="kButton" type="hidden" value="1"/>
+     </div>
+     <div id="cat_kereses">
+      <select name="kereses">
+       <option value="001">
+        Könyv
+       </option>
+       <option selected="selected" value="000">
+        Mindenhol
+       </option>
+       <option value="002">
+        Film
+       </option>
+       <option value="003">
+        Zene
+       </option>
+       <option value="004">
+        Hangoskönyv
+       </option>
+       <option value="005">
+        Kotta
+       </option>
+       <option value="006">
+        eKönyv
+       </option>
+       <option value="009">
+        Antikvár
+       </option>
+       <option value="007">
+        Játék
+       </option>
+       <option value="008">
+        Műszaki
+       </option>
+      </select>
+      <input id="blokk2" name="blokk2" type="hidden" value=""/>
+     </div>
+     <div id="btn_kereses">
+      <input alt="Keresés" id="kButton1" src="https://www.lira.hu/res/btn_kereses.jpg" title="Keresés" type="image"/>
+     </div>
+    </form>
+    <div id="btn_reszletes_kereses">
+     <img alt="Részletes keresés" height="38" src="https://www.lira.hu/res/btn_reszletes_kereses_off.png" title="Részletes keresés" width="165"/>
+    </div>
+    <div id="img_lira_torzsvasarloi">
+     <!--object type="application/x-shockwave-flash" data="https://www.lira.hu/res/img_lira_torzsvasarloi.swf" width="257" height="63">
+					<param name="movie" value="https://www.lira.hu/res/img_lira_torzsvasarloi.swf" />
+					<param name="quality" value="high" />
+				</object-->
+     <a href="https://www.lira.hu/hu/lira_torzsvasarlo?kampany=lira-torzsvasarlo-cimlap">
+      <img alt="" src="https://www.lira.hu/res/img_lira_torzsvasarloi.jpg"/>
+     </a>
+    </div>
+   </div>
+   <!-- MAIN START -->
+   <div id="index_main">
+    <!-- LEFTCOL START -->
+    <div class="index_leftcol">
+     <!--a href="https://www.lira.hu/ajandekkartya" title="Líra ajándékkártya"><img src="https://www.lira.hu/res/ajandekkartya.jpg" width="240" alt="Líra ajándékkártya" style="float: left;" /></a-->
+     <!--a href="https://www.lira.hu/hu/blog/2011/12/15/megrendeles_karacsony/" title="Rendelését még Karácsony előtt megkapja!"><img src="https://www.lira.hu/res/karacsonyelott.jpg" width="239" alt="Rendelését még Karácsony előtt megkapja!" style="float: left;" /></a-->
+     <!--a href="https://www.lira.hu/hu/blog/2012/10/01/tajekoztato-a-mastercard174-mobile-fizetesi-modrol/" title="Tájékoztató a MasterCard&reg; Mobile fizetési módról"><img src="https://www.lira.hu/res/mastercard_mobile_fizetes.jpg" width="240" alt="Tájékoztató a MasterCard&reg; Mobile fizetési módról" style="float: left;" /></a-->
+     <!--a href="https://www.lira.hu/karacsony2013" title="Karácsonyi ajándék ötletek"><img src="https://www.lira.hu/res/karacsony_2013.jpg" width="240" height="240" style="float: left;" alt="Karácsonyi ajándék ötletek" /></a-->
+     <a href="https://www.lira.hu/hu/blog/2010/11/17/ingyenes-szemelyes-atvetel-az-orszag-65-pontjan/" title="Ingyenes személyes átvétel">
+      <img alt="Ingyenes személyes átvétel" src="https://www.lira.hu/res/szemelyes_gomb_73.jpg" style="float: left;" width="240"/>
+     </a>
+     <div class="index_leftcol_title">
+      Kiemelt ajánlatok
+     </div>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/hu/blog/2012/07/02/heti-jatek/" title="Heti játék">
+       Heti játék
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/hu/cimke_list/lirahu-toplista-2017?kampany=lirahu-toplista-2017-bal" title="Top100 2017">
+       Top100 2017
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://mindennapkonyv.hu/" target="_blank" title="Minden Nap Könyv könyvportál">
+       Minden Nap Könyv könyvportál
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/landings/sorozatok/sorozatok.php?kampany=sorozatok-bal" target="_blank" title="Sorozatok">
+       Sorozatok
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.facebook.com/lirakonyv?sk=events" target="_blank" title="Hírek, események">
+       Hírek, események
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/hu/cimke_list/sikerkonyvek_2012?kampany=sikerkonyvek-bal" title="Sikerkönyvek">
+       Sikerkönyvek
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/hu/blog/2018/04/26/kiadoink-katalogusai-2018/" title="Líra csoport kiadóinak katalógusai">
+       Líra csoport kiadóinak katalógusai
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/ajandekkartya" title="Ajándékkártya">
+       Ajándékkártya
+      </a>
+     </h3>
+     <h3 class="index_leftcol_cimke">
+      <a href="https://www.lira.hu/hu/cimke_list/stabilo-termekek-2015-julius?kampany=rajzeszkozok-bal" title="Rajzeszközök">
+       Rajzeszközök
+      </a>
+     </h3>
+     <div class="index_leftcol_title">
+      <a href="https://www.lira.hu/hu/top100" title="Toplista">
+       Toplista
+      </a>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg1">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/a-masodik-eleted-akkor-kezdodik-amikor-megerted-hogy-csak-egy-van" title="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van ">
+         <img alt="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van " height="95" src="https://www.lira.hu/upload/M_28/rek1/161/1482161_1.jpg" style="float: left;" title="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/raphaelle-giordano" title="Raphaelle Giordano">
+             Raphaelle Giordano
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/a-masodik-eleted-akkor-kezdodik-amikor-megerted-hogy-csak-egy-van" title="A második életed akkor kezdődik, amikor megérted, hogy csak egy van ">
+             A második életed akkor kezdődik, amikor megérted, hogy csak egy van
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         2872 Ft
+        </span>
+        <span class="regiar">
+         3590 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg2">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/memoar-eletrajz-interju/akos-50-visszaszamlalas" title="Ákos - Ákos 50  - Visszaszámlálás ">
+         <img alt="Ákos - Ákos 50  - Visszaszámlálás " height="58" src="https://www.lira.hu/upload/M_28/rek1/733/1503733_1.jpg" style="float: left;" title="Ákos - Ákos 50  - Visszaszámlálás " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/akos" title="Ákos">
+             Ákos
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/memoar-eletrajz-interju/akos-50-visszaszamlalas" title="Ákos 50  - Visszaszámlálás ">
+             Ákos 50  - Visszaszámlálás
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         5941 Ft
+        </span>
+        <span class="regiar">
+         6990 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg3">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/ismeretterjeszto/tunderhajszal-foglalkozz-velem-ukh-2018" title="KÁLNAY ADÉL - Tündérhajszál (Foglalkozz velem!) - ÜKH 2018 ">
+         <img alt="KÁLNAY ADÉL - Tündérhajszál (Foglalkozz velem!) - ÜKH 2018 " height="73" src="https://www.lira.hu/upload/M_28/rek1/157/1515157_1.jpg" style="float: left;" title="KÁLNAY ADÉL - Tündérhajszál (Foglalkozz velem!) - ÜKH 2018 " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/klnay-adl" title="KÁLNAY ADÉL">
+             KÁLNAY ADÉL
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/ismeretterjeszto/tunderhajszal-foglalkozz-velem-ukh-2018" title="Tündérhajszál (Foglalkozz velem!) - ÜKH 2018 ">
+             Tündérhajszál (Foglalkozz velem!) - ÜKH 2018
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         2082 Ft
+        </span>
+        <span class="regiar">
+         2450 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg4">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eredet-3" title="Dan Brown - Eredet ">
+         <img alt="Dan Brown - Eredet " height="89" src="https://www.lira.hu/upload/M_28/rek1/42/1443042_1.jpg" style="float: left;" title="Dan Brown - Eredet " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/dan-brown" title="Dan Brown">
+             Dan Brown
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eredet-3" title="Eredet ">
+             Eredet
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         3391 Ft
+        </span>
+        <span class="regiar">
+         3990 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg5">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/memoar-eletrajz-interju/csernus-imre-a-harcos-eletrajz-es-lelekrajz" title="Csernus Imre Dr. - A harcos - Életrajz és lélekrajz ">
+         <img alt="Csernus Imre Dr. - A harcos - Életrajz és lélekrajz " height="84" src="https://www.lira.hu/upload/M_28/rek1/414/1510414_1.jpg" style="float: left;" title="Csernus Imre Dr. - A harcos - Életrajz és lélekrajz " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/csernus-imre-dr" title="Csernus Imre Dr.">
+             Csernus Imre Dr.
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/memoar-eletrajz-interju/csernus-imre-a-harcos-eletrajz-es-lelekrajz" title="A harcos - Életrajz és lélekrajz ">
+             A harcos - Életrajz és lélekrajz
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         3391 Ft
+        </span>
+        <span class="regiar">
+         3990 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg6">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/tovabbi-konyveink/kult-50-a-kultura-50-arca-2018" title=" - Kult50 - A kultúra 50 arca - 2018 ">
+         <img alt=" - Kult50 - A kultúra 50 arca - 2018 " height="83" src="https://www.lira.hu/upload/M_28/rek1/456/1513456_1.jpg" style="float: left;" title=" - Kult50 - A kultúra 50 arca - 2018 " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/" title="">
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/tovabbi-konyveink/kult-50-a-kultura-50-arca-2018" title="Kult50 - A kultúra 50 arca - 2018 ">
+             Kult50 - A kultúra 50 arca - 2018
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         1192 Ft
+        </span>
+        <span class="regiar">
+         1490 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg7">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/mesek/bori-ovodaba-megy-1" title="Liane Schneider - Annette Steinhauer - Bori óvodába megy - Barátnőm, Bori ">
+         <img alt="Liane Schneider - Annette Steinhauer - Bori óvodába megy - Barátnőm, Bori " height="60" src="https://www.lira.hu/upload/M_28/rek1/455/786455_1.jpg" style="float: left;" title="Liane Schneider - Annette Steinhauer - Bori óvodába megy - Barátnőm, Bori " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/liane-schneider-annette-steinhauer" title="Liane Schneider - Annette Steinhauer">
+             Liane Schneider - Annette Steinhauer
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/mesek/bori-ovodaba-megy-1" title="Bori óvodába megy - Barátnőm, Bori ">
+             Bori óvodába megy - Barátnőm, Bori
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         632 Ft
+        </span>
+        <span class="regiar">
+         790 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg8">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/romantikus-irodalom/a-beosztott" title="Vi Keeland - A beosztott ">
+         <img alt="Vi Keeland - A beosztott " height="89" src="https://www.lira.hu/upload/M_28/rek1/243/1500243_1.jpg" style="float: left;" title="Vi Keeland - A beosztott " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/vi-keeland" title="Vi Keeland">
+             Vi Keeland
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/romantikus-irodalom/a-beosztott" title="A beosztott ">
+             A beosztott
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         3144 Ft
+        </span>
+        <span class="regiar">
+         3699 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg9">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/az-elnok-eltunt" title="Bill Clinton - James Patterson - Az elnök eltűnt ">
+         <img alt="Bill Clinton - James Patterson - Az elnök eltűnt " height="92" src="https://www.lira.hu/upload/M_28/rek1/562/1469562_1.jpg" style="float: left;" title="Bill Clinton - James Patterson - Az elnök eltűnt " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/bill-clinton-james-patterson" title="Bill Clinton - James Patterson">
+             Bill Clinton - James Patterson
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/az-elnok-eltunt" title="Az elnök eltűnt ">
+             Az elnök eltűnt
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         3391 Ft
+        </span>
+        <span class="regiar">
+         3990 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistabox">
+      <div class="bg10">
+       <div class="img">
+        <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/meg-mindig-rolad-almodom" title="Tomor Anita - Még mindig rólad álmodom ">
+         <img alt="Tomor Anita - Még mindig rólad álmodom " height="95" src="https://www.lira.hu/upload/M_28/rek1/852/1487852_1.jpg" style="float: left;" title="Tomor Anita - Még mindig rólad álmodom " width="59"/>
+        </a>
+       </div>
+       <div class="txt">
+        <table cellpadding="0" cellspacing="0">
+         <tr>
+          <td valign="bottom">
+           <strong>
+            <a href="https://www.lira.hu/hu/szerzo/tomor-anita" title="Tomor Anita">
+             Tomor Anita
+            </a>
+           </strong>
+           <h4>
+            <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/meg-mindig-rolad-almodom" title="Még mindig rólad álmodom ">
+             Még mindig rólad álmodom
+            </a>
+           </h4>
+          </td>
+         </tr>
+        </table>
+       </div>
+       <div class="arak">
+        <span class="ujar">
+         3192 Ft
+        </span>
+        <span class="regiar">
+         3990 Ft
+        </span>
+       </div>
+      </div>
+     </div>
+     <div class="index_leftcol_toplistatovabb">
+      <a href="https://www.lira.hu/hu/top100" title="Top 100">
+      </a>
+     </div>
+     <div class="index_leftcol_elorendelhetotovabb">
+      <a href="https://www.lira.hu/hu/elorendelheto-toplista" title="Előrendelhető toplistára">
+      </a>
+     </div>
+    </div>
+    <!-- LEFTCOL END -->
+    <!-- MIDCOL START -->
+    <div class="index_midcol">
+     <!-- AJANLOBOX START -->
+     <div class="ajanlobox">
+      <div class="ajanlobox_menu">
+       <div class="ajanlobox_menu_off" id="_1">
+        <a href="javascript: void(0);">
+         Nyerjen vászontáskát!
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_2">
+        <a href="javascript: void(0);">
+         A szerelem egyenlete
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_3">
+        <a href="javascript: void(0);">
+         Szeretek olvasni sorozat
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_4">
+        <a href="javascript: void(0);">
+         Bogyó és Babóca akció
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_5">
+        <a href="javascript: void(0);">
+         Publio akció
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_6">
+        <a href="javascript: void(0);">
+         Irány a Foci VB!
+        </a>
+       </div>
+       <div class="ajanlobox_menu_off" id="_7">
+        <a href="javascript: void(0);">
+         Agave kiadó -30%
+        </a>
+       </div>
+      </div>
+      <div class="ajanlobox_cont" id="box_1" style="display: none;">
+       <a href="https://www.lira.hu/hu/blog/2018/05/11/rendelje-elo-a-nyar-legnagyobb-sikerkonyvet-es-nyerjen-vaszontaskat/?kampany=-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_05_14_muvelt_akcio05_e2_481_250.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_2" style="display: none;">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/a-szerelem-egyenlete?kampany=a-szerelem-egyenlete-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_16_18_szerelem_egyenlete_481x256.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_3" style="display: none;">
+       <a href="https://www.lira.hu/hu/cimke_list/akcio-babilon-kiado-akcio-2018-junius?kampany=akcio-babilon-kiado-akcio-2018-junius-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_06_18_tessloff_lira_olvasoklub_481_256.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_4" style="display: none;">
+       <a href="https://www.lira.hu/hu/cimke_list/akcio-pozsonyi-pagony-kiado-akcio-2018-junius?kampany=akcio-pozsonyi-pagony-kiado-akcio-2018-junius-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_06_15_pagony_481x256_bb_lapozo.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_5" style="display: none;">
+       <a href="https://www.lira.hu/hu/cimke_list/akcio-publio-kiado-akcio-2018-junius?kampany=akcio-publio-kiado-akcio-2018-junius-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_06_11_publio_481.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_6" style="display: none;">
+       <a href="https://www.lira.hu/hu/cimke_list/akcio-gabo-kiado-foci-vb-akcio-2018-junius?kampany=akcio-gabo-kiado-foci-vb-akcio-2018-junius-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_06_15_gabo_lapozo_481x256.jpg" width="481"/>
+       </a>
+      </div>
+      <div class="ajanlobox_cont" id="box_7" style="display: none;">
+       <a href="https://www.lira.hu/hu/cimke_list/kupon-25-1806?kampany=kupon-25-1806-lapozo-cimlap" target="_self">
+        <img alt="" height="256" src="/landings/kreativok/2018_06_18_agave_180619_481_256.jpg" width="481"/>
+       </a>
+      </div>
+     </div>
+     <!-- KIEMELT AJÁNLATOK START -->
+     <div class="ajanlatbox_title" style="width: 707px;">
+      Személyes ajánlatunk Önnek
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/tony_wolf" title="TONY WOLF">
+         TONY WOLF
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/mesek/mesel-az-erdo-az-oriasokrol?grPos=1&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Mesél az erdő - Az óriásokról">
+            Mesél az erdő - Az óriásokról
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/mesek/mesel-az-erdo-az-oriasokrol?grPos=1&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="TONY WOLF - Mesél az erdő - Az óriásokról">
+        <img alt="TONY WOLF - Mesél az erdő - Az óriásokról" height="151" src="https://www.lira.hu/upload/M_28/rek1/833/1491833_1.jpg" title="TONY WOLF - Mesél az erdő - Az óriásokról" width="108"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        1992 Ft
+       </div>
+       <div class="regiar">
+        2490 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         20%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1491833"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/raphaelle-giordano" title="Raphaelle Giordano">
+         Raphaelle Giordano
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/a-masodik-eleted-akkor-kezdodik-amikor-megerted-hogy-csak-egy-van?grPos=2&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="A második életed akkor kezdődik, amikor megérted, hogy csak egy van">
+            A második életed akkor kezdődik, amikor megérted, hogy csak egy van
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/a-masodik-eleted-akkor-kezdodik-amikor-megerted-hogy-csak-egy-van?grPos=2&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van">
+        <img alt="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van" height="154" src="https://www.lira.hu/upload/M_28/rek1/161/1482161_1.jpg" title="Raphaelle Giordano - A második életed akkor kezdődik, amikor megérted, hogy csak egy van" width="96"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2872 Ft
+       </div>
+       <div class="regiar">
+        3590 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         20%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1482161"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/lana-millan" title="Lana Millan">
+         Lana Millan
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/raziel?grPos=3&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Raziel">
+            Raziel
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/raziel?grPos=3&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Lana Millan - Raziel">
+        <img alt="Lana Millan - Raziel" height="154" src="https://www.lira.hu/upload/M_28/rek1/804/1433804_1.jpg" title="Lana Millan - Raziel" width="101"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2959 Ft
+       </div>
+       <div class="regiar">
+        3699 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         20%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1433804"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/csikasz-lajos" title="Csikász Lajos">
+         Csikász Lajos
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/megatkozottak?grPos=4&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="MEGÁTKOZOTTAK">
+            MEGÁTKOZOTTAK
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/megatkozottak?grPos=4&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Csikász Lajos - MEGÁTKOZOTTAK">
+        <img alt="Csikász Lajos - MEGÁTKOZOTTAK" height="154" src="https://www.lira.hu/upload/M_28/rek1/924/1500924_1.jpg" title="Csikász Lajos - MEGÁTKOZOTTAK" width="105"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2974 Ft
+       </div>
+       <div class="regiar">
+        3499 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1500924"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/csernus-imre-dr" title="Csernus Imre Dr.">
+         Csernus Imre Dr.
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/ismeretterjeszto-1/tarsadalomtudomany/a-ferfi?grPos=5&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="A FÉRFI">
+            A FÉRFI
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/ismeretterjeszto-1/tarsadalomtudomany/a-ferfi?grPos=5&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Csernus Imre Dr. - A FÉRFI">
+        <img alt="Csernus Imre Dr. - A FÉRFI" height="153" src="https://www.lira.hu/upload/M_28/rek1/144/191144_1.jpg" title="Csernus Imre Dr. - A FÉRFI" width="108"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        3391 Ft
+       </div>
+       <div class="regiar">
+        3990 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="191144"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/dan-brown" title="Dan Brown">
+         Dan Brown
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eredet-3?grPos=6&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Eredet">
+            Eredet
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eredet-3?grPos=6&amp;grRecid=jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l&amp;grRecStat=1" title="Dan Brown - Eredet">
+        <img alt="Dan Brown - Eredet" height="154" src="https://www.lira.hu/upload/M_28/rek1/42/1443042_1.jpg" title="Dan Brown - Eredet" width="102"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        3391 Ft
+       </div>
+       <div class="regiar">
+        3990 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1443042"/>
+        <input name="grRecid" type="hidden" value="jip2gbvr-5ksixx0wre8-C.c17_a177.S.MAIN_PAGE-09o8r9l"/>
+        <input name="grRecStat" type="hidden" value="1"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <!-- KIEMELT AJÁNLATOK END -->
+     <!-- ÚJDONSÁGOK START -->
+     <div class="ajanlatbox_title" style="width: 707px;">
+      Újdonságok
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/fiona-cummins" title="Fiona Cummins">
+         Fiona Cummins
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eljon-egy-sorozatgyilkos-aki-eljon-a-csontjaidert" title="Eljön - Egy sorozatgyilkos, aki eljön a csontjaidért">
+            Eljön - Egy sorozatgyilkos, aki eljön a csontjaidért
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/eljon-egy-sorozatgyilkos-aki-eljon-a-csontjaidert" title="Fiona Cummins - Eljön - Egy sorozatgyilkos, aki eljön a csontjaidért">
+        <img alt="Fiona Cummins - Eljön - Egy sorozatgyilkos, aki eljön a csontjaidért" height="154" src="https://www.lira.hu/upload/M_28/rek1/142/1401142_1.jpg" title="Fiona Cummins - Eljön - Egy sorozatgyilkos, aki eljön a csontjaidért" width="96"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        3032 Ft
+       </div>
+       <div class="regiar">
+        3790 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         20%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1401142"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/" title="">
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/versek/az-en-anyukam" title="Az én anyukám">
+            Az én anyukám
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/gyerekirodalom/versek/az-en-anyukam" title=" - Az én anyukám">
+        <img alt=" - Az én anyukám" height="110" src="https://www.lira.hu/upload/M_28/rek1/46/1477046_1.jpg" title=" - Az én anyukám" width="108"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        1691 Ft
+       </div>
+       <div class="regiar">
+        1990 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1477046"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/cate-woods" title="Cate Woods">
+         Cate Woods
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/barcsak-ismernelek" title="Bárcsak ismernélek!">
+            Bárcsak ismernélek!
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/barcsak-ismernelek" title="Cate Woods - Bárcsak ismernélek!">
+        <img alt="Cate Woods - Bárcsak ismernélek!" height="154" src="https://www.lira.hu/upload/M_28/rek1/672/1505672_1.jpg" title="Cate Woods - Bárcsak ismernélek!" width="95"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        3136 Ft
+       </div>
+       <div class="regiar">
+        3690 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1505672"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/lian_hearn" title="Lian HEARN">
+         Lian HEARN
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/erdosotet-ura-sikanoko-meseje-3" title="ERDŐSÖTÉT URA /SIKANOKO MESÉJE 3.">
+            ERDŐSÖTÉT URA /SIKANOKO MESÉJE 3.
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/sci-fi-fantasy-krimi/erdosotet-ura-sikanoko-meseje-3" title="Lian HEARN - ERDŐSÖTÉT URA /SIKANOKO MESÉJE 3.">
+        <img alt="Lian HEARN - ERDŐSÖTÉT URA /SIKANOKO MESÉJE 3." height="154" src="https://www.lira.hu/upload/M_28/rek1/569/1484569_1.jpg" title="Lian HEARN - ERDŐSÖTÉT URA /SIKANOKO MESÉJE 3." width="95"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2974 Ft
+       </div>
+       <div class="regiar">
+        3499 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1484569"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/muszka-sandor" title="Muszka Sándor">
+         Muszka Sándor
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/felnottirodalom/vers-drama/szegyen-6" title="Szégyen">
+            Szégyen
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/felnottirodalom/vers-drama/szegyen-6" title="Muszka Sándor - Szégyen">
+        <img alt="Muszka Sándor - Szégyen" height="154" src="https://www.lira.hu/upload/M_28/rek1/974/1493974_1.jpg" title="Muszka Sándor - Szégyen" width="106"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2125 Ft
+       </div>
+       <div class="regiar">
+        2500 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1493974"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <div class="ajanlatbox">
+      <p>
+       <strong>
+        <a href="https://www.lira.hu/hu/szerzo/bauer-barbara" title="Bauer Barbara">
+         Bauer Barbara
+        </a>
+       </strong>
+      </p>
+      <div class="cim">
+       <table cellpadding="0" cellspacing="0">
+        <tr>
+         <td>
+          <h4>
+           <a href="https://www.lira.hu/hu/konyv/szepirodalom/az-elet-hangja" title="Az élet hangja">
+            Az élet hangja
+           </a>
+          </h4>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <div class="ajanlatbox_img">
+       <a href="https://www.lira.hu/hu/konyv/szepirodalom/az-elet-hangja" title="Bauer Barbara - Az élet hangja">
+        <img alt="Bauer Barbara - Az élet hangja" height="154" src="https://www.lira.hu/upload/M_28/rek1/57/1477057_1.jpg" title="Bauer Barbara - Az élet hangja" width="108"/>
+       </a>
+      </div>
+      <div class="infos">
+       <div class="ujar">
+        2966 Ft
+       </div>
+       <div class="regiar">
+        3490 Ft
+       </div>
+       <div class="megtakaritas">
+        <strong>
+         15%
+        </strong>
+        <br/>
+        megtakarítás
+       </div>
+       <form action="/index.php" method="post" name="itemx">
+        <input name="termek_id" type="hidden" value="1477057"/>
+        <input alt="Kosárba" name="KosárbaBtn" src="https://www.lira.hu/res/btn_kosarba.jpg" title="Kosárba" type="image" value="1"/>
+       </form>
+      </div>
+     </div>
+     <!-- ÚJDONSÁGOK END -->
+     <div class="ajanlatbox_title" style="width: 707px;">
+      Akcióink
+     </div>
+     <div style="float: left; padding: 5px;">
+     </div>
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/kupon-25-1806?kampany=kupon-25-1806-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/kupon-25-1806?kampany=kupon-25-1806-kek" title="Agave Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         30%
+        </td>
+        <td class="txt">
+         Agave Kiadó akció
+        </td>
+        <td class="date">
+         június 25-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/akcio-pozsonyi-pagony-kiado-akcio-2018-junius?kampany=akcio-pozsonyi-pagony-kiado-akcio-2018-junius-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/akcio-pozsonyi-pagony-kiado-akcio-2018-junius?kampany=akcio-pozsonyi-pagony-kiado-akcio-2018-junius-kek" title="Pozsonyi Pagony Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         20%
+        </td>
+        <td class="txt">
+         Pozsonyi Pagony Kiadó akció
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/kolibri-kiado-star-wars-akcio-2018-majus?kampany=kolibri-kiado-star-wars-akcio-2018-majus-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/kolibri-kiado-star-wars-akcio-2018-majus?kampany=kolibri-kiado-star-wars-akcio-2018-majus-kek" title="Kolibri Kiadó Star Wars akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         20-80%
+        </td>
+        <td class="txt">
+         Kolibri Kiadó Star Wars akció
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/akcio-roland-toys-kiado-akcio-2018-junius?kampany=akcio-roland-toys-kiado-akcio-2018-junius-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/akcio-roland-toys-kiado-akcio-2018-junius?kampany=akcio-roland-toys-kiado-akcio-2018-junius-kek" title="Roland Toys Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         20-75%
+        </td>
+        <td class="txt">
+         Roland Toys Kiadó akció
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/stabilo-akcio-2018-majus?kampany=stabilo-akcio-2018-majus-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/stabilo-akcio-2018-majus?kampany=stabilo-akcio-2018-majus-kek" title="Stabilo akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         20%
+        </td>
+        <td class="txt">
+         Stabilo akció
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/akcio-corvina-akcio-2018-majus?kampany=akcio-corvina-akcio-2018-majus-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/akcio-corvina-akcio-2018-majus?kampany=akcio-corvina-akcio-2018-majus-kek" title="Corvina Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         30%
+        </td>
+        <td class="txt">
+         Corvina Kiadó akció
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/akcio-ballagasi-akcio-2018-majus?kampany=akcio-ballagasi-akcio-2018-majus-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/akcio-ballagasi-akcio-2018-majus?kampany=akcio-ballagasi-akcio-2018-majus-kek" title="Ajándékkönyvek ballagásra">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         20-70%
+        </td>
+        <td class="txt">
+         Ajándékkönyvek ballagásra
+        </td>
+        <td class="date">
+         június 30-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/pyrus-kiado-ekonyv-akcio-2018-junius?kampany=pyrus-kiado-ekonyv-akcio-2018-junius-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/pyrus-kiado-ekonyv-akcio-2018-junius?kampany=pyrus-kiado-ekonyv-akcio-2018-junius-kek" title="Pyrus Kiadó eKönyv akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         25%
+        </td>
+        <td class="txt">
+         Pyrus Kiadó eKönyv akció
+        </td>
+        <td class="date">
+         július 1-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/akcio-babilon-kiado-akcio-2018-junius?kampany=akcio-babilon-kiado-akcio-2018-junius-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/akcio-babilon-kiado-akcio-2018-junius?kampany=akcio-babilon-kiado-akcio-2018-junius-kek" title="Babilon Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         800 Ft
+        </td>
+        <td class="txt">
+         Babilon Kiadó akció
+        </td>
+        <td class="date">
+         szeptember 15-ig
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/konyv/ismeretterjeszto-1/elet-falun-es-varoson?kampany=elet-falun-es-varoson-kek">
+      <a href="https://www.lira.hu/hu/konyv/ismeretterjeszto-1/elet-falun-es-varoson?kampany=elet-falun-es-varoson-kek" title="Élet falun és városon">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         50%
+        </td>
+        <td class="txt">
+         Élet falun és városon
+        </td>
+        <td class="date">
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/konyv/tankonyv/szotarak/nagy-marketing-szotar?kampany=nagy-marketing-szotar-kek">
+      <a href="https://www.lira.hu/hu/konyv/tankonyv/szotarak/nagy-marketing-szotar?kampany=nagy-marketing-szotar-kek" title="Nagy marketing szótár">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         420 Ft
+        </td>
+        <td class="txt">
+         Nagy marketing szótár
+        </td>
+        <td class="date">
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/cimke_list/sanvean-ujitott-akcio-2017?kampany=sanvean-ujitott-akcio-2017-kek">
+      <a href="https://www.lira.hu/hu/cimke_list/sanvean-ujitott-akcio-2017?kampany=sanvean-ujitott-akcio-2017-kek" title="Sanvean Kiadó akció">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         30%
+        </td>
+        <td class="txt">
+         Sanvean Kiadó akció
+        </td>
+        <td class="date">
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- AKCIOAJÁNLÓK START -->
+     <div class="akcioajanlo" id="https://www.lira.hu/hu/konyv/szepirodalom/ifjusagi-irodalom/ismeretterjeszto/johanna-basford-hataridonaplo-2017?kampany=johanna-basford-hataridonaplo-2017-kek">
+      <a href="https://www.lira.hu/hu/konyv/szepirodalom/ifjusagi-irodalom/ismeretterjeszto/johanna-basford-hataridonaplo-2017?kampany=johanna-basford-hataridonaplo-2017-kek" title="Johanna Basford - Határidőnapló">
+      </a>
+      <table cellpadding="0" cellspacing="0">
+       <tr>
+        <td class="kedv">
+         990 Ft
+        </td>
+        <td class="txt">
+         Johanna Basford - Határidőnapló
+        </td>
+        <td class="date">
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- AKCIOAJÁNLÓK END -->
+     <!-- ERTESULJON START 
+			<div class="ertesuljon">
+				<div class="btn"><a href="https://www.lira.hu/hu/hirlevelre" title="Iratkozzon fel hírlevelünkre!">&nbsp;</a></div>
+			</div><br style="clear: both;" />
+			 ERTESULJON END -->
+     <div class="main_bottombox1" style="clear: both;">
+      <a href="/hu/lira_egyeboldalak/mi_a_konyvklub" title="Líra Könyvklub">
+       <img alt="Líra Könyvklub" height="110" src="https://www.lira.hu/res/img_main_bottombox1.jpg" title="Líra Könyvklub" width="224"/>
+      </a>
+     </div>
+     <div class="main_bottombox2">
+      <a href="/hu/kapcsolatprogram" title="Kapcsolat Program">
+       <img alt="Kapcsolat Program" height="110" src="https://www.lira.hu/res/img_main_bottombox2.jpg" title="Kapcsolat Program" width="224"/>
+      </a>
+     </div>
+     <div class="main_bottombox3" style="margin-right: 0;">
+      <a href="/hu/hvg" title="Vásároljon kedvezménnyel az ország egyik legrégebbi, legnagyobb webáruházából HVG klubkártyával!">
+       <img alt="Vásároljon kedvezménnyel az ország egyik legrégebbi, legnagyobb webáruházából HVG klubkártyával!" height="110" src="https://www.lira.hu/res/img_main_bottombox4.jpg" title="Vásároljon kedvezménnyel az ország egyik legrégebbi, legnagyobb webáruházából HVG klubkártyával!" width="224"/>
+      </a>
+     </div>
+    </div>
+    <!-- MIDCOL END -->
+   </div>
+   <!-- MAIN END -->
+   <!-- FOOTER START -->
+   <div id="footer">
+    <!--iframe src="https://www.lira.hu/lablec.php" scrolling="no" frameborder="0"></iframe-->
+    <div id="footer_iframe">
+     <h6>
+      Üzleti partnereinknek
+     </h6>
+     <div>
+      <!--
+				<a href="https://nagyker.lira.hu/" rel="external">Líra Nagykereskedés</a>
+				<a href="https://nc.lira.hu/jcbs" rel="external">Kiadói kereskedelmi rendszer</a><br style="clear: both;" />
+				-->
+      <a href="https://www.lira.hu/redirect.php?dest=nagyker" rel="external">
+       Líra Nagykereskedés
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=kereskedelmi" rel="external">
+       Kiadói kereskedelmi rendszer
+      </a>
+      <br style="clear: both;"/>
+     </div>
+     <h6>
+      Líra csoport kiadói
+     </h6>
+     <div>
+      <a href="https://www.lira.hu/redirect.php?dest=athenaeum" rel="external">
+       Athenaeum Kiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=corvinakiado" rel="external">
+       Corvina Kiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=generalpress" rel="external">
+       General Press Könyvkiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=magveto" rel="external">
+       Magvető Kiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=manokonyvek" rel="external">
+       Manó Könyvek Kiadó
+      </a>
+      <a href="https://www.coolbookz.hu/" rel="external">
+       Menő Könyvek Kiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=partvonal" rel="external">
+       Partvonal Kiadó
+      </a>
+      <a href="https://www.lira.hu/kiado/rozsavolgyi/" rel="external">
+       Rózsavölgyi és Társa Kiadó
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=szepmives" rel="external">
+       Szépmíves Könyvek Kiadó
+      </a>
+      <br style="clear: both;"/>
+     </div>
+     <h6>
+      Líra könyv
+     </h6>
+     <div>
+      <a href="https://www.lira.hu/redirect.php?dest=lirakonyv_magunkrol" rel="external">
+       Magunkról
+      </a>
+      <a href="https://www.lira.hu/hu/bolthalozat/magyarorszag" rel="external">
+       Líra bolthálózat
+      </a>
+      <a href="https://www.lira.hu/hu/lira_egyeboldalak/mi_a_konyvklub" rel="external">
+       Líra Könyvklub
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=lirakonyv_torzsvasarloi" rel="external">
+       Törzsvásárlói rendszer
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=lirakonyv_nagykereskedelem" rel="external">
+       Líra nagykereskedelem
+      </a>
+      <a href="https://www.lira.hu/redirect.php?dest=lirakonyv_hirdetesi_lehetosegek" rel="external">
+       Hirdetési lehetőségek
+      </a>
+      <br style="clear: both;"/>
+     </div>
+    </div>
+    <div class="footer_bottom">
+     <div class="footer_bottom_inner">
+      <div class="footer_bottom_left">
+       <a href="https://www.lira.hu/" title="Lira.hu">
+        <img alt="Líra.hu" height="54" src="https://www.lira.hu/res/logo_lira.png" title="Líra.hu" width="119"/>
+       </a>
+      </div>
+      <div class="footer_bottom_center">
+       <p class="links">
+        <!--
+						<a href="https://www.lirakonyv.hu/" rel="external" title="Líra Könyv">Líra Könyv</a>&nbsp;&nbsp;|&nbsp;
+					-->
+        <a href="https://www.lira.hu/hu/ugyfelszolgalat" title="Segítség">
+         Segítség
+        </a>
+        |
+        <a href="https://www.lira.hu/hu/adatvedelem" title="Adatkezelési szabályzat">
+         Adatkezelési szabályzat
+        </a>
+        |
+        <!--
+						<a href="https://www.lira.hu/hu/impresszum" title="Impresszum">Impresszum</a>&nbsp;&nbsp;|&nbsp;
+						<a href="https://www.lira.hu/hu/adatvedelem" title="Adatvédelem">Adatvédelem</a>&nbsp;&nbsp;|&nbsp;
+						<a href="https://www.lira.hu/hu/jogiutmutatas" title="Jogi útmutatás">Jogi útmutatás</a>&nbsp;&nbsp;|&nbsp;
+					-->
+        <a href="https://www.lira.hu/hu/oldalterkep" title="Oldaltérkép">
+         Oldaltérkép
+        </a>
+        <!--
+						&nbsp;&nbsp;|&nbsp;<a href="https://www.lira.hu/hu/vasarlasifeltetelek">Vásárlási feltételek</a>
+					-->
+       </p>
+       <p>
+        Minden jog fenntartva © 1999-2012 Líra Könyv Zrt.
+       </p>
+       <p>
+        A weblapon található információk közzétételéhez, másolásához a működtetők írásbeli beleegyezése szükséges.
+       </p>
+       <p>
+        Powered by Infosystem s.r.o.. Minden jog fenntartva.
+       </p>
+      </div>
+      <div class="footer_bottom_right">
+       <img alt="MagyarBrands" height="39" src="https://www.lira.hu/res/logo_magyarbrands.png" style="margin: 12px 0 0 0;" title="MagyarBrands" width="120"/>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- FOOTER END -->
+  </div>
+  <!-- PLACE END -->
+  <!-- //0.25 //-->
+ </body>
+</html>

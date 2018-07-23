@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="de" xml:lang="de" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>
+   Oberstdorf Kleinwalsertal Bergbahnen
+  </title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="de" name="content-language"/>
+  <meta content="index, follow" name="robots"/>
+  <meta content="MLFu0-kq6ODpNsbg4bnmuboylNQlMJtnChlcK-EA5Lc" name="google-site-verification"/>
+  <meta content="24.06.2018 11:00:34" name="tramino-cache"/>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+  <link href="https://cdn.tramino.net/static/ok-bergbahnen/fonts/style.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="https://cdn.tramino.net/static/ok-bergbahnen/iconfont/css/styles.min.css?c=1529831" media="all" rel="stylesheet" type="text/css"/>
+  <link href="https://live.tramino.de/static/slick/slick.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="https://live.tramino.de/static/slick/slick-theme.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="https://live.tramino.de/css/files/css/base.css;css/form.css;js/fancybox2/jquery.fancybox.css;3510;3511;3751;3514;3516;3749;3750;3518;3530;3994;3524;3522;3519;3808;3809;3810" media="all" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   var Tramino = {"base":"","client":"3469","page":"100384","lang":"de"};
+  </script>
+  <script type="text/javascript">
+   (function(){var q=[];window.TraminoReady=function(f){return f?q.push(f):q}})()
+  </script>
+  <script async="" charset="utf-8" data-main="/tramino/js/requirejs-main.js" defer="" src="/tramino/js/require.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   "use strict";
+
+//  data object
+var json_data = {};
+var prices_winter = {};
+var prices_sommer = {};
+
+
+var getPriceWinter = function( prices, type, persons, area ) {
+	// console.log(prices, type, persons,area);
+	if ( prices[area] !== undefined ) {
+		var price = prices[area][persons];
+
+		if ( price === null ) {
+			price = "0.00";
+		}
+		return price;
+	}
+}
+
+var getPriceSommer = function( prices, type, persons ) {
+	// console.log(prices, type, persons);
+	if ( prices[type] !== undefined ) {
+		var price = prices[type][persons];
+		return price;
+ 	}
+}
+
+TraminoReady(function() {
+	
+	//  load data
+	$.ajax({
+		dataType: "json",
+		url: "https://www.ok-bergbahnen.com/api/items/",
+		data: { shelf: "829" },
+		success: function(json, status, xhr) {
+			if ( status == "success" ) {
+				json_data = json['shelf'];
+			
+				var subclasses_gesamt = json_data[0]['items']['0']['classes']['0']['seasons']['0']['subclass'];
+				var subclasses_seb = json_data[0]['items']['0']['classes']['2']['seasons']['0']['subclass'];
+
+				prices_winter = {
+					'gesamt': {
+						'adult': subclasses_gesamt[0]['price'],
+						'senior': subclasses_gesamt[1]['price'],
+						'teenager': subclasses_gesamt[2]['price'],
+						'kids': subclasses_gesamt[3]['price'],
+						'snowman': subclasses_gesamt[4]['price'],
+					},
+					'seb': {
+						'adult': subclasses_seb[0]['price'],
+						'senior': subclasses_seb[1]['price'],
+						'teenager': subclasses_seb[2]['price'],
+						'kids': subclasses_seb[3]['price'],
+						'snowman': subclasses_seb[4]['price'],
+					}
+				};
+
+			}
+		},
+	});
+
+	//  load data
+	$.ajax({
+		dataType: "json",
+		url: "https://www.ok-bergbahnen.com/api/items/",
+		data: { shelf: "920" },
+		success: function(json, status, xhr) {
+			if ( status == "success" ) {
+				json_data = json['shelf'];
+
+				prices_sommer = {};
+
+				// console.log(json_data);
+				var items = json_data[0]['items'];
+				var subclasses = {
+					'nhb': {},
+					'fhb': {},
+					'seb': {},
+					'whb': {},
+					'ib': {},
+					'hb': {},
+				};
+ 
+
+				for (var i = 0; i < items.length; i++) {
+					// console.log(items[i]);
+					if ( items[i]['id'] == 51848 ) {
+						subclasses['nhb']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['nhb']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['nhb']['tal'] = [{price:'--.--'}];
+					}
+
+					if ( items[i]['id'] == 51832 ) {
+						subclasses['fhb']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['fhb']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['fhb']['tal'] = items[i]['classes']['2']['seasons']['0']['subclass'];
+					}
+					if ( items[i]['id'] == 51864 ) {
+						subclasses['seb']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['seb']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['seb']['tal'] = items[i]['classes']['2']['seasons']['0']['subclass'];
+					}
+					if ( items[i]['id'] == 51834 ) {
+						subclasses['whb']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['whb']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['whb']['tal'] = items[i]['classes']['2']['seasons']['0']['subclass'];
+					}
+					if ( items[i]['id'] == 51835 ) {
+						subclasses['ib']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['ib']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['ib']['tal'] = items[i]['classes']['2']['seasons']['0']['subclass'];
+					}
+					if ( items[i]['id'] == 51836 ) {
+						subclasses['hb']['bergtal'] = items[i]['classes']['0']['seasons']['0']['subclass'];
+						subclasses['hb']['berg'] = items[i]['classes']['1']['seasons']['0']['subclass'];
+						subclasses['hb']['tal'] = items[i]['classes']['2']['seasons']['0']['subclass'];
+					}					
+				}
+
+				// console.log(subclasses);
+
+
+				//  Schleifen um die Preise im richtigen Format darzustellen
+				var altersstufen = ['adult','senior', 'teenager', 'kids'];
+				var berge = [ 'nhb', 'fhb', 'seb', 'whb', 'ib', 'hb' ];
+				var fahrttypen = ['bergtal', 'berg', 'tal'];
+
+				for (var fc = 0; fc < fahrttypen.length; fc++) {
+					
+					prices_sommer[fahrttypen[fc]] = {};
+
+					for (var ac = 0; ac < altersstufen.length; ac++) {
+						prices_sommer[fahrttypen[fc]][altersstufen[ac]] = {}
+
+						for (var bc = 0; bc < berge.length; bc++) {
+
+							if ( subclasses[berge[bc]][fahrttypen[fc]] === undefined ) {
+								continue;
+							}
+
+							if ( subclasses[berge[bc]][fahrttypen[fc]][ac] === undefined ) {
+								continue;
+							}
+
+							var price = subclasses[berge[bc]][fahrttypen[fc]][ac]['price'];
+							if ( price === null ) {
+								price = "--.--"
+							}
+							prices_sommer[fahrttypen[fc]][altersstufen[ac]][berge[bc]] = price;
+						}
+	
+					}
+
+				}
+
+			}
+		},
+	});
+
+	var $form_winter = $('#tc_winter');
+
+	var reloadPricesWinter = function() {
+
+		var type = $form_winter.find('select[name=type]').val();
+		var persons = $form_winter.find('select[name=persons]').val();
+		var area = $form_winter.find('select[name=area]').val();
+		var price = getPriceWinter( prices_winter, type, persons, area );
+		
+		if ( price ) {
+			price = price.replace('.',',');
+			$('.output .totalprice .euro').html(price);
+		}
+	}
+
+	var $form_sommer = $('#tc_sommer');
+
+	var reloadPricesSommer = function() {
+
+
+		var type = $form_sommer.find('select[name=type]').val();
+		var persons = $form_sommer.find('select[name=persons]').val();
+		var price = getPriceSommer( prices_sommer, type, persons );
+		
+		if ( price ) {
+
+			$('.output .row').each(function() {
+				var $row = $(this);
+				var mountain = $row.data('mountain');
+				if ( price[mountain] === undefined ) {
+					return;
+				}
+				
+				var finalprice = price[mountain];
+				finalprice = finalprice.replace('.',',');
+				$row.find('.price').html(finalprice)
+
+			});
+		
+		}
+	}
+
+	//  Winter
+	setTimeout(reloadPricesWinter,500);
+	setTimeout(reloadPricesSommer,500);
+
+	$form_winter.on('change', 'select', function(event) {
+		event.preventDefault();
+		var $option = $(this).find('option[value='+ $(this).val() +']');
+		if ( $option.data('outlink') ) {
+				
+
+			var identifier = "0-" + $(this).val();
+
+			var data = [];
+			data.push(identifier);
+
+			var data_object = {};
+			data_object['data'] = data;
+			data_object['shelf'] = "0";
+			
+
+			var data_json = JSON.stringify(data_object);
+
+			location.href = "/ticketpreise/?d=" + data_json;
+
+		}
+
+		reloadPricesWinter();
+		var $select = $(this);
+		// Spezialfall Area
+		if ( $select.attr('name') == "area" ) {
+			var $helper = $select.parents('.item').find('.helper');
+			if ( $select.val() == "gesamt" ) {
+				$helper.removeClass('hide');
+			} else {
+				$helper.addClass('hide');
+			}
+		}
+		
+	});
+
+	//  Sommer
+	reloadPricesSommer();
+	$form_sommer.on('change', 'select', function(event) {
+		event.preventDefault();
+		reloadPricesSommer();
+		
+	});
+
+	var $badgeinfo = $('.badge_infos');
+
+	$('.header-tc').on('click', '.badge', function(event) {
+		event.preventDefault();
+
+		$badgeinfo.toggleClass('show');
+	});
+
+	$badgeinfo.on('click', '.close', function(event) {
+		event.preventDefault();
+		$badgeinfo.removeClass('show');
+	});
+
+
+});
+  </script>
+  <script type="text/javascript">
+   "use strict";
+		
+	TraminoReady(function() {
+		// Webcam Handling
+		var $webcamdom = $('header .col-calcinfos .webcam');
+		var webcams = $webcamdom.data('webcams');
+		var randomWebcam = parseInt(Math.random() * webcams.length + 1);
+		var webcam = webcams[randomWebcam-1];
+
+		$webcamdom.addClass(webcam['type']);
+
+		if ( webcam['type'] == "panomax" ) {
+			$webcamdom.find('a.fancybox').attr('data-fancybox-type', 'iframe');
+		}
+
+		$webcamdom.find('a.fancybox').attr('href', webcam['url']);
+		$webcamdom.find('a.fancybox img').attr('src', webcam['url_small']).attr('alt', webcam['name']);
+		$webcamdom.find('.name').html(webcam['name']);
+		$webcamdom.find('.temp').html(webcam['temp'] + "° C");
+
+
+	});
+  </script>
+  <script type="text/javascript">
+   "use strict";
+	
+TraminoReady(function() {
+	if ( OKB.hasTouchEvents ) {
+			
+		$("header .infobar ul > li.openable > a").on('click', function(event) {
+			$(this).parent().toggleClass('open');
+
+			if ( $(this).parents('li').hasClass('open') ) {
+				event.preventDefault();
+			} 
+			
+			
+
+		});
+		
+	}
+});
+  </script>
+  <script type="text/javascript">
+   TraminoReady(function() {
+	
+	OKB.changeHeaderState = function(status, options) {
+		if ( typeof status === "string" ) {
+
+			// Bei geöffnetem Menü nicht beim ersten Scrollen das Menü schließen
+			if ( OKB.headerOpenScrollTopFunction() && options.force_handling === false ) {
+				return false;
+			}
+
+
+			OKB.headerStateOld = OKB.headerState;
+			OKB.headerState = status;
+
+			// Aktuelle Scrollposition beim öffnen des Menüs speichern
+			if ( OKB.headerState === "openmenu") {
+				OKB.headerOpenScrollTop = $(window).scrollTop();
+			}
+
+			$('body').removeClass('header-state-openmenu');
+			$('body').removeClass('header-state-extended');
+			$('body').removeClass('header-state-normal');
+			$('body').removeClass('header-state-mobilemini');
+			
+			//  Sonderfall, extended und menuopen müssen gleichzeitig gesetzt sein
+			if ( OKB.headerStateOld === "extended" && OKB.headerState == "openmenu" ) {
+				$('body').addClass('header-state-extended');
+			}
+
+			$('body').addClass('header-state-' + status);
+
+			return true;
+		}
+	};
+
+	OKB.headerOpenScrollTopFunction = function() {
+		if ( OKB.headerState !== "openmenu" ) {
+			return false;
+		}
+
+		if ( OKB.checkMobileView() ) {
+			return true;
+		}
+
+		var scrolltop = $(window).scrollTop();
+		var offset = 100;
+
+		if ( ( scrolltop - OKB.headerOpenScrollTop > offset ) || ( scrolltop - OKB.headerOpenScrollTop < ( offset * -1 ) ) ) {
+			return false;
+		}
+
+		return true;
+
+	}
+
+	OKB.headerScrollHandler = function(w) {
+		var $w = $(w);
+		var scrolltop = $w.scrollTop();
+
+		if ( scrolltop > 180 ) {
+			if ( OKB.headerState !== "extended"  ) {
+				OKB.changeHeaderState("extended", { force_handling: false } );
+			}
+			
+		} else {
+			if ( OKB.headerState !== "normal" ) {
+				OKB.changeHeaderState("normal", { force_handling: false } );
+			}
+		}
+	}
+
+	OKB.changeHeaderState('normal', { force_handling: false } );
+	if ( getParameterByName("headerState") ) {
+		OKB.changeHeaderState(getParameterByName("headerState"), { force_handling: false } );
+	}
+	
+	$('header .switch').on('click', 'a', function(event) {
+		var $switchbutton = $(this);
+
+		if ( $switchbutton.attr('href') == "#" ) {
+			event.preventDefault();
+			if ( !$switchbutton.hasClass(OKB.jz) )
+				OKB.changeJZ();
+		}
+
+	});
+
+	$('header a.menu').on('click', function (e) {
+		e.preventDefault();
+		if ( OKB.headerState === "normal" || OKB.headerState === "extended" || OKB.headerState === "mobilemini"  ) {
+			OKB.changeHeaderState("openmenu", { force_handling: false } );
+		} else {
+			$(window).scrollTop(OKB.headerOpenScrollTop);
+			OKB.changeHeaderState(OKB.headerStateOld, { force_handling: true } );
+		}
+	});
+	
+	$('header .search').on('click', function(e) {
+
+		if ( ! $(this).hasClass('open') ) {
+			$(this).addClass('open');
+			$(this).find('form input').focus();
+		} else {
+			if ( $(this).find('form input').val().length > 0 ) {
+				$(this).find('form').submit();
+			}
+		}
+	});
+
+	$('header .search form').on('focusout', 'input', function(event) {
+		$('header .search').removeClass('open')
+	});
+
+	$('.off header .club .img').on('click', function (e) {
+		e.preventDefault();
+		$('header .club').toggleClass('btn-pulldown-open');
+	});
+
+	$('header .switch').on('click', 'a', function(event) {
+		if ( OKB.headerState === "openmenu" ) {
+			var link = $(this).attr('href');
+			link += "?headerState=openmenu";
+			location.href = link;
+			event.preventDefault();
+		}
+	});
+	
+
+	
+	
+	
+	
+});
+  </script>
+  <script type="text/javascript">
+   "use strict";
+
+TraminoReady(function() {
+
+	
+	require(['slick'], function(_) {
+
+		$('#motive .wrapperslider').slick({
+			infinite: true,
+			fade: true,
+			cssEase: 'linear',
+			autoplay: true,
+  			autoplaySpeed: 5000,
+  			pauseOnHover: false,
+			swipe: false,
+			swipeToSlide: false,
+			arrows: false,
+		});
+	});
+	
+
+});
+  </script>
+  <style media="screen" type="text/css">
+   #m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/2000x907.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/2000x907.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/2000x907.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/2000x907.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/2000x1076.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/2000x1076.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/2000x1076.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/2000x1076.jpg); }
+	
+
+	@media all and (min-width: 1280px) and (max-width: 1600px) {
+	
+	
+		#m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/1600x725.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/1600x725.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/1600x725.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/1600x725.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/1600x860.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/1600x860.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/1600x860.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/1600x860.jpg); }
+	
+	}
+
+	@media all and (min-width: 1024px) and (max-width: 1279px) {
+	
+	
+		#m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/1280x580.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/1280x580.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/1280x580.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/1280x580.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/1280x688.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/1280x688.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/1280x688.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/1280x688.jpg); }
+	
+	}
+
+	@media all and (min-width: 768px) and (max-width:1023px) {
+	
+	
+		#m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/1024x464.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/1024x464.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/1024x464.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/1024x464.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/1024x551.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/1024x551.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/1024x551.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/1024x551.jpg); }
+	
+	}
+
+	@media all and (min-width: 568px) and (max-width: 767px) {
+	
+	
+		#m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/767x348.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/767x348.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/767x348.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/767x348.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/767x412.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/767x412.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/767x412.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/767x412.jpg); }
+	
+	}
+
+	@media all and (max-width: 567px) {
+	
+	
+		#m687164 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687164/567x257.jpg); }
+	
+		#m815998 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815998/567x257.jpg); }
+	
+		#m815820 { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815820/567x257.jpg); }
+	
+		#m687167 { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/687167/567x257.jpg); }
+	
+		#m655670op { background-image: url(https://tramino.s3.amazonaws.com/s/das-hoechste/655670/567x305.jpg); }
+	
+		#m827151op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827151/567x305.jpg); }
+	
+		#m849109op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849109/567x305.jpg); }
+	
+		#m849135op { background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/849135/567x305.jpg); }
+	
+	}
+  </style>
+  <script type="text/javascript">
+   "use strict";
+
+	
+TraminoReady(function() {
+
+	var window_height = $(window).height();
+	var motiv_height = $('#motive').height();
+	
+	if ( window_height < motiv_height && OKB.checkTabletView() === false ) {
+		var margintop = motiv_height - window_height + 300;
+		$('#content').css('margin-top', ( margintop * -1 ) + 'px');
+	}
+
+	$(window).on('resize', function() {
+		if ( OKB.checkSmallDesktopView() ) {
+			OKB.clearDecisionPosition();
+		}
+	});
+
+	OKB.clearDecisionPosition = function() {
+		$('#content').css('margin-top', '');
+	}
+
+
+});
+  </script>
+  <script type="text/javascript">
+   "use strict";
+	
+	TraminoReady(function() {
+			
+		require(['slick'], function(_) {
+			$('footer .top .footer_wrapper .box.jobs .inner').slick({
+				dots: false,
+				infinite: true,
+				arrows: true,
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				autoplay: true,
+				autoplaySpeed: 7000,
+				adaptiveHeight: true
+			});
+		});
+		
+	});
+  </script>
+  <style media="screen" type="text/css">
+   footer .top {
+			background-image: url(https://tramino.s3.amazonaws.com/s/ok-bergbahnen/805189/footer-neutral.jpg);
+		}
+  </style>
+  <link href="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/815015/favicon.png" rel="icon" type="image/png"/>
+  <script type="text/javascript">
+   "use strict";
+
+var pckry;
+
+var scrollChanged = false;
+var resizeChanged = false;
+
+TraminoReady(function() {
+
+	//  Cookies mit der aktuellen Jahreszeit setzen
+	var setJzCookie = function() {
+		document.cookie = "okb_jz=" + OKB.jz + "; path=/";
+	}
+
+	var initPackery = function(elem) {
+
+		$(elem).removeClass('grid-init');
+		require(['packery','imagesloaded'], function(Packery) {
+			$(elem).imagesLoaded( function() {
+				 pckry = new Packery( elem, {
+					itemSelector: ".gridelement:not(.hide)",
+					gutter: '.gutter-sizer',
+					percentPosition: true
+				});
+				$(elem).addClass('grid-init');
+			});
+		});
+	}
+
+	OKB.changeJZ = function() {
+		var jz = "";
+		var jz_op = "";
+		if ( $('#body').hasClass('jz-winter') ) {
+			jz = "winter";
+			jz_op = "sommer";
+		} else {
+			jz = "sommer";
+			jz_op = "winter";
+		}
+
+		// Globale Variable ändern
+		OKB.jz = jz_op;
+
+		// Cookie ändern
+		setJzCookie();
+
+		// Allgemeine Klasse abändern
+		$('#body').removeClass('jz-' + jz).addClass('jz-' + jz_op);
+
+		// Switch ändern
+		$('header .switch a').removeClass('active');
+		$('header .switch a.' + jz_op ).addClass('active');
+
+		// Bergbahnen / Skigebieten im Header
+		$('header .hidden_header .mountains ul li.head ').removeClass('active');
+		$('header .hidden_header .mountains ul li.head.' + jz_op ).addClass('active');
+
+
+		// Motive ändern
+		if ( ! $('body').hasClass('force_motive') ) {
+
+			if ( $('#motive .wrapperslider.slick-initialized').length > 0 ) {
+				$('#motive .wrapperslider.slick-initialized').slick('destroy');
+			}
+			var motive_current = $('#motive .motivewrapper.wrapperslider .motiv');
+
+			$('#motive .motivewrapper.wrapperslider .motiv').remove();
+			var motive_op = $('#motive .motivewrapper.hidden .motiv');
+			$('#motive .motivewrapper.hidden .motiv').remove();
+
+			$('#motive .motivewrapper.wrapperslider').html(motive_op);
+			$('#motive .motivewrapper.hidden').html(motive_current);
+
+			if ( motive_current.length > 1 ) {
+				require(['slick'], function(_) {
+
+					$('#motive .wrapperslider').slick({
+						infinite: true,
+						fade: true,
+						cssEase: 'linear',
+						autoplay: true,
+			  			autoplaySpeed: 5000,
+			  			pauseOnHover: false,
+						swipe: false,
+						swipeToSlide: false,
+						arrows: false,
+					});
+				});
+			}
+
+		}
+
+
+
+		// Menüpunkte ändern
+		var $menu = $('header nav');
+		$menu.find("li.nav-hide").removeClass('nav-hide');
+		if ( jz == "winter" ) {
+			$menu.find("li.nav-winter").addClass('nav-hide');
+		} else {
+			$menu.find("li.nav-sommer").addClass('nav-hide');
+		}
+
+		// WSB ändern
+		// $('header .bottom a.status').removeClass('btn-hide');
+		// $('header .bottom a.status.jahreszeit-' + jz).addClass('btn-hide');
+
+		// Pistenplan / Wanderpanorama ändern
+		$('header .hidden_header .quicklinks .item').removeClass('hide');
+		$('header .hidden_header .quicklinks .item.jahreszeit-' + jz).addClass('hide');
+
+		// Ticketkalkulator ändern
+		$('header .header-tc').removeClass('hide');
+		$('header .header-tc.jahreszeit-' + jz).addClass('hide');
+
+		// Gridelement
+		if ( $('.gridelementwrapper .gridelement').length > 0 && ! $('#body').hasClass('force_motive') ) {
+
+			var $gridwrapper = $('.gridelementwrapper .gridwrapper');
+			$gridwrapper.removeClass('grid-init');
+			var $gridelements = $('.gridelement');
+			$gridelements .removeClass('hide');
+
+			$gridelements.each(function() {
+				var $elm = $(this);
+
+				// Fake Bigs wider entfernen
+				if ( $elm.hasClass('fake-big') ) {
+					$elm.removeClass('fake-big big');
+					$elm.find('.headline').removeClass('font-size40').addClass('font-size20_2');
+				}
+
+				var elm_jahreszeit = $elm.data('jahreszeit');
+				if ( elm_jahreszeit != "" && elm_jahreszeit != jz_op ) {
+					$elm.addClass('hide');
+				}
+
+				// Je nach Jahrszeit Bilder in den Gridelementen tauschen
+				if ( elm_jahreszeit == "" ) {
+					var current_image = $elm.find('.bildwrapper .File img').attr('src');
+					var new_image = $elm.data('imagejz');
+
+					if ( new_image ) {
+						$elm.find('.bildwrapper .File img').attr('src', new_image);
+						$elm.data('imagejz', current_image);
+					}
+				}
+
+			});
+
+			OKB.checkGirdBlocks();
+
+			
+			$('.gridelementwrapper .gridwrapper').each(function(index, el) {
+				var elem = this;
+				initPackery(elem);
+			});				
+			
+
+		}
+
+		// Gridelement
+		if ( $('.decision').length > 0 ) {
+			OKB.clearDecisionPosition();
+		}
+
+		// Blocke anpassen
+		OKB.checkCustomBlocks();
+
+		// status übersicht
+		if ( $('.T3754').length > 0 ) {
+			OKB.applyStatusFilter();
+		}
+
+	}
+
+	OKB.checkCustomBlocks = function() {
+		$('#TraminoInhalt > div').each(function(index, el) {
+			var $block = $(this).find('.TraminoVorlage');
+			$block.removeClass('hide_block')
+			var block_jz = $block.data('custom');
+			if ( block_jz !== undefined && block_jz !== OKB.jz) {
+				$block.addClass('hide_block');
+			}
+		});
+	}
+
+	OKB.checkGirdBlocks = function() {
+		// Überprüfen ob das Big Element ausgeblendet ist
+		if ( $('.gridelement.big').hasClass('hide') ) {
+			var $newbig = $('.gridelement').not('.hide').first();
+			var new_big_img;
+			if ( $newbig.data('alwaysbigimgjz').lenght > 0 ) {
+				new_big_img = $newbig.data('alwaysbigimgjz');
+			} else {
+				new_big_img = $newbig.data('alwaysbigimg');
+			}
+			
+			var $body = $(body);
+			if ( 
+				( $body.hasClass('page-sommer') && $body.hasClass('jz-sommer') ) 
+				|| ( $body.hasClass('page-winter') && $body.hasClass('jz-winter') ) ) {
+
+				new_big_img = $newbig.data('alwaysbigimg');
+			}
+			$newbig.not('.hide').first().addClass('fake-big big');
+			$newbig.find('.File img').attr('src', new_big_img);
+			$newbig.find('.headline').removeClass('font-size20_2').addClass('font-size40');
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	if ( $('.inputdiv').length > 0 ) {
+		$('.inputdiv i').on('click', function(event) {
+			var $input = $(this).parents('.inputdiv').find('input');
+			require(['jquery-ui'], function(_) {
+				$input.datepicker("show");
+			});
+		});
+	}
+
+	setJzCookie();
+
+
+	var changed_blocks = OKB.checkCustomBlocks();
+
+	OKB.checkGirdBlocks();
+
+	if ( $('a.fancybox').length > 0 ) {
+		require(['fancybox'], function(_) {
+			$('a.fancybox').fancybox({
+				padding: 0,
+			});
+		});
+	}
+
+	if ( $('a.openiframe').length > 0 ) {
+
+		require(['fancybox'], function(_) {
+			$(".openiframe").fancybox({
+				maxWidth	: 800,
+				maxHeight	: 600,
+				fitToView	: false,
+				width		: '70%',
+				height		: '70%',
+				autoSize	: false,
+				closeClick	: false,
+				openEffect	: 'none',
+				closeEffect	: 'none',
+				padding: 0,
+			});
+		});	
+	}
+
+	
+
+
+	if ( $('.lazy').length > 0 ) {
+		require(['lazyload'], function(_) {
+			$('.lazy').lazyload();
+		});
+	}
+
+	if ( $('.T3793').length > 0 ) {
+		$('.T3793').addClass('maxwidth background-wrapper wrapper-padding');
+	}
+
+	var $grid;
+	// Handing für Seiten mit Grid Bausteinen
+	if ( $('.gridelement.fakegridelement').length > 0 ) {
+
+		if ( ! $(body).hasClass('gridstandalone') ) { 
+			// Set Wrapperelement
+			var $firstelement = $('.gridelement:first');
+			if ( $('.gridelementfilter').length > 0 ) {
+				$firstelement = $('.gridelementfilter');
+			}
+
+			jQuery('<div/>', {
+				class: 'gridelementwrapper background-wrapper',
+			}).insertBefore($firstelement.parent().parent());
+
+			jQuery('<div/>', {
+				class: 'maxwidth gridwrapper',
+			}).appendTo($('.gridelementwrapper'));
+
+			jQuery('<div/>', {
+				class: 'gutter-sizer',
+			}).appendTo('.gridelementwrapper .maxwidth');
+
+			$('.gridelement').each(function() {
+				$(this).parent().parent().appendTo('.gridelementwrapper .maxwidth');
+			});
+		}
+
+
+		
+
+		$('.gridelementwrapper .gridwrapper').each(function(index, el) {
+			var elem = this;
+			initPackery(elem);
+		});
+
+		
+
+	}
+
+	$(window).on('scroll', function(e) {
+		scrollChanged = true;
+	});
+
+	var check_scroll_interval = setInterval(function() {
+		if ( !scrollChanged ) return;
+		scrollChanged = false;
+		var $w = $(window);
+
+		if ( OKB.headerScrollHandler !== undefined ) {
+			OKB.headerScrollHandler($w);
+		}
+		if ( OKB.showEigentumsLogos !== undefined ) {
+			OKB.showEigentumsLogos($w);
+		}
+
+	}, 200 );
+
+	$(window).on('resize', function(e) {
+		resizeChanged = true;
+	});
+
+	var check_resize_interval = setInterval(function() {
+		if ( !resizeChanged ) return;
+		resizeChanged = false;
+
+	}, 200 );
+
+
+});
+  </script>
+  <meta content="https://tramino.s3.amazonaws.com/s/das-hoechste/687164/800.jpg" property="og:image"/>
+  <!-- Google Tag Manager -->
+  <script>
+   (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NX5QFLC');
+  </script>
+  <!-- End Google Tag Manager -->
+  <!-- Facebook Pixel Code -->
+  <script>
+   !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+
+  fbq('init', '1992192824387417');
+  fbq('track', 'PageView');
+  </script>
+  <noscript>
+   <img height="1" src="https://www.facebook.com/tr?id=1992192824387417&amp;ev=PageView&amp;noscript=1" style="display:none" width="1"/>
+  </noscript>
+  <!-- End Facebook Pixel Code -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-12027578-1">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-12027578-1', { 'anonymize_ip': true });
+  gtag('config', 'AW-988712408');
+  </script>
+ </head>
+ <body class=" Mandant_3469 Rubrik_100384 page-sommer jz-sommer sommer_default winter_default mainpage" id="body">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+   <iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-NX5QFLC" style="display:none;visibility:hidden" width="0">
+   </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <div id="page">
+   <script>
+    window.OKB = {
+	hasTouchEvents: (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch),
+	jz: 'sommer',
+};
+
+
+OKB.checkSmallMobileView = function() {
+	return $(window).width() < 360;
+}
+
+OKB.checkMobileView = function() {
+	return $(window).width() < 567;
+}
+
+OKB.checkTabletView = function() {
+	return $(window).width() < 768;
+}
+
+OKB.checkSmallDesktopView = function() {
+	return $(window).width() < 1023;
+}
+
+
+
+getParameterByName = function(name, url) {
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[\]]/g, "\\$&");
+	var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+   </script>
+   <header>
+    <div class="headerwrapper maxwidth">
+     <div class="top">
+      <a class="headerlogo" href="/" onclick="gtag('event', 'Logo', { 'event_label': 'Logo', 'event_category': 'Header', 'event_action': 'click' } );">
+       <div class="smalllogo">
+       </div>
+       <div class="slogan">
+        <span class="font-bold">
+         <span class="so">
+          OBERSTDORF
+         </span>
+         <span class="sk">
+          KLEINWALSERTAL
+         </span>
+        </span>
+        <span class="sb">
+         Bergbahnen
+        </span>
+       </div>
+      </a>
+     </div>
+     <div class="bottom">
+      <a class="menu btn-header btn-block" href="#" onclick="gtag('event', 'Menü Button', { 'event_label': 'Menü Button', 'event_category': 'Header', 'event_action': 'click' } );">
+       <div id="nav_icon">
+        <div class="nav_line bgcolor nav_line1">
+        </div>
+        <div class="nav_line bgcolor nav_line2">
+        </div>
+        <div class="nav_line bgcolor nav_line3">
+        </div>
+       </div>
+       <span class="label">
+        Menü
+       </span>
+      </a>
+      <span class="switch">
+       <a class="switch_item sommer" href="#" onclick="gtag('event', 'Jahreszeit: Sommer', { 'event_label': 'Jahreszeit: Sommer', 'event_category': 'Header', 'event_action': 'click' } );">
+        Sommer
+       </a>
+       <span class="btn-header btn-block">
+        <a class="sommer active" href="#" onclick="gtag('event', 'Jahreszeit: Sommer (Icon)', { 'event_label': 'Jahreszeit: Sommer (Icon)', 'event_category': 'Header', 'event_action': 'click' } );">
+         <i class="icons8-sun-2">
+         </i>
+        </a>
+        <a class="winter " href="#" onclick="gtag('event', 'Jahreszeit: Winter (Icon)', { 'event_label': 'Jahreszeit: Winter (Icon)', 'event_category': 'Header', 'event_action': 'click' } );">
+         <i class="icons8-winter-2">
+         </i>
+        </a>
+       </span>
+       <a class="switch_item winter" href="#" onclick="gtag('event', 'Jahreszeit: Sommer', { 'event_label': 'Jahreszeit: Sommer', 'event_category': 'Header', 'event_action': 'click' } );">
+        Winter
+       </a>
+      </span>
+      <a class="status btn-header btn-block jahreszeit-sommer btn-openright btn-openright-breakmobile" href="/skigebiete/status-anlagen-pisten-wege/" onclick="gtag('event', 'Status: Sommer', { 'event_label': 'Status: Sommer', 'event_category': 'Header', 'event_action': 'click' } );">
+       <span class="item">
+        <i class="icons8-cable-car-filled">
+        </i>
+        <span class="label">
+         <span class="font-bold">
+          10
+         </span>
+         geöffnet
+        </span>
+       </span>
+       <span class="item">
+        <i class="icons8-trekking-filled">
+        </i>
+        <span class="label">
+         <span class="font-bold">
+          71
+         </span>
+         km geöffnet
+        </span>
+       </span>
+      </a>
+      <a class="map btn-icon btn-header btn-block btn-openleft btn-openleft-breakmobile" href="/wandergebiete/wanderpanoramen/" onclick="gtag('event', 'Map: Sommer', { 'event_label': 'Map: Sommer', 'event_category': 'Header', 'event_action': 'click' } );">
+       <i class="icons8-map-marker-2">
+       </i>
+       Wanderpanorama
+      </a>
+      <div class="rightbox">
+       <div class="search btn-header btn-block" onclick="gtag('event', 'Suche', { 'event_label': 'Suche', 'event_category': 'Header', 'event_action': 'click' } );">
+        <form accept-charset="utf-8" action="/suche/" method="get">
+         <i class="icons8-search-filled">
+         </i>
+         <input name="query" type="text"/>
+        </form>
+       </div>
+       <a class="club btn-header btn-block" href="/club/" onclick="gtag('event', 'MMC', { 'event_label': 'MMC', 'event_category': 'Header', 'event_action': 'click' } );">
+        <span class="img">
+        </span>
+       </a>
+      </div>
+     </div>
+     <div class="hidden_header">
+      <div class="hidden_header_wrapper">
+       <div class="col col-nav">
+        <nav>
+         <ul class="as">
+          <li>
+           <a class="font-bold" href="/aktiv-sport/">
+            Aktiv &amp; Sport
+           </a>
+           <ul>
+            <li class="nav_1 nav-winter nav-hide">
+             <a href="/aktiv-sport/skifahren/" title="2 Länder - 1 Ski-Erlebnis - Die Bergbahnen Oberstdorf/Kleinwalsertal bieten Ihnen abwechslungsreiche und schneesichere Gebiete zum Skifahren im Allgäu (Deutschland) und Kleinwalsertal (Österreich)">
+              Skifahren
+             </a>
+            </li>
+            <li class="nav_2 nav-winter nav-hide">
+             <a href="/aktiv-sport/earlybird-skilauf-ifen/" title="Von 17. März bis Saisonende geht es am Ifen wieder extra früh auf die Piste, denn in dieser Zeit startet die Olympiabahn bereits ab 07:45 Uhr in den Skibetrieb - so kann man die guten Pistenbedingungen am Morgen optimal auskosten">
+              Earlybird Skilauf Ifen
+             </a>
+            </li>
+            <li class="nav_3 nav-winter nav-hide">
+             <a href="/aktiv-sport/winterwandern/" title="Knirschender Schnee unter den Füßen, kristallklare Bergluft und dazu ein Ausblick der einem den Atem verschlägt. Winterwandern im südlichen Allgäu auf unseren Bergen in Oberstdorf und dem Kleinwalsertal: ein echtes Winter-Highlight für aktive Berggenießer!">
+              Winterwandern
+             </a>
+            </li>
+            <li class="nav_4 nav-winter nav-hide">
+             <a href="/aktiv-sport/funparks-funslope/" title="Bei unseren Funparks im Gebiet Fellhorn/Kanzelwand und dem Minipark am Söllereck schlägt das Freeskier und Snowboarder Herz höher und in der Fellhorn Funslope haben Klein und Groß ihren Spaß.">
+              Funparks &amp; Funslope
+             </a>
+            </li>
+            <li class="nav_5 nav-winter nav-hide">
+             <a href="/aktiv-sport/nachtskilauf/" title="Auch nach offiziellem Betriebsschluss geht das Skivergnügen an einigen Liften beim Nachtskilauf noch weiter - natürlich durch Flutlicht in Szene gesetzt!">
+              Nachtskilauf
+             </a>
+            </li>
+            <li class="nav_6 nav-winter nav-hide">
+             <a href="/aktiv-sport/tourengeher-abende-soellereck/" title="An allen Tourengeher-Abenden beginnen die Pistenraupen erst um 22 Uhr mit dem Präparieren der Hauptabfahrt. So kann diese für einen sportlichen Abendausflug mit den Tourenski genutzt werden.">
+              Tourengeher Abende
+             </a>
+            </li>
+            <li class="nav_7 nav-winter nav-hide">
+             <a href="/aktiv-sport/skischulen-skiverleih/" title="An allen Talstation finden Sie zahlreiche Skischulen und Skiverleihe, die Sie mit kompetenten Skilehrern und dem neuen Wintersport-Material ausstatten.">
+              Skischulen/Skiverleih
+             </a>
+            </li>
+            <li class="nav_8 nav-winter nav-hide">
+             <a href="/aktiv-sport/lawinenwarndienste/" title="Informieren Sie sich hier über den aktuellen Lawinenlagebericht der Lawinenwarndienste Bayern und Vorarlberg">
+              Lawinenwarndienste
+             </a>
+            </li>
+            <li class="nav_9 nav-sommer">
+             <a href="/aktiv-sport/wandern/" title="Wandern im südlichen Allgäu: hochalpin mit faszinierendem Bergpanorama oder auf ebenen Höhenwegen mit Blick über Oberstdorf und das Kleinwalsertal.">
+              Wandern
+             </a>
+            </li>
+            <li class="nav_10 nav-sommer">
+             <a href="/aktiv-sport/gefuehrte-wanderungen/" title="Fauna, Flora und Felsenzauber - entdecken Sie die Schönheit der Natur bei den geführten Themenwanderungen">
+              Geführte Wanderungen
+             </a>
+            </li>
+            <li class="nav_11 nav-sommer">
+             <a href="/aktiv-sport/klettersteige/" title="Unsere Klettersteige lassen tief blicken, sind mit Sicherheit eindrucksvoll und eröffnen Einsteigern und Profis beim Klettern atemberaubende Aussichten.">
+              Klettersteige
+             </a>
+            </li>
+            <li class="nav_12">
+             <a href="/aktiv-sport/gleitschirmfliegen/" title="Der Traum vom Fliegen ist so alt wie die Menschheit und im Grunde genommen trennen uns nur ein paar wenige Schritte davon. Nirgends kann man unkomplizierter und einfacher in das Element Luft eintauchen als beim Gleitschirmfliegen.">
+              Gleitschirmfliegen
+             </a>
+            </li>
+            <li class="nav_13">
+             <a href="/aktiv-sport/schulklassenangebote/" title="Ab 16.50€ pro Schüler und Tag lassen unsere Skigebiete die Herzen von Schneefans in der Skisaison 2017/18 höher schlagen. Im Sommer fahren Schüler ab 7,00€ auf die Berge.">
+              Schulklassenangebote
+             </a>
+            </li>
+            <li class="nav_14">
+             <a href="/aktiv-sport/bus-gruppenangebote/" title="Hier finden Sie Informationen zu speziellen Angeboten für Bus- und Gruppenreisen im Winter und Sommer.">
+              Gruppenangebote
+             </a>
+            </li>
+            <li class="nav_15 nav-sommer">
+             <a href="/aktiv-sport/mountainbike-befoerderung/" title="Von 8:30 - 9:30 Uhr geht es für Teilnehmer einer geführten Mountainbike-Tour mit dem Rad auf den Berg sowie ganztägig am Heuberg und von 09 - 10 Uhr und 15.30 -17.00 Uhr auch am Söllereck">
+              Mountainbike-Beförderung
+             </a>
+            </li>
+            <li class="nav_16 nav-sommer">
+             <a href="/aktiv-sport/kindertragen-testcenter/" title="Highlight: Kindertragen unseres Kooperationspartners Deuter im ersten Deutschen Kindertragen-Testcenter testen.">
+              Kindertragen-Testcenter
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+         <ul class="es">
+          <li>
+           <a class="font-bold" href="/erlebnis-spass/">
+            Erlebnis &amp; Spaß
+           </a>
+           <ul>
+            <li class="nav_1">
+             <a href="/familienbande/" title="Familien haben bei den OBERSTDORF · KLEINWALSERTAL BERGBAHNEN Vorfahrt. Egal ob beim Familienurlaub im Winter oder der gemeinsamen Wanderung mit der ganzen Familie im Sommer - hier ist für Groß und Klein einiges geboten">
+              Familienaktivitäten
+             </a>
+            </li>
+            <li class="nav_2 nav-sommer">
+             <a href="/erlebnis-spass/erlebniswelten/">
+              Erlebniswelten
+             </a>
+            </li>
+            <li class="nav_3 nav-winter nav-hide">
+             <a href="/erlebnis-spass/soelli-burmi-winterwelten/" title="In Söllis Winterwelt am Söllereck und in Burmis Winterwelt am Ifen fühlen sich Ski-Einsteiger besonders wohl. Förderbänder, Schlepplifte und flache Übungspisten helfen bei den ersten Schritten im Schnee.">
+              Söllis &amp; Burmis Winterwelten
+             </a>
+            </li>
+            <li class="nav_4 nav-sommer">
+             <a href="/erlebnis-spass/kletterwald-allgaeu/" title="Gleich neben dem Berghaus Schönblick an der Bergstation der Söllereckbahn liegt der höchstgelegenste Kletterwald Deutschlands.">
+              Kletterwald
+             </a>
+            </li>
+            <li class="nav_5">
+             <a href="/erlebnis-spass/allgaeu-coaster/" title="Der Allgäu Coaster ist eine Ganzjahres-Rodelbahn auf Schienen und bietet rasanten Spaß für Jung und Alt.">
+              Allgäu Coaster
+             </a>
+            </li>
+            <li class="nav_6">
+             <a href="/erlebnis-spass/eventlocations/" title="Ob Firmenveranstaltungen oder private Feiern - wir bieten die perfekte Location für Ihr Event am Berg. Informieren Sie sich jetzt über unser Angebot.">
+              Eventlocations
+             </a>
+            </li>
+            <li class="nav_7">
+             <a href="/erlebnis-spass/nordwandsteig/" title="Umrunden Sie den Nebelhorngipfel und genießen Sie imposante Tief- und Weitblicke entlang der Nebelhorn Nordwand.">
+              Nordwandsteig
+             </a>
+            </li>
+            <li class="nav_8 nav-sommer">
+             <a href="/erlebnis-spass/soellis-kugelrennen/" title="Heiße Rennen auf der längsten Holzkugelbahn der Welt am Söllereck">
+              Söllis Kugelrennen
+             </a>
+            </li>
+            <li class="nav_9 nav-winter nav-hide">
+             <a href="/erlebnis-spass/rodeln-nebelhorn/" title="2,5 km Länge, 450 Höhenmeter und jede Menge Spaß: das ist die Natur-Rodelbahn am Nebelhorn von der Station Seealpe hinunter nach Oberstdorf">
+              Rodeln am Nebelhorn
+             </a>
+            </li>
+            <li class="nav_10">
+             <a href="/erlebnis-spass/uebernachten-berghaus-schoenblick/">
+              Berghaus Schönblick
+             </a>
+            </li>
+            <li class="nav_11 nav-winter nav-hide">
+             <a href="/erlebnis-spass/iglulodge-nebelhorn/" title="Schlafen wie die Eskimos auf einem der höchsten Gipfel der Allgäuer Alpen, dem Nebelhorn in Oberstdorf. Funkelnder Sternenhimmel, polare Romantik und ein atemberaubender 400-Gipfel-Blick werden die Nacht in der IgluLodge zu einem unvergesslichen Erlebnis machen.">
+              IgluLodge Nebelhorn
+             </a>
+            </li>
+            <li class="nav_12 nav-winter nav-hide">
+             <a href="/erlebnis-spass/hoernerschlittenfahren/" title="Das Erlebnis für Gruppen und Firmenevents: Termine nach Vereinbarung">
+              Hörnerschlittenfahren
+             </a>
+            </li>
+            <li class="nav_13 nav-winter nav-hide">
+             <a href="/erlebnis-spass/ntc-park-nebelhorn/" title="Der NTC Park an der Seealpe am Nebelhorn ermöglicht einen ganz anderen Einstieg ins Schneevergnügen - auch für Nichtskifahrer!">
+              NTC Park Nebelhorn
+             </a>
+            </li>
+            <li class="nav_14">
+             <a href="/erlebnis-spass/spielplaetze/" title="Auf den Kinderspielplätzen an unseren Bergen sind die Kleinen auch einmal die Größten!">
+              Spielplätze
+             </a>
+            </li>
+            <li class="nav_15">
+             <a href="/erlebnis-spass/gipfelsammler/" title="Nutzen Sie unser digitales Stempelbuch und werden Sie so zum Gipfelsammler!">
+              Gipfelsammler
+             </a>
+            </li>
+            <li class="nav_16">
+             <a href="/erlebnis-spass/bertis-schatzsuche/" title="In den Erlebniswelten wird die Schatzsuche mit Berti zu einem einzigartigen Abenteuer.">
+              Bertis Schatzsuche
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+         <ul class="gs">
+          <li>
+           <a class="font-bold" href="/genuss-sinne/">
+            Genuss &amp; Sinne
+           </a>
+           <ul>
+            <li class="nav_1">
+             <a href="/genuss-sinne/veranstaltungen/" title="Veranstaltungen auf unseren Bergen in Oberstdorf und dem Kleinwalsertal sind immer etwas ganz besonderes: von A wie Alphorn bis Z wie Zydeko-Musik ist hier für jeden etwas dabei!">
+              Veranstaltungen
+             </a>
+            </li>
+            <li class="nav_2">
+             <a href="/genuss-sinne/berggottesdienste/" title="An Fellhorn, Nebelhorn, Walmendingerhorn und Söllereck finden im Sommer 2018 regelmäßig evangelische sowie katholische Berggottesdienste statt.">
+              Berggottesdienste
+             </a>
+            </li>
+            <li class="nav_3">
+             <a href="/genuss-sinne/gastronomie/" title="Lernen Sie nicht nur unsere Bahnen, Pisten und Wanderwege kennen, sondern auch die Berg-Restaurants auf unseren Bergen in Oberstdorf und dem Kleinwalsertal - unsere Gastwirte freuen sich auf Sie!">
+              Gastronomie
+             </a>
+            </li>
+            <li class="nav_4">
+             <a href="/genuss-sinne/400-gipfel-brunch/" title="Am ersten Sonntag jedes Monats servieren wir Ihnen kulinarische Köstlichkeiten, vom Frühstück bis zum Mittagessen beim Brunch an der Station Höfatsblick am Nebelhorn">
+              400 Gipfel-Brunch
+             </a>
+            </li>
+            <li class="nav_5 nav-sommer">
+             <a href="/genuss-sinne/sonnenaufgangsfahrten/" title="Sonnenaufgangsfahrt am Walmendingerhorn - eindrucksvoller kann ein Tag kaum beginnen als den Sonnenaufgang über dem Kleinwalsertal und dem Allgäu hautnah zu erleben!">
+              Sonnenaufgangsfahrten
+             </a>
+            </li>
+            <li class="nav_6">
+             <a href="/genuss-sinne/heiraten/" title="Um dem (7.) Himmel noch ein bisschen näher zu sein, können Sie in 1.932 Meter Höhe auf dem Nebelhorn standesamtlich heiraten.">
+              Heiraten
+             </a>
+            </li>
+            <li class="nav_7">
+             <a href="/genuss-sinne/bergschau/" title="Informieren Sie sich über die Bergwelt, die Sie in Oberstdorf und dem Kleinwalsertal umgibt">
+              Bergschau
+             </a>
+            </li>
+            <li class="nav_8 nav-sommer">
+             <a href="/genuss-sinne/blumenkalender/" title="Informieren Sie sich hier, welche Blumen derzeit in unseren Wandergebieten blühen.">
+              Blumenkalender
+             </a>
+            </li>
+            <li class="nav_9">
+             <a href="/genuss-sinne/natur-umwelt/" title="Werfen Sie einen Blick hinter die Kulissen: Wieviel Energie benötigt ein Skigebiet? Wie werden Trampelpfade zurückgebaut? Diese und viele weitere interessante Fragen wollen wir auf diesen Seiten anschaulich und verständlich erläutern">
+              Natur &amp; Umwelt
+             </a>
+            </li>
+            <li class="nav_10">
+             <a href="/genuss-sinne/online-shop-nebelhorn/" title="Dieser Service wird derzeit nur bei der Nebelhornbahn-AG angeboten.">
+              Online-Shop Nebelhorn
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+        </nav>
+       </div>
+       <div class="col col-calcinfos">
+        <div class="col col-calc">
+         <div class="header-tc jahreszeit-winter hide ">
+          <div class="headline font-bold">
+           Preise Winter 2018
+          </div>
+          <div class="input">
+           <form id="tc_winter">
+            <div class="item">
+             <select name="type">
+              <option selected="" value="bergtal">
+               Skitageskarte
+              </option>
+              <option data-outlink="1" value="50704">
+               Ski-Nachmittagskarte ab 12:00 Uhr
+              </option>
+              <option data-outlink="1" value="50707">
+               Ski-Nachmittagskarte ab 13:30 Uhr
+              </option>
+              <option data-outlink="1" value="50708">
+               Ski-Vormittagskarte bis 12:30 Uhr
+              </option>
+              <option data-outlink="1" value="50709">
+               Zeitkarte
+              </option>
+              <option data-outlink="1" value="50797">
+               Anfängerkarte Söllereck
+              </option>
+              <option data-outlink="1" value="50798">
+               Anfängerkarte Kleinwalsertal
+              </option>
+             </select>
+            </div>
+            <div class="item">
+             <select name="persons">
+              <option selected="" value="adult">
+               Erwachsene
+              </option>
+              <option value="senior">
+               Senior
+              </option>
+              <option value="teenager">
+               Jugendliche
+              </option>
+              <option value="kids">
+               Kind
+              </option>
+              <option value="snowman">
+               Schneemann
+              </option>
+             </select>
+            </div>
+            <div class="item">
+             <select name="area">
+              <option selected="" value="gesamt">
+               Gesamtskiregion *
+              </option>
+              <option value="seb">
+               Skigebiet Söllereck
+              </option>
+             </select>
+             <div class="helper">
+              * Oberstdorf/Kleinwalsertal
+             </div>
+            </div>
+           </form>
+           <div class="output">
+            <div class="totalprice">
+             <span class="priceinfo2">
+              Normalpreis
+             </span>
+             <span class="cur">
+              €
+             </span>
+             <span class="euro font-bold">
+              47,00
+             </span>
+            </div>
+            <a class="badge" href="#" onclick="gtag('event', 'Tickets: Badge', { 'event_label': 'Tickets: Badge', 'event_category': 'Header', 'event_action': 'click' } );">
+            </a>
+            <div class="badge_infos">
+             <div class="inner">
+              <h3>
+               Premiumskigebiet mit Mehrwert
+              </h3>
+              <ul>
+               <li>
+                130 Pistenkilometer &amp; 48 Anlagen
+               </li>
+               <li>
+                7 abwechslungsreiche Berge mit Pisten für alle Könnerstufen
+               </li>
+               <li>
+                Mautfreie Anreise über die deutsche Autobahn
+               </li>
+               <li>
+                Schneesicherheit von Dezember bis Mai
+               </li>
+               <li>
+                Großflächige Beschneiung in allen Höhenlagen
+               </li>
+               <li>
+                Deutschlands längste Talabfahrt am Nebelhorn mit 7,5 Kilometern
+               </li>
+               <li>
+                hervorragende Gastronomiebetriebe mit Hoch-Genuss für jeden Geschmack. Neu ab Winter 2017/18: das Bedienrestaurant Tafel &amp;
+                <em>
+                 Zunder
+                </em>
+                an der Bergstation der Ifenbahn
+               </li>
+               <li>
+                Kostenlose Liegestühle auf den weitläufigen Sonnenterrassen
+               </li>
+               <li>
+                Funparks &amp; Funslope
+               </li>
+               <li>
+                Skischulen / Skiverleih an allen Talstationen
+               </li>
+               <li>
+                Kostenloses WLAN an allen Hauptstationen sowie in den neuen 10er-Kabinenbahnen Ifen I &amp; II
+               </li>
+              </ul>
+             </div>
+             <a class="close" href="#">
+              <i class="icons8-delete">
+              </i>
+             </a>
+            </div>
+           </div>
+           <div class="info">
+            <a class="btn btn-block" href="/ticketpreise/" onclick="gtag('event', 'Tickets: weitere Tarife', { 'event_label': 'Tickets: weitere Tarife', 'event_category': 'Header', 'event_action': 'click' } );">
+             weitere Tarife
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="header-tc jahreszeit-sommer ">
+          <div class="headline font-bold">
+           Preise Sommer 2018
+          </div>
+          <div class="input">
+           <form id="tc_sommer">
+            <div class="item">
+             <select name="type">
+              <option selected="" value="bergtal">
+               Berg- und Talfahrt
+              </option>
+              <option value="berg">
+               Bergfahrt
+              </option>
+              <option value="tal">
+               Talfahrt
+              </option>
+             </select>
+            </div>
+            <div class="item">
+             <select name="persons">
+              <option selected="" value="adult">
+               Erwachsene
+              </option>
+              <option value="senior">
+               Senior
+              </option>
+              <option value="teenager">
+               Jugendliche
+              </option>
+              <option value="kids">
+               Kinder
+              </option>
+             </select>
+            </div>
+           </form>
+          </div>
+          <div class="output">
+           <div class="row" data-mountain="nhb">
+            <span class="name">
+             Nebelhorn
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+           <div class="row" data-mountain="fhb">
+            <span class="name">
+             Fellhorn/Kanzelwand
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+           <div class="row" data-mountain="seb">
+            <span class="name">
+             Söllereck
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+           <div class="row" data-mountain="whb">
+            <span class="name">
+             Walmendingerhorn
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+           <div class="row" data-mountain="ib">
+            <span class="name">
+             Ifen
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+           <div class="row" data-mountain="hb">
+            <span class="name">
+             Heuberg
+            </span>
+            <span class="price font-bold">
+            </span>
+           </div>
+          </div>
+          <div class="info">
+           <a class="btn btn-block" href="/ticketpreise-sommer/" onclick="gtag('event', 'Tickets: weitere Tarife', { 'event_label': 'Tickets: weitere Tarife', 'event_category': 'Header', 'event_action': 'click' } );">
+            weitere Tarife
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="col col-infos">
+         <div class="webcam" data-webcams='[{"url_small":"https://webcams.tramino.net/das-hoechste/nebelhorn-berg-small.jpg","temp":"3,4","name":"Nebelhorn: Bergstation","url":"https://webcams.tramino.net/das-hoechste/nebelhorn-berg.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/fellhorn-mittelstation-small.jpg","temp":"9,1","name":"Fellhornbahn: Mittelstation","url":"https://webcams.tramino.net/das-hoechste/fellhorn-mittelstation.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/kanzelwand-bergstation-small.jpg","temp":"8,1","name":"Kanzelwand: Bergstation","url":"https://webcams.tramino.net/das-hoechste/kanzelwand-bergstation.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/nebelhorn-seealpe-small.jpg","temp":"9,1","name":"Nebelhorn: Seealpe","url":"https://webcams.tramino.net/das-hoechste/nebelhorn-seealpe.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/heuberg-bergstation-small.jpg","temp":"12.0","name":"Heuberg: Bergstation","url":"https://webcams.tramino.net/das-hoechste/heuberg-bergstation.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/walmendingerhorn-bergstation-small.jpg","temp":"9,1","name":"Walmendingerhornbahn: Bergstation","url":"https://webcams.tramino.net/das-hoechste/walmendingerhorn-bergstation.jpg","type":"webcam"},{"url_small":"https://webcams.tramino.net/das-hoechste/fellhorn-gipfelstation-small.jpg","temp":"6,6","name":"Fellhornbahn: Gipfelstation","url":"https://webcams.tramino.net/das-hoechste/fellhorn-gipfelstation.jpg","type":"webcam"},{"url_small":"https://panodata5.panomax.com/cams/1177/recent_small.jpg","temp":"9,1","name":"S\u00f6llereckbahn: Bergstation","url":"https://soellereck.panomax.com/","type":"panomax"},{"url_small":"https://panodata5.panomax.com/cams/1399/recent_small.jpg","temp":"15,2","name":"S\u00f6llereckbahn: Talstation","url":"https://soellereck.panomax.com/tal","type":"panomax"}]'>
+          <div class="headline">
+           <span class="wrapper">
+            <span class="font-bold">
+             Webcam
+            </span>
+            <span class="name">
+            </span>
+           </span>
+           <span class="temp">
+           </span>
+          </div>
+          <a class="fancybox" href="#">
+           <img alt="" src=""/>
+           <i class="icons8-3d-rotate">
+           </i>
+          </a>
+          <div class="webcaminfos">
+           <div class="right">
+            <a class="btn" href="/service/webcams-livecams/" onclick="gtag('event', 'alle Webcams', { 'event_label': 'alle Webcams', 'event_category': 'Header', 'event_action': 'click' } );">
+             alle Webcams
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="quicklinks">
+          <a class="item zamg" href="/zamg/" onclick="gtag('event', 'Icon: Zamg', { 'event_label': 'Icon: Zamg', 'event_category': 'Header', 'event_action': 'click' } );" target="_blank">
+           <div class="icon">
+           </div>
+           <div class="name">
+           </div>
+          </a>
+          <a class="item panorama jahreszeit-sommer " href="/wandergebiete/wanderpanoramen/" onclick="gtag('event', 'Icon: Map Sommer', { 'event_label': 'Icon: Map Sommer', 'event_category': 'Header', 'event_action': 'click' } );">
+           <div class="icon">
+           </div>
+           <div class="name">
+           </div>
+          </a>
+          <a class="item panorama jahreszeit-winter hide" href="/skigebiete/pistenplan-interaktiv/" onclick="gtag('event', 'Icon: Map Winter', { 'event_label': 'Icon: Map Winter', 'event_category': 'Header', 'event_action': 'click' } );">
+           <div class="icon">
+           </div>
+           <div class="name">
+           </div>
+          </a>
+          <a class="item app" href="/service/mit-app-immer-obenauf/" onclick="gtag('event', 'Icon: App', { 'event_label': 'Icon: App', 'event_category': 'Header', 'event_action': 'click' } );">
+           <div class="icon">
+           </div>
+           <div class="name">
+            Mobile App
+           </div>
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mountains">
+       <ul>
+        <li class="head sommer active">
+         <a class="font-bold" href="/bergbahnen/">
+          Bergbahnen
+         </a>
+        </li>
+        <li class="head winter ">
+         <a class="font-bold" href="/skigebiete/">
+          Skigebiete
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/nebelhornbahn/">
+          Nebelhorn
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/fellhornbahn/">
+          Fellhorn
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/soellereckbahn/">
+          Söllereck
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/kanzelwandbahn/">
+          Kanzelwand
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/heuberg/">
+          Heuberg
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/walmendingerhornbahn/">
+          Walmendingerhorn
+         </a>
+        </li>
+        <li>
+         <a href="/bergbahnen/ifenbahn/">
+          Ifen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="infobar">
+       <div class="left">
+        <ul>
+         <li>
+          <a href="/service/webcams-livecams/">
+           Web-/Livecams
+          </a>
+         </li>
+         <li>
+          <a href="/zamg/">
+           Wetter
+          </a>
+         </li>
+         <li>
+          <a href="/genuss-sinne/veranstaltungen/">
+           Veranstaltungen
+          </a>
+         </li>
+         <li>
+          <a href="/service/newsletter/">
+           Newsletter
+          </a>
+         </li>
+         <li>
+          <a href="/oeffnungszeiten/">
+           Öffnungszeiten
+          </a>
+         </li>
+         <li>
+          <a href="/preisinformationen/">
+           Preisinformationen
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="right">
+        <ul>
+         <li class="openable">
+          <a href="/service/">
+           Service A-Z
+          </a>
+          <ul class="submenu">
+           <li class="">
+            <a href="/service/aktuell/">
+             Aktuell
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/anreise/">
+             Anreise
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/mit-app-immer-obenauf/">
+             App
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/fotopoint-information/">
+             Fotopoint Information
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/barrierefrei-berg/">
+             Barrierefrei am Berg
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/bergbahn-inklusive/">
+             Bergbahn Inklusive
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/big-fun-allgaeu/">
+             Big Fun Allgäu
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/downloads/">
+             Downloads
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/drohnen-nutzung-berg/">
+             Drohnen-Nutzung am Berg
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/hunde-berg/">
+             Hunde am Berg
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/mitfahrzentrale/">
+             Mitfahrzentrale
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/newsletter/">
+             Newsletter
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/videos/">
+             Videos
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/webcams-livecams/">
+             Webcams / Livecams
+            </a>
+           </li>
+           <li class="">
+            <a href="/service/wlan/">
+             WLAN
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li class="openable">
+          <a href="/unternehmen/">
+           Unternehmen
+          </a>
+          <ul class="submenu">
+           <li class="">
+            <a href="/unternehmen/aktionaersinfo-nebelhornbahn-ag/">
+             Aktionärsinfo der Nebelhornbahn-AG
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/aktionaersinfo-oberstdorfer-bergbahn-ag/">
+             Aktionärsinfo der Oberstdorfer Bergbahn AG
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/ansprechpartner/">
+             Ansprechpartner
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/geschichte/">
+             Geschichte
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/technische-daten/">
+             Technische Daten
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/baumassnahmen-2016/">
+             Baumaßnahmen 2016
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/jobs-karriere/">
+             Jobs/Karriere
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/eigentumsverhaeltnisse-aktiengesellschaften.html">
+             Eigentumsverhältnisse der Aktiengesellschaften
+            </a>
+           </li>
+           <li class="">
+            <a href="/unternehmen/partner-links.html">
+             Partner/Links
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="/presse/">
+           Presse
+          </a>
+         </li>
+         <li>
+          <a href="/en">
+           English
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+    </div>
+   </header>
+   <div id="contentwrapper">
+    <div id="motive">
+     <div class="wrapper">
+      <div class="outer">
+       <div class="motive-inside">
+        <div class="mask">
+        </div>
+        <div class="gradient">
+        </div>
+        <div class="motivewrapper wrapperslider">
+         <div class="motiv motiv1" id="m687164">
+         </div>
+         <div class="motiv motiv2" id="m815998">
+         </div>
+         <div class="motiv motiv3" id="m815820">
+         </div>
+         <div class="motiv motiv4" id="m687167">
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="motivewrapper hidden">
+      <div class="motiv motiv1" id="m655670op">
+      </div>
+      <div class="motiv motiv2" id="m827151op">
+      </div>
+      <div class="motiv motiv3" id="m849109op">
+      </div>
+      <div class="motiv motiv4" id="m849135op">
+      </div>
+     </div>
+     <div class="maxwidth">
+      <a href="/" id="logo" onclick="gtag('event', 'Logo', { 'event_label': 'Logo', 'event_category': 'Motiv', 'event_action': 'click' } );">
+      </a>
+      <a href="/service/newsletter/" id="nl_badge" onclick="gtag('event', 'Newsletter Badge', { 'event_label': 'Newsletter Badge', 'event_category': 'Motiv', 'event_action': 'click' } );">
+      </a>
+      <div class="headlines ">
+       <h1 class="headline1 font-bold">
+        Zwei Länder, ein Bergerlebnis ...
+       </h1>
+       <div class="headline2 font-bold">
+        GRENZENLOS AKTIV
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="content">
+     <div id="TraminoRubrik">
+      <div id="TraminoInhalt">
+       <div id="TraminoBlock_124959">
+        <div class="TraminoVorlage T3530 decision maxwidth TraminoVorlage_1" id="TraminoAnhang124959">
+         <span class="text font-medium">
+          Wir sind Ihr Erlebniscreateur für
+          <br/>
+          aktive Familien und Berg- und Sinnesgenießer!
+          <br/>
+          <span>
+           Wer sind Sie?
+          </span>
+         </span>
+         <div class="wrapper">
+          <a class="font-bold leftbutton" href="/familienbande/" onclick="gtag('event', 'FAMILIEN-&lt;br /&gt;BANDE?', { 'event_label': 'FAMILIEN-&lt;br /&gt;BANDE?', 'event_category': 'Baustein Entscheidung', 'event_action': 'click' } );">
+           <i class="icons8-back-filled">
+           </i>
+           FAMILIEN-
+           <br/>
+           BANDE?
+          </a>
+          <a class="font-bold rightbutton" href="/naturgeniesser/" onclick="gtag('event', 'GENUSS-&lt;br /&gt;ENTDECKER?', { 'event_label': 'GENUSS-&lt;br /&gt;ENTDECKER?', 'event_category': 'Baustein Entscheidung', 'event_action': 'click' } );">
+           <i class="icons8-forward-filled">
+           </i>
+           GENUSS-
+           <br/>
+           ENTDECKER?
+          </a>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_170807">
+        <div class="TraminoVorlage T3524 TraminoVorlage_2" id="TraminoAnhang170807">
+         <div class="gridelement fakegridelement gridelement1 big" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/865245/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <a href="/erlebnis-spass/bertis-schatzsuche/" rel="nofollow">
+             <img src="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/865245/790x527.jpg"/>
+            </a>
+           </div>
+           <div class="headline font-bold font-size40">
+            <a class="wrapper" href="/erlebnis-spass/bertis-schatzsuche/">
+             <span class="inner">
+              Jetzt neu! Bertis Schatzsuche durch unsere Erlebniswelten
+             </span>
+            </a>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Eine Schatzkarte führt alle Entdecker auf eine spannende und geheimnisvolle Reise durch die Erlebniswelten an Söllereck, Nebelhorn und Kanzelwand. Gewappnet mit Abenteuerlust kann die Suche nach den versteckten Holzkisten und das Sammeln der passenden Sticker beginnen. Die Karte kann für 3€ an allen Kassen erworben werden - Spaß und Spannung inklusive.
+           </p>
+           <div class="link">
+            <a class="btn btn-light" href="/erlebnis-spass/bertis-schatzsuche/" rel="nofollow">
+             mehr erfahren
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_157866">
+        <div class="TraminoVorlage T3994 TraminoVorlage_3" id="TraminoAnhang157866">
+         <div class="gridelement fakegridelement gridelement2" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/das-hoechste/682846/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <a href="/genuss-sinne/veranstaltungen/" rel="nofollow">
+             <img src="https://tramino.s3.amazonaws.com/s/das-hoechste/682846/380x253.jpg"/>
+            </a>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <a class="wrapper" href="/genuss-sinne/veranstaltungen/">
+             <span class="inner">
+              Unsere Veranstaltungen
+             </span>
+            </a>
+           </div>
+          </div>
+          <div class="text">
+           <div class="event">
+            <div class="event_datum" title="">
+             <div class="day">
+              24
+             </div>
+             <div class="month">
+              Juni
+             </div>
+            </div>
+            <div class="event_headline">
+             <a class="wrapper" href="/genuss-sinne/veranstaltungen/148057.html">
+              <span class="inner">
+               Schongauer Bergsteigerchor mit Bergmesse auf dem Fellhorn
+              </span>
+             </a>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="event">
+            <div class="event_datum" title="">
+             <div class="day">
+              24
+             </div>
+             <div class="month">
+              Juni
+             </div>
+            </div>
+            <div class="event_headline">
+             <a class="wrapper" href="/genuss-sinne/veranstaltungen/157426.html">
+              <span class="inner">
+               Sonntagskonzert Blaskapelle Siebnach - ENTFÄLLT!
+              </span>
+             </a>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="event">
+            <div class="event_datum" title="">
+             <div class="day">
+              25
+             </div>
+             <div class="month">
+              Juni
+             </div>
+            </div>
+            <div class="event_headline">
+             <a class="wrapper" href="/genuss-sinne/veranstaltungen/128502.html">
+              <span class="inner">
+               Abendmusik zum Sonnenuntergang auf dem Walmendingerhorn
+              </span>
+             </a>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="event">
+            <div class="event_datum" title="">
+             <div class="day">
+              28
+             </div>
+             <div class="month">
+              Juni
+             </div>
+            </div>
+            <div class="event_headline">
+             <a class="wrapper" href="/genuss-sinne/veranstaltungen/132701.html">
+              <span class="inner">
+               Gipfelkonzert im Rahmen der "Exquisit Musiktage" auf dem Fellhorn
+              </span>
+             </a>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="link">
+            <a class="btn btn-light" href="/genuss-sinne/veranstaltungen/" rel="nofollow">
+             weitere Veranstaltungen
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_171438">
+        <div class="TraminoVorlage T3524 TraminoVorlage_4" id="TraminoAnhang171438">
+         <div class="gridelement fakegridelement gridelement3" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/869482/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <img src="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/869482/380x253.jpg"/>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <span class="wrapper">
+             <span class="inner">
+              Start in die Sommersaison an der Ifenbahn am 23. Juni
+             </span>
+            </span>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Auch am Ifen beginnt nun die Sommersaison! Die neue 10-er Kabinenbahn "Ifen I" bringt Sie bequem und komfortabel zur Mittelstation an der Ifenhütte. Von hier können Sie zu zahlreichen Spaziergängen sowie leichten oder auch anspruchsvollen Wanderungen aufbrechen. Die Ifenhütte sowie die Auenhütte an der Talstation kümmern sich um Ihr leibliches Wohl.
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_169516">
+        <div class="TraminoVorlage T3524 TraminoVorlage_5" id="TraminoAnhang169516">
+         <div class="gridelement fakegridelement gridelement4" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/das-hoechste/687164/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <img src="https://tramino.s3.amazonaws.com/s/das-hoechste/687164/380x253.jpg"/>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <span class="wrapper">
+             <span class="inner">
+              Die Alpenrosen blühen
+             </span>
+            </span>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Die Alpenrosenblüte hat begonnen und taucht die Berge - allen voran das Fellhorn - in ein sattes rot. An allen Bergen sind diese ganz besonderen Blumen zu sehen, doch besonders beeindruckend ist die Alpenrosenblüte zweifelsohne am Blumenberg Fellhorn. Ganze Hänge wechseln hier um diese Zeit von grün zu rot und lassen den Berg in einem ganz neuen Licht erstrahlen.
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_165411">
+        <div class="TraminoVorlage T3524 TraminoVorlage_6" id="TraminoAnhang165411">
+         <div class="gridelement fakegridelement gridelement5" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/864563/790x527.png" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <img src="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/864563/380x253.png"/>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <span class="wrapper">
+             <span class="inner">
+              Werden Sie jetzt zum Gipfelsammler!
+             </span>
+            </span>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Nutzen Sie unser digitales Stempelbuch, indem Sie die QR-Code Schilder an unseren Bergstationen scannen und werden Sie so zum Gipfelsammler!
+           </p>
+           <p>
+            Wenn Sie 5 Gipfel in Ihrem Gipfelpass gesammelt haben, können Sie sich an einer Kasse nach Wahl ein kleines Geschenk abholen und außerdem wandern Sie automatisch in den Lostopf für den großen Saisongewinn: einen hochwertigen Deuter Wanderrucksack inklusive Teleskopstöcken und Trinkflasche sowie einen Gutschein für den Kletterwald am Söllereck.
+           </p>
+           <p>
+            Es ist ganz einfach:
+           </p>
+           <ul>
+            <li>
+             OK Bergbahnen App herunterladen
+            </li>
+            <li>
+             zum MyMountainClub anmelden
+            </li>
+            <li>
+             QR-Code Schilder an den Bergstationen mit Hilfe der App scannen und schon sind Sie dabei!
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_163102">
+        <div class="TraminoVorlage T3524 TraminoVorlage_7" id="TraminoAnhang163102">
+         <div class="gridelement fakegridelement gridelement6" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/866749/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <a href="/club/" rel="nofollow">
+             <img src="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/866749/380x253.jpg"/>
+            </a>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <a class="wrapper" href="/club/">
+             <span class="inner">
+              Jetzt den kostenlosen Blumenführer nutzen!
+             </span>
+            </a>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Für alle MyMountainClub-Mitglieder ist unser beliebter Blumenführer ab sofort auch digital und sogar kostenlos in unserer App verfügbar. Und so gehts: App herunterladen, zum MyMountainClub anmelden und Blumen bequem und unkompliziert selbst bestimmen.
+           </p>
+           <div class="link">
+            <a class="btn btn-light" href="/club/" rel="nofollow">
+             mehr erfahren
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_124328">
+        <div class="TraminoVorlage T3524 TraminoVorlage_8" id="TraminoAnhang124328">
+         <div class="gridelement fakegridelement gridelement7" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/das-hoechste/685222/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="1927,2943">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <a href="/club/" rel="nofollow">
+             <img src="https://tramino.s3.amazonaws.com/s/das-hoechste/685222/380x253.jpg"/>
+            </a>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <a class="wrapper" href="/club/">
+             <span class="inner">
+              Werden Sie Teil des MyMountainClub
+             </span>
+            </a>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Mit wenigen Klicks online registrieren und schon sind Sie dabei: im MyMountainClub profitieren Mitglieder von zahlreichen Zusatzservices. Schon bei der Anmeldung werden die persönlichen Interessen im Nutzerkonto hinterlegt - und sind die Grundlage für personalisierte Angebote. Außerdem steht allen Mitgliedern unser Blumenführer in der App kostenlos zur Verfügung. So können Sie alle Blumen am Wegesrand während Ihrer Wanderung zukünftig mühelos bestimmen.
+            <br/>
+            Ab Mitte Mai wartet auf alle Clubmitglieder außerdem unsere Aktion "Gipfelsammler" bei der es tolle Preise zu gewinnen gibt.
+           </p>
+           <div class="link">
+            <a class="btn btn-light" href="/club/" rel="nofollow">
+             mehr erfahren
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_168963">
+        <div class="TraminoVorlage T3524 TraminoVorlage_9" id="TraminoAnhang168963">
+         <div class="gridelement fakegridelement gridelement8" data-alwaysbigimg="https://tramino.s3.amazonaws.com/s/das-hoechste/682848/790x527.jpg" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+            <a href="/genuss-sinne/online-shop-nebelhorn/" rel="nofollow">
+             <img src="https://tramino.s3.amazonaws.com/s/das-hoechste/682848/380x253.jpg"/>
+            </a>
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <a class="wrapper" href="/genuss-sinne/online-shop-nebelhorn/">
+             <span class="inner">
+              Gutscheine für die Nebelhornbahn bequem online kaufen
+             </span>
+            </a>
+           </div>
+          </div>
+          <div class="text">
+           <p>
+            Hier finden Sie Gutscheine für die Nebelhornbahn sowie für die Gastronomie und Veranstaltungen auf dem Nebelhorn.
+           </p>
+           <div class="link">
+            <a class="btn btn-light" href="/genuss-sinne/online-shop-nebelhorn/" rel="nofollow">
+             mehr erfahren
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="TraminoBlock_171196">
+        <div class="TraminoVorlage T3524 TraminoVorlage_10" id="TraminoAnhang171196">
+         <div class="gridelement fakegridelement gridelement9" data-alwaysbigimg="" data-alwaysbigimgjz="" data-imagejz="" data-jahreszeit="" data-tagids="">
+          <div class="bildwrapper">
+           <div class="File Bild">
+           </div>
+           <div class="headline font-bold font-size20_2">
+            <span class="wrapper">
+             <span class="inner">
+             </span>
+            </span>
+           </div>
+          </div>
+          <div class="text">
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <footer>
+     <div class="top">
+      <div class="maxwidth">
+       <div class="footer_wrapper">
+        <div class="box partner">
+         <div class="headline">
+          Partner
+         </div>
+         <div class="wrapper">
+          <div class="textstyle">
+           <a class="partner salomon" href="https://www.salomon.com/" onclick="gtag('event', 'Salomon', { 'event_label': 'Salomon', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Salomon Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/817867/salomon-8064.png" height="60" width="75"/>
+           </a>
+           <a class="partner salomon" href="https://www.deuter.com" onclick="gtag('event', 'Deuter', { 'event_label': 'Deuter', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Deuter Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/868566/deuter-logo.png" height="60" width="75"/>
+           </a>
+           <a class="partner allgaeu" href="http://www.allgaeu.de/" onclick="gtag('event', 'Allgau', { 'event_label': 'Allgau', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Allgäu Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/560754/logo2.png" height="60" width="73"/>
+           </a>
+           <a class="partner oberstdorf" href="http://www.oberstdorf.de/" onclick="gtag('event', 'Oberstdorf', { 'event_label': 'Oberstdorf', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Oberstdorf Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/560758/logo4.png" height="60" width="100"/>
+           </a>
+           <a class="partner kleionwalsertal" href="http://www.kleinwalsertal.com/" onclick="gtag('event', 'Kleinwalsertal', { 'event_label': 'Kleinwalsertal', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Kleinwalsertal Travel Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/560756/logo3.png" height="60" width="69"/>
+           </a>
+           <a class="partner agc" href="http://www.allgaeu-gletscher-card.com/" onclick="gtag('event', 'Allgau-Gletscher-Card', { 'event_label': 'Allgau-Gletscher-Card', 'event_category': 'PartnerClick', 'event_action': 'click' } );" target="_blank">
+            <img alt="Allgäu-Gletscher-Card Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/560755/logo1.png" height="60" width="66"/>
+           </a>
+           <a class="partner sschnee" href="http://www.superschnee.com/" onclick="gtag('event', 'Superschnee', { 'event_label': 'Superschnee', 'event_category': 'PartnerClick', 'event_action': 'click' } );" style="margin-right: 34px;" target="_blank">
+            <img alt="Superschnee Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/560759/logo6.png" height="60" width="55"/>
+           </a>
+           <a alt="Big Fun Allgäu" class="partner bigfun" href="https://www.das-hoechste.de/service/big-fun-allgaeu.html" onclick="gtag('event', 'Big Fun', { 'event_label': 'Big Fun', 'event_category': 'PartnerClick', 'event_action': 'click' } );">
+            <img alt="Bigfun Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/das-hoechste/784447/bigfun-logo-small.png" height="60" width="60"/>
+           </a>
+           <a class="partner sommerbergbahnen" href="https://www.wko.at/Content.Node/kampagnen/Sommerbergbahnen/index.html" onclick="gtag('event', 'Sommerbergbahnen', { 'event_label': 'Sommerbergbahnen', 'event_category': 'PartnerClick', 'event_action': 'click' } );" style="margin-left: 10px;" target="_blank">
+            <img alt="Sommerbergbahnen Logo" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/868386/logo-small.png" height="60" width="60"/>
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="box app">
+         <div class="headline">
+          App
+         </div>
+         <div class="wrapper app2">
+          <div class="textstyle">
+           Unsere App jetzt kostenlos herunterladen
+          </div>
+          <div class="inner">
+           <div class="Bild">
+            <img alt="App Download" class="lazy" data-original="https://tramino.s3.amazonaws.com/s/ok-bergbahnen/827871/smartphones.png" height="95" width="122"/>
+           </div>
+           <div class="download">
+            <a class="appstore" href="https://itunes.apple.com/de/app/das-hochste/id585631157?mt=8" onclick="gtag('event', 'App Store Download', { 'event_label': 'App Store Download', 'event_category': 'Footer', 'event_action': 'click' } );" target="_blank">
+             <img alt="Appstore" src="https://tramino.s3.amazonaws.com/s/das-hoechste/558134/appstore.png"/>
+            </a>
+            <a class="playstore" href="https://play.google.com/store/apps/details?id=de.tramino.okbergbahnenapp" onclick="gtag('event', 'Google Play Download', { 'event_label': 'Google Play Download', 'event_category': 'Footer', 'event_action': 'click' } );" target="_blank">
+             <img alt="Googleplaystore" src="https://tramino.s3.amazonaws.com/s/das-hoechste/558135/googleplaystore.png"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="headline">
+          Social
+         </div>
+         <div class="wrapper social">
+          <div class="textstyle">
+          </div>
+          <div class="inner">
+           <ul>
+            <li>
+             <a class="color" href="https://www.facebook.com/okbergbahnen" onclick="gtag('event', 'Facebook', { 'event_label': 'Facebook', 'event_category': 'SocialClick', 'event_action': 'click' } );" target="_blank">
+              <i class="icons8-facebook">
+              </i>
+             </a>
+            </li>
+            <li>
+             <a class="color" href="https://www.instagram.com/okbergbahnen" onclick="gtag('event', 'Instagram', { 'event_label': 'Instagram', 'event_category': 'SocialClick', 'event_action': 'click' } );" target="_blank">
+              <i class="icons8-instagram">
+              </i>
+             </a>
+            </li>
+            <li>
+             <a class="color" href="https://www.youtube.com/user/dashoechste" onclick="gtag('event', 'Youtube', { 'event_label': 'Youtube', 'event_category': 'SocialClick', 'event_action': 'click' } );" target="_blank">
+              <i class="icons8-youtube-play-button-logo">
+              </i>
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+        <div class="box jobs">
+         <div class="headline green">
+          Werden Sie Teil unseres Teams
+         </div>
+         <div class="textstyle">
+          Aktuelle Stellenangebote:
+         </div>
+         <div class="wrapper">
+          <div class="inner">
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-elektriker-skiliftgesellschaft-links-breitach.html">
+              Elektriker (m/w) Skiliftgesellschaft links der Breitach
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/kopie-von-stellenangebot-soellereck-gastronomie.html">
+              Kletterwald Söllereck
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-kaufmaennische-kraft-kassenbereich.html">
+              kaufmännische Kraft (m/w) für den Kassenbereich in Teilzeit
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-elektriker-m-w-fellhornbahn.html">
+              Elektriker (m/w) Fellhorn mit Gesellenbrief in Vollzeit
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/ausbildung-kaufmann-frau-bueromanagement-106970.html">
+              Ausbildung zum/zur Kaufmann/-frau für Büromanagement
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-kabinenbegleiter-liftmitarbeiter-m-w-nebelhorn.html">
+              Kabinenbegleiter/Liftmitarbeiter (m/w) am Nebelhorn
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/kopie-von-stellenangebot-soellereck-parkplatz.html">
+              Teamleiter (m/w) für Außenbereich u. Piste am Söllereck
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebote-gastronomie-nebelhorn.html">
+              Gastronomie Nebelhorn
+             </a>
+             <div class="text">
+              Arbeiten mit Panoramablick!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/ausbildung-kaufmann-frau-bueromanagement.html">
+              Ausbildung zum/zur Kaufmann/-frau für Büromanagement
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-personalsachbearbeiter.html">
+              Personalsachbearbeiter (m/w)
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-elektromeister-m-w-fellhornbahn.html">
+              Elektromeister(m/w) in Vollzeit/Fellhorn
+             </a>
+             <div class="text">
+              Arbeiten, wo andere Urlaub machen!
+             </div>
+            </div>
+           </div>
+           <div class="jobwrapper">
+            <div class="job textstyle">
+             <a class="font-bold" href="/unternehmen/jobs-karriere/stellenangebot-elektrofachkraft-nebelhorn.html">
+              Elektrofachkraft Nebelhorn
+             </a>
+             <div class="text">
+              ARBEITEN WO ANDERE URLAUB MACHEN
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="buttons">
+           <a class="btn btn-light transparent" href="/unternehmen/jobs-karriere/">
+            alle 12 Stellenangebote
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="bottom">
+      <div class="maxwidth">
+       <div class="elm copy left">
+        © 2018 OBERSTDORF KLEINWALSERTAL BERGBAHNEN
+       </div>
+       <div class="elm service left">
+        <ul>
+         <li>
+          <a href="/impressum/">
+           Impressum
+          </a>
+         </li>
+         <li>
+          <a href="/datenschutz/">
+           Datenschutz
+          </a>
+         </li>
+         <li>
+          <a href="/kontakt/">
+           Kontakt
+          </a>
+         </li>
+         <li>
+          <a href="/unternehmen/jobs-karriere/">
+           Jobs/Karriere
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="elm tramino right">
+        Realisiert mit
+        <a href="https://www.tramino.de" target="_blank">
+         Tramino
+        </a>
+       </div>
+      </div>
+     </div>
+    </footer>
+   </div>
+  </div>
+ </body>
+</html>

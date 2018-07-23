@@ -1,0 +1,4456 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- google_ad_section_start(weight=ignore) -->
+  <title>
+   One-Step Webpages by Stephen P. Morse
+  </title>
+  <!-- google_ad_section_end -->
+  <!-- google verification section -->
+  <meta content="-FC9qrb_MdZUzcCtY4Q_0K9tAcYM8hY4zZFo0ysX5Vs" name="google-site-verification"/>
+  <!-- google verification section end -->
+  <meta content="Stephen P. Morse's One-Step tools for finding immigration records, census records, vital records, and for dealing with calendars, maps, foreign alphabets, and numerous other applications." name="description"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <script src="protocol.js">
+  </script>
+  <script>
+   // this must come before the include for index2.js
+      if (protocol == "file:") {
+        protocol = "https:";
+      }
+  </script>
+  <link href="favicon.ico" rel="shortcut icon"/>
+  <script src="email.js" type="text/javascript">
+  </script>
+  <script src="private.js" type="text/javascript">
+  </script>
+  <script src="index2.js" type="text/javascript">
+  </script>
+  <script src="openwindow.js">
+  </script>
+  <script>
+   var level=0, state=1, shortname=2, longname=3, localurl=4, remoteurl=5;
+      var retoggled = false;
+
+      function GetParameter(parameter) {
+
+        var loc = self.parent.document.location;
+        var line = String(loc).split("?");
+        if (line.length < 2) {
+          return "";
+        }
+        var query = line[1];
+
+        // convert to array of individual arguments
+        var arglist = query.split("&");
+
+        // process each argument
+        var j;
+        for (j in arglist) {
+          var arg = arglist[j].split("=");
+          if (arg[0] == parameter) {
+            return unescape(arg[1]);
+          }
+        }
+        return "";
+      }
+
+      function Toggle (i) {
+        if (pages[i][state] == "+") {
+          pages[i][state] = "-";
+        } else {
+          pages[i][state] = "+";
+        }
+        UpdateCookie();
+
+        // save screen positions so we can restore it next time page is loaded
+        SetCookie("position", GetScrollWidth() + "," + GetScrollHeight());
+        retoggled = true;
+        var newlocation = String(document.location);
+        if ((hash=newlocation.indexOf("#")) != false) {
+          newlocation = newlocation.substr(0, hash);
+        }
+
+        document.location.replace(newlocation);
+      }
+
+      function IsFileProtocol() {
+        return (window.location.protocol == "file:");
+      }
+
+      var useJewishGen = false;
+
+      function DetermineURL(localURL) {
+        if (IsFileProtocol()) {
+          return "ellis/" + localURL;
+        } else if (useJewishGen) {
+          return JewishGenURL(localURL);
+        } else {
+          return SteveMorseURL("ellis2/" + localURL);
+//          return "http://stevemorse.org/ellis2/" + localURL;
+        }
+      }
+
+      function JewishGenURL(localURL) {
+        if (IsFileProtocol()) {
+          return "ellis/" + localURL;
+        } else {
+          return "https://www.jewishgen.org/databases/EIDB/" + localURL; 
+        }
+      }
+
+      function SteveMorseURL(localURL) {
+        if (IsFileProtocol()) {
+          return "https://" + siteaddr + "/" + localURL;
+        } else {
+          return localURL;
+        }
+      }
+
+      function ShowPages() {
+        var n4 = (navigator.appName == "Netscape" && navigator.appVersion.charAt(0) <= 4);
+        var html = "";
+        html = "<xform><table border='0' cellspacing='0'>"; // form is needed for clicking on the image
+        // and now form causes clicking on images not to work.  Did the browsers all change???
+        var lastState = " ";
+        var open = [];
+
+        // update states if there is a cookie
+        var value = GetCookie("openfolder");
+        if (value != "") {
+          var valueArray = value.split("|");
+          for (var j=0; j<valueArray.length; j+=2) {
+            for (var i in pages) {
+              if (pages[i][shortname].substr(0,5) == valueArray[j].substr(0,5) &&
+                  pages[i][level] == 0) {
+                pages[i][state] = valueArray[j+1];
+                break;
+              }
+            }
+          }
+        } else { // if cookies are disabled, open all folders
+          SetCookie("cookietest", 1);
+          if (GetCookie("cookietest") != 1) {
+            for (var i in pages) {
+              if (pages[i][state] == "+") {
+                pages[i][state] = "-";
+              }
+            }
+          }
+          SetCookie("cookietest", 0);
+        }
+
+        // override updated states if there is a query-string argument
+        var folder = GetParameter("folder").toLowerCase();
+        if (folder != "") {
+          for (var i in pages) {
+            if (pages[i][shortname].substr(0,folder.length).toLowerCase() == folder) {
+              pages[i][state] = "-";
+            } else {
+              pages[i][state] = "+";
+            }
+          }
+        }
+
+        // show only selected lines if there is a query-string argument directing us to do so
+        var lineprefix = GetParameter("lineprefix").toLowerCase();
+
+        // process each line in javascript table
+        var lastLineIsFolder = false;
+        for (var i in pages) { // process each line in javascript table
+
+          // skip lines not satisfying the specified prefix
+          if (pages[i][shortname].substr(0,lineprefix.length).toLowerCase() != lineprefix &&
+              pages[i][shortname].substr(0,folder.length).toLowerCase() != folder) {
+            continue;
+          }
+
+          // skip contents of closed folders
+          if (pages[i][level] > 0 && !open[pages[i][level]-1]) {
+            continue;
+          } else {
+            open[pages[i][level]] = (pages[i][state] != "+");
+          }
+
+          var line = "<tr>";
+          var indent = "";
+          for (var j=1; j<=pages[i][level]; j++) { // add indentation
+            indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp";
+          }
+
+          // for n4: use <img so there is no blue box around the image
+          // for newer browsers: use <input type="image" so the hand appears when mouseover
+          var imgTag = n4 ? "<img" : "<input type='image'";
+
+          if (pages[i][shortname] == "<hr>") {
+            line += "<td></td><td><hr></td>";
+            lastLineIsFolder = false;
+          } else if (pages[i][localurl] != "" && pages[i][localurl] != "-") { // file
+            // adjust for some pages not being on my server
+            var url = (IsFileProtocol() || pages[i][remoteurl] == "") ? localurl : remoteurl;
+            if (pages[i][url] == "-") { // this file is for local use only
+              continue;
+            }
+            var img = (pages[i][state]=="$") ? "$" : " ";
+            line += "<td>" + indent + img + "&nbsp;</td><td xcolspan='9999'><a href='" + pages[i][url] + "'><font color='blue' face='Arial, Helvetica' size='2'><b>" + pages[i][shortname] + "</b></font></a><font face='Arial, Helvetica' size='2'><b>:&nbsp;" + pages[i][longname] +"</b></font>";
+            lastLineIsFolder = false;
+          } else { // folder
+            if (!IsFileProtocol() && pages[i][remoteurl] == "-") { // this folder is for local use only
+//              continue;
+              break;
+            }
+            if (folder=="" || pages[i][state]=="-") { // hide folder if query-string arg was passed in
+              var img = (pages[i][state]=="+") ? "closed" : "open";
+              var anchor = pages[i][shortname]; // get folder name from which we can build an anchor
+              var endPosition = "";
+              if ((endPosition=anchor.indexOf(" ")) != -1) { // stop before the first space
+                anchor = anchor.substr(0,endPosition);
+              }
+              if ((endPosition=anchor.indexOf(",")) != -1) { // stop before the first comma
+                anchor = anchor.substr(0,endPosition);
+              }
+              anchor = "<a name='" + anchor.toLowerCase() + "'></a>"; // build the anchor
+              if (!lastLineIsFolder) {
+                line += "<td>&nbsp;</td></tr><tr>";
+              }
+              line += "<td colspan='5'>" + anchor + indent + imgTag + " src='" + img + ".gif' onmouseup='Toggle(" + i + ");'>&nbsp;<a href='javascript:Toggle(" + i + ")'><font color='red' face='Arial, Helvetica' size='2'><b>" + pages[i][shortname] + "</b></font></a>";
+            }
+            lastLineIsFolder = true;
+          }
+          line += "</td></tr>\n";
+          html += line;
+        }
+
+        html += "</table></xform>\n";
+        document.write(html);
+
+        // scroll screen to positions it had when page was last unloaded
+        var position = GetCookie("position").split(",");
+        if (position.length > 1) {
+          window.scrollTo(position[0], position[1]);
+        }
+      }
+
+      function ChangeAll(newstate) {
+        for (var i in pages) { // process each line in javascript table
+          if (pages[i][state] != "") {
+            pages[i][state] = newstate;
+          }
+        }
+        UpdateCookie();
+
+        // save screen positions so we can restore it next time page is loaded
+        SetCookie("position", GetScrollWidth() + "," + GetScrollHeight());
+        retoggled = true;
+
+        var url = String(document.location).split("?")[0]; // remove query argument if any
+        url = url.split("#")[0]; // remove anchor if any
+        document.location.replace(url);
+      }
+
+      function GetScrollWidth() {
+        var w = 0;
+        if (document.body == undefined) { // N4 browser
+          w = window.pageXOffset;
+        } else {
+          w = window.pageXOffset || // non IE browsers
+              document.body.scrollLeft || // IE pre 6.0, and 6.0 in non-standards-complient mode
+              document.documentElement.scrollLeft; // IE 6.0 in standards-compliant mode
+        }
+        return w ? w : 0;
+      }
+
+      function GetScrollHeight() {
+        var h = 0;
+        if (document.body == undefined) { // N4 browser
+          h = window.pageXOffset;
+        } else {
+          h = window.pageYOffset || // non IE browsers
+              document.body.scrollTop || // IE pre 6.0, and 6.0 in non-standards-complient mode
+              document.documentElement.scrollTop; // IE 6.0 in standards-compliant mode
+        }
+        return h ? h : 0;
+      }
+
+      function Unload() {
+        // save screen positions so we can restore it next time page is loaded
+        if (!retoggled) {
+        SetCookie("position", ""); // get rid of position cookie so that next reload is to top
+        }
+      }
+
+      function UpdateCookie() {
+        var value = "";
+        for (var i in pages) { // process each line in javascript table
+          if (pages[i][level] == 0 && pages[i][state] != "") {
+            value += pages[i][shortname].substr(0,5) + "|" + pages[i][state] + "|"; 
+          }
+        }
+        SetCookie("openfolder", value);
+      }
+
+      function SetCookie(cookieName, cookieValue) {
+        var expires = new Date();
+        var today = new Date();
+        expires.setTime(today.getTime() + 1000*60*60*24*365);
+        document.cookie = cookieName + "=" + cookieValue + "; expires=" + expires.toGMTString();
+      }
+
+      function GetCookie(cookieName) {
+        var cookies = document.cookie.split(";");
+        for (var i=0; i<cookies.length; i++) {
+          while (cookies[i].charAt(0) == " ") {
+            cookies[i] = cookies[i].slice(1);
+          }
+          var thisCookie = cookies[i].split("=");
+          if (thisCookie[0] == cookieName) {
+            if (thisCookie.length > 1) {
+              return thisCookie[1];
+            } else {
+              return "";
+            }
+          }
+        }
+        return "";
+      }
+
+      function StartHiding() {
+        document.write("<!--");
+      }
+
+      function EndHiding() {
+        document.write("-->");
+      }
+
+      function SubmitIt() {
+        var wind = window.open("about:blank", "ancestrysearch");
+        document.ancestry.submit();
+        wind.focus();
+      }
+  </script>
+  <!-- start of code for mouse-over menu -->
+  <!--
+      Steps for adding a new section to the website
+      1. Increment height attribute of #menuMarker1 by 20
+      2. Increment top addtribute of #menuMarker2 by 20
+      3. Add another entry in lblWidthsArray portion of menu1
+      4. Add another entry in boxWidthsArray portion of menu1
+      5. Increment label and box ids for all following sections, including the private hidden section
+      6. Add href name=XXX to label id, where XXX is first word (preceding space) of name of new section
+      7. Add or subtract <br> tags following </table> after PUBLIC APPEARANCES link
+    -->
+  <style type="text/css">
+   <!--
+
+.a {text-decoration:none; color:antiquewhite;}
+.a { color:antiquewhite; }
+/*
+.a:hover { color: gray; }
+*/
+      #menuMarker1 { position:absolute; visibility:visible; width:205px; height:330px; left:5; top:5; background:gray; }
+      #menuMarker2 { position:absolute; visibility:visible; width:205px; height:25px; left:5; top:330; background:gray; }
+      a.m { display:block; font-family:"trebuchet ms",verdana,arial,sans-serif; text-decoration:none; cursor:default; }
+      a.m:hover { color:antiquewhite; background:gray; }
+      .mLabel {
+        text-align:left; position:absolute;
+        visibility:hidden; overflow:visible; cursor:default;
+        font-family: "trebuchet ms",verdana,arial,sans-serif; font-size:14px; font-weight:bold;
+        margin:0; padding:0px;
+      }
+      .mBox {
+        position:absolute; visibility:hidden; overflow:hidden;
+        font-family: verdana,arial,sans-serif; font-size: 12px;
+        width:205px; margin:0px; padding:2px; line-height:1.3em; border:1px outset black;
+      }
+      -->
+  </style>
+  <!-- following two js files were copied from http://www.cross-browser.com/cbe/ -->
+  <!-- files need to be kept locally, otherwise no menu appears when refresh button is pressed (???) -->
+  <script src="cbe_core.js" type="text/javascript">
+  </script>
+  <script src="cbe_event.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   <!--
+
+      var textColor = "antiquewhite";
+      var backgroundColor = "gray";
+      var mark1;
+      var menu1;
+
+      function windowOnload() {
+        mark1 = cbeGetElementById('menuMarker1').cbe;
+        menu1 = new cbeMenu(
+          false,  // horizontal,
+          10, 10, 2,  // menuX, menuY, menuZ
+          [200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200],  // lblWidthsArray
+          20,0,  // lblHeight, lblspacing
+          [290,250,250,200,200,260,290,170,215,215,200,215,215,300,310,200,200],  // boxWidthsArray,
+          backgroundColor, textColor,  // activeColor, inactiveColor,
+          "black", backgroundColor,  // activeBkgnd, inactiveBkgnd
+// Would have preferred to use textColor instead of "black" for the active background (line above)
+// and to have the hover color for the link be backgroundColor.
+// That works, except for one thing: when you move the mouse off of the link text but still
+// on that line of the menu, the link text reverts to the inactive color (textColor) and so blends in
+// with the active background.
+          textColor  // boxBkgnd
+        );
+        window.cbe.addEventListener("resize", resizeListener, false);
+      }
+
+      function resizeListener(e) {
+        if (is.opera5or6 || is.nav4) {
+          location.replace(location.href);
+        } else {
+          menu1.paint(10, 10);
+        }
+      }
+
+      var cbeTotalMenus=0, cbeActiveMenu=null;
+      function cbeMenu(
+        horizontal,
+        menuX, menuY, menuZ,
+        lblWidthsArray, lblHeight, lblSpacing,
+        boxWidthsArray,
+        activeColor, inactiveColor,
+        activeBkgnd, inactiveBkgnd,
+        boxBkgnd) {
+
+        // properties
+        this.n = ++cbeTotalMenus;
+        this.hz = horizontal;
+        this.x = menuX;
+        this.y = menuY;
+        this.z = menuZ;
+        this.lblW = lblWidthsArray;
+        this.lblH = lblHeight;
+        this.lblSpc = lblSpacing;
+        this.boxW = boxWidthsArray;
+        this.ac = activeColor;
+        this.ic = inactiveColor;
+        this.ab = activeBkgnd;
+        this.ib = inactiveBkgnd;
+        this.bb = boxBkgnd;
+        this.active = null;
+
+        // methods
+        this.paint = function(menuX, menuY) {
+          var i=1, x, y, lbl, box;
+          if (arguments.length > 1) {
+            this.x = menuX;
+            this.y = menuY;
+          }
+          x = this.x;
+          y = this.y;
+          if (i <= 9) {
+            id = this.n+""+i;
+          } else {
+            id = (this.n-(-1))+""+(i-10);
+          }
+          lbl = cbeGetElementById('label' + id);
+          while (lbl) {
+            lbl = lbl.cbe;
+            lbl.zIndex(this.z);
+            lbl.resizeTo(this.lblW[i-1], this.lblH);
+            lbl.moveTo(x, y);
+            lbl.color(this.ic);
+            lbl.background(this.ib);
+            lbl.show();
+            lbl.box = i;
+            lbl.menu = this;
+            if (arguments.length==3) lbl.addEventListener('mouseover', menuShowListener, false);
+            if (i <= 9) {
+              id = this.n+""+i;
+            } else {
+              id = (this.n-(-1))+""+(i-10);
+            }
+            lbl.box = cbeGetElementById('box'+id).cbe;
+            if (lbl.box) {
+              lbl.box.width(this.boxW[i-1]);
+              var bx, by;
+              if (this.hz) { // horizontal
+                if (x + this.boxW[i-1] > window.cbe.width()) {
+                  bx = x - (this.boxW[i-1] - this.lblW[i-1]);
+                } else {
+                  bx = x;
+                }
+                if (y + this.lblH + lbl.box.height() > window.cbe.height()) {
+                  by = y - lbl.box.height();
+                } else {
+                  by = y + this.lblH;
+                }
+              } else { // vertical
+                if (x + this.boxW[i-1] > window.cbe.width()) {
+                  bx = x - this.boxW[i-1];
+                } else {
+                  bx = x + this.lblW[i-1];
+                }
+                if (y + lbl.box.height() > window.cbe.height()) {
+                  by = y + this.lblH - lbl.box.height();
+                  if (y < lbl.box.height()) { // prevents clipping of initial items in box
+                    by = 0;
+                  }
+                } else {
+                  by = y;
+                }
+              }
+              lbl.box.moveTo(bx, by);
+              lbl.box.lbl = lbl;
+              lbl.box.zIndex(this.z);
+              lbl.box.background(this.bb);
+              lbl.box.hide();
+            }
+            if (this.hz) {
+              x += this.lblW[i-1] + this.lblSpc;
+            } else {
+              y += this.lblH + this.lblSpc;
+            }
+            i = ++i;
+            if (i <= 9) {
+              id = this.n+""+i;
+            } else {
+              id = (this.n-(-1))+""+(i-10);
+            }
+            lbl = cbeGetElementById('label' + id);
+          }
+        }
+
+        // constructor code
+        this.paint(this.x, this.y, 'init');
+        document.cbe.addEventListener("mousemove", menuHideListener, false);
+      }
+      
+      function menuShowListener(e) {
+        var lbl = e.cbeCurrentTarget;
+        var menu = lbl.menu;
+        if (menu.active) {
+          if (menu.active == lbl) return;
+          menu.active.box.hide();
+          menu.active.color(menu.ic);
+          menu.active.background(menu.ib);
+        }
+        if (cbeActiveMenu && cbeActiveMenu != menu) {
+          menuHide(cbeActiveMenu);
+        }
+        lbl.box.show();
+        lbl.color(menu.ac);
+        lbl.background(menu.ab);
+        menu.active = lbl;
+        cbeActiveMenu = menu;
+      }
+
+      function menuHideListener(e) {
+        if (cbeActiveMenu && cbeActiveMenu.active && !e.cbeTarget.lbl && !e.cbeTarget.box) {
+          menuHide(cbeActiveMenu);
+        }
+      }
+
+      function menuHide(menu) {
+        menu.active.box.hide();
+        menu.active.color(menu.ic);
+        menu.active.background(menu.ib);
+        menu.active = null;
+        cbeActiveMenu = null;
+      }
+
+      //-->
+  </script>
+  <!-- end of code for mouse-over menu -->
+ </head>
+ <body onunload="Unload();" style="background-color: antiquewhite;">
+  <!-- start of mouse-over menu -->
+  <div class="menuMarker" id="menuMarker1">
+  </div>
+  <script>
+   if (IsFileProtocol()) {
+        document.write("<div id='menuMarker2' class='menuMarker'>&nbsp;</div>");
+      }
+  </script>
+  <div class="mLabel" id="label11">
+   <a class="a" href="#ellis">
+    Ellis Island &amp; Castle Garden
+   </a>
+  </div>
+  <div class="mBox" id="box11">
+   <a class="m" href="javascript:window.location=DetermineURL('intro.html');">
+    Overview
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=DetermineURL('ellisgold.html');">
+    Ellis Island Passengers Gold Form (1892-1924)
+   </a>
+   <a class="m" href="javascript:window.location=DetermineURL('elliswhite.html');">
+    Ellis Island Passengers White Form (1892-1957)
+   </a>
+   <a class="m" href="ellis/boat.html">
+    Ellis Island Ship Lists (1892-1957)
+   </a>
+   <a class="m" href="javascript:window.location=DetermineURL('mm.htm?mode=ellis');">
+    Ellis Island Manifest Viewer (1892-1957)
+   </a>
+   <a class="m" href="goulnik/pid2image.html">
+    Ellis Island Passenger IDs
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=ny');">
+    All NY Passengers (1820-1957) - ancestry
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=ny">
+    All NY Ship Lists (1820-1957) - ancestry
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=ny">
+    All NY Manifest Viewer (1820-1957) - ancestry
+   </a>
+   <hr/>
+   <a class="m" href="ellis/free.html?port=1849782">
+    New York Passengers (1820-1891) - familysearch
+   </a>
+   <a class="m" href="ellis/free.html?port=1923888">
+    New York Passengers (1925-1957) - familysearch
+   </a>
+   <a class="m" href="ellis/boatfs.html">
+    All NY Ship Lists (1820-1957) - familysearch
+   </a>
+   <a class="m" href="ellis/mmfs.html">
+    All NY Manifest Viewer (1820-1957) - familysearch
+   </a>
+   <hr/>
+   <a class="m" href="ellis/cg.html">
+    Castle Garden Passengers
+   </a>
+   <a class="m" href="ellis/cgbrowse.html">
+    Castle Garden Browser
+   </a>
+   <a class="m" href="ellis/destcodes.htm">
+    Castle Garden Destination Codes
+   </a>
+   <hr/>
+   <a class="m" href="ellis/pictures.html">
+    Ship Pictures
+   </a>
+   <a class="m" href="swiggum/fleets.html">
+    Ships &amp; Fleets
+   </a>
+   <a class="m" href="ellis/fhl.html">
+    NARA/FHL Roll Numbers
+   </a>
+   <hr/>
+   <a class="m" href="ellis/EllisMythNames.htm">
+    Ellis Island Name Change Myth
+   </a>
+   <a class="m" href="library.html">
+    Ancestrylibrary/Ancestryinstitute
+   </a>
+  </div>
+  <div class="mLabel" id="label12">
+   <a class="a" href="#other">
+    Other Ports
+   </a>
+  </div>
+  <div class="mBox" id="box12">
+   <a class="m" href="ellis/free.html">
+    Various Ports (free)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=balt');">
+    Baltimore Passengers (1820-1948)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=balt">
+    Baltimore Ship Lists (1820-1948)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=balt">
+    Baltimore Manifest Viewer (1820-1948)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=bost');">
+    Boston Passengers (1820-1963)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=bost">
+    Boston Ship Lists (1820-1963)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=bost">
+    Boston Manifest Viewer (1820-1963)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=galv');">
+    Galveston Passengers (1893-1960)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=galv">
+    Galveston Ship Lists (1893-1960)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=galv">
+    Galveston Manifest Viewer (1893-1960)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=orleans');">
+    New Orleans Passengers (1813-1963)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=orleans">
+    New Orleans Ship Lists (1813-1963)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=orleans">
+    New Orleans Manifest Viewer (1813-1963)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=phil');">
+    Philadelphia Passengers (1800-1963)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=phil">
+    Philadelphia Ship Lists (1800-1963)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=phil">
+    Philadelphia Manifest Viewer (1800-1963)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=sanfran');">
+    San Francisco Passengers (1882-1959)
+   </a>
+   <a class="m" href="ellis/boatx.html?mode=sanfran">
+    San Francisco Ship Lists (1882-1959)
+   </a>
+   <a class="m" href="ellis/mm.htm?mode=sanfran">
+    San Francisco Manifest Viewer (1882-1959)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=hamb');">
+    Hamburg Passengers (1850-1934)
+   </a>
+   <a class="m" href="ellis/mmhamb.htm">
+    Hamburg Manifest Viewer (1850-1934)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=can');">
+    Canadian Border Crossings (1895-1956)
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ellis/passengers.php?mode=canpl');">
+    Canadian Passenger Lists (1865-1935)
+   </a>
+   <hr/>
+   <a class="m" href="ellis/aad.html?db=0">
+    Germans to America (1850-1897)
+   </a>
+   <a class="m" href="ellis/aad.html?db=1">
+    Italians to America (1855-1900)
+   </a>
+   <a class="m" href="ellis/aad.html?db=2">
+    Russians to America (1834-1897)
+   </a>
+   <hr/>
+   <a class="m" href="library.html">
+    Ancestrylibrary/Ancestryinstitute
+   </a>
+  </div>
+  <div class="mLabel" id="label13">
+   <a class="a" href="#us">
+    US Census
+   </a>
+  </div>
+  <div class="mBox" id="box13">
+   <a class="m" href="census/intro.html">
+    Overview
+   </a>
+   <a class="m" href="census/rule72.html">
+    Census 72-Year Rule (paper)
+   </a>
+   <a class="m" href="census/1940census.htm">
+    Getting Ready for the 1940 Census (paper)
+   </a>
+   <a class="m" href="http://www.veoh.com/watch/v25050538qeaR4TaW">
+    Getting Ready for 1940 Census (interview)
+   </a>
+   <a class="m" href="http://hosted.ap.org/interactives/2012/census-1940/">
+    How to Search the 1940 Census (AP video)
+   </a>
+   <a class="m" href="http://www.kqed.org/a/kqednews/RN201204041730/a">
+    San Francisco Man's Website (KQED Radio)
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/quiz.php');">
+    1940 Tutorial Quiz
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/quiz1950.php');">
+    1950 Tutorial Quiz
+   </a>
+   <hr/>
+   <a class="m" href="census/unified.html">
+    Unified 1880-1950 Census ED Finder
+   </a>
+   <a class="m" href="census/viewer1940.html">
+    Universal 1940 Census Image Viewer
+   </a>
+   <hr/>
+   <a class="m" href="census/index.html">
+    1870-1940 Large-City ED Finder
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/index.html?ed2street=1');">
+    1870-1950 Large-City Street Finder
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ed/ed.php');">
+    1880-1950 ED Definitions
+   </a>
+   <a class="m" href="census/eddef1224.html">
+    1940/1950 ED descriptions (T1224)
+   </a>
+   <a class="m" href="census/codes.html">
+    1910-1950 Census Codes
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/ed2040.php');">
+    1920/1930/1940 ED Finder/Converter
+   </a>
+   <a class="m" href="census/arc1940-1950edmaps.html?year=1940">
+    1940 ED Maps
+   </a>
+   <a class="m" href="census/arc1940-1950edmaps.html?year=1950">
+    1950 ED Maps
+   </a>
+   <a class="m" href="census/tracts.html">
+    1940/1950 Census Tracts
+   </a>
+   <a class="m" href="census/1940-1950blocks.html">
+    1940/1950 Block Maps
+   </a>
+   <a class="m" href="census/nycphonebook.html">
+    1940 NYC Phonebooks
+   </a>
+   <a class="m" href="census/changes.html">
+    Changed Street Names
+   </a>
+   <hr/>
+   <a class="m" href="census/api.html">
+    API for 1940 ED FInder
+   </a>
+   <hr/>
+   <a class="m" href="census/reelframes.html">
+    1790-1940 Census Images
+   </a>
+   <a class="m" href="census/censusbrowser.html">
+    1790-1940 Census Browser
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/schedules.php');">
+    1790-1940 Census Descriptions
+   </a>
+   <a class="m" href="census/counties.html">
+    Determining Counties
+   </a>
+   <hr/>
+   <a class="m" href="census/ancestry.html">
+    Census Search by Name (ancestry)
+   </a>
+   <a class="m" href="census/freesearch.html">
+    Census Search by Name (free)
+   </a>
+   <hr/>
+   <a class="m" href="library.html">
+    Ancestrylibrary/Ancestryinstitute
+   </a>
+  </div>
+  <div class="mLabel" id="label14">
+   <a class="a" href="#phonetic">
+    Phonetic Matching
+   </a>
+  </div>
+  <div class="mBox" id="box14">
+   <a class="m" href="census/soundex.html">
+    Soundex and Phonetic Codes
+   </a>
+   <a class="m" href="dl/reversesoundex.html">
+    Reverse Soundex
+   </a>
+   <a class="m" href="hebrew/dmheb.html">
+    Hebrew Soundex
+   </a>
+   <a class="m" href="phonetics/phoneticlanguage.html">
+    Obtaining Language from Spelling
+   </a>
+   <a class="m" href="phoneticinfo.htm">
+    BMPM Source Code
+   </a>
+   <hr/>
+   <a class="m" href="phonetics/bmpm2.htm">
+    Phonetic Matching (descriptive)
+   </a>
+   <a class="m" href="phonetics/bmpm.htm">
+    Phonetic Matching (technical)
+   </a>
+  </div>
+  <div class="mLabel" id="label15">
+   <a class="a" href="#canadian">
+    Canada/UK Census
+   </a>
+  </div>
+  <div class="mBox" id="box15">
+   <a class="m" href="census/canada1911.html">
+    1851-1921 Canadian Census
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('census/canada1881.php');">
+    1881 Canadian Census
+   </a>
+   <a class="m" href="census/canada1901b.html">
+    1901 Canadian Census
+   </a>
+   <a class="m" href="census/uk.html">
+    1841-1911 British Census
+   </a>
+   <hr/>
+   <a class="m" href="library.html">
+    Ancestrylibrary/Ancestryinstitute
+   </a>
+  </div>
+  <div class="mLabel" id="label16">
+   <a class="a" href="#new">
+    New York Census
+   </a>
+  </div>
+  <div class="mBox" id="box16">
+   <a class="m" href="census/location.htm">
+    History of the Geography of NYC (paper)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('nyc/nyc.php');">
+    1890-1925 NY Census AD/ED Finder
+   </a>
+   <a class="m" href="nyc/viewer.html">
+    Viewing the Images (1905 to 1925)
+   </a>
+   <a class="m" href="nyc/viewer1892.html">
+    Viewing the Images (1892)
+   </a>
+   <a class="m" href="nyc/1905search.html">
+    Searching by Name Free (1890 to 1925)
+   </a>
+   <a class="m" href="nyc/ancestrysearch.html">
+    Searching by Name Pay (1915 to 1925)
+   </a>
+   <a class="m" href="brooklyn/brooklyn.html">
+    Brooklyn 1925 Name Index
+   </a>
+  </div>
+  <div class="mLabel" id="label17">
+   <a class="a" href="#births">
+    Vital Records
+   </a>
+  </div>
+  <div class="mBox" id="box17">
+   <a class="m" href="birthday/publicrec.html">
+    Ages, Related Persons, and Locations
+   </a>
+   <a class="m" href="birthday/privateeye.html">
+    Birthdays and Related Persons
+   </a>
+   <a class="m" href="birthday/zaba.html">
+    Ages and Addresses
+   </a>
+   <hr/>
+   <a class="m" href="ssdi/ssdi.html">
+    Social Security Death Records
+   </a>
+   <a class="m" href="ssn/ssn.html">
+    Social Security Numbers
+   </a>
+   <a class="m" href="ssn/cc.html">
+    Credit Card Numbers
+   </a>
+   <a class="m" href="dl/dl.html">
+    Driver's License Numbers
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('fhl/websitesunitedstates.html');">
+    LDS United States Records
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('fhl/websiteswestern.html');">
+    LDS Western Hemisphere Records
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('fhl/websiteseastern.html');">
+    LDS Eastern Hemisphere Records
+   </a>
+   <a class="m" href="footnote/footnote.html">
+    Footnote/Fold3 Naturalization Records
+   </a>
+   <hr/>
+   <a class="m" href="njvoters/njvoters.html">
+    New Jersey Voter Records (2007-2017
+   </a>
+   <a class="m" href="nysvoters/nysvoters.html">
+    New York State Voter Records (2002-2017
+   </a>
+   <a class="m" href="vital/naturalization.html">
+    New York Naturalization Records
+   </a>
+   <a class="m" href="prison/prison.html">
+    New York State Incarceration Records
+   </a>
+   <a class="m" href="vital/nyvital.html?type=birth">
+    New York City Birth Records (1846-1909)
+   </a>
+   <a class="m" href="vital/nybirth-igg.html">
+    New York City Birth Records (1879-1909)
+   </a>
+   <a class="m" href="vital/nybirth-anc.html?range=0">
+    New York City Birth Records (1878-1909)
+   </a>
+   <a class="m" href="vital/nybirth-anc.html?range=1">
+    New York City Birth Records (1910-1965)
+   </a>
+   <a class="m" href="vital/nyvital.html?type=marriage">
+    New York City Marriage Records (1829-1937)
+   </a>
+   <a class="m" href="vital/nymarriages-igg.html?index=groom">
+    New York City Groom Records (1864-1937)
+   </a>
+   <a class="m" href="vital/nymarriages-igg.html?index=bride">
+    New York City Bride Records (1866-1937)
+   </a>
+   <a class="m" href="vital/nymarriages-anc.html?range=0">
+    New York City Marriage Certificates (1866-1937)
+   </a>
+   <a class="m" href="vital/nymarriages-anc.html?range=1">
+    New York City Marriage Licences (1907-1995)
+   </a>
+   <a class="m" href="vital/nymarriages-rec.html">
+    New York City Marriage Licences (1950-1995)
+   </a>
+   <a class="m" href="vital/nymarriages-rec.html?rangeIndex=1">
+    New York City Marriage Licences (1996-2017)
+   </a>
+   <a class="m" href="vital/nyvital.html?type=death">
+    New York City Death Records (1795-1949)
+   </a>
+   <a class="m" href="vital/nydeath-igg.html">
+    New York City Death Records (1862-1948)
+   </a>
+   <a class="m" href="vital/nydeath-anc.html?range=0">
+    New York City Death Records (1862-1948)
+   </a>
+   <a class="m" href="vital/nydeath-anc.html?range=1">
+    New York City Death Records (1949-1965)
+   </a>
+   <a class="m" href="vital/filmnotes.html">
+    FHL numbers for New York City Records
+   </a>
+   <a class="m" href="http://bklyn-genealogy-info.stevemorse.org/index.html">
+    Bklyn Genealogy Info
+   </a>
+   <a class="m" href="vital/limarriages.html">
+    Long Island Marriage Index (1908-1935)
+   </a>
+   <a class="m" href="sjtilden/yearbooksearch.html">
+    Tilden HS Brooklyn Yearbooks (1931-2010)
+   </a>
+   <a class="m" href="http://www.museumoffamilyhistory.com/Jefferson/yearbooksearch.html">
+    Jefferson HS Bklyn Yearbooks (1927-1987)
+   </a>
+   <a class="m" href="census/nycphonebook.html">
+    1940 NYC Phonebooks
+   </a>
+   <hr/>
+   <a class="m" href="vital/cook.html">
+    Chicago Vital Records
+   </a>
+   <a class="m" href="vital/illdeath.html?years=pre">
+    Illinois Death Records (pre 1916)
+   </a>
+   <a class="m" href="vital/illdeath.html?years=post">
+    Illinois Death Records (1916-1950)
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('montreal/montreal2.html');">
+    Montreal City Directories
+   </a>
+   <a class="m" href="birthday/couples.html">
+    Locating Couples
+   </a>
+   <a class="m" href="phonebook/lookup.html">
+    Phonebook Lookups
+   </a>
+   <hr/>
+   <a class="m" href="relation/calculator.html">
+    Relationship Calculator
+   </a>
+   <a class="m" href="relation/ahnentafel.html">
+    Ahnentafel Calculator
+   </a>
+   <a class="m" href="birthday/elapsed.html">
+    Elapsed Time
+   </a>
+   <a class="m" href="grandfather/index.html">
+    Where's Grandpa
+   </a>
+  </div>
+  <div class="mLabel" id="label18">
+   <a class="a" href="#calendar">
+    Calendar, Maps, etc
+   </a>
+  </div>
+  <div class="mBox" id="box18">
+   <a class="m" href="jcal/jcal.html">
+    Jewish Calendar Conversions
+   </a>
+   <a class="m" href="jcal/muslim.html">
+    Muslim Calendar Conversions
+   </a>
+   <a class="m" href="jcal/french.html">
+    French Calendar Conversions
+   </a>
+   <a class="m" href="jcal/mayan.html">
+    Mayan Calendar Conversions
+   </a>
+   <a class="m" href="jcal/julian.html">
+    Julian Calendar Conversions
+   </a>
+   <a class="m" href="jcal/easter.html">
+    Easter Calculator
+   </a>
+   <hr/>
+   <a class="m" href="jcal/perpetual.html">
+    A Perpetual Calendar
+   </a>
+   <a class="m" href="jcal/whendid.html">
+    When did ... ?
+   </a>
+   <a class="m" href="birthday/elapsed.html">
+    Elapsed Time
+   </a>
+   <a class="m" href="jcal/sunrise.html">
+    Sunrise, Sunset
+   </a>
+   <hr/>
+   <a class="m" href="juliancalendar/julian.htm">
+    Julian Calendar Explained
+   </a>
+   <a class="m" href="hebrewcalendar/hebrewcalendar.htm">
+    Jewish Calendar Demystified
+   </a>
+   <a class="m" href="jcal/chanukah.html">
+    Chanukah and Thanksgiving
+   </a>
+   <a class="m" href="jcal/calendar.htm">
+    Printable Jewish Calendar
+   </a>
+   <a class="m" href="jcal/tombstone.html">
+    Tombstone Dates
+   </a>
+   <a class="m" href="jcal/molad.htm">
+    Molads and Torah Portions
+   </a>
+   <a class="m" href="jcal/template.html">
+    Template (Jewish date)
+   </a>
+   <a class="m" href="jcal/sun-template.html">
+    Template (sunrise/sunset)
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('jcal/latlon.php');">
+    Latitude/Longitude/Altitude
+   </a>
+   <a class="m" href="jcal/latlonbatch.html?direction=forward">
+    Batch Forward Geocoder
+   </a>
+   <a class="m" href="jcal/latlonbatch.html?direction=reverse">
+    Batch Reverse Geocoder
+   </a>
+   <a class="m" href="jcal/latlonbatch.html?direction=altitude">
+    Batch Altitudes
+   </a>
+   <a class="m" href="jcal/dms.html">
+    Deg/Min/Sec
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('nearest/distance.php');">
+    Distance between Lat/Lon
+   </a>
+   <a class="m" href="nearest/distancebatch.html">
+    Batch Distances
+   </a>
+   <a class="m" href="nearest/nearest.html?database=NARA Locations">
+    Where's NARA
+   </a>
+   <hr/>
+   <a class="m" href="jcal/map.html">
+    Maps
+   </a>
+   <a class="m" href="jcal/zip.html">
+    US Zip Codes
+   </a>
+   <a class="m" href="jcal/fsa.html">
+    Canadian Postal Codes
+   </a>
+   <a class="m" href="jcal/areacodes.html">
+    US/Can Phone Area Codes
+   </a>
+   <a class="m" href="intphone/codes.html">
+    International Phone Codes
+   </a>
+   <a class="m" href="jcal/countries.html">
+    Country Codes
+   </a>
+  </div>
+  <div class="mLabel" id="label19">
+   <a class="a" href="#dealing">
+    Foreign Alphabets
+   </a>
+  </div>
+  <div class="mBox" id="box19">
+   <a class="m" href="hebrew/trans.html?mode=hebrew">
+    Hebrew Translation
+   </a>
+   <a class="m" href="hebrew/trans.html?mode=yiddish">
+    Yiddish Translation
+   </a>
+   <a class="m" href="hebrew/eng2heb.html">
+    English to Hebrew Transliteration
+   </a>
+   <a class="m" href="hebrew/heb2eng.html">
+    Hebrew to English Transliteration
+   </a>
+   <a class="m" href="hebrew/printcurs.html?font=ashkenazi">
+    Hebrew Cursive to Print
+   </a>
+   <a class="m" href="hebrew/printcurs.html?font=print">
+    Hebrew Print to Cursive
+   </a>
+   <a class="m" href="hebrew/bezeq.html">
+    Israeli Phone Directory (English)
+   </a>
+   <a class="m" href="ketubah/ketubah.html">
+    Generating a Ketubah
+   </a>
+   <a class="m" href="ketubah/description.htm">
+    Jewish Marriage Contract (Ketubah)
+   </a>
+   <a class="m" href="hebrew/izkor.html">
+    Israeli's Fallen (English)
+   </a>
+   <a class="m" href="hebrew/kadisha.html">
+    Chevra Kadisha (English)
+   </a>
+   <a class="m" href="hebrew/hebgoogle.html">
+    Hebrew Google
+   </a>
+   <a class="m" href="hebrew/dmheb.html">
+    Hebrew Soundex
+   </a>
+   <hr/>
+   <a class="m" href="russian/eng2rus.html">
+    English to Russian Transliteration
+   </a>
+   <a class="m" href="russian/rus2eng.html">
+    Russian to English Transliteration
+   </a>
+   <a class="m" href="russian/cyrprintcurs.html?font=cursive">
+    Russian Cursive to Print
+   </a>
+   <a class="m" href="russian/cyrprintcurs.html?font=print">
+    Russian Print to Cursive
+   </a>
+   <a class="m" href="russian/phonebook.html">
+    Russian Phone Directory (English)
+   </a>
+   <a class="m" href="russian/ussrmil.html">
+    Russia's Fallen (English)
+   </a>
+   <a class="m" href="russian/rusgoogle.html">
+    Russian Google
+   </a>
+   <hr/>
+   <a class="m" href="script/printcurs.html">
+    English Print to Cursive
+   </a>
+   <a class="m" href="script/printcurs.html?font=cursive">
+    English Cursive to Print
+   </a>
+   <a class="m" href="greek/eng2grk.html">
+    English to Greek Transliteration
+   </a>
+   <a class="m" href="greek/grk2eng.html">
+    Greek to English Transliteration
+   </a>
+   <a class="m" href="arabic/eng2ara.html">
+    English to Arabic Transliteration
+   </a>
+   <a class="m" href="arabic/ara2eng.html">
+    Arabic to English Transliteration
+   </a>
+   <a class="m" href="japanese/eng2kan.html">
+    English to Japanese Transliteration
+   </a>
+   <a class="m" href="japanese/kan2eng.html">
+    Japanese to English Transliteration
+   </a>
+   <a class="m" href="chinese/chinese.html">
+    Chinese/English Transliteration
+   </a>
+   <a class="m" href="german/germanprintcurs.html">
+    Old German Cursive/Print
+   </a>
+   <hr/>
+   <a class="m" href="hebrew/utf8.html">
+    Unicode and UTF-8
+   </a>
+   <a class="m" href="hebrew/virtual.html">
+    Virtual Keyboard (diacriticals)
+   </a>
+   <a class="m" href="hebrew/keyboardgenerator.html">
+    Generating a Virtual Keyboard
+   </a>
+  </div>
+  <div class="mLabel" id="label20">
+   <a class="a" href="#holocaust">
+    Holoc &amp; East. Europe
+   </a>
+  </div>
+  <div class="mBox" id="box20">
+   <a class="m" href="bereza-and-antopol/index.html">
+    Bereza and Antopol
+   </a>
+   <a class="m" href="dachau/auschwitz.html">
+    Auschwitz Prisoner Photos
+   </a>
+   <a class="m" href="dachau/dachau.html">
+    Dachau Concentration Camp
+   </a>
+   <a class="m" href="jewishroof/jewishroof.html">
+    German Jewish Roof Card Collection
+   </a>
+   <a class="m" href="germanjews/germanjews.html">
+    German Jews 1933
+   </a>
+   <a class="m" href="siberia/siberia.html">
+    Siberian Refugee Camps
+   </a>
+   <a class="m" href="russian/gulag.html">
+    Soviet Gulags
+   </a>
+   <a class="m" href="nkvd/nkvd.html">
+    Stalin's Secret Police
+   </a>
+   <a class="m" href="lodz/lodz.html">
+    Lodz Cemetery
+   </a>
+   <a class="m" href="russian/phonebook.html">
+    Russian Phone Directory (English)
+   </a>
+   <a class="m" href="russian/ussrmil.html">
+    Russia's Fallen (English)
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('phonetics/beider.php');">
+    Surname Reference Books
+   </a>
+  </div>
+  <div class="mLabel" id="label21">
+   <a class="a" href="#genetic">
+    Genetics (DNA)
+   </a>
+  </div>
+  <div class="mBox" id="box21">
+   <a class="m" href="genetealogy/dna.htm">
+    From DNA to Genetic Genealogy
+   </a>
+   <a class="m" href="genetealogy/beyond.htm">
+    Beyond Y: Autosomes Exposed
+   </a>
+   <hr/>
+   <a class="m" href="dna/ftdna.html">
+    FamilyTreeDNA Markers
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('dna/hapest.php');">
+    Haplogroups
+   </a>
+   <a class="m" href="dna/chart.html">
+    Group Charts
+   </a>
+   <a class="m" href="dna/compare.html">
+    Distances
+   </a>
+   <a class="m" href="dna/migration.html">
+    Migration Details
+   </a>
+   <a class="m" href="dna/migrationmap.html">
+    Migration Map
+   </a>
+   <hr/>
+   <a class="m" href="dna/cartoon.html">
+    Cartoon Guide
+   </a>
+  </div>
+  <div class="mLabel" id="label22">
+   <a class="a" href="#creating">
+    Create Search Application
+   </a>
+  </div>
+  <div class="mBox" id="box22">
+   <a class="m" href="create/create.html">
+    Create your own Search Application
+   </a>
+   <a class="m" href="viewer/createviewer.html">
+    Create your own Image Viewer
+   </a>
+   <hr/>
+   <a class="m" href="create/presidents-js.html">
+    Demo using javascript search engine
+   </a>
+   <a class="m" href="create/presidents-php.html">
+    Demo using PHP search engine
+   </a>
+   <a class="m" href="create/presidents-perl.html">
+    Demo using Perl search engine
+   </a>
+   <a class="m" href="create/presidents-sql.html">
+    Demo using SQL search engine
+   </a>
+   <a class="m" href="create/hebrew.html">
+    Demo using Hebrew Characters
+   </a>
+   <a class="m" href="create/United%20States%20Presidents.xls">
+    Demo Database
+   </a>
+   <hr/>
+   <a class="m" href="create/deeplink.htm">
+    Blocking Deep Linking
+   </a>
+  </div>
+  <div class="mLabel" id="label23">
+   <a class="a" href="#publications">
+    Publications
+   </a>
+  </div>
+  <div class="mBox" id="box23">
+   <a class="m" href="onestep/onestep3.htm">
+    One-Step Portal
+   </a>
+   <a class="m" href="onestep/german.doc">
+    One-Step Portal (German)
+   </a>
+   <a class="m" href="onestep/danish.pdf">
+    One-Step Portal (Danish)
+   </a>
+   <a class="m" href="census/1940census.htm">
+    Getting Ready for the 1940 Census
+   </a>
+   <a class="m" href="deeplink/deeplink2.htm">
+    Deep Linking &amp; Deeper Linking
+   </a>
+   <a class="m" href="juliancalendar/julian.htm">
+    Julian Calendar Explained
+   </a>
+   <a class="m" href="hebrewcalendar/hebrewcalendar.htm">
+    Jewish Calendar Demystified
+   </a>
+   <a class="m" href="ketubah/description.htm">
+    Jewish Marriage Contract (Ketubah)
+   </a>
+   <a class="m" href="genetealogy/dna.htm">
+    From DNA to Genetic Genealogy
+   </a>
+   <a class="m" href="genetealogy/beyond.htm">
+    Beyond Y: Autosomes Exposed
+   </a>
+   <a class="m" href="phonetics/bmpm2.htm">
+    Phonetic Matching (descriptive)
+   </a>
+   <a class="m" href="phonetics/bmpm.htm">
+    Phonetic Matching (technical)
+   </a>
+   <a class="m" href="presidents/presidents.htm">
+    Presidents and their Ancestors
+   </a>
+   <hr/>
+   <a class="m" href="census/rule72.html">
+    Census 72-Year Rule
+   </a>
+   <a class="m" href="census/location.htm">
+    History of the Geography of NYC
+   </a>
+   <a class="m" href="ellis/EllisMythNames.htm">
+    Ellis Island Name Change Myth
+   </a>
+   <hr/>
+   <a class="m" href="contour/index.html">
+    Contour Maps
+   </a>
+   <a class="m" href="8086/index.html">
+    8086 Primer
+   </a>
+   <a class="m" href="8086history/8086history.doc">
+    Intel Microprocessors: 8008-8086
+   </a>
+   <a class="m" href="beginning.htm">
+    In the Beginning
+   </a>
+   <a class="m" href="https://www.computer.org/csdl/mags/co/2017/04/mco2017040008.pdf">
+    Intel 8086 Chip
+   </a>
+  </div>
+  <div class="mLabel" id="label24">
+   <a class="a" href="#awards">
+    Awards
+   </a>
+  </div>
+  <div class="mBox" id="box24">
+   <a class="m" href="award.html">
+    Outstanding Contribution Award, IAJGS 2003
+   </a>
+   <a class="m" href="lifetime.html">
+    Lifetime Achievement Award, IAJGS 2006
+   </a>
+   <a class="m" href="merit.html">
+    Award of Merit, NGS 2007
+   </a>
+   <a class="m" href="apg.html">
+    Excellence Award, APGQ 2007
+   </a>
+   <a class="m" href="pol.html">
+    Dziekuje (Thank You) Award, UPGS 2008
+   </a>
+   <a class="m" href="pol2.html">
+    Wigilia Award, PGSA 2008
+   </a>
+   <a class="m" href="http://www.tamurajones.net/GeneAwards2013.xhtml">
+    Best New Genealogy Org., Gene Awards 2013
+   </a>
+   <a class="m" href="101best.html">
+    101 Best Websites, Family Tree Mag 2005-2017
+   </a>
+   <a class="m" href="git.html">
+    Top 100 Websites, GenealogyInTime Mag 2012-2016
+   </a>
+  </div>
+  <div class="mLabel" id="label25">
+   <a class="a" href="#biographies">
+    Biographies/Interviews
+   </a>
+  </div>
+  <div class="mBox" id="box25">
+   <a class="m" href="donnamurrayallen.html">
+    Navigate the Net with an expert by Donna Allen
+   </a>
+   <a class="m" href="mensch.html">
+    Mensch by Megan Smolenyak
+   </a>
+   <a class="m" href="mcode.html">
+    Morse's Code by Barbara Krasner-Khait
+   </a>
+   <a class="m" href="interview.html">
+    Interview by Dick Eastman
+   </a>
+   <a class="m" href="http://www.pcworld.com/article/146917/article.html">
+    Father of the 8086 by Benj Edwards
+   </a>
+   <a class="m" href="https://web.archive.org/web/20170811182738/https://www.pcworld.com/article/146957/components/article.html">
+    Birth of a Standard (30 years) by Benj Edwards
+   </a>
+   <a class="m" href="melody.html">
+    Making Search Simple by Melody Amsel-Arieli
+   </a>
+   <a class="m" href="https://web.archive.org/web/20100214075655/http://www.todaysengineer.org/2010/Feb/history.asp">
+    EE &amp; Popular Culture by Michael Geselowitz
+   </a>
+   <a class="m" href="frustration.html">
+    Far From Frustration by Janet Bernice Jeys
+   </a>
+   <a class="m" href="misc/techniche2011.html">
+    Opening Remarks, Techniche 2011, Guwahati, India
+   </a>
+   <a class="m" href="http://www.veoh.com/watch/v25050538qeaR4TaW">
+    Getting Ready for 1940 Census (Sack &amp; Sachs)
+   </a>
+   <a class="m" href="http://www.veoh.com/watch/v26456992pykDpJdf">
+    One Step Webpages (Sack &amp; Sachs)
+   </a>
+   <a class="m" href="http://www.kqed.org/a/kqednews/RN201204041730/a">
+    San Francisco Man's Website (KQED Radio)
+   </a>
+   <a class="m" href="http://www.nbcbayarea.com/video/#!/news/local/Steve-Morse-Leaves-His-Mark--Twice-/147850195">
+    Steve Morse Leaves His Mark.  Twice (Garvin Thomas)
+   </a>
+   <a class="m" href="http://www.politico.com/magazine/story/2013/11/who-needs-healthcaregov-99916.html">
+    Who Needs HealthCare.gov (Ezekial Emanuel)
+   </a>
+   <a class="m" href="familytree2014.html">
+    Five Questions by Sunny Jane Morton
+   </a>
+   <a class="m" href="jamboree2015interview.html">
+    Interview by Sheri McNeil Savory
+   </a>
+   <a class="m" href="https://www.pcworld.com/article/146957/components/article.html">
+    Birth of a Standard (40 years) by Benj Edwards
+   </a>
+   <a class="m" href="https://www.extremetech.com/computing/270926-happy-40th-anniversary-to-the-original-8086-and-the-x86-architecture">
+    Happy 40th Anniversary 8086 by Joel Hruska
+   </a>
+  </div>
+  <div class="mLabel" id="label26">
+   <a class="a" href="#miscellaneous">
+    Miscellaneous
+   </a>
+  </div>
+  <div class="mBox" id="box26">
+   <a class="m" href="8086/index.html">
+    8086 Primer
+   </a>
+   <a class="m" href="8086history/8086history.doc">
+    Intel Microprocessors: 8008-8086
+   </a>
+   <a class="m" href="beginning.htm">
+    In the Beginning
+   </a>
+   <a class="m" href="https://www.computer.org/csdl/mags/co/2017/04/mco2017040008.pdf">
+    Intel 8086 Chip
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ebay/silently.php');">
+    Last-Minute Bidding
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ebay/bidhistory.php');">
+    Bid History
+   </a>
+   <a class="m" href="bookmarks/index.html">
+    Universal Bookmarks
+   </a>
+   <a class="m" href="tivo/tivo.html">
+    TIVO
+   </a>
+   <a class="m" href="telephones/telephones.html">
+    Western Electric Telephones
+   </a>
+   <a class="m" href="obamacare/obamacare.html">
+    ObamaCare
+   </a>
+   <a class="m" href="taxplan/taxplan.html">
+    Applying Tax Brackets in One Step
+   </a>
+   <hr/>
+   <a class="m" href="misc/wc.html">
+    Counting Words and Chars
+   </a>
+   <a class="m" href="census/genericimagefetcher.html">
+    Fetching Multiple Images
+   </a>
+   <a class="m" href="google/googledate.html">
+    Googling by Date
+   </a>
+   <a class="m" href="google/googleplex.html">
+    Googling Multiple Domains
+   </a>
+   <a class="m" href="misc/flickr.html">
+    Flickr Pictures
+   </a>
+   <hr/>
+   <a class="m" href="javascript:window.location=SteveMorseURL('ip.php');">
+    Finding your IP Address
+   </a>
+   <a class="m" href="blockers.html">
+    Popup/Spyware Blockers
+   </a>
+   <a class="m" href="abstracts.html">
+    Lectures
+   </a>
+   <a class="m" href="archives.html">
+    One-Step Archives
+   </a>
+  </div>
+  <script>
+   if (!IsFileProtocol()) {
+        StartHiding();
+      }
+  </script>
+  <div class="mLabel" id="label27">
+   <a class="a" href="#private">
+    Private
+   </a>
+  </div>
+  <div class="mBox" id="box27">
+   <a class="m" href="family.html">
+    Family &amp; Friends
+   </a>
+   <a class="m" href="manuals.html">
+    Shop Manuals (Toyota, Dell)
+   </a>
+   <a class="m" href="server.html">
+    Server Management
+   </a>
+   <hr/>
+   <a class="m" href="eidb.html">
+    EIDB Utilities (caching, etc)
+   </a>
+   <a class="m" href="census/projecttools.html">
+    Census Utilities
+   </a>
+   <a class="m" href="iajgs.html">
+    IAJGS Utilities (awards, fam-find)
+   </a>
+   <a class="m" href="javascript:window.location=phonetic;">
+    Phonetics Project
+   </a>
+   <a class="m" href="ancestry.html">
+    Ancestry Utilities
+   </a>
+   <hr/>
+   <a class="m" href="diamond.html">
+    Stanley Diamond
+   </a>
+   <a class="m" href="swiggum/swiggum.html">
+    Sue Swiggum
+   </a>
+   <a class="m" href="lasky.html">
+    Steve Lasky
+   </a>
+   <a class="m" href="weiner.html">
+    Miriam Weiner
+   </a>
+   <hr/>
+   <a class="m" href="cartoon/viewer.html">
+    Cartoon History of Universe
+   </a>
+   <a class="m" href="directories/dirs.html">
+    Eastern European Directories
+   </a>
+   <a class="m" href="survivors/local.htm">
+    Holocaust Survivors
+   </a>
+   <a class="m" href="botosani/index.html">
+    Botosani Area, Romania
+   </a>
+   <a class="m" href="phonebook/phonebook.html">
+    Phonebook Lookups
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL('jcal/latlon.php'+latlonquery);">
+    Latitude/Longitude/Altitude
+   </a>
+   <a class="m" href="dna/distance.html">
+    DNA Distance
+   </a>
+   <a class="m" href="javascript:window.location=SteveMorseURL(spam);">
+    Spamming
+   </a>
+   <a class="m" href="misc/posting.html">
+    Post Method
+   </a>
+   <a class="m" href="rename.html?number=1">
+    Rename Script
+   </a>
+   <a class="m" href="masood/administration/controlpanel.html">
+    REAP project
+   </a>
+   <a class="m" href="javascript:window.location = southwest">
+    Southwest Checkin
+   </a>
+   <a class="m" href="sjtilden/classmates.html">
+    Classmate Lists
+   </a>
+   <a class="m" href="jgsny.html">
+    JGSNY Utilities
+   </a>
+   <a class="m" href="misc/iit.html">
+    IIT Interview
+   </a>
+  </div>
+  <script>
+   if (!IsFileProtocol()) {
+        EndHiding();
+      }
+  </script>
+  <!-- end of mouse-over menu -->
+  <center>
+   <table>
+    <tr>
+     <td>
+      <img height="280" src="transparent.gif" width="150"/>
+     </td>
+     <td>
+      <center>
+       <img height="24" src="favicon.jpg" width="24"/>
+       <font size="5">
+        <b>
+         One-Step Webpages by
+         <script type="text/javascript">
+          emailhref();
+         </script>
+         Stephen P. Morse
+         <script type="text/javascript">
+          document.write("<\/a>");
+         </script>
+         <!-- google_ad_section_start(weight=ignore) -->
+         <!-- google_ad_section_end -->
+        </b>
+       </font>
+       <br/>
+       <br/>
+       <table>
+        <tr>
+         <td>
+         </td>
+         <td>
+          This site contains tools for finding immigration records, census records,
+      vital records, and for dealing with calendars, maps, foreign alphabets,
+      and numerous other applications.  Some of these tools fetch data from other websites
+      but do so in more versatile ways than the search tools provided on those websites.
+         </td>
+        </tr>
+       </table>
+       <br/>
+       <font size="+1">
+        <b>
+         <a href="abstracts.html#schedule">
+          Public Appearances
+         </a>
+         <a href="abstracts.html#lectures">
+          List of Lectures
+         </a>
+         <br/>
+         <br/>
+         <a href="onestep/onestep3.htm">
+          About this Website and how to use it
+         </a>
+         <br/>
+        </b>
+       </font>
+       <!--
+        VOLUNTEERS NEEDED click <a href="ellis/volunteer.htm"><font color="blue">here</font></a> for details
+-->
+      </center>
+      <center>
+       <!--
+      <font size="5" color="red">
+        The servers at jewishgen.org have been shut down due to Hurricane Rita<br>
+        Therefore the blue and gray Ellis Island search tools are currently not working<br>
+      </font>
+-->
+      </center>
+      <br/>
+      <center>
+       <table>
+        <tr>
+         <td>
+          <!-- start of who-do-you-think-you-are banner -->
+          <!--
+<a href="http://www.dpbolvw.net/click-2370638-10864061" target="_blank">
+<img src="http://www.lduhtrp.net/image-2370638-10864061" width="180" height="150" alt="Who Do You Think You Are Season 2 Sweepstakes " border="0"/></a>
+</td>
+<td>&nbsp;&nbsp;</td>
+-->
+          <!-- end of who-do-you-think-you-are banner -->
+         </td>
+         <td>
+          <!-- start of ancestry banner -->
+          <center>
+           <script>
+            function FixAncestry() {
+        var txt = document.ancestry.select[document.ancestry.select.selectedIndex].text;
+        var val = document.ancestry.select[document.ancestry.select.selectedIndex].value;
+        if (txt == "Any" || txt == "---" || txt == "INTL") {
+          document.ancestry.gs1co.value = "1,All Countries";
+          document.ancestry.gs1pl.value = "1, "
+        } else if (txt == "USA") {
+          document.ancestry.gs1co.value = "2,USA";
+          document.ancestry.gs1pl.value = "1,All States";
+        } else if (txt == "CAN") {
+          document.ancestry.gs1co.value = "3243,Canada";
+          document.ancestry.gs1pl.value = "1,All Provinces";
+        } else if (val.substr(0,3) == "500" || val.substr(0,3) == "501") {
+          document.ancestry.gs1co.value = "3243,Canada";
+          document.ancestry.gs1pl.value = val;
+        } else {
+          document.ancestry.gs1co.value = "2,USA";
+          document.ancestry.gs1pl.value = val;
+        }
+      }
+           </script>
+           <form action="https://www.dpbolvw.net/interactive" name="ancestry" xtarget="ancestrysearch">
+            <input name="gs1co" type="hidden" value="1,All Countries"/>
+            <input name="gs1pl" type="hidden" value="1, "/>
+            <input name="t" type="hidden" value="9915"/>
+            <input name="rank" type="hidden" value="0"/>
+            <input name="pcc" type="hidden" value="2"/>
+            <input name="gss" type="hidden" value="affiliate"/>
+            <input name="prox" type="hidden" value="1"/>
+            <input name="gl" type="hidden" value="allgs"/>
+            <input name="srchb" type="hidden" value="r"/>
+            <table border="0" cellpadding="0" cellspacing="0" style="background:url(ancestry_468_60_search.jpg) no-repeat; width:468px; height:60px;">
+             <tr>
+              <td style="padding-top:18px; padding-left:8px; width:98px;font-family:'Verdana, Arial, Trebuchet MS'; font-size:12px; color:#685f4c;" valign="top">
+               <input name="gsfn" size="10"/>
+               <br/>
+               <font style="font-family:'Verdana, Arial, Trebuchet MS'; font-size:12px; color:#685f4c;">
+                FIRST NAME
+               </font>
+              </td>
+              <td style="padding-top:18px; width:98px;font-family:'Verdana, Arial, Trebuchet MS'; font-size:12px; color:#685f4c;" valign="top">
+               <input name="gsln" size="10"/>
+               <br/>
+               <font style="font-family:'Verdana, Arial, Trebuchet MS'; font-size:12px; color:#685f4c;">
+                LAST NAME
+               </font>
+              </td>
+              <td arial="" color:="" font-family:="" font-size:12px="" ms="" style="padding-top:16px; width:70px;" trebuchet="">
+               <select name="select" onchange="FixAncestry();">
+                <option value="2,Any Locality">
+                 Any
+                </option>
+                <option value="">
+                 USA
+                </option>
+                <option value="3,Alabama">
+                 AL
+                </option>
+                <option value="4,Alaska">
+                 AK
+                </option>
+                <option value="5,Arizona">
+                 AZ
+                </option>
+                <option value="6,Arkansas">
+                 AR
+                </option>
+                <option value="7,California">
+                 CA
+                </option>
+                <option value="8,Colorado">
+                 CO
+                </option>
+                <option value="9,Connecticut">
+                 CT
+                </option>
+                <option value="10,Delaware">
+                 DE
+                </option>
+                <option value="11,District of Columbia">
+                 DC
+                </option>
+                <option value="12,Florida">
+                 FL
+                </option>
+                <option value="13,Georgia">
+                 GA
+                </option>
+                <option value="14,Hawaii">
+                 HI
+                </option>
+                <option value="15,Idaho">
+                 ID
+                </option>
+                <option value="16,Illinois">
+                 IL
+                </option>
+                <option value="17,Indiana">
+                 IN
+                </option>
+                <option value="18,Iowa">
+                 IA
+                </option>
+                <option value="19,Kansas">
+                 KS
+                </option>
+                <option value="20,Kentucky">
+                 KY
+                </option>
+                <option value="21,Louisiana">
+                 LA
+                </option>
+                <option value="22,Maine">
+                 ME
+                </option>
+                <option value="23,Maryland">
+                 MD
+                </option>
+                <option value="24,Massachusetts">
+                 MA
+                </option>
+                <option value="25,Michigan">
+                 MI
+                </option>
+                <option value="26,Minnesota">
+                 MN
+                </option>
+                <option value="27,Mississippi">
+                 MS
+                </option>
+                <option value="28,Missouri">
+                 MO
+                </option>
+                <option value="29,Montana">
+                 MT
+                </option>
+                <option value="30,Nebraska">
+                 NE
+                </option>
+                <option value="31,Nevada">
+                 NV
+                </option>
+                <option value="32,New Hampshire">
+                 NH
+                </option>
+                <option value="33,New Jersey">
+                 NJ
+                </option>
+                <option value="34,New Mexico">
+                 NM
+                </option>
+                <option value="35,New York">
+                 NY
+                </option>
+                <option value="36,North Carolina">
+                 NC
+                </option>
+                <option value="37,North Dakota">
+                 ND
+                </option>
+                <option value="38,Ohio">
+                 OH
+                </option>
+                <option value="39,Oklahoma">
+                 OK
+                </option>
+                <option value="40,Oregon">
+                 OR
+                </option>
+                <option value="41,Pennsylvania">
+                 PA
+                </option>
+                <option value="42,Rhode Island">
+                 RI
+                </option>
+                <option value="43,South Carolina">
+                 SC
+                </option>
+                <option value="44,South Dakota">
+                 SD
+                </option>
+                <option value="45,Tennessee">
+                 TN
+                </option>
+                <option value="46,Texas">
+                 TX
+                </option>
+                <option value="47,Utah">
+                 UT
+                </option>
+                <option value="48,Vermont">
+                 VT
+                </option>
+                <option value="49,Virginia">
+                 VA
+                </option>
+                <option value="50,Washington">
+                 WA
+                </option>
+                <option value="51,West Virginia">
+                 WV
+                </option>
+                <option value="52,Wisconsin">
+                 WI
+                </option>
+                <option value="53,Wyoming">
+                 WY
+                </option>
+                <option value="2,Any Locality">
+                 ---
+                </option>
+                <option value="">
+                 CAN
+                </option>
+                <option value="5001,Alberta">
+                 AB
+                </option>
+                <option value="5002,British Columbia">
+                 BC
+                </option>
+                <option value="5003,Manitoba">
+                 MB
+                </option>
+                <option value="5004,New Brunswick">
+                 NB
+                </option>
+                <option value="5006,Newfoundland and Labrador">
+                 NF
+                </option>
+                <option value="5011,Northwest Territories">
+                 NT
+                </option>
+                <option value="5005,Nova Scotia">
+                 NS
+                </option>
+                <option value="5012,Nunavut">
+                 TT
+                </option>
+                <option value="5007,Ontario">
+                 ON
+                </option>
+                <option value="5008,Prince Edward Islands">
+                 PE
+                </option>
+                <option value="5009,Quebec">
+                 QC
+                </option>
+                <option value="5010,Saskatchewan">
+                 SK
+                </option>
+                <option value="5013,Yukon">
+                 YT
+                </option>
+                <option value="2,Any Locality">
+                 ---
+                </option>
+                <option value="2,Any Locality">
+                 INTL
+                </option>
+                <!--
+                <option value="3256,Non-US">INTL</option>
+-->
+               </select>
+               <br/>
+               <font style="font-family:'Trebuchet MS, Verdana, Arial'; font-size:12px; color:#685f4c;">
+                LOCALITY
+               </font>
+              </td>
+              <td style="padding-top:20px;" valign="top" width="200">
+               <img height="20" onclick='OpenWindow("", document.ancestry, "ancestrysearch");' src="search_sm.gif" width="88"/>
+               <!--
+              <input type="button" value="" name="xsubmit"
+                     style="background:url(http://c.mfcreative.com/Affiliate/widgets/search_sm.gif); width:88px; height:24px; cursor:pointer;"
+                     onclick='OpenWindow("", document.ancestry, "ancestrysearch");'>
+-->
+               <br/>
+               <img border="0" height="1" src="https://www.awltovhc.com/image-2370638-10469564" width="1"/>
+              </td>
+             </tr>
+            </table>
+            <input name="aid" type="hidden" value="10469564"/>
+            <input name="pid" type="hidden" value="2370638"/>
+            <input name="url" type="hidden" value="https://www.ancestry.com/rd/cjus.aspx"/>
+           </form>
+          </center>
+          <!-- end of ancestry banner -->
+          <br/>
+          <!-- start of archives banner -->
+          <!--
+<center>
+    <div style="position: relative; padding: 0; margin: 0; font-family: Arial, Helvetica, sans-serif; color: black; font-size: 11px;  width: 468px; height: 60px; background: white url(https://c-j.s3.amazonaws.com/archives/searchNowWhite468x60.gif) no-repeat top left;">
+        <h4 style="font-family: Georgia, 'Times New Roman', Times, serif; color: #2D7FB7; font-size: 15px; margin: 0; padding: 1px 0 2px 5px;">Find All Your Ancestors At Archives.com!</h4>
+        
+<form id="form_public" style="padding: 0; margin: 0;" name="ArchivesSearch"
+      action="http://www.dpbolvw.net/interactive" method="get" target="_blank"
+      onsubmit="return handle_submit(this)">
+            <input name="recordType" type="hidden" value="5"/>
+            
+            <ul style="float: left; list-style-type: none; margin: 0; padding: 0;">
+                <li style="float: left; margin: 0; padding: 0 0 0 5px;">
+                    <label style="display: block; padding: 0; margin: 0; ">First Name</label>
+                    <input name="firstName" class="form_input" id="name_f" size="14" type="text" style="font-family: Arial, Helvetica, sans-serif; color: black; font-size: 11px; padding: 0; margin: 0; " />
+                </li>
+                <li style="float: left; margin: 0; padding: 0 0 0 15px;">
+                    <label style="display: block; padding: 0; margin: 0;">Last Name</label>
+                    <input name="lastName" class="form_input" id="name_l" size="14" type="text" style="font-family: Arial, Helvetica, sans-serif; color: black; font-size: 11px; padding: 0; margin: 0; " />
+                </li>
+                <li style="float: left; margin: 0; padding: 0 15px 0 15px;">
+                    <label style="display: block; padding: 0; margin: 0;">State</label>
+                    <input name="state" id="state_field" type="hidden" />
+                                <select name="location" id="state" style="font-family: Arial, Helvetica, sans-serif; color: black; font-size: 11px; padding: 0; margin: 0;">
+                                    <option selected="selected" value="US">Nationwide</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DC">Washington, DC</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NY">New York</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                </li>
+            </ul>
+           <div style="height: 22px; float: left; padding: 0px; margin: 12px 0 0 0; background: url(https://c-j.s3.amazonaws.com/archives/acxSearch78x22.gif) no-repeat top left; cursor: pointer;">
+            	<input id="acxSubmit" value="Search Now »" type="submit" style="height: 22px; width: 105px; margin: 0 0 0 3px; padding: 0 7px 3px 3px; border: none; outline: none; background: transparent url(https://c-j.s3.amazonaws.com/archives/acxSearch78x22stretch.gif) no-repeat top right; color: white; font-weight: bold; cursor: pointer;" />
+            </div>
+            <input name="_act" value="step2AS" type="hidden" />
+            
+        
+<input type="hidden" name="aid" value="10776947"/>
+<input type="hidden" name="pid" value="5558629"/>
+<input type="hidden" name="url" value="http://www.archives.com/ga.aspx"/>
+<input type="hidden" name="aff" value="30"/>
+<input type="hidden" name="tid" value="10776947-5558629-"/>
+<input type="hidden" name="utm_campaign" value="10776947"/>
+<input type="hidden" name="utm_content" value="5558629"/>
+<input type="hidden" name="utm_medium" value="affiliates"/>
+<input type="hidden" name="utm_source" value="CJ.com"/>
+</form>
+    </div>
+
+</center>
+-->
+          <!-- end of archives banner -->
+          <!-- start of footnote banner -->
+          <!--
+<br>
+<center>
+<iframe src="http://go.fold3.com/ads/af-search.php?states=1&design=banner2&vs=1&xid=1127&aid=10934574&pid=5558629" height="60" width="468" frameborder="0" scrolling="no">
+  <a target="_blank"
+     href="http://www.tkqlhce.com/click-5558629-10934574?url=http%3A%2F%2Fgo.fold3.com%2Fresults.php%3Fvs%3D3%26links%3D0%26xid%3D1127">
+    Search original documents on Fold3
+  </a>
+</iframe>
+<img src="http://www.ftjcfx.com/image-5558629-10934574" width="1" height="1" border="0"/>
+</center>
+-->
+          <!-- end of footnote banner -->
+         </td>
+        </tr>
+       </table>
+       <!-- start of google ads -->
+       <!--
+<script type="text/javascript">
+google_ad_client = "pub-1411646403124801";
+/* 468x60, created 2/22/08 */
+google_ad_slot = "4954048223";
+google_ad_width = 468;
+google_ad_height = 60;
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<br>
+-->
+       <!-- end of google ads -->
+       <!--
+<script>
+if (navigator.appName != "Microsoft Internet Explorer") {
+  document.write("<br><br>");
+}
+</script>
+-->
+      </center>
+      <!-- start of Obamacare announcement-->
+      <!--
+<br><br>
+  <center>
+    <b>
+      <font size="5">
+        New: <a href="obamacare/obamacare.html">Viewing ObamaCare-Compliant Healthplans in One Step</a>
+      </font>
+      <br>
+      <font size="4">
+        (Affordable Care Act)
+      </font>
+    </b>
+  </center>
+-->
+      <!-- end of Obamacare announcement-->
+     </td>
+    </tr>
+   </table>
+   <br/>
+   <br/>
+  </center>
+  <script>
+   if (GetParameter("oldformat") == "") {
+        ShowPages();
+      }
+  </script>
+  <script>
+   if (GetParameter("oldformat") == "") {
+        StartHiding();
+      }
+  </script>
+  <br/>
+  <center>
+   <input onclick="document.location='index.html';" type="button" value="View this Page as a Collection of Folders"/>
+  </center>
+  <br/>
+  <br/>
+  <a name="ellis">
+   Ellis Island &amp; Castle Garden Search Forms and Ship Arrivals
+   <br/>
+   <blockquote>
+    <a href="javascript:window.location=DetermineURL('intro.html');">
+     Ellis Island Overview
+    </a>
+    :
+        Which Ellis Island Search Form to use
+    <br/>
+    <a href="javascript:window.location=DetermineURL('ellisgold.html');">
+     Ellis Island Passengers Gold Form (1892-1924)
+    </a>
+    :
+        Preferred Form for Searching for Ellis Island Passengers in One Step
+    <br/>
+    <a href="javascript:window.location=DetermineURL('elliswhit.html');">
+     Ellis Island Passengers White Form (1892-1957)
+    </a>
+    :
+        Form for Searching for Ellis Island Passengers beyond 1924 in One Step
+    <br/>
+    <a href="ellis/boat.html">
+     Ellis Island Ship Lists (1892-1957)
+    </a>
+    :
+        Searching for Ships in the Ellis Island Microfilms in One Step
+    <br/>
+    <a href="javascript:window.location=DetermineURL('mm.htm?mode=ellis');">
+     Ellis Island Manifest Viewer (1892-1957)
+    </a>
+    :
+        Direct Access to Ellis Island Manifests in One Step
+    <br/>
+    <a href="goulnik/pid2image.html">
+     Ellis Island Passenger IDs
+    </a>
+    :
+        Converting Ellis Island Passenger IDs to series/roll/frame in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=ny">
+     All NY Passengers (1820-1957) - ancestry
+    </a>
+    :
+        Searching for all New York Passengers in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=ny">
+     All NY Ship Lists (1820-1957) - ancestry
+    </a>
+    :
+        Searching for Ships in all New York Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=ny">
+     All NY Manifest Viewer (1820-1957) - ancestry
+    </a>
+    :
+        Direct Access to all New York Manifests in One Step
+    <br/>
+    <a href="ellis/free.html?port=1849782">
+     New York Passengers (1820-1891) - familysearch
+    </a>
+    :
+        Searching for New York Passengers up to 1891 in One Step
+    <br/>
+    <a href="ellis/free.html?port=1923888">
+     New York Passengers (1925-1957) - familysearch
+    </a>
+    :
+        Searching for New York Passengers from 1925 onward in One Step
+    <br/>
+    <a href="ellis/boatfs.html">
+     All NY Ship Lists (1820-1957) - familysearch
+    </a>
+    :
+        Searching for Ships in all New York Microfilms in One Step
+    <br/>
+    <a href="ellis/mmfs.html">
+     All NY Manifest Viewer (1820-1957) - familysearch
+    </a>
+    :
+        Direct Access to all New York Manifests in One Step
+    <br/>
+    <a href="ellis/cg.html">
+     Castle Garden Passengers
+    </a>
+    :
+        Searching the Castle Garden Database in One Step (castlegarden.org)
+    <br/>
+    <a href="ellis/cgbrowse.html">
+     Castle Garden Browser
+    </a>
+    :
+        Browsing the Castle Garden Database in One Step (castlegarden.org)
+    <br/>
+    <a href="ellis/destcodes.htm">
+     Castle Garden Destination Codes
+    </a>
+    :
+        List of Destination Codes (castlegarden.org)
+    <br/>
+    <a href="ellis/pictures.html">
+     Ship Pictures
+    </a>
+    :
+        Obtaining Pictures of Ellis Island Passenger Ships in One Step
+    <br/>
+    <a href="swiggum/fleets.html">
+     Ships &amp; Fleets
+    </a>
+    :
+        Obtaining Details on Ships and Fleets in One Step
+    <br/>
+    <a href="ellis/fhl.html">
+     NARA/FHL Roll Numbers
+    </a>
+    :
+        Obtaining NARA and FHL Roll Numbers for NY Ship Arrivals in One Step
+    <br/>
+    <a href="ellis/EllisMythNames.htm">
+     Ellis Island Name Change Myth
+    </a>
+    :
+        Using Ancestry from a Library or Institute in One Step
+    <br/>
+    <a href="library.html">
+     Ancestrylibrary.com/Ancestryinstitute.com
+    </a>
+    :
+        Using Ancestry from a Library or Institute in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="other">
+   Other Ports of Immigration
+   <br/>
+   <blockquote>
+    <a href="ellis/free.html">
+     Various Ports (free)
+    </a>
+    :
+        Searching for Passengers from Various Ports for free in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=balt">
+     Baltimore Passengers (1820-1948)
+    </a>
+    :
+        Searching the Baltimore Passenger Lists in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=balt">
+     Baltimore Ship Lists (1820-1948)
+    </a>
+    :
+        Searching for Ships in the Baltimore Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=balt">
+     Baltimore Manifest Viewer (1820-1948)
+    </a>
+    :
+        Direct Access to Baltimore Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=bost">
+     Boston Passengers (1820-1963)
+    </a>
+    :
+        Searching the Boston Passenger Lists in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=bost">
+     Boston Ship Lists (1820-1963)
+    </a>
+    :
+        Searching for Ships in the Boston Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=bost">
+     Boston Manifest Viewer (1820-1963)
+    </a>
+    :
+        Direct Access to Boston Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=galv">
+     Galveston Passengers (1893-1960)
+    </a>
+    :
+        Searching the Galveston Passenger Lists in One Step (ancestry.com)
+    <br/>
+    <a href="ellis/boatx.html?mode=galv">
+     Galveston Ship Lists (1893-1960)
+    </a>
+    :
+        Searching for Ships in the Galveston Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=galv">
+     Galveston Manifest Viewer (1893-1960)
+    </a>
+    :
+        Direct Access to Galveston Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=orleans">
+     New Orleans Passengers (1813-1963)
+    </a>
+    :
+        Searching the New Orleans Passenger Lists in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=orleans">
+     New Orleans Ship Lists (1813-1963)
+    </a>
+    :
+        Searching for Ships in the New Orleans Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=orleans">
+     New Orleans Manifest Viewer (1813-1963)
+    </a>
+    :
+        Direct Access to New Orleans Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=phil">
+     Philadelphia Passengers (1800-1963)
+    </a>
+    :
+        Searching the Philadelphia Passenger Lists in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=phil">
+     Philadelphia Ship Lists (1800-1963)
+    </a>
+    :
+        Searching for Ships in the Philadelphia Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=phil">
+     Philadelphia Manifest Viewer (1800-1963)
+    </a>
+    :
+        Direct Access to Philadelphia Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=sanfran">
+     San Francisco Passengers (1882-1959)
+    </a>
+    :
+        Searching the San Francisco Passenger Lists in One Step
+    <br/>
+    <a href="ellis/boatx.html?mode=sanfran">
+     San Francisco Ship Lists (1882-1959)
+    </a>
+    :
+        Searching for Ships in the San Francisco Microfilms in One Step
+    <br/>
+    <a href="ellis/mm.htm?mode=sanfran">
+     San Francisco Manifest Viewer (1882-1959)
+    </a>
+    :
+        Direct Access to San Francisco Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=hamb">
+     Hamburg Passengers (1850-1934)
+    </a>
+    :
+        Searching the Hamburg Outbound Passenger Lists in One Step
+    <br/>
+    <a href="ellis/mmhamb.htm">
+     Hamburg Manifest Viewer (1850-1934)
+    </a>
+    :
+        Direct Access to Hamburg Outbound Manifests in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=can">
+     Canadian Border Crossings (1895-1956)
+    </a>
+    :
+        Searching the Canadian Border Crossings Lists in One Step
+    <br/>
+    <a href="ellis/passengers.php?mode=canpl">
+     Canadian Passengers (1865-1935)
+    </a>
+    :
+        Searching the Canadian Passenger Lists in One Step
+    <br/>
+    <a href="ellis/aad.html?db=0">
+     Germans to America (1850-1897)
+    </a>
+    :
+        Searching the NARA Archival Germans to the US Database in One Step
+    <br/>
+    <a href="ellis/aad.html?db=1">
+     Italians to America (1855-1900)
+    </a>
+    :
+        Searching the NARA Archival Italians to the US Database in One Step
+    <br/>
+    <a href="ellis/aad.html?db=2">
+     Russians to America (1834-1897)
+    </a>
+    :
+        Searching the NARA Archival Russians to the US Database in One Step
+    <br/>
+    <a href="library.html">
+     Ancestrylibrary.com/Ancestryinstitute.com
+    </a>
+    :
+        Using Ancestry from a Library or Institute in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="us">
+   US Census (1790-1950)
+   <br/>
+   <blockquote>
+    <a href="census/intro.html">
+     Overview
+    </a>
+    :
+        Which Census Search Form to use
+    <br/>
+    <a href="census/rule72.html">
+     Census 72-Year Rule
+    </a>
+    Why the 72 Year Rule for US Census, Roots-Key, Summer 2008
+    <br/>
+    <a href="census/1940census.htm">
+     Getting Ready for the 1940 Census: Searching without a Name Index
+    </a>
+    APGQ December 2011
+    <br/>
+    <a href="http://www.veoh.com/watch/v25050538qeaR4TaW">
+     Getting Ready for 1940 Census
+    </a>
+    Interview by SallyAnn Sack and Arline Sachs, December 2011
+    <br/>
+    <a href="http://hosted.ap.org/interactives/2012/census-1940/">
+     How to Search the 1940 Census
+    </a>
+    Associated Press Video, April 1, 2012
+    <br/>
+    <a href="http://www.kqed.org/a/kqednews/RN201204041730/a">
+     San Francisco Man's Website, a Key to 1940 Census Data Goldmine
+    </a>
+    KQED Radio, April 4, 2012
+    <br/>
+    <a href="census/quiz.php">
+     1940 Tutorial Quiz
+    </a>
+    :
+        How to Access the 1940 Census in One Step
+    <br/>
+    <a href="census/quiz1950.php">
+     1950 Tutorial Quiz
+    </a>
+    :
+        How to Access the 1950 Census in One Step
+    <br/>
+    <a href="census/unified.html">
+     Unified 1880-1950 Census ED Finder
+    </a>
+    :
+        Obtaining EDs for a 1900-1950 Location in One Step
+    <br/>
+    <a href="census/viewer1940.html">
+     Universal 1940 Census Image Viewer
+    </a>
+    :
+        Viewing Images for the 1940 Census in One Step
+    <br/>
+    <a href="census/index.html">
+     1870-1940 Large-City ED Finder
+    </a>
+    :
+        Obtaining EDs for the 1880 to 1940 Census in One Step
+    <br/>
+    <a href="census/index.html?ed2street=1">
+     1870-1950 Large-City Street Finder
+    </a>
+    :
+        Obtaining Streets in the 1880 to 1950 Census in One Step (Large Cities)
+    <br/>
+    <a href="ed/ed.php">
+     1880-1950 ED Definitions
+    </a>
+    :
+        Obtaining 1880 to 1950 ED definitions in One Step
+    <br/>
+    <a href="census/eddef1224.html">
+     1940/1950 ED Descriptions (T1224)
+    </a>
+    :
+        Viewing ED Descriptions on T1224 Microfilm in One Step
+    <br/>
+    <a href="census/codes.html">
+     1910-1950 Census Codes
+    </a>
+    :
+        Deciphering Codes Appended to the 1910 to 1950 Census in One Step
+    <br/>
+    <a href="census/ed2040.php">
+     1920/1930/1940 ED Finder/Converter
+    </a>
+    :
+        Obtaining and/or Converting 1920/1930/1940 Census EDs in One Step
+    <br/>
+    <a href="census/arc1940-1950edmaps.html?year=1940">
+     1940 ED Maps
+    </a>
+    :
+        Viewing 1940 ED Maps in One Step
+    <br/>
+    <a href="census/arc1940-1950edmaps.html?year=1950">
+     1950 ED Maps
+    </a>
+    :
+        Viewing 1950 ED Maps in One Step
+    <br/>
+    <a href="census/tracts.html">
+     1940/1950 Census Tracts
+    </a>
+    :
+        Viewing 1940/1950 Census Tracts in One Step
+    <br/>
+    <a href="census/1940-1950blocks.html">
+     1940/1950 Block Maps
+    </a>
+    :
+        Viewing 1940/1950 Wards, Tracts, and Block Maps in One Step
+    <br/>
+    <a href="census/nycphonebook.html">
+     1940 NYC Phonebooks
+    </a>
+    :
+        Accessing 1940 NYC Phonebooks in One Step
+    <br/>
+    <a href="census/changes.html">
+     Changed Street Names
+    </a>
+    :
+        Obtaining Street Name Changes in One Step
+    <br/>
+    <a href="census/api.html">
+     API for 1940 ED Finder
+    </a>
+    :
+        Interface for linking to 1940 One-Step ED Finder
+    <br/>
+    <a href="census/reelframes.html">
+     1790-1940 Census Images
+    </a>
+    :
+        Viewing Images for the 1790 to 1930 Census in One Step
+    <br/>
+    <a href="census/censusbrowser.html">
+     1790-1940 Census Browser
+    </a>
+    :
+        Browsing the US Census Microfilms in One Step
+    <br/>
+    <a href="census/schedules.php">
+     1790-1940 Census Descriptions
+    </a>
+    :
+        Description of US Census Microfilm Rolls
+    <br/>
+    <a href="census/counties.html">
+     Determining Counties
+    </a>
+    :
+        Determining US Counties in One Step
+    <br/>
+    <a href="census/ancestry.html">
+     Census Search by Name
+    </a>
+    :
+        Searching by name in various Census Years in One Step (ancestry.com)
+    <br/>
+    <a href="census/freesearch.html">
+     Census Search by Name
+    </a>
+    :
+        Searching by name in various Census Years in One Step (free)
+    <br/>
+    <a href="library.html">
+     Ancestrylibrary.com/Ancestryinstitute.com
+    </a>
+    :
+        Using Ancestry from a Library or Institute in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="phonetic">
+   Phonetic Matching and Soundex
+   <br/>
+   <blockquote>
+    <a href="census/soundex.html">
+     Soundex
+    </a>
+    :
+        Generating Daitch-Mokotoff Soundex Codes and Beider-Morse Phonetic Tokens in One Step
+    <br/>
+    <a href="dl/reversesoundex.html">
+     Reverse Soundex
+    </a>
+    :
+        Generating Names from American Soundex Codes in One Step
+    <br/>
+    <a href="hebrew/dmheb.html">
+     Hebrew Soundex
+    </a>
+    :
+        Generating Hebrew-Alphabet Daitch-Mokotoff Soundex Codes in One Step
+    <br/>
+    <a href="phonetics/phoneticlanguage.html">
+     Obtaining Language from Spelling
+    </a>
+    :
+        Obtaining Language from Name Spelling in One Step
+    <br/>
+    <a href="phoneticinfo.htm">
+     BMPM Source Code
+    </a>
+    :
+        Open-Source code for Beider-Morse Phonetic Matching
+    <br/>
+    <a href="phonetics/bmpm2.htm">
+     Phonetic Matching (descriptive)
+    </a>
+    :
+        APGQ March 2010
+    <br/>
+    <a href="phonetics/bmpm.htm">
+     Phonetic Matching (technical)
+    </a>
+    :
+        Avotaynu Summer 2008
+    <br/>
+   </blockquote>
+  </a>
+  <a name="canadian">
+   Canadian and British Census
+   <br/>
+   <blockquote>
+    <a href="census/canada1911.html">
+     1851-1921 Canadian Census
+    </a>
+    :
+        Searching the 1851/1901/1906/1911/1921 Canadian Census in One Step
+    <br/>
+    <a href="census/canada1881.php">
+     1881 Canadian Census
+    </a>
+    :
+        Searching the 1881 Canadian Census in One Step
+    <br/>
+    <a href="census/canada1901b.html">
+     1901 Canadian Census
+    </a>
+    :
+        Searching the 1901 Canadian Census in One Step
+    <br/>
+    <a href="census/uk.html">
+     1841-1911 British Census
+    </a>
+    :
+        Searching the 1841 to 1911 British Censuses in One Step
+    <br/>
+    <a href="library.html">
+     Ancestrylibrary.com/Ancestryinstitute.com
+    </a>
+    :
+        Using Ancestry from a Library or Institute in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="new">
+   New York Census
+   <br/>
+   <blockquote>
+    <a href="census/location.htm">
+     A History of the Geography of NYC
+    </a>
+    Location, Location, Location in New York City, Dorot, Fall 2014
+    <br/>
+    <a href="nyc/nyc.php">
+     NY Census AD/ED Finder
+    </a>
+    :
+        Obtaining AD/ED for the 1890-1925 NY State Census in One Step
+    <br/>
+    <a href="nyc/viewer.html">
+     Viewing the 1905 to 1925 Images
+    </a>
+    :
+        Viewing the Images for the 1905/1915/1925 New York Census in One Step
+    <br/>
+    <a href="nyc/viewer1892.html">
+     Viewing the 1892 Images
+    </a>
+    :
+        Viewing the Images for the 1892 New York Census in One Step
+    <br/>
+    <a href="nyc/1905search.html">
+     Searching by Name Free
+    </a>
+    :
+        Searching the 1890/1905/1915/1925 Censuses by Name in One Step
+    <br/>
+    <a href="nyc/ancestrysearch.html">
+     Searching by Name Pay
+    </a>
+    :
+        Searching the 1915/1925 Censuses by Name in One Step
+    <br/>
+    <a href="brooklyn/brooklyn.html">
+     Brooklyn 1925 Name Index
+    </a>
+    :
+        Searching the Brooklyn 1925 Census in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="births">
+   Births, Deaths, and other Vital Records
+   <br/>
+   <blockquote>
+    <a href="birthday/publicrec.html">
+     Ages, Related Persons, and Locations
+    </a>
+    :
+        Finding Ages, Related Persons, and Locations in One Step (intelius.com)
+    <br/>
+    <a href="birthday/privateeye.html">
+     Birthdays and Related Persons
+    </a>
+    :
+        Finding Birthdays and Related Persons in One Step (veromi.com/privateeye.com)
+    <br/>
+    <a href="birthday/zaba.html">
+     Ages and Addresses
+    </a>
+    :
+        Finding Ages and Addresses in One Step (zabasearch.com)
+    <br/>
+    <a href="ssdi/ssdi.html">
+     Social Security Death Records
+    </a>
+    :
+        Searching the Social Security Death Index (SSDI) in One Step
+    <br/>
+    <a href="ssn/ssn.html">
+     Social Security Numbers
+    </a>
+    :
+        Decoding Social Security Numbers in One Step
+    <br/>
+    <a href="ssn/cc.html">
+     Credit Card Numbers
+    </a>
+    :
+        Validating Credit Card Numbers in One Step
+    <br/>
+    <a href="dl/dl.html">
+     Driver's License Numbers
+    </a>
+    :
+        Encoding and Decoding Driver's License Numbers in One Step
+    <br/>
+    <a href="fhl/websitesunitedstates.html">
+     LDS US Records
+    </a>
+    :
+        Accessing FamilySearch's US Record Collections in One Step
+    <br/>
+    <a href="fhl/websiteswestern.html">
+     LDS Western Hemisphere Records
+    </a>
+    :
+        Accessing FamilySearch's Western Hemisphere Record Collections in One Step
+    <br/>
+    <a href="fhl/websiteseastern.html">
+     LDS Eastern Hemisphere Records
+    </a>
+    :
+        Accessing FamilySearch's Eastern Hemisphere Record Collections in One Step
+    <br/>
+    <a href="footnote/footnote.html">
+     Footnote/Fold3 Naturalization Records
+    </a>
+    :
+        Searching Footnote/Fold3 Naturalization Records in One Step
+    <br/>
+    <a href="njvoters/njvoters.html">
+     New Jersey Voter Records (2007-2017)
+    </a>
+    :
+        Searching New Jersey Voter Records in One Step
+    <br/>
+    <a href="nysvoters/nysvoters.html">
+     New York State Voter Records (2002-2017)
+    </a>
+    :
+        Searching New York State Voter Records in One Step
+    <br/>
+    <a href="vital/naturalization.html">
+     New York Naturalization Records
+    </a>
+    :
+        Searching New York Naturalization Records in One Step
+    <br/>
+    <a href="prison/prison.html">
+     New York State Incarceration Records
+    </a>
+    :
+        Searching New York State Prison Records in One Step
+    <br/>
+    <a href="vital/nyvital.html?type=birth">
+     New York City Birth Records (1846-1909)
+    </a>
+    :
+        Searching the New York City Birth Index in One Step (familysearch)
+    <br/>
+    <a href="vital/nybirth-igg.html">
+     New York City Birth Records (1879-1909)
+    </a>
+    :
+        Searching the New York City Birth Index in One Step (igg)
+    <br/>
+    <a href="vital/nybirth-anc.html?range=0">
+     New York City Birth Records (1878-1909)
+    </a>
+    :
+        Searching the New York City Birth Index in One Step (ancestry)
+    <br/>
+    <a href="vital/nybirth-anc.html?range=1">
+     New York City Birth Records (1910-1965)
+    </a>
+    :
+        Searching the New York City Birth Index in One Step (ancestry)
+    <br/>
+    <a href="vital/nyvital.html?type=marriage">
+     New York City Marriage Records (1829-1937)
+    </a>
+    :
+        Searching the New York City Marriage Index in One Step (familysearch)
+    <br/>
+    <a href="vital/nymarriages-igg.html?index=groom">
+     New York City Groom Records (1864-1937)
+    </a>
+    :
+        Searching the New York City Groom Index in One Step (igg)
+    <br/>
+    <a href="vital/nymarriages-igg.html?index=bride">
+     New York City Bride Records (1866-1937)
+    </a>
+    :
+        Searching the New York City Bride Index in One Step (igg)
+    <br/>
+    <a href="vital/nymarriages-anc.html?range=0">
+     New York City Marriage Certificates (1866-1937)
+    </a>
+    :
+        Searching the New York City Marriage Certificate Index in One Step (ancestry)
+    <br/>
+    <a href="vital/nymarriages-anc.html?range=1">
+     New York City Marriage Licenses (1907-1995)
+    </a>
+    :
+        Searching the New York City Marriage License Index in One Step (ancestry)
+    <br/>
+    <a href="vital/nymarriages-rec.html">
+     New York City Marriage Licenses (1950-1995)
+    </a>
+    :
+        Searching the New York City Marriage License Index in One Step (reclaim the records)
+    <br/>
+    <a href="vital/nymarriages-rec.html?rangeIndex=1">
+     New York City Marriage Licenses (1996-2017)
+    </a>
+    :
+        Searching the New York City Marriage License Index in One Step (reclaim the records)
+    <br/>
+    <a href="vital/nyvital.html?type=death">
+     New York City Death Records (1795-1949)
+    </a>
+    :
+        Searching the New York City Death Index in One Step (familysearch)
+    <br/>
+    <a href="vital/nydeath-igg.html">
+     New York City Death Records (1862-1948)
+    </a>
+    :
+        Searching the New York City Death Index in One Step (igg)
+    <br/>
+    <a href="vital/nydeath-anc.html?range=0">
+     New York City Death Records (1862-1948)
+    </a>
+    :
+        Searching the New York City Death Index in One Step (ancestry)
+    <br/>
+    <a href="vital/nydeath-anc.html?range=1">
+     New York City Death Records (1949-1965)
+    </a>
+    :
+        Searching the New York City Death Index in One Step (ancestry)
+    <br/>
+    <a href="vital/filmnotes.html">
+     FHL Film Numbers for New York City Records
+    </a>
+    :
+        Obtaining FHL Film Numbers for New York City Vital Records in One Step
+    <br/>
+    <a href="http://bklyn-genealogy-info.stevemorse.org/index.html">
+     Bklyn Genealogy Info
+    </a>
+    :
+        Brooklyn Genealogy Records compiled by Nancy E. Lutz
+    <br/>
+    <a href="vital/limarriages.html">
+     Long Island Index (1908-1935)
+    </a>
+    :
+        Searching the Long Island Marriage Records in One Step (igg)
+    <br/>
+    <a href="sjtilden/yearbooksearch.html">
+     Tilden HS Brooklyn Yearbooks (1931-2010)
+    </a>
+    :
+        Searching the Tilden High School Yearbooks in One Step
+    <br/>
+    <a href="http://www.museumoffamilyhistory.com/Jefferson/yearbooksearch.html">
+     Jefferson HS Brooklyn Yearbooks (1927-1987)
+    </a>
+    :
+        Searching the Jefferson High School Yearbooks in One Step
+    <br/>
+    <a href="census/nycphonebook.html">
+     1940 NYC Phonebooks
+    </a>
+    :
+        Accessing 1940 NYC Phonebooks in One Step
+    <br/>
+    <a href="vital/cook.html">
+     Chicago Vital Records
+    </a>
+    :
+        Searching Cook County Genealogy in One Step
+    <br/>
+    <a href="vital/illdeath.html?years=pre">
+     Illinois Death Records (pre 1916)
+    </a>
+    :
+        Searching the pre-1916 Illinois Death Index in One Step
+    <br/>
+    <a href="vital/illdeath.html?years=post">
+     Illinois Death Records (1916-1950)
+    </a>
+    :
+        Searching the 1916-1950 Illinois Death Index in One Step
+    <br/>
+    <a href="montreal/montreal2.html">
+     Montreal City Directories
+    </a>
+    :
+        Searching the Montreal City Directories in One Step
+    <br/>
+    <a href="birthday/couples.html">
+     Locating Couples
+    </a>
+    :
+        Finding Pairs of People in One Step
+    <br/>
+    <a href="phonebook/lookup.html">
+     Phonebook Lookups
+    </a>
+    :
+        US Phonebook Lookups in One Step
+    <br/>
+    <a href="relation/calculator.html">
+     Relationship Calculator
+    </a>
+    :
+        Calculating Relationships in One Step
+    <br/>
+    <a href="relation/ahnentafel.html">
+     Ahnentafel Calculator
+    </a>
+    :
+        Decoding Ahnentafel Numbers in One Step
+    <br/>
+    <a href="birthday/elapsed.html">
+     Elapsed Time
+    </a>
+    :
+        Determining Time between Two Events in One Step
+    <br/>
+    <a href="grandfather/index.html">
+     Where's Grandpa
+    </a>
+    :
+        Finding your great Grandfather in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="calendar">
+   Calendar, Sunrise/Sunset, Maps
+   <br/>
+   <blockquote>
+    <a href="jcal/jcal.html">
+     Jewish Calendar Conversions
+    </a>
+    :
+        Jewish Calendar Conversions in One Step
+    <br/>
+    <a href="jcal/muslim.html">
+     Muslim Calendar Conversions
+    </a>
+    :
+        Muslim Calendar Conversions in One Step
+    <br/>
+    <a href="jcal/french.html">
+     French Calendar Conversions
+    </a>
+    :
+        French Revolutionary Calendar Conversions in One Step
+    <br/>
+    <a href="jcal/mayan.html">
+     Mayan Calendar Conversions
+    </a>
+    :
+        Mayan Calendar Conversions in One Step
+    <br/>
+    <a href="jcal/julian.html">
+     Julian Calendar Conversions
+    </a>
+    :
+        Converting between Julian and Gregorian Calendar in One Step
+    <br/>
+    <a href="jcal/easter.html">
+     Easter Calculator
+    </a>
+    :
+        Calculating Easter using the Jewish Calendar in One Step
+    <br/>
+    <a href="jcal/perpetual">
+     Perpetual Calendar
+    </a>
+    :
+        A Perpetual Calendar in One Step
+    <br/>
+    <a href="jcal/whendid.html">
+     When did ... ?
+    </a>
+    :
+        Answering "When did?" Calander Questions in One Step
+    <br/>
+    <a href="birthday/elapsed.html">
+     Elapsed Time
+    </a>
+    :
+        Determining Time between Two Events in One Step
+    <br/>
+    <a href="jcal/sunrise.html">
+     Sunrise, Sunset
+    </a>
+    :
+        Computing Sunrise and Sunset in One Step
+    <br/>
+    <a href="hebrewcalendar/hebrewcalendar.htm">
+     Julian Calendar Explained
+    </a>
+    :
+        APGQ March 2014
+    <br/>
+    <a href="juliancalendar/julian.htm">
+     Julian Calendar Explained
+    </a>
+    :
+        APGQ March 2014
+    <br/>
+    <a href="hebrewcalendar/hebrewcalendar.htm">
+     Jewish Calendar Demystified
+    </a>
+    :
+        APGQ September 2007
+    <br/>
+    <a href="jcal/chanukah.html">
+     Chanukah and Thanksgiving
+    </a>
+    :
+        When do the two coincide?
+    <br/>
+    <a href="jcal/calendar.htm">
+     Printable Jewish Calendar
+    </a>
+    :
+        Displaying Yearly Jewish Calendar in One Step
+    <br/>
+    <a href="jcal/tombstone.html">
+     Tombstone Dates
+    </a>
+    :
+        Deciphering Hebrew Tombstone Dates in One Step
+    <br/>
+    <a href="jcal/molad.htm">
+     Molads and Torah Portions
+    </a>
+    :
+        Determining Molads and Torah Portions of Jewish Year in One Step
+    <br/>
+    <a href="jcal/template.html">
+     Template (Jewish date)
+    </a>
+    :
+        Template for adding Jewish date to your website
+    <br/>
+    <a href="jcal/sun-template.html">
+     Template (sunrise/sunset)
+    </a>
+    :
+        Template for adding time of sunrise and sunset to your website
+    <br/>
+    <a href="jcal/latlon.php">
+     Latitude/Longitude/Altitude
+    </a>
+    :
+        Converting Address to/from Latitude/Longitude/Altitude in One Step
+    <br/>
+    <a href="jcal/latlonbatch.html?direction=forward">
+     Batch Forward Geocoder
+    </a>
+    :
+        Batch converting of Address to Latitude/Longitude in One Step
+    <br/>
+    <a href="jcal/latlonbatch.html?direction=reverse">
+     Batch Reverse Geocoder
+    </a>
+    :
+        Batch converting of Latitude/Longitude to Address in One Step
+    <br/>
+    <a href="jcal/latlonbatch.html?direction=altitude">
+     Batch Altitudes
+    </a>
+    :
+        Batch converting of Latitude/Longitude to Altitudesd in One Step
+    <br/>
+    <a href="jcal/dms.html">
+     Deg/Min/Sec
+    </a>
+    :
+        Converting between Degrees/Minutes/Seconds and Decimal in One Step
+    <br/>
+    <a href="nearest/distance.php">
+     Distance
+    </a>
+    :
+        Computing Distance between Latitudes/Longitudes in One Step
+    <br/>
+    <a href="nearest/distancebatch.html">
+     Batch Distances
+    </a>
+    :
+        Batch Computing Distance between Latitudes/Longitudes in One Step
+    <br/>
+    <a href="nearest/nearest.html?database=NARA Locations">
+     Where's NARA
+    </a>
+    :
+        Finding the Nearest National Archives Location in One Step
+    <br/>
+    <a href="jcal/map.html">
+     Maps
+    </a>
+    :
+        Getting Road Maps and Aerial Photos in One Step
+    <br/>
+    <a href="jcal/zip.html">
+     US Zip Codes
+    </a>
+    :
+        Obtaining US Zip Codes in One Step
+    <br/>
+    <a href="jcal/fsa.html">
+     Canadian Postal Codes
+    </a>
+    :
+        Decoding Canadian Postal Codes in One Step
+    <br/>
+    <a href="jcal/areacodes.html">
+     US/Can Phone Area Codes
+    </a>
+    :
+        Determining US/Canadian Telephone Area Codes in One Step
+    <br/>
+    <a href="intphone/codes.html">
+     International Phone Codes
+    </a>
+    :
+        Decoding International Phone Numbers in One Step
+    <br/>
+    <a href="jcal/countries.html">
+     Country Codes
+    </a>
+    :
+        Determining Two-Character Country Codes in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="dealing">
+   Dealing with Characters in Foreign Alphabets
+   <br/>
+   <blockquote>
+    <a href="hebrew/trans.html?mode=hebrew">
+     Hebrew Translation
+    </a>
+    :
+        Translating between Hebrew and English in One Step
+    <br/>
+    <a href="hebrew/trans.html?mode=yiddish">
+     Yiddish Translation
+    </a>
+    :
+        Translating between Yiddish and English in One Step
+    <br/>
+    <a href="hebrew/eng2heb.html">
+     English to Hebrew
+    </a>
+    :
+        Transliterating Names from English to Hebrew in One Step
+    <br/>
+    <a href="hebrew/heb2eng.html">
+     Hebrew to English
+    </a>
+    :
+         Transliterating Names from Hebrew to English in One Step
+    <br/>
+    <a href="hebrew/printcurs.html?font=ashkenazi">
+     Hebrew Cursive to Print
+    </a>
+    :
+        Converting from Hebrew Cursive to Print in One Step
+    <br/>
+    <a href="hebrew/printcurs.html?font=print">
+     Hebrew Print to Cursive
+    </a>
+    :
+        Converting from Hebrew Print to Cursive in One Step
+    <br/>
+    <a href="hebrew/bezeq.html">
+     Israeli Phone Directory (English)
+    </a>
+    :
+        English front-end for Israeli Phone Directory
+    <br/>
+    <a href="ketubah/ketubah.html">
+     Ketubah
+    </a>
+    :
+        Generating a Jewish Marriage Contract in One Step
+    <br/>
+    <a href="ketubah/description.htm">
+     Jewish Marriage Contract (Ketubah)
+    </a>
+    :
+        APGQ September 2015
+    <br/>
+    <a href="hebrew/izkor.html">
+     Israeli's Fallen (English)
+    </a>
+    :
+        English front-end for Izkor Database
+    <br/>
+    <a href="hebrew/kadisha.html">
+     Chevra Kadisha (English)
+    </a>
+    :
+        English front-end for Tel Aviv Burial Database
+    <br/>
+    <a href="hebrew/hebgoogle.html">
+     Hebrew Google
+    </a>
+    :
+         Googling on Hebrew Text in One Step
+    <br/>
+    <a href="hebrew/dmheb.html">
+     Hebrew Soundex
+    </a>
+    :
+        Generating Hebrew-Alphabet Daitch-Mokotoff Soundex Codes in One Step
+    <br/>
+    <a href="russian/eng2rus.html">
+     English to Russian
+    </a>
+    :
+        Transliterating Names from English to Russian in One Step
+    <br/>
+    <a href="russian/rus2eng.html">
+     Russian to English
+    </a>
+    :
+         Transliterating Names from Russian to English in One Step
+    <br/>
+    <a href="russian/cyrprintcurs.html?font=cursive">
+     Russian Cursive to Print
+    </a>
+    :
+        Converting from Russian Cursive to Print in One Step
+    <br/>
+    <a href="russian/cyrprintcurs.html?font=print">
+     Russian Print to Cursive
+    </a>
+    :
+        Converting from Russian Print to Cursive in One Step
+    <br/>
+    <a href="russian/phonebook.html">
+     Russian Phone Directory (English)
+    </a>
+    :
+        English front-end for old Russian Phone/Military Records
+    <br/>
+    <a href="russian/ussrmil.html">
+     Russia's Fallen (English)
+    </a>
+    :
+        English front-end for Database of Russia's Fallen
+    <br/>
+    <a href="russian/rusgoogle.html">
+     Russian Google
+    </a>
+    :
+         Googling on Russian Text in One Step
+    <br/>
+    <a href="script/printcurs.html">
+     English Print to Cursive
+    </a>
+    :
+        Converting from English Print to Cursive in One Step
+    <br/>
+    <a href="script/printcurs.html?font=cursive">
+     English Cursive to Print
+    </a>
+    :
+        Converting from English Cursive to Print in One Step
+    <br/>
+    <a href="greek/eng2grk.html">
+     English to Greek
+    </a>
+    :
+        Transliterating Names from English to Greek in One Step
+    <br/>
+    <a href="greek/grk2eng.html">
+     Greek to English
+    </a>
+    :
+         Transliterating Names from Greek to English in One Step
+    <br/>
+    <a href="arabic/eng2ara.html">
+     English to Arabic
+    </a>
+    :
+         Transliterating Names from English to Arabic in One Step
+    <br/>
+    <a href="arabic/ara2eng.html">
+     Arabic to English
+    </a>
+    :
+         Transliterating Names from Arabic to English in One Step
+    <br/>
+    <a href="japanese/eng2kan.html">
+     English to Japanese
+    </a>
+    :
+         Transliterating Names from English to Japanese in One Step
+    <br/>
+    <a href="japanese/kan2eng.html">
+     Japanese to English
+    </a>
+    :
+         Transliterating Names from Japanese to English in One Step
+    <br/>
+    <a href="chinese/chinese.html">
+     Chinese to/from English
+    </a>
+    :
+         Transliterating Chinese Names in One Step
+    <br/>
+    <a href="german/germanprintcurs.html">
+     German Kurrent/Suetterlin Print/Cursive
+    </a>
+    :
+        Converting between Print and Cursive in old German scripts in One Step
+    <br/>
+    <a href="hebrew/utf8.html">
+     Unicode and UTF-8
+    </a>
+    :
+         Displaying Unicode and UTF-8 Encodings in One Step
+    <br/>
+    <a href="hebrew/virtual.html">
+     Virtual Keyboard (diacriticals)
+    </a>
+    :
+         Typing Special Characters of any Latin-based Alphabet in One Step
+    <br/>
+    <a href="hebrew/keyboardgenerator.html">
+     Virtual Keyboard Generator
+    </a>
+    :
+         Generating a Virtual Keyboard in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="holocaust">
+   Holocaust and Eastern Europe
+   <br/>
+   <blockquote>
+    <a href="bereza-and-antopol/index.html">
+     Bereza and Antopol
+    </a>
+    :
+        Information about the towns of Bereza and Antopol in Belarus
+    <br/>
+    <a href="dachau/auschwitz.html">
+     Auschwitz Prisoner Photos
+    </a>
+    :
+         Searching the Auschwitz Prisoner Photos in One Step
+    <br/>
+    <a href="dachau/dachau.html">
+     Dachau Concentration Camp
+    </a>
+    :
+         Searching the Dachau Concentration Camp Records in One Step
+    <br/>
+    <a href="jewishroof/jewishroof.html">
+     German Jewish Roof Card Collection
+    </a>
+    :
+         Searching the German Jewish Roof Card Collection in One Step
+    <br/>
+    <a href="germanjews/germanjews.html">
+     German Jews 1933
+    </a>
+    :
+         Searching the 1933 German Jews Database in One Step
+    <br/>
+    <a href="siberia/siberia.html">
+     Siberian Refugee Camps
+    </a>
+    :
+         Searching the Polish "Index of the Repressed" in One Step
+    <br/>
+    <a href="russian/gulag.html">
+     Soviet Gulags
+    </a>
+    :
+         Searching for People Interned in Soviet Gulags in One Step (1935-1955)
+    <br/>
+    <a href="nkvd/nkvd.html">
+     Stalin's Secret Police
+    </a>
+    :
+         Viewing Stalin's Secret Police Members in One Step (1935-1939)
+    <br/>
+    <a href="lodz/lodz.html">
+     Lodz Cemetery
+    </a>
+    :
+         Searching the Lodz Cemetery in One Step
+    <br/>
+    <a href="russian/phonebook.html">
+     Russian Phone Directory (English)
+    </a>
+    :
+        English front-end for old Moscow and St Peterburg Phone Directories
+    <br/>
+    <a href="russian/ussrmil.html">
+     Russia's Fallen (English)
+    </a>
+    :
+        English front-end for Database of Russia's Fallen
+    <br/>
+    <a href="phonetics/beider.php">
+     Reference Books
+    </a>
+    :
+         Searching Reference Books for Jewish Surnames in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="genetic">
+   Genetic Genealogy (DNA)
+   <br/>
+   <blockquote>
+    <a href="genetealogy/dna.htm">
+     From DNA to Genetic Genealogy
+    </a>
+    :
+        APGQ March 2009
+    <br/>
+    <a href="genetealogy/beyond.htm">
+     Genealogy Beyond the Y Chromosome:Autosomes Exposed
+    </a>
+    :
+        APGQ March 2012
+    <br/>
+    <a href="dna/ftdna.html">
+     FamilyTreeDNA Markers
+    </a>
+    :
+        Fetching Markers from FamilyTreeDNA Website in One Step
+    <br/>
+    <a href="dna/hapest.php">
+     Haplogroups
+    </a>
+    :
+         Predicting Haplogroups in One Step
+    <br/>
+    <a href="dna/chart.html">
+     Group Charts
+    </a>
+    :
+         Building a Y DNA-Group Chart in One Step
+    <br/>
+    <a href="dna/compare.html">
+     Distances
+    </a>
+    :
+         Obtaining DNA Distances in One Step
+    <br/>
+    <a href="dna/migration.html">
+     Migration Details
+    </a>
+    :
+        Determine Your Ancestor's Migration Details in One Step
+    <br/>
+    <a href="dna/migrationmap.html">
+     Migration Map
+    </a>
+    :
+        Mapping Your Ancestor's Migration Route in One Step
+    <br/>
+    <a href="dna/cartoon.html">
+     Cartoon Guide
+    </a>
+    :
+        Viewing Cartoon Guide to Genetics in One Step
+    <br/>
+   </blockquote>
+  </a>
+  <a name="creating">
+   Creating your own Search Applications
+   <br/>
+   <blockquote>
+    <a href="create/create.html">
+     Create Search App
+    </a>
+    :
+        Creating One-Step Search Forms and Search Engines
+    <br/>
+    <a href="viewer/createviewer.html">
+     Create Image Viewers in One Step
+    </a>
+    :
+        Creating Image Viewer
+    <br/>
+    <a href="create/presidents-js.html">
+     Demo using javascript search engine
+    </a>
+    :
+        US Presidents Search Application developed with above tool
+    <br/>
+    <a href="create/presidents-php.html">
+     Demo using PHP search engine
+    </a>
+    :
+        US Presidents Search Application developed with above tool
+    <br/>
+    <a href="create/presidents-perl.html">
+     Demo using Perl search engine
+    </a>
+    :
+        US Presidents Search Application developed with above tool
+    <br/>
+    <a href="create/presidents-sql.html">
+     Demo using SQL search engine
+    </a>
+    :
+        US Presidents Search Application developed with above tool
+    <br/>
+    <a href="create/hebrew.html">
+     Demo using Hebrew Characters
+    </a>
+    :
+        US Presidents Search Application developed with above tool
+    <br/>
+    <a href="create/United%20States%20Presidents.xls">
+     Demo Database
+    </a>
+    :
+        Spreadsheet containing database of US Presidents
+    <br/>
+    <a href="create/deeplink.htm">
+     Blocking Deep Linking
+    </a>
+    :
+        Preventing unauthorized use of your search engine
+    <br/>
+   </blockquote>
+  </a>
+  <a name="publications">
+   Publications
+   <br/>
+   <blockquote>
+    <a href="onestep/onestep3.htm">
+     One-Step Portal
+    </a>
+    :
+        Avotaynu 2004, APGQ 2006, APGQ 2011
+    <br/>
+    <a href="onestep/german.doc">
+     One-Step Portal (German)
+    </a>
+    :
+        Presented in Hamburg, June 2007
+    <br/>
+    <a href="onestep/danish.pdf">
+     One-Step Portal (Danish)
+    </a>
+    :
+        Presented in Copenhagen, June 2007
+    <br/>
+    <a href="census/1940census.htm">
+     Getting Ready for the 1940 Census: Searching without a Name Index Census
+    </a>
+    APGQ December 2011
+    <br/>
+    <a href="deeplink/deeplink2.htm">
+     Deep Linking &amp; Deeper Linking
+    </a>
+    :
+        APGQ March 2007, Avotaynu November 2007
+    <br/>
+    <a href="juliancalendar/julian.htm">
+     Julian Calendar Explained
+    </a>
+    :
+        APGQ March 2014
+    <br/>
+    <a href="hebrewcalendar/hebrewcalendar.htm">
+     Jewish Calendar Demystified
+    </a>
+    :
+        APGQ September 2007
+    <br/>
+    <a href="ketubah/description.htm">
+     Jewish Marriage Contract (Ketubah)
+    </a>
+    :
+        APGQ September 2014
+    <br/>
+    <a href="genetealogy/dna.htm">
+     From DNA to Genetic Genealogy
+    </a>
+    :
+        APGQ March 2009
+    <br/>
+    <a href="genetealogy/beyond.htm">
+     Genealogy Beyond the Y Chromosome:Autosomes Exposed
+    </a>
+    :
+        APGQ March 2012
+    <br/>
+    <a href="phonetics/bmpm2.htm">
+     Phonetic Matching (descriptive)
+    </a>
+    :
+        APGQ March 2010
+    <br/>
+    <a href="phonetics/bmpm.htm">
+     Phonetic Matching (technical)
+    </a>
+    :
+        Avotaynu Summer 2008
+    <br/>
+    <a href="presidents/presidents.htm">
+     Finding Presidents and thei Ancestors in the Stangest Places
+    </a>
+    :
+        written December 2017
+    <br/>
+    <a href="census/rule72.html">
+     Census 72-Year Rule
+    </a>
+    Why the 72 Year Rule for US Census, Roots-Key, Summer 2008
+    <br/>
+    <a href="census/location.htm">
+     A History of the Geography of NYC
+    </a>
+    Location, Location, Location in New York City, Dorot, Fall 2014
+    <br/>
+    <a href="ellis/EllisMythNames.htm">
+     Ellis Island Name Change Myth
+    </a>
+    Did Officials Change Immigrant Names at Ellis Island
+    <br/>
+    <a href="contour/index.html">
+     Computer Analysis of Contour-Map Data
+    </a>
+    :
+        Doctoral Dissertation, 1967
+    <br/>
+    <a href="8086/index.html">
+     8086 Primer
+    </a>
+    :
+        Textbook published by Hayden Books, 1980
+    <br/>
+    <a href="8086history/8086history.doc">
+     Intel Microprocessors: 8008-8086
+    </a>
+    :
+        IEEE Computer, Vol 13, No. 10, page 46, October 1980
+    <br/>
+    <a href="beginning.htm">
+     In the Beginning
+    </a>
+    :
+        The 8086 Story
+    <br/>
+    <a href="https://www.computer.org/csdl/mags/co/2017/04/mco2017040008.pdf">
+     Intel 8086 Chip
+    </a>
+    :
+        The Future of Microprocessor Design, IEEE Computer, Vol 50, No. 4, page 8, April 2017
+    <br/>
+   </blockquote>
+  </a>
+  <a name="awards">
+   Awards
+   <br/>
+   <blockquote>
+    <a href="award.html">
+     2003 IAJGS
+    </a>
+    :
+        Outstanding Contribution Award (Int'l Assoc of Jewish Genealogical Societies)
+    <br/>
+    <a href="lifetime.html">
+     2006 IAJGS
+    </a>
+    :
+        Lifetime Achievement Award (Int'l Assoc of Jewish Genealogical Societies)
+    <br/>
+    <a href="merit.html">
+     2007 NGS
+    </a>
+    :
+        Award of Merit (National Genealogical Society)
+    <br/>
+    <a href="apg.html">
+     2007 APGQ
+    </a>
+    :
+-        Excellence Award (Assoc of Professional Genealogists Quarterly)
+    <br/>
+    <a href="pol.html">
+     2008 UPGS
+    </a>
+    :
+        Dziekuje (Thank You) Award (Unified Polish Genealogical Societies)
+    <br/>
+    <a href="pol2.html">
+     2008 PGSA
+    </a>
+    :
+        Wigilia Award (Polish Genealogical Society of America)
+    <br/>
+    <a href="http://www.tamurajones.net/GeneAwards2013.xhtml">
+     2013 Gene Awards
+    </a>
+    :
+        Best New Genealogy Organisation of 2013: Project 1950
+    <br/>
+    <a href="101best.html">
+     2005-2017 Family Tree Magazine
+    </a>
+    :
+        101 Best Websites
+    <br/>
+    <a href="git.html">
+     2012-2016 GenealogyInTime Magazine
+    </a>
+    :
+        Top 100 Websites
+    <br/>
+   </blockquote>
+  </a>
+  <a name="biographies">
+   Biographies and Interviews
+   <br/>
+   <blockquote>
+    <a href="donnamurrayallen.html">
+     Navigate the Net with an expert
+    </a>
+    :
+        Column by Donna Murray Allen, St. Petersburg Times, April 25, 2002
+    <br/>
+    <a href="mensch.html">
+     Mensch
+    </a>
+    :
+        Article by Megan Smolenyak, Genealogical Computing, April 2004
+    <br/>
+    <a href="mcode.html">
+     Morse's Code
+    </a>
+    :
+        Article by Barbara Krasner-Khait, Heritage Quest Magazine, June 2004
+    <br/>
+    <a href="interview.html">
+     Video Interview
+    </a>
+    :
+        by Dick Eastman (courtesy Megan Smolenyak), FGS Conference, August 2007
+    <br/>
+    <a href="http://www.pcworld.com/article/146917/article.html">
+     Father of the 8086
+    </a>
+    :
+        Interview by Benj Edwards, PC World, June 16, 2008
+    <br/>
+    <a href="https://web.archive.org/web/20170811182738/https://www.pcworld.com/article/146957/components/article.html">
+     Birth of a Standard (30 years)
+    </a>
+    :
+        The Intel 8086 Processor, by Benj Edwards, PC World, June 16, 2008
+    <br/>
+    <a href="melody.html">
+     Making Search Simple
+    </a>
+    :
+        Interview by Melody Amsel Arieli, Ancestors Magazine, December 2009
+    <br/>
+    <a href="https://web.archive.org/web/20100214075655/http://www.todaysengineer.org/2010/Feb/history.asp">
+     Electrical Engineering &amp; Popular Culture
+    </a>
+    :
+        Article by Michael Geselowitz, IEEE-USA Today's Engineer, February 2010
+    <br/>
+    <a href="frustration.html">
+     Far From Frustration
+    </a>
+    Article by Janet Bernice Jeys, Ancestry Magazine, March 2010
+    <br/>
+    <a href="misc/techniche2011.html">
+     Techniche 2011
+    </a>
+    Opening remarks delivered at Indian Instute of Technology, Guwahati, India, August 2011
+    <br/>
+    <a href="http://www.veoh.com/watch/v25050538qeaR4TaW">
+     Getting Ready for 1940 Census
+    </a>
+    Interview by SallyAnn Sack and Arline Sachs, December 2011
+    <br/>
+    <a href="http://www.veoh.com/watch/v26456992pykDpJdf">
+     One-Step Webpages
+    </a>
+    Interview by SallyAnn Sack and Arline Sachs, January 2012
+    <br/>
+    <a href="http://www.kqed.org/a/kqednews/RN201204041730/a">
+     San Francisco Man's Website, a Key to 1940 Census Data Goldmine
+    </a>
+    KQED Radio, April 4, 2012
+    <br/>
+    <a href="http://www.nbcbayarea.com/video/#!/news/local/Steve-Morse-Leaves-His-Mark--Twice-/147850195">
+     Steve Morse Leaves His Mark. Twice.
+    </a>
+    Garvin Thomas, NBC Nightly News, April 17, 2012
+    <br/>
+    <a href="http://www.politico.com/magazine/story/2013/11/who-needs-healthcaregov-99916.html">
+     Who Needs HealthCare.gov
+    </a>
+    Andrew Steinmetz &amp; Ezekial Emanuel, Politico, November 15, 2013
+    <br/>
+    <a href="familytree2014.html">
+     Five Questions
+    </a>
+    Interview by Sunny Jane Morton, Family Tree Magazine, January/February 2014
+    <br/>
+    <a href="jamboree2015interview">
+     Sheri McNeil Savory
+    </a>
+    Interview by Sheri McNeil Savory, June 2015
+    <br/>
+    <a href="https://www.pcworld.com/article/146957/components/article.html">
+     Birth of a Standard (40 years)
+    </a>
+    :
+        The Intel 8086 Processor turns 40, by Benj Edwards, PC World, June 8, 2018
+    <br/>
+    <a href="https://www.extremetech.com/computing/270926-happy-40th-anniversary-to-the-original-8086-and-the-x86-architecture">
+     40th Anniversary 8086
+    </a>
+    :
+        Happy 40th Anniversary to the Original Intel 8086, by Joel Hrsake, Extreme Tech, June 8, 2018
+    <br/>
+   </blockquote>
+  </a>
+  <a name="miscellaneous">
+   Miscellaneous
+   <br/>
+   <blockquote>
+    <a href="8086/index.html">
+     8086 Primer
+    </a>
+    :
+        Textbook published by Hayden Books, 1980
+    <br/>
+    <a href="8086history/8086history.doc">
+     Intel Microprocessors: 8008-8086
+    </a>
+    :
+        IEEE Computer, Vol 13, No. 10, page 46, October 1980
+    <br/>
+    <a href="beginning.htm">
+     In the Beginning
+    </a>
+    :
+        The 8086 Story
+    <br/>
+    <a href="https://www.computer.org/csdl/mags/co/2017/04/mco2017040008.pdf">
+     Intel 8086 Chip
+    </a>
+    :
+        The Future of Microprocessor Design
+    <br/>
+    <a href="ebay/silently.php">
+     Last-Minute Bidding
+    </a>
+    :
+        Silent Bidding (Sniping) on ebay in One Step
+    <br/>
+    <a href="ebay/bidhistory.php">
+     Bid History
+    </a>
+    :
+        Viewing ebay Bid History in One Step
+    <br/>
+    <a href="bookmarks/index.html">
+     Universal Bookmarks
+    </a>
+    :
+        Accessing your Bookmarks from anywhere in One Step
+    <br/>
+    <a href="tivo/tivo.html">
+     TIVO
+    </a>
+    :
+        Accessing your TIVO in One Step
+    <br/>
+    <a href="telephones/telephones.html">
+     Telephones
+    </a>
+    :
+        Identifying Popular Western Electric Telephones in One Step
+    <br/>
+    <a href="obamacare/obamacare.html">
+     ObamaCare
+    </a>
+    :
+        Viewing ObamaCare-Compliant Health Plans in One Step
+    <br/>
+    <a href="taxplan/taxplan.html">
+     Tax Brackets
+    </a>
+    :
+        Applying 2016-2018 Tax Brackets in One Step
+    <br/>
+    <a href="misc/wc.html">
+     Counting Words and Chars
+    </a>
+    :
+        Counting Words and Characters in One Step
+    <br/>
+    <a href="census/genericimagefetcher.html">
+     Fetching Multiple Images
+    </a>
+    :
+        Fetching Multiple JPEG Images in One Step
+    <br/>
+    <a href="google/googledate.html">
+     Googling by Date
+    </a>
+    :
+        Searching for Modified Web Pages in One Step
+    <br/>
+    <a href="google/googleplex.html">
+     Googling Multiple Domains
+    </a>
+    :
+        Searching through several Website Domains in One Step
+    <br/>
+    <a href="misc/flickr.html">
+     Flickr Pictures
+    </a>
+    :
+        Abstracts of Talks / Speaking Schedule
+    <br/>
+    <a href="ip.php">
+     IP Address
+    </a>
+    :
+        Finding your IP Address in One Step
+    <br/>
+    <a href="blockers.html">
+     Blockers
+    </a>
+    :
+        Why not to Install Pop-Up Blockers and Spyware Blockers
+    <br/>
+    <a href="abstracts.html">
+     Lectures
+    </a>
+    :
+        Abstracts of Talks / Speaking Schedule
+    <br/>
+    <a href="archives.html">
+     One-Step Archives
+    </a>
+    :
+        Changes to "Look &amp; Feel" of One-Step Website
+    <br/>
+   </blockquote>
+   <script>
+    if (GetParameter("oldformat") == "") {
+        EndHiding();
+      }
+   </script>
+   <script>
+    StartHiding();
+   </script>
+  </a>
+  <a href="https://www.jewishgen.org/databases/EIDB/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="https://www.jewishgen.org/databases/EIDB/faqg.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="https://www.jewishgen.org/databases/EIDB/faqj.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="https://www.jewishgen.org/databases/EIDB/faqs.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/faqd.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/faqb2.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/faqm.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/faqc.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/faqcg.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/cgtips.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ellis/destcodes.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="census/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="census/faq2030.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="census/faqa.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="census/faqg.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="census/soundexbatch.html">
+   Soundex Batch Mode
+  </a>
+  <a href="hebrew/hebsoundexbatch.html">
+   Hebrew Soundex Batch Mode
+  </a>
+  <a href="jcal/jcal2.html">
+   Jewish Calendar Batch Mode
+  </a>
+  <a href="jcal/latlonbatch.html">
+   Latitude/Longitude Geocoding Batch Mode
+  </a>
+  <a href="ssn/ccbatch.html">
+   Credit Card Validation Batch Mode
+  </a>
+  <a href="nyc/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="brooklyn/faqb.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="birthday/faqy.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="birthday/faqz.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="birthday/faql.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="prison/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ssdi/faqi.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="dna/faqc.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="jcal/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="jcal/rules.htm">
+   Jewish Calendar Rules
+  </a>
+  <a href="jcal/calendar.htm?year=5765">
+   Jewish Calendar
+  </a>
+  <a href="jcal/zipdetails.html">
+   Detailed Zipcode Prefixes
+  </a>
+  <a href="jcal/faqc.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="jcal/faqe.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="jcal/frules.htm">
+   French Calendar Rules
+  </a>
+  <a href="jcal/mayanrules.htm">
+   Mayan Calendar Rules
+  </a>
+  <a href="jcal/mrules.htm">
+   Muslim Calendar Rules
+  </a>
+  <a href="create/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="viewer/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ketubah/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="hebrew/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="hebrew/bezeqhebrew.html">
+   Bezeq Hebrew
+  </a>
+  <a href="japanese/description.html">
+   Description of Japanese Syllable Alphabets
+  </a>
+  <a href="dachau/auschwitzintro.htm">
+   Auschwitz Prisoner Photos
+  </a>
+  <a href="dachau/intro.htm">
+   Dachau Concentration Camp Records
+  </a>
+  <a href="jewishroof/intro.htm">
+   German Jewish Roof Card Collection
+  </a>
+  <a href="germanjews/germanjewsintro.html">
+   1933 German Jews Database
+  </a>
+  <a href="ebay/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="ebay/faqb.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="bookmarks/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="tivo/faq.htm">
+   Frequently Asked Questions
+  </a>
+  <a href="spywaretest.html">
+   Spyware Blocking
+  </a>
+  <a href="norton.html">
+   Ad Blocking
+  </a>
+  <a href="taxplan/taxplan2.php&gt;Viewing 2016-2018 Tax Brackets&lt;/a&gt;
+
+    &lt;a href=" presidents="">
+   Finding Presidents and their Ancestors in the Stranges Places
+  </a>
+  <script>
+   EndHiding();
+  </script>
+  <i>
+   <!--
+-->
+   <script>
+    if (GetParameter("oldformat") != "") {
+        StartHiding();
+      }
+   </script>
+   <br/>
+   Click on the
+   <img src="closed.gif"/>
+   icons above to open folders
+    and the
+   <img src="open.gif"/>
+   icons to close them.
+   <br/>
+   Click
+   <a href="javascript:ChangeAll('-')">
+    <font color="blue">
+     here
+    </font>
+   </a>
+   to open all folders
+    and
+   <a href="javascript:ChangeAll('+')">
+    <font color="blue">
+     here
+    </font>
+   </a>
+   to close all folders.
+   <br/>
+   If you cannot open folders, click
+   <a href="index.html?oldformat=true">
+    here
+   </a>
+   .
+   <script>
+    if (GetParameter("oldformat") != "") {
+        EndHiding();
+      }
+   </script>
+  </i>
+  <!--
+<br><br>
+This site is hosted by
+<a href="javascript:OpenWindow('http://www.icdsoft.com/?aff=spmorse.icd', '', 'icdsoft');">
+icdsoft
+</a>
+-->
+  <!--
+    <br>
+    <font size="2">
+      You are looking at a new layout for this page.
+      To use the old layout click <a href="oldindex.html"><font color='blue'>here</font></a>.
+    </font>
+-->
+ </body>
+</html>

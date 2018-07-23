@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8"/>
+  <link charset="UTF-8" href="/css/Japanese.css" rel="stylesheet" type="text/css"/>
+  <link href="/publis.css" rel="stylesheet" type="text/css"/>
+  <meta content="アジア経済研究所,アジ研,IDE,ジェトロ,研究所,研究機関,調査,研究,途上国,アジア,アフリカ,中東,ラテンアメリカ,経済,社会,政治,法制度,貧困,援助,開発,発展,経済協力,開発経済,開発研究,途上国研究,報告書,出版,図書館,セミナー,研究者,調査レポート" name="keywords"/>
+  <meta content="ジェトロ・アジア経済研究所はアジア、中東、中南米、アフリカ等、開発途上国・地域の諸問題について様々な研究を行っています。研究活動、出版物、講演会情報、図書館情報などを紹介。" name="description"/>
+  <title>
+   ジェトロ・アジア経済研究所
+  </title>
+  <script src="/scripts/jquery-1.11.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   <!--
+var isSP = false;
+function loadTag(pager, blockId, tagId, offset, func, pathinfo) {
+	$("#ajax-tab-container-" + blockId + "-" + tagId).data('loaded', 1);
+	var url = '/view_interface.php';
+	pathinfo = pathinfo || null;
+	$.ajax({
+		type: "GET",
+		url: url,
+		data : {
+			 'cmd' : 'loadTag'
+			,'blockId' : blockId
+			,'offset' : offset
+			,'tagId' : tagId
+			,'pathinfo' : pathinfo
+			,'ut' : parseInt((new Date)/1000)
+		},
+		crossDomain: false,
+		async: false,
+		dataType : 'json',
+		scriptCharset: 'utf-8',
+		beforeSend: function(xhr) {
+     		xhr.setRequestHeader('Pragma', 'no-cache');
+			xhr.setRequestHeader('Cache-Control', 'no-cache');
+			xhr.setRequestHeader('If-Modified-Since', 'Thu, 01 Jun 1970 00:00:00 GMT');
+		},
+	}).success(function(response){
+		eval(func + "(pager, response);");
+	}).fail(function(XMLHttpRequest, textStatus, errorThrown){
+		alert(errorThrown);
+	});
+}
+function _loadArticle(pager, response) {
+	var articles = response.articleList;
+	var blockId = response.blockId;
+	var tagId = response.tagId;
+	var tableId = "#recordList" + blockId + "-" + tagId;
+	if ($(tableId + " tr.record:first").size() !== 0) {
+		var recordOrigin = $(tableId + " tr.record:first").clone();
+	}
+	else {
+		var recordOrigin = $(tableId + " li.record:first").clone();
+	}
+	$(tableId + " tr.record ," + tableId + " li.record").remove();
+	$.each(articles, function(i, a) {
+		if (a['page_id']) {
+			var record = $(recordOrigin).clone();
+			$.each(record.find('span'), function(index, sp) {
+				changePageDatas(a, sp);
+			});
+			$(tableId).append(record);
+		}
+	});
+	setPageInfo(pager);
+	trimPager(pager);
+}
+
+function changePageDatas(a, sp) {
+	var roleName = $(sp).data('role');
+	if (!roleName) return;
+	var value = '';
+	if (roleName == 'link') {
+		var linkItems = $(sp).data('items');
+		if (linkItems) {
+			linkItems = linkItems.split(',');
+			for (var i=0; i<linkItems.length; i++) {
+				var itemVal = linkItems[i].split(':');
+				var keyName = itemVal[0];
+				if (a[keyName]) {
+					var pre = itemVal[1] ? itemVal[1] : '';
+					var suf = itemVal[2] ? itemVal[2] : '';
+					value += pre + a[keyName] + suf;
+				}
+			}
+			value = "<a href='" + a['url'] + "'>" + value + "</a>";
+		}
+		else {
+			value = "<a href='" + a['url'] + "'>" + a['title'] + "</a>";
+		}
+	}
+	else if (roleName == 'title') {
+		var titleItems = $(sp).data('items');
+		value = a['title'];
+	}
+	else if (roleName == 'textarea_summary') {
+		if (a['pageItems'][roleName] != undefined) {
+			var summaryItems = a['pageItems'][roleName][roleName];
+			if (summaryItems) {
+				value = a['pageItems'][roleName][roleName];
+			}
+		}
+	}
+	else if (roleName == 'tag_labels') {
+		if (a['tag_labels']) {
+			$.each(a['tag_labels'], function(index3, lbl) {
+				value += value ? '<br />' : '';
+				value += '<span class="cate">' + lbl + '</span>';
+			});
+		}
+		else {
+			value = a['tag_name'];
+		}
+	}
+	else if (roleName == 'flag_jetro_support') {
+		if (a['pageItems'][roleName] != undefined) {
+			value = a['pageItems'][roleName][roleName] != "" ? '<span class="cate">ジェトロ支援</span><br />' : '';
+		}
+	}
+	else if (roleName == 'flag_free') {
+		if (a['pageItems'][roleName] != undefined) {
+			value = a['pageItems'][roleName][roleName] != "" ? '<span class="muryo tag">無料</span>' : '';
+		}
+	}
+	//else if(roleName == 'textarea_rakusatsu_sha'){
+	else if(roleName == 'date_koukoku_date_result'){
+		if(a['pageItems'][roleName] != undefined){
+			if(a['pageItems'][roleName][roleName] != "" && a['pageItems'][roleName][roleName] != undefined){
+				value = "<ul><li><a href=\"" + a['url'] + "#result\">結果</a></li></ul>"
+			}
+			else {
+				value = "";
+			}
+		}
+		else {
+			value = "";
+		}
+	}
+	else if(roleName == 'date_proc_result_pubdate'){
+		if(a['pageItems'][roleName] != undefined){
+			if(a['pageItems'][roleName][roleName] != "" && a['pageItems'][roleName][roleName] != undefined){
+				value = "<ul><li><a href=\"" + a['url'] + "#result\">結果</a></li></ul>"
+			}
+			else {
+				value = "";
+			}
+		}
+		else {
+			value = "";
+		}
+	}
+	else if(roleName == 'tag_labels_invest'){
+		if(a['tag'] != undefined){
+			$.each(a['tag'], function(index4, tagData){
+				$.each(tagData ,function(index5, tagSub){
+					if(tagSub.tag_type == 5){
+						if(value == ''){
+							value = '<span class="cate">' + tagSub.tag_name + '</span>';
+						}
+					}
+				});
+			});
+		}
+	}
+	else if(roleName == 'publication_shubetsu'){
+		if(a['pageItems']['list_publication_shubetsu']['list_publication_shubetsu'] != undefined){
+			if(a['pageItems']['list_publication_shubetsu']['list_publication_shubetsu'] == "雑誌"){
+				value = a['pageItems']['text_subtitle'] ? "(" + a['pageItems']['text_subtitle']['text_subtitle'] + ")" : '';
+			}
+			else {
+				value = a['pageItems']['date_hakkoubi'] ? a['pageItems']['date_hakkoubi']['date_hakkoubi'] + '発売' : '';
+			}
+		}
+		else {
+			value = "";
+		}
+		if (value) {
+			value = "<a href='" + a['url'] + "'>" + a['title'] + " " + value + "</a>";
+		}
+	}
+	else {
+		value = a[roleName] ? a[roleName] : !a['pageItems'] ? '' : a['pageItems'][roleName] && a['pageItems'][roleName][roleName] ? a['pageItems'][roleName][roleName] : '';
+	}
+	$(sp).html(value);
+}
+
+function setPageInfo(pager) {
+	if (!pager.p.infoSelector) { return; }
+	var p = pager.p;
+	var info = $(p.infoSelector);
+	if (!p.total) {
+		var message = (p.nothingMessage) ? p.nothingMessage : '該当する記事はありません';
+		info.html(message);
+	}
+	else {
+		var format	= '{total}件中 {first}から{last}件目';
+		var maxView = p.curPage * p.limit;
+		var minView = maxView - (p.limit - 1);
+		if (maxView > p.total) { maxView = p.total; }
+		if (p.infoFormat) { format = p.infoFormat; }
+		var data = { total:p.total, first:minView, last:maxView };
+
+		info.html(format.replace(/{(total|first|last)}/g, function(all, g) { return data[g]; }));
+	}
+}
+
+function _loadTag(response) {
+	var articles = response.articleList;
+	var blockId = response.blockId;
+	var tagId = response.tagId;
+	var content = $("#ajax-tab-container-" + blockId + "-" + tagId);
+
+	var tagHtml = '<table>';
+	var count = 1;
+	$.each(articles, function(i, tag) {
+		if (tag['articleList']) {
+			var articleCount = tag['articleList'].length;
+
+			$.each(tag['articleList'], function(i, a) {
+				tagHtml += "<tr>";
+				if (i == 0) {
+					tagHtml += "<td rowspan='"+ articleCount +"'>" + tag['tag_name'] + "</td>";
+				}
+				tagHtml += "<td data-role='link'><a href='" + a['url'] + "'>" + a['title'] + "</a></td>";
+				tagHtml += "</tr>";
+			});
+
+		}
+		$("#ajax-tab-container-" + blockId + "-" + tagId).html(tagHtml);
+	});
+}
+
+function getTotal(blockId, tagId, pathinfo) {
+	var url = '/view_interface.php';
+	var count = 0;
+	$.ajax({
+		type: "GET",
+		url: url,
+		data : {
+			 'cmd' : 'getTotal'
+			,'blockId' : blockId
+			,'tagId' : tagId
+			,'pathinfo' : pathinfo
+			,'ut' : parseInt((new Date)/1000)
+		},
+		crossDomain: false,
+		async: false,
+		dataType : 'json',
+		scriptCharset: 'utf-8',
+		beforeSend: function(xhr) {
+     		xhr.setRequestHeader('Pragma', 'no-cache');
+			xhr.setRequestHeader('Cache-Control', 'no-cache');
+			xhr.setRequestHeader('If-Modified-Since', 'Thu, 01 Jun 1970 00:00:00 GMT');
+		},
+	}).success(function(response){
+		count = response.recordCount;
+	}).fail(function(XMLHttpRequest, textStatus, errorThrown){
+		alert(errorThrown);
+	});
+	return count;
+}
+
+function genPager(pagerSelector, blockId, tagId, dispNum, loadFunc, otherOpt, pathinfo) {
+	if (!otherOpt) { otherOpt = {}; }
+	if (dispNum <= 0) { return; }
+	var _pager = $(pagerSelector).pager($.extend({
+		curPage:		1,
+		total:			getTotal(blockId, tagId, pathinfo),
+		limit:			dispNum,
+		callback: function(pager, page) {
+			var offset = page == 1 ? 0 : (page - 1) * dispNum;
+			loadTag(pager, blockId, tagId, offset, loadFunc, pathinfo);
+		}
+	}, otherOpt));
+	window._pagerSelector = pagerSelector;
+
+	setPageInfo(_pager);
+	trimPager(_pager);
+	location.href.match(/\?_page=(\d+)/);
+	if (RegExp.$1) {
+		window._pager.pagerJump(RegExp.$1);
+		if (pdfIconFilter) {
+			pdfIconFilter();
+		}
+	}
+
+	$('.elem_pagination:not(.noAjax) a').click(function() {
+		var p = $(this).text();
+		switch (p) {
+			case '...':
+				p = parseInt($(this).data('more'), 10);
+				break;
+			case _pager.p.nextLabel:
+				p = parseInt($('.elem_pagination li.current').attr('data-p'), 10) + 1;
+				break;
+			case _pager.p.prevLabel:
+				p = parseInt($('.elem_pagination li.current').attr('data-p'), 10) - 1;
+				break;
+		}
+
+		var gets = location.href.split('?');
+		var newGets = ['_page=' + p];
+		if (gets[1]) {
+			gets = gets[1].split('&');
+			for (var i in gets) {
+				if (!gets[i].match(/^_page=/)) {
+					newGets.unshift(gets[i]);
+				}
+			}
+		}
+		var newUrl = location.pathname + '?' + newGets.join('&');
+		if (window.history && window.history.pushState && window.history.replaceState) {
+			window.history.pushState(null, null, newUrl);
+			window.history.replaceState(null, null, newUrl);
+			if(!$(this).parent().data('p')) {
+				window._pager.pagerJump(p);
+			}
+			return true;
+		}
+		else {
+			location.href = newUrl;
+			return false;
+		}
+	});
+}
+
+function trimPager(pager) {
+	if (window.pdfIconFilter) { pdfIconFilter(); }
+	window._pager = pager;
+	var showPagerNum = (isSP) ? 2 : 5;
+	var curr = pager.p.curPage - 0;
+	var minNum = curr - Math.floor(showPagerNum / 2);
+	if ((showPagerNum % 2) == 0) { minNum++; }
+	var maxNum = curr + Math.floor(showPagerNum / 2);
+	if (minNum < 1) {
+		maxNum += (minNum * -1) + 1;
+		minNum = 1;
+	}
+	if (maxNum > pager.p.totalPage) {
+		minNum -= maxNum - pager.p.totalPage;
+		if (minNum < 1) {
+			minNum = 1;
+		}
+	}
+
+	$(_pagerSelector+' li').each(function() {
+		var num = $(this).text() - 0;
+		(minNum > num || num > maxNum) ? $(this).hide() : $(this).show();
+	});
+
+	var targetP = $(_pagerSelector+' a[class="pageprev"]').parent();
+	var mPrev = curr - showPagerNum;
+	if (mPrev <= 1) { mPrev = 2; }
+	if (!$('#firstPage').length) { targetP.after('<li id="firstPage"><a href="javascript:void(0)">1</a></li>'); }
+	if (!$('#morePrev').length) {
+		$('#firstPage').after('<li id="morePrev"><a data-more="'+mPrev+'" href="javascript:void(0)">...</a></li>');
+	}
+	else {
+		$('#morePrev').find('a').data('more', mPrev);
+	}
+	(minNum > 1) ? $('#firstPage').show() : $('#firstPage').hide();
+	(minNum > 2) ? $('#morePrev').show()  : $('#morePrev').hide();
+
+	var targetN = $(_pagerSelector+' a[class="pagenext"]').parent();
+	var last  = pager.p.totalPage;
+	var mNext = curr + showPagerNum;
+	if (mNext >= last) { mNext = last - 1; }
+	if (!$('#lastPage').length) { targetN.before('<li id="lastPage"><a href="javascript:void(0)">'+last+'</a></li>'); }
+	if (!$('#moreNext').length) {
+		$('#lastPage').before('<li id="moreNext"><a data-more="'+mNext+'" href="javascript:void(0)">...</a></li>');
+	}
+	else {
+		$('#moreNext').find('a').data('more', mNext);
+	}
+	(maxNum < pager.p.totalPage)	 ? $('#lastPage').show() : $('#lastPage').hide();
+	(maxNum < pager.p.totalPage - 1) ? $('#moreNext').show() : $('#moreNext').hide();
+
+	(last == curr) ? $(pager.selector).find('.pagenext').hide() : $(pager.selector).find('.pagenext').show();
+	(1 == curr)    ? $(pager.selector).find('.pageprev').hide() : $(pager.selector).find('.pageprev').show();
+
+	if (isSP) {
+		if (curr > 4) {
+			if (!$('#spAppendPager').length) {
+				var clone = $(pager.selector).find('.pagination').clone(true);
+				clone.attr('id', 'spAppendPager').html('');
+				$(pager.selector).find('.pagination').before(clone);
+				$(pager.selector).not('#spAppendPager').find('.pageprev').parent().appendTo('#spAppendPager');
+				$(pager.selector).not('#spAppendPager').find('.pagenext').parent().appendTo('#spAppendPager');
+				$(pager.selector).find('.pageprev').parent().width('43%');
+				$(pager.selector).find('.pagenext').parent().width('43%');
+				$('#spAppendPager').css('padding-bottom', '5px');
+			}
+		}
+		else {
+			$('#firstPage').hide();
+			$('#morePrev').hide();
+		}
+	}
+}	var pbGlobalAliasBase = '/';
+//-->
+  </script>
+  <script src="/public.js" type="text/javascript">
+  </script>
+  <link href="/library/common/css/reset.css" rel="stylesheet" type="text/css"/>
+  <link href="/library/common/css/slider.css" rel="stylesheet" type="text/css"/>
+  <link href="/library/common/css/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/library/common/css/common.css" rel="stylesheet" type="text/css"/>
+  <script src="/library/common/js/jquery.slider.js" type="text/javascript">
+  </script>
+  <script src="/library/common/js/jquery-ui.min.js" type="text/javascript">
+  </script>
+  <script src="/library/common/js/common.js" type="text/javascript">
+  </script>
+  <script src="/library/common/js/jquery.cookie.js" type="text/javascript">
+  </script>
+  <script src="/library/common/js/jquery.textresizer.min.js" type="text/javascript">
+  </script>
+  <style type="text/css">
+   .modal-content {
+    position:fixed;
+    display:none;
+    z-index:2;
+}
+
+.modal-content p {
+    margin:0;
+    padding:0;
+}
+
+.modal-overlay {
+    z-index:1;
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:120%;
+    background-color:rgba(0,0,0,0.75);
+}
+
+.modal-open {
+    color:#00f;
+    text-decoration:underline;
+}
+
+.modal-open:hover {
+    cursor:pointer;
+    color:#f00;
+}
+
+.list-textcontent2 ol ol {
+    font-size: 1em;
+}	
+.list1x ul ol {
+    font-size: 1em;
+}	
+.list1x ul ol > li {
+    font-size: 1em;
+	list-style-type:decimal;
+	text-indent: 0;
+}	
+.list1x ul ol > li:before {
+    content: "";
+}
+  </style>
+  <meta content="no-referrer" name="referrer"/>
+  <script type="text/javascript">
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3371816-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <script src="/library/common/js/lang_redirect.js" type="text/javascript">
+  </script>
+ </head>
+ <body>
+  <div class="pbPage" id="page">
+   <div class="pbHeaderArea" id="headerArea">
+    <div class="pbArea " id="area1">
+     <div class="pbNested ">
+      <div class=" pbNested pbNestedWrapper " id="pbBlock72244">
+       <div class="pbNested ">
+        <div class="pbNested pbNestedWrapper " id="pbBlock3000">
+         <div class="pbBlock pbBlockBase">
+          <div>
+           <div class="header-inner">
+            <div class="logo">
+             <a href="/Japanese.html">
+              <img alt="IDE-JETRO ジェトロ・アジア経済研究所" src="/library/common/images/mainlogo.png" title="IDE-JETRO ジェトロ・アジア経済研究所"/>
+             </a>
+            </div>
+            <div class="header-right clearfix">
+             <ul class="header-nav">
+              <li>
+               <a href="/Japanese/Library.html">
+                図書館
+               </a>
+              </li>
+              <li>
+               <a href="/Japanese/Info/Inquiries.html">
+                お問い合わせ
+               </a>
+              </li>
+              <li>
+               <a href="/Japanese/sitemap.html">
+                サイトマップ
+               </a>
+              </li>
+              <li>
+               <a href="https://www.jetro.go.jp/" target="_blank">
+                JETRO
+               </a>
+              </li>
+             </ul>
+             <div class="header-parts">
+              <div class="font-size-change" id="textsize">
+               <p>
+                文字サイズ
+               </p>
+               <span class="font-size-change-btn textresizer-active">
+                <a href="#">
+                 標準
+                </a>
+               </span>
+               <span class="font-size-change-btn">
+                <a href="#">
+                 大
+                </a>
+               </span>
+              </div>
+              <select class="language-change" name="言語切り替え" onchange="location.href=value;">
+               <option label="Language">
+                Language
+               </option>
+               <option label="Japanese" value="/Japanese.html">
+                Japanese
+               </option>
+               <option label="English" value="/English.html">
+                English
+               </option>
+               <option label="Chinese" value="/Chinese.html">
+                Chinese
+               </option>
+               <option label="Korean" value="/Korean.html">
+                Korean
+               </option>
+               <option label="French" value="/French.html">
+                French
+               </option>
+               <option label="Spanish" value="/Spanish.html">
+                Spanish
+               </option>
+               <option label="Russian" value="/Russian.html">
+                Russian
+               </option>
+               <option label="Arabic" value="/Arabic.html">
+                Arabic
+               </option>
+              </select>
+              <div class="search-form-head">
+               <form action="/Japanese/Search/result.html" id="cse-search-box" name="cse-search-box">
+                <input name="cx" type="hidden" value="017478955533769994456:johxnlhfwl8"/>
+                <input name="ie" type="hidden" value="UTF-8"/>
+                <input alt="サイト内検索" class="search-text" name="q" style="border: 1px solid #7e9db9; padding: 2px; background: url('https://www.google.com/cse/static/ja/google_custom_search_watermark.gif') left center no-repeat #ffffff;" type="text"/>
+                <input alt="検索" class="search-btn" name="sa" type="submit" value="検索"/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=70&amp;order=0&amp;mode=0&amp;offset=70"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=70&amp;order=0&amp;mode=0&amp;offset=70"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/share_list.php?shareSearchWord=&amp;searchShareBlockGroup=2"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;mode=0&amp;offset=0"/>
+                <input name="ss" type="hidden" value=""/>
+                <input name="siteurl" type="hidden" value="52.196.8.186:8443/admin/share/edit.php?pageId=4&amp;shareId=1005&amp;revision=1&amp;offset=0&amp;order=0&amp;offset=0"/>
+                <input name="ref" type="hidden" value="52.196.8.186:8443/share_list.php?shareSearchWord=&amp;searchShareBlockGroup=2"/>
+                <input name="ss" type="hidden" value=""/>
+               </form>
+               <script src="//www.google.com/cse/brand?form=cse-search-box&amp;lang=ja" type="text/javascript">
+                // <![CDATA[
+
+                        // ]]>
+               </script>
+              </div>
+             </div>
+             <div class="header-h-menu">
+              <img alt="国・テーマ　インデックス" id="hmenu-btn" name="hmenu-btn" src="/library/common/images/hmenu.png" title="国・テーマ　インデックス"/>
+              <div id="hmenu-list">
+               <div class="hmenu-category-area">
+                <h4>
+                 【地域・国別にみる】
+                </h4>
+                <ul>
+                 <li class="cat-head">
+                  <span>
+                   アジア
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Korea.html">
+                     韓国
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Dprk.html">
+                     朝鮮民主主義人民共和国
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/China.html">
+                     中国
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Taiwan.html">
+                     台湾
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Thai.html">
+                     タイ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Indonesia.html">
+                     インドネシア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Malaysia.html">
+                     マレーシア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Philippines.html">
+                     フィリピン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Vietnam.html">
+                     ベトナム
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Laos.html">
+                     ラオス
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Cambodia.html">
+                     カンボジア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Myanmar.html">
+                     ミャンマー
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Srilanka.html">
+                     スリランカ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/India.html">
+                     インド
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Bangladesh.html">
+                     バングラデシュ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Pakistan.html">
+                     パキスタン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Asia/Papua.html">
+                     パプアニューギニア
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   中東・中央アジア
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Afghanistan.html">
+                     アフガニスタン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/GCC.html">
+                     アラビア半島
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Algeria.html">
+                     アルジェリア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Iran.html">
+                     イラン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Egypt.html">
+                     エジプト
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Kazakhstan.html">
+                     カザフスタン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Syria.html">
+                     シリア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Mid_e/Turkey.html">
+                     トルコ
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   アフリカ
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Uganda.html">
+                     ウガンダ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Ethiopia.html">
+                     エチオピア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Ghana.html">
+                     ガーナ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Gabon.html">
+                     ガボン
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Kenya.html">
+                     ケニア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/CotedIvoire.html">
+                     コートジボワール
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Congo.html">
+                     コンゴ共和国
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/DRC.html">
+                     コンゴ民主共和国
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Zambia.html">
+                     ザンビア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Zimbabwe.html">
+                     ジンバブウェ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Tanzania.html">
+                     タンザニア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Nigeria.html">
+                     ナイジェリア
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Burundi.html">
+                     ブルンジ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Madagascar.html">
+                     マダガスカル
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Malawi.html">
+                     マラウィ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Mali.html">
+                     マリ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Mozambique.html">
+                     モザンビーク
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/SouthAfrica.html">
+                     南アフリカ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Africa/Rwanda.html">
+                     ルワンダ
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   ラテンアメリカ
+                  </span>
+                  <ul>
+                   <li>
+                    メキシコ
+                   </li>
+                   <li>
+                    キューバ
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Latin/Venezuela.html">
+                     ベネズエラ
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Latin/Brazil.html">
+                     ブラジル
+                    </a>
+                   </li>
+                   <li>
+                    ペルー
+                   </li>
+                   <li>
+                    チリ
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Region/Latin/Argentina.html">
+                     アルゼンチン
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                </ul>
+               </div>
+               <div class="hmenu-category-theme">
+                <h4>
+                 【テーマ別にみる】
+                </h4>
+                <ul>
+                 <li class="cat-head">
+                  <span>
+                   経済
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Transration.html">
+                     移行経済
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Energy.html">
+                     エネルギー
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Industry.html">
+                     企業・産業
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Skill.html">
+                     技術-技能形成
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Intellectual.html">
+                     技術-知的財産権
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Spatial.html">
+                     空間経済学
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Globalization.html">
+                     グローバリゼーション-経済
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Growth.html">
+                     経済成長
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Major_manufacturing.html">
+                     工業化
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Io.html">
+                     国際産業連関
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Financial_development.html">
+                     財政・金融
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Regional.html">
+                     地域統合
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Agriculture.html">
+                     農業・農村経済
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Logistics.html">
+                     物流
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Trade.html">
+                     貿易・投資
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Microfinance.html">
+                     マイクロファイナンス
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Eco/Labor.html">
+                     労働
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   社会
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Aid.html">
+                     援助研究
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Environment.html">
+                     環境・資源
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Education.html">
+                     教育・人的資源
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Migration.html">
+                     国際人口移動
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Gender.html">
+                     ジェンダー
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Globalization.html">
+                     グローバリゼーション-文化と社会
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Social_development.html">
+                     社会開発
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Social_security.html">
+                     社会保障
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Disability.html">
+                     障害
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Urbanization.html">
+                     都市化
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Rural.html">
+                     農村社会
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Inequality.html">
+                     貧困・不平等
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Soc/Health.html">
+                     保健・感染症
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   政治
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/African.html">
+                     アフリカ政治
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Islam.html">
+                     イスラームと政治
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Social_movements.html">
+                     社会運動
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Institutions.html">
+                     政治制度・体制
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Elections.html">
+                     政党と選挙
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Decentralization.html">
+                     地方分権
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Local_autonomy.html">
+                     中央地方関係
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/International_relations.html">
+                     途上国と国際関係
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Conflict.html">
+                     紛争と平和構築
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Democratization.html">
+                     民主化
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Ethnic.html">
+                     民族
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Pol/Latin.html">
+                     ラテンアメリカ政治
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li class="cat-head">
+                  <span>
+                   法制度
+                  </span>
+                  <ul>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Law/Law.html">
+                     法制度
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Law/Disability.html">
+                     障害と法
+                    </a>
+                   </li>
+                   <li>
+                    <a href="/Japanese/Research/Theme/Law/HumanTrafficking.html">
+                     人身取引
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                </ul>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="pbNested pbNestedWrapper " id="pbBlock114977">
+         <!-- -->
+        </div>
+       </div>
+      </div>
+      <div class=" pbNested pbNestedWrapper " id="pbBlock1326992">
+       <div class="pbNested ">
+        <div class="pbNested pbNestedWrapper " id="pbBlock1303137">
+         <div class="pbBlock pbBlockBase">
+          <div>
+           <ul class="mainmenu clearfix">
+            <li id="menu1">
+             <a href="/Japanese/Research.html">
+              <span class="cat-name">
+               研究活動のご紹介
+              </span>
+             </a>
+             <div class="menu-drop" id="drop1">
+              <div class="inner">
+               <div class="inner-category">
+                <h3>
+                 研究活動のご紹介
+                </h3>
+                <img alt="研究活動のご紹介" src="/library/common/images/dropmenu-research.png" title="研究活動のご紹介"/>
+                <p>
+                 アジア経済研究所の
+                 <br/>
+                 研究活動をご紹介
+                </p>
+               </div>
+               <div class="research-menu">
+                <div class="research-menu-nav">
+                 <ul>
+                  <li>
+                   <a href="/Japanese/Research/Project.html">
+                    研究会一覧
+                   </a>
+                  </li>
+                  <li>
+                   <a href="/Japanese/Research/Net.html">
+                    研究ネットワーク
+                   </a>
+                  </li>
+                  <li>
+                   <a href="/Japanese/Event.html">
+                    イベント・セミナー情報
+                   </a>
+                  </li>
+                 </ul>
+                 <ul>
+                  <li>
+                   <a href="/Japanese/Research/Policy.html">
+                    調査研究方針
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+                <div class="research-movie">
+                 <ul>
+                  <li>
+                   <a href="/Japanese/Dogachannel.html">
+                    動画チャンネル
+                   </a>
+                   <div class="movie-list">
+                    <ul>
+                     <li>
+                      <a href="/Japanese/Dogachannel.html">
+                       <img alt="動画チャンネル" src="/library/Japanese/Dogachannel/images/movie.jpg" title="動画チャンネル"/>
+                      </a>
+                     </li>
+                    </ul>
+                   </div>
+                  </li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+            </li>
+            <li id="menu2">
+             <a href="/Japanese/Publish.html">
+              <span class="cat-name">
+               レポート・出版物
+              </span>
+             </a>
+             <div class="menu-drop" id="drop2">
+              <div class="inner">
+               <div class="inner-category">
+                <h3>
+                 レポート・出版物
+                </h3>
+                <img alt="レポート・出版物" src="/library/common/images/dropmenu-reports.png" title="レポート・出版物"/>
+                <p>
+                 各種レポートや出版物
+                 <br/>
+                 などを検索できます
+                </p>
+               </div>
+               <div class="reports-menu">
+                <table>
+                 <tbody>
+                  <tr>
+                   <th>
+                    検索
+                   </th>
+                   <td>
+                    <div class="search-form-head">
+                     <form action="/Japanese/Search/pub_search.html" method="get">
+                      <input name="cmd" type="hidden" value="search"/>
+                      <input name="cookieDel" type="hidden" value="true"/>
+                      <input autocomplete="off" class="search-text ui-autocomplete-input" id="search-box-report-JA-head" name="freeWord" placeholder="レポート・出版物を探す" type="text"/>
+                      <input class="search-btn" type="submit" value="検索する"/>
+                     </form>
+                    </div>
+                    <span class="btnType1">
+                     <a href="/Japanese/Search/pub_search.html?cookieDel=true">
+                      詳細検索
+                     </a>
+                    </span>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    地域・国別にみる
+                   </th>
+                   <td>
+                    <ul>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenRegionAsia" method="get" name="hiddenRegionAsia">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="1"/>
+                       <input name="country[]" type="hidden" value="12"/>
+                       <input name="country[]" type="hidden" value="13"/>
+                       <input name="country[]" type="hidden" value="20"/>
+                       <input name="country[]" type="hidden" value="31"/>
+                       <input name="country[]" type="hidden" value="38"/>
+                       <input name="country[]" type="hidden" value="14"/>
+                       <input name="country[]" type="hidden" value="15"/>
+                       <input name="country[]" type="hidden" value="16"/>
+                       <input name="country[]" type="hidden" value="17"/>
+                       <input name="country[]" type="hidden" value="18"/>
+                       <input name="country[]" type="hidden" value="19"/>
+                       <input name="country[]" type="hidden" value="21"/>
+                       <input name="country[]" type="hidden" value="22"/>
+                       <input name="country[]" type="hidden" value="23"/>
+                       <input name="country[]" type="hidden" value="24"/>
+                       <input name="country[]" type="hidden" value="25"/>
+                       <input name="country[]" type="hidden" value="26"/>
+                       <input name="country[]" type="hidden" value="27"/>
+                       <input name="country[]" type="hidden" value="28"/>
+                       <input name="country[]" type="hidden" value="29"/>
+                       <input name="country[]" type="hidden" value="30"/>
+                       <input name="country[]" type="hidden" value="32"/>
+                       <input name="country[]" type="hidden" value="33"/>
+                       <input name="country[]" type="hidden" value="34"/>
+                       <input name="country[]" type="hidden" value="35"/>
+                       <input name="country[]" type="hidden" value="36"/>
+                       <input name="country[]" type="hidden" value="37"/>
+                       <input name="country[]" type="hidden" value="39"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenRegionAsia.submit();return false;">
+                       アジア
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenRegionMeca" method="get" name="hiddenRegionMeca">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="2"/>
+                       <input name="country[]" type="hidden" value="40"/>
+                       <input name="country[]" type="hidden" value="41"/>
+                       <input name="country[]" type="hidden" value="42"/>
+                       <input name="country[]" type="hidden" value="43"/>
+                       <input name="country[]" type="hidden" value="44"/>
+                       <input name="country[]" type="hidden" value="45"/>
+                       <input name="country[]" type="hidden" value="46"/>
+                       <input name="country[]" type="hidden" value="47"/>
+                       <input name="country[]" type="hidden" value="48"/>
+                       <input name="country[]" type="hidden" value="49"/>
+                       <input name="country[]" type="hidden" value="50"/>
+                       <input name="country[]" type="hidden" value="51"/>
+                       <input name="country[]" type="hidden" value="52"/>
+                       <input name="country[]" type="hidden" value="53"/>
+                       <input name="country[]" type="hidden" value="54"/>
+                       <input name="country[]" type="hidden" value="55"/>
+                       <input name="country[]" type="hidden" value="56"/>
+                       <input name="country[]" type="hidden" value="57"/>
+                       <input name="country[]" type="hidden" value="58"/>
+                       <input name="country[]" type="hidden" value="59"/>
+                       <input name="country[]" type="hidden" value="60"/>
+                       <input name="country[]" type="hidden" value="61"/>
+                       <input name="country[]" type="hidden" value="62"/>
+                       <input name="country[]" type="hidden" value="63"/>
+                       <input name="country[]" type="hidden" value="64"/>
+                       <input name="country[]" type="hidden" value="65"/>
+                       <input name="country[]" type="hidden" value="66"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenRegionMeca.submit();return false;">
+                       中東・中央アジア
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenRegionAfrica" method="get" name="hiddenRegionAfrica">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="3"/>
+                       <input name="country[]" type="hidden" value="67"/>
+                       <input name="country[]" type="hidden" value="68"/>
+                       <input name="country[]" type="hidden" value="69"/>
+                       <input name="country[]" type="hidden" value="70"/>
+                       <input name="country[]" type="hidden" value="71"/>
+                       <input name="country[]" type="hidden" value="72"/>
+                       <input name="country[]" type="hidden" value="73"/>
+                       <input name="country[]" type="hidden" value="74"/>
+                       <input name="country[]" type="hidden" value="75"/>
+                       <input name="country[]" type="hidden" value="76"/>
+                       <input name="country[]" type="hidden" value="77"/>
+                       <input name="country[]" type="hidden" value="78"/>
+                       <input name="country[]" type="hidden" value="79"/>
+                       <input name="country[]" type="hidden" value="80"/>
+                       <input name="country[]" type="hidden" value="81"/>
+                       <input name="country[]" type="hidden" value="82"/>
+                       <input name="country[]" type="hidden" value="83"/>
+                       <input name="country[]" type="hidden" value="84"/>
+                       <input name="country[]" type="hidden" value="85"/>
+                       <input name="country[]" type="hidden" value="86"/>
+                       <input name="country[]" type="hidden" value="87"/>
+                       <input name="country[]" type="hidden" value="88"/>
+                       <input name="country[]" type="hidden" value="89"/>
+                       <input name="country[]" type="hidden" value="90"/>
+                       <input name="country[]" type="hidden" value="91"/>
+                       <input name="country[]" type="hidden" value="92"/>
+                       <input name="country[]" type="hidden" value="93"/>
+                       <input name="country[]" type="hidden" value="94"/>
+                       <input name="country[]" type="hidden" value="95"/>
+                       <input name="country[]" type="hidden" value="96"/>
+                       <input name="country[]" type="hidden" value="97"/>
+                       <input name="country[]" type="hidden" value="98"/>
+                       <input name="country[]" type="hidden" value="99"/>
+                       <input name="country[]" type="hidden" value="100"/>
+                       <input name="country[]" type="hidden" value="102"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenRegionAfrica.submit();return false;">
+                       アフリカ
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenRegionAmerica" method="get" name="hiddenRegionAmerica">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="4"/>
+                       <input name="country[]" type="hidden" value="103"/>
+                       <input name="country[]" type="hidden" value="104"/>
+                       <input name="country[]" type="hidden" value="105"/>
+                       <input name="country[]" type="hidden" value="106"/>
+                       <input name="country[]" type="hidden" value="107"/>
+                       <input name="country[]" type="hidden" value="108"/>
+                       <input name="country[]" type="hidden" value="109"/>
+                       <input name="country[]" type="hidden" value="110"/>
+                       <input name="country[]" type="hidden" value="111"/>
+                       <input name="country[]" type="hidden" value="112"/>
+                       <input name="country[]" type="hidden" value="113"/>
+                       <input name="country[]" type="hidden" value="114"/>
+                       <input name="country[]" type="hidden" value="115"/>
+                       <input name="country[]" type="hidden" value="116"/>
+                       <input name="country[]" type="hidden" value="117"/>
+                       <input name="country[]" type="hidden" value="118"/>
+                       <input name="country[]" type="hidden" value="119"/>
+                       <input name="country[]" type="hidden" value="120"/>
+                       <input name="country[]" type="hidden" value="121"/>
+                       <input name="country[]" type="hidden" value="122"/>
+                       <input name="country[]" type="hidden" value="123"/>
+                       <input name="country[]" type="hidden" value="124"/>
+                       <input name="country[]" type="hidden" value="125"/>
+                       <input name="country[]" type="hidden" value="126"/>
+                       <input name="country[]" type="hidden" value="127"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenRegionAmerica.submit();return false;">
+                       ラテンアメリカ
+                      </a>
+                     </li>
+                    </ul>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    テーマ別にみる
+                   </th>
+                   <td>
+                    <ul>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenThemeEco" method="get" name="hiddenThemeEco">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="5"/>
+                       <input name="theme[]" type="hidden" value="128"/>
+                       <input name="theme[]" type="hidden" value="129"/>
+                       <input name="theme[]" type="hidden" value="130"/>
+                       <input name="theme[]" type="hidden" value="131"/>
+                       <input name="theme[]" type="hidden" value="132"/>
+                       <input name="theme[]" type="hidden" value="133"/>
+                       <input name="theme[]" type="hidden" value="134"/>
+                       <input name="theme[]" type="hidden" value="135"/>
+                       <input name="theme[]" type="hidden" value="136"/>
+                       <input name="theme[]" type="hidden" value="137"/>
+                       <input name="theme[]" type="hidden" value="138"/>
+                       <input name="theme[]" type="hidden" value="139"/>
+                       <input name="theme[]" type="hidden" value="140"/>
+                       <input name="theme[]" type="hidden" value="141"/>
+                       <input name="theme[]" type="hidden" value="142"/>
+                       <input name="theme[]" type="hidden" value="143"/>
+                       <input name="theme[]" type="hidden" value="144"/>
+                       <input name="theme[]" type="hidden" value="145"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenThemeEco.submit();return false;">
+                       経済
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenThemeSoc" method="get" name="hiddenThemeSoc">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="6"/>
+                       <input name="theme[]" type="hidden" value="146"/>
+                       <input name="theme[]" type="hidden" value="147"/>
+                       <input name="theme[]" type="hidden" value="148"/>
+                       <input name="theme[]" type="hidden" value="149"/>
+                       <input name="theme[]" type="hidden" value="150"/>
+                       <input name="theme[]" type="hidden" value="151"/>
+                       <input name="theme[]" type="hidden" value="152"/>
+                       <input name="theme[]" type="hidden" value="153"/>
+                       <input name="theme[]" type="hidden" value="154"/>
+                       <input name="theme[]" type="hidden" value="155"/>
+                       <input name="theme[]" type="hidden" value="156"/>
+                       <input name="theme[]" type="hidden" value="157"/>
+                       <input name="theme[]" type="hidden" value="158"/>
+                       <input name="theme[]" type="hidden" value="159"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenThemeSoc.submit();return false;">
+                       社会
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenThemePol" method="get" name="hiddenThemePol">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="7"/>
+                       <input name="theme[]" type="hidden" value="160"/>
+                       <input name="theme[]" type="hidden" value="161"/>
+                       <input name="theme[]" type="hidden" value="162"/>
+                       <input name="theme[]" type="hidden" value="163"/>
+                       <input name="theme[]" type="hidden" value="164"/>
+                       <input name="theme[]" type="hidden" value="165"/>
+                       <input name="theme[]" type="hidden" value="166"/>
+                       <input name="theme[]" type="hidden" value="167"/>
+                       <input name="theme[]" type="hidden" value="168"/>
+                       <input name="theme[]" type="hidden" value="169"/>
+                       <input name="theme[]" type="hidden" value="170"/>
+                       <input name="theme[]" type="hidden" value="171"/>
+                       <input name="theme[]" type="hidden" value="172"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenThemePol.submit();return false;">
+                       政治
+                      </a>
+                     </li>
+                     <li>
+                      <form action="/Japanese/Search/pub_search.html" id="hiddenThemeLaw" method="get" name="hiddenThemeLaw">
+                       <input name="cmd" type="hidden" value="search"/>
+                       <input name="cookieDel" type="hidden" value="true"/>
+                       <input name="allSelect[]" type="hidden" value="8"/>
+                       <input name="theme[]" type="hidden" value="173"/>
+                       <input name="theme[]" type="hidden" value="174"/>
+                       <input name="theme[]" type="hidden" value="175"/>
+                      </form>
+                      <a href="javascript:void(0)" onclick="document.hiddenThemeLaw.submit();return false;">
+                       法制度
+                      </a>
+                     </li>
+                    </ul>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    出版物
+                   </th>
+                   <td>
+                    <div class="reports-menu-slider">
+                     <ul id="slider-reports">
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/W_trend.html">
+                        <img alt="アジ研ワールド・トレンド" src="/library/Japanese/Publish/slider/images/w_trend.jpg" title="アジ研ワールド・トレンド"/>
+                       </a>
+                       <p>
+                        アジ研ワールド・トレンド
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/Doko.html">
+                        <img alt="アジア動向年報" src="/library/Japanese/Publish/slider/images/doko.jpg" title="アジア動向年報"/>
+                       </a>
+                       <p>
+                        アジア動向年報
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/New.html">
+                        <img alt="単行書" src="/library/Japanese/Publish/slider/images/books.jpg" title="単行書"/>
+                       </a>
+                       <p>
+                        単行書
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/Me_review.html">
+                        <img alt="中東レビュー" src="/library/Japanese/Publish/slider/images/me_review.jpg" title="中東レビュー"/>
+                       </a>
+                       <p>
+                        中東レビュー
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/Africa.html">
+                        <img alt="アフリカレポート" src="/library/Japanese/Publish/slider/images/africa.jpg" title="アフリカレポート"/>
+                       </a>
+                       <p>
+                        アフリカレポート
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/Latin.html">
+                        <img alt="ラテンアメリカレポート" src="/library/Japanese/Publish/slider/images/latin.jpg" title="ラテンアメリカレポート"/>
+                       </a>
+                       <p>
+                        ラテンアメリカレポート
+                       </p>
+                      </li>
+                      <li>
+                       <a href="/Japanese/Publish/Periodicals/Ajia.html">
+                        <img alt="アジア経済" src="/library/Japanese/Publish/slider/images/ajiakeizai.jpg" title="アジア経済"/>
+                       </a>
+                       <p>
+                        アジア経済
+                       </p>
+                      </li>
+                     </ul>
+                    </div>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    その他コンテンツ
+                   </th>
+                   <td>
+                    <ul>
+                     <li>
+                      <a href="/English/Publish/Download/Dp.html">
+                       IDE Discussion Papers
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Publish/Download.html">
+                       レポート・報告書
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Data.html">
+                       データ・リソース
+                      </a>
+                     </li>
+                    </ul>
+                   </td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div>
+              </div>
+             </div>
+            </li>
+            <li id="menu3">
+             <a href="/Japanese/Researchers.html">
+              <span class="cat-name">
+               研究者のご紹介
+              </span>
+             </a>
+             <div class="menu-drop" id="drop3">
+              <div class="inner">
+               <div class="inner-category">
+                <h3>
+                 研究者のご紹介
+                </h3>
+                <img alt="研究者のご紹介" src="/library/common/images/dropmenu-researcher.png" title="研究者のご紹介"/>
+                <p>
+                 各項目から研究者を
+                 <br/>
+                 検索できます
+                </p>
+               </div>
+               <div class="researcher-menu-search">
+                <ul>
+                 <li>
+                  フリーワード検索
+                  <div class="researcher-form">
+                   <form action="/Japanese/Researchers/search.html" method="get">
+                    <input autocomplete="off" class="search-text ui-autocomplete-input" id="search-box-resercher-JA-head" name="searchText" placeholder="研究者を探す" type="text"/>
+                    <input class="search-btn" type="submit" value="検索する"/>
+                   </form>
+                  </div>
+                  <div class="researcher-menu-graybox">
+                   <ul>
+                    <li>
+                     <a href="/Japanese/Researchers/area.html">
+                      地域・国別一覧
+                     </a>
+                    </li>
+                    <li>
+                     <a href="/Japanese/Researchers/group.html">
+                      所属別一覧
+                     </a>
+                    </li>
+                   </ul>
+                   <ul>
+                    <li>
+                     <a href="/Japanese/Researchers/theme.html">
+                      テーマ別一覧
+                     </a>
+                    </li>
+                    <li>
+                     <a href="/Japanese/Researchers/abc.html">
+                      アルファベット順
+                     </a>
+                    </li>
+                   </ul>
+                  </div>
+                 </li>
+                </ul>
+               </div>
+               <div class="researcher-menu-nav">
+                <ul>
+                 <li>
+                  <a href="/Japanese/Researchers/Interview.html">
+                   研究者インタビュー
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/English/Researchers/Vrf.html">
+                   過去の海外客員リスト
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/Japanese/Press/Media.html">
+                   メディア出演
+                  </a>
+                 </li>
+                </ul>
+               </div>
+              </div>
+             </div>
+            </li>
+            <li id="menu4">
+             <a href="/Japanese/Info.html">
+              <span class="cat-name">
+               研究所について
+              </span>
+             </a>
+             <div class="menu-drop" id="drop4">
+              <div class="inner">
+               <div class="inner-category">
+                <h3>
+                 研究所について
+                </h3>
+                <img alt="研究所について" src="/library/common/images/dropmenu-about.png" title="研究所について"/>
+                <p>
+                 研究所の概要や施設など
+                 <br/>
+                 をご覧になれます
+                </p>
+               </div>
+               <div class="about-menu">
+                <table>
+                 <tbody>
+                  <tr>
+                   <th>
+                    組織について
+                   </th>
+                   <td>
+                    <ul>
+                     <li>
+                      <a href="/Japanese/Info/Message.html">
+                       所長からのメッセージ
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Info/Direct.html">
+                       アクセスマップ
+                      </a>
+                     </li>
+                    </ul>
+                    <ul>
+                     <li>
+                      <a href="/Japanese/Info/Profile/outline.html">
+                       事業概要
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Info/Inquiries.html">
+                       お問い合わせ先
+                      </a>
+                     </li>
+                    </ul>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    施設のご紹介
+                   </th>
+                   <td>
+                    <div class="about-bannars">
+                     <a href="/Japanese/Library.html">
+                      <img alt="図書館" src="/library/common/images/library-bannar.png" title="図書館"/>
+                     </a>
+                     <a href="/Japanese/Ideas.html">
+                      <img alt="開発スクールIDEAS" src="/library/common/images/school-bannar.png" title="開発スクールIDEAS"/>
+                     </a>
+                    </div>
+                   </td>
+                  </tr>
+                  <tr>
+                   <th>
+                    その他のコンテンツ
+                   </th>
+                   <td>
+                    <ul>
+                     <li>
+                      <a href="/Japanese/Award.html">
+                       発展途上国研究奨励賞
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Recruit.html">
+                       採用・募集情報
+                      </a>
+                     </li>
+                    </ul>
+                    <ul>
+                     <li>
+                      <a href="/Japanese/Members.html">
+                       賛助会サービス
+                      </a>
+                     </li>
+                     <li>
+                      <a href="/Japanese/Press/Media.html">
+                       メディア出演
+                      </a>
+                     </li>
+                    </ul>
+                   </td>
+                  </tr>
+                 </tbody>
+                </table>
+               </div>
+              </div>
+             </div>
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="pbAreaWrapper1" id="areaWrapper1">
+    <div class="pbRightArea" id="rightArea">
+     <div class="pbArea " id="area3">
+      <div class="pbNested ">
+       <div class="pbNested pbNestedWrapper " id="pbBlock72256">
+        <div class="pbNested " id="top-right-column">
+         <div class="side-idesquare pbNested pbNestedWrapper " id="pbBlock3014239">
+          <div class="pbBlock pbBlockBase">
+           <div>
+            <p>
+             <a href="/Japanese/IDEsquare.html">
+              途上国の今を知る
+              <br/>
+              <span>
+               IDEスクエア
+              </span>
+             </a>
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="side-library pbNested pbNestedWrapper " id="pbBlock72245">
+          <div class="pbBlock pbBlockBase">
+           <div>
+            <p>
+             <a href="/Japanese/Library.html">
+              途上国研究資料の
+              <br/>
+              専門図書館
+              <br/>
+              アジア経済研究所
+              <span>
+               図書館
+              </span>
+             </a>
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="side-IDEAS pbNested pbNestedWrapper " id="pbBlock72246">
+          <div class="pbBlock pbBlockBase">
+           <div>
+            <p>
+             <a href="/Japanese/Ideas.html">
+              国際開発の現場へ
+              <br/>
+              アジア経済研究所
+              <br/>
+              開発スクール
+              <span>
+               IDEAS
+              </span>
+             </a>
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="side-gateway pbNested pbNestedWrapper " id="pbBlock72252">
+          <div class="pbNested ">
+           <div class="pbNested pbNestedWrapper " id="pbBlock72247">
+            <div class="pbBlock pbBlockBase">
+             <div>
+              <p>
+               <img alt="途上国研究へのゲートウェイ" class="gateway-thumb" src="/library/common/images/side-gateway.png"/>
+              </p>
+              <p>
+               途上国研究への
+               <br/>
+               ゲートウェイ
+              </p>
+              <h2>
+               地域・国別にみる
+              </h2>
+             </div>
+            </div>
+           </div>
+           <div class="pbNested pbNestedWrapper " id="pbBlock72253">
+            <div class="pbNested " id="gateway-area">
+             <div class="pbNested pbNestedWrapper " id="pbBlock72248">
+              <div class="pbBlock pbBlockBase">
+               <div>
+                <ul>
+                 <li>
+                  <a href="/Japanese/Research/Region/Asia.html">
+                   アジア
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/Japanese/Research/Region/Africa.html">
+                   アフリカ
+                  </a>
+                 </li>
+                </ul>
+                <div class="list-r">
+                 <ul>
+                  <li>
+                   <a href="/Japanese/Research/Region/Mid_e.html">
+                    中東・中央アジア
+                   </a>
+                  </li>
+                  <li>
+                   <a href="/Japanese/Research/Region/Latin.html">
+                    ラテンアメリカ
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="pbNested pbNestedWrapper " id="pbBlock72249">
+            <div class="pbBlock pbBlockBase">
+             <div>
+              <h2>
+               テーマ別にみる
+              </h2>
+             </div>
+            </div>
+           </div>
+           <div class="pbNested pbNestedWrapper " id="pbBlock72254">
+            <div class="pbNested " id="gateway-theme">
+             <div class="pbNested pbNestedWrapper " id="pbBlock72250">
+              <div class="pbBlock pbBlockBase">
+               <div>
+                <ul>
+                 <li>
+                  <a href="/Japanese/Research/Theme/Eco.html">
+                   経済
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/Japanese/Research/Theme/Soc.html">
+                   社会
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/Japanese/Research/Theme/Pol.html">
+                   政治
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/Japanese/Research/Theme/Law.html">
+                   法律
+                  </a>
+                 </li>
+                </ul>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="side-publication pbNested pbNestedWrapper " id="pbBlock72255">
+          <div class="pbNested ">
+           <div class="pbNested pbNestedWrapper " id="pbBlock72251">
+            <div class="pbBlock pbBlockBase">
+             <div>
+              <h2>
+               新刊情報
+              </h2>
+             </div>
+            </div>
+           </div>
+           <div class="more pbNested pbNestedWrapper " id="pbBlock1053512">
+            <div class="pbBlock pbBlockBase">
+             <div>
+              <p>
+               <a href="/Japanese/Publish/New.html">
+                &gt;&gt; 一覧へ
+               </a>
+               <a href="http://www.ide.go.jp/rss/japanese_books.xml">
+                &gt;&gt; RSS
+               </a>
+              </p>
+             </div>
+            </div>
+           </div>
+           <div class="pbNested pbNestedWrapper " id="pbBlock72258">
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Periodicals/Ajia/201806.html">
+                     <img alt="アジア経済" src="/library/Japanese/Publish/Periodicals/Ajia/images/aji201806.jpg" title="アジア経済"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Periodicals/Ajia/201806.html">
+                    『アジア経済 2018年6月 第59巻　第2号』
+                   </a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Books/Extpub/b065.html">
+                     <img alt="リサイクルと世界経済――貿易と環境保護は両立できるか――" src="/library/Japanese/Publish/Books/Extpub/images/b65.jpg" title="リサイクルと世界経済――貿易と環境保護は両立できるか――"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Books/Extpub/b065.html">
+                    『リサイクルと世界経済――貿易と環境保護は両立できるか――』
+                   </a>
+                   （
+                   <a href="/Japanese/Researchers/kojima_michikazu.html">
+                    小島 道一
+                   </a>
+                   <span>
+                    著
+                   </span>
+                   、他社で出版した研究成果 中公新書）
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Periodicals/Doko/2018.html">
+                     <img alt="2018アジア動向年報" src="/library/Japanese/Publish/Periodicals/Doko/images/2018.jpg" title="2018アジア動向年報"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Periodicals/Doko/2018.html">
+                    『アジア動向年報 2018』
+                   </a>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Books/Extpub/b063.html">
+                     <img alt="サルゴフリー 店は誰のものか――イランの商慣行と法の近代化――" src="/library/Japanese/Publish/Books/Extpub/images/b063.jpg" title="サルゴフリー 店は誰のものか――イランの商慣行と法の近代化――"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Books/Extpub/b063.html">
+                    『サルゴフリー 店は誰のものか――イランの商慣行と法の近代化――』
+                   </a>
+                   （
+                   <a href="/Japanese/Researchers/iwasaki_yoko.html">
+                    岩﨑 葉子
+                   </a>
+                   <span>
+                    著
+                   </span>
+                   、他社で出版した研究成果 平凡社）
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Books/Sousho/636.html">
+                     <img alt="途上国の障害女性・障害児の貧困削減――数的データによる確認と実証分析――" src="/library/Japanese/Publish/Books/Sousho/images/636.jpg" title="途上国の障害女性・障害児の貧困削減――数的データによる確認と実証分析――"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Books/Sousho/636.html">
+                    『途上国の障害女性・障害児の貧困削減――数的データによる確認と実証分析――』
+                   </a>
+                   （
+                   <a href="/Japanese/Researchers/mori_soya.html">
+                    森 壮也
+                   </a>
+                   編、研究双書 No.636）
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div class="imgcaption-l MSM_NestedBlock pbNested pbNestedWrapper">
+             <div class="pbNested">
+              <div class="img-box smlimg MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <p>
+                    <a href="/Japanese/Publish/Books/Sousho/634.html">
+                     <img alt="ポスト・マハティール時代のマレーシア――政治と経済はどう変わったか――" src="/library/Japanese/Publish/Books/Sousho/images/634.jpg" title="ポスト・マハティール時代のマレーシア――政治と経済はどう変わったか――"/>
+                    </a>
+                   </p>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+              <div class="text-box MSM_NestedBlock pbNested pbNestedWrapper">
+               <div class="pbNested">
+                <div class="paragraph MSM_BaseBlock pbNested pbNestedWrapper">
+                 <div class="pbBlock pbBlockBase">
+                  <div>
+                   <a href="/Japanese/Publish/Books/Sousho/634.html">
+                    『ポスト・マハティール時代のマレーシア――政治と経済はどう変わったか――』
+                   </a>
+                   （
+                   <a href="/Japanese/Researchers/nakamura_masashi.html">
+                    中村 正志
+                   </a>
+                   、
+                   <a href="/Japanese/Researchers/kumagai_satoru.html">
+                    熊谷 聡
+                   </a>
+                   編、研究双書 No.634）
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="pbAreaWrapper2" id="areaWrapper2">
+     <div class="pbMainArea allindex" id="mainArea">
+      <div class="pbArea " id="area0">
+       <div class="pbNested ">
+        <div class="pbNested pbNestedWrapper " id="pbBlock72235">
+         <div class="pbNested " id="top-left-column">
+          <div class="pbNested pbNestedWrapper " id="pbBlock72241">
+           <div class="top-slider">
+            <ul id="slider-top">
+             <li>
+              <a href="/Japanese/Members/indi.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="賛助会個人利用会員入会のご案内" src="/library/Japanese/images/pc_kojin.jpg" title="賛助会個人利用会員入会のご案内"/>
+                </dt>
+                <dd>
+                 <h2>
+                  賛助会個人利用会員入会のご案内
+                 </h2>
+                 <p class="slider-text">
+                  アジア経済研究所賛助会個人利用会員――ジェトロ・アジア経済研究所が主催する有料講演会に無料参加できます（一部例外もあり）
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+             <li>
+              <a href="/Japanese/IDEsquare.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="IDEスクエア" src="/library/Japanese/images/pc_IDESquare.jpg" title="IDEスクエア"/>
+                </dt>
+                <dd>
+                 <h2>
+                  IDEスクエア
+                 </h2>
+                 <p class="slider-text">
+                  アジ研の研究員・職員が開発途上国の時事問題から社会事情、文化までを幅広く解説します。
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+             <li>
+              <a href="/Japanese/Research.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="ジェトロ・アジア経済研究所" src="/library/Japanese/images/pc_research.jpg" title="ジェトロ・アジア経済研究所"/>
+                </dt>
+                <dd>
+                 <h2>
+                  ジェトロ・アジア経済研究所
+                 </h2>
+                 <p class="slider-text">
+                  世界への知的貢献をなす日本の開発途上国研究の拠点。開発途上国の実態と課題を明らかにし、開発途上国に対する深い理解を広く国内外に提供します。
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+             <li>
+              <a href="/Japanese/Publish.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="出版物・報告書" src="/library/Japanese/images/pc_pubs.jpg" title="出版物・報告書"/>
+                </dt>
+                <dd>
+                 <h2>
+                  出版物・報告書
+                 </h2>
+                 <p class="slider-text">
+                  最新の研究成果を公開。雑誌は刊行と同時にオンラインで無料閲覧できます。
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+             <li>
+              <a href="/Japanese/Library.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="アジア経済研究所図書館" src="/library/Japanese/images/pc_library.jpg" title="アジア経済研究所図書館"/>
+                </dt>
+                <dd>
+                 <h2>
+                  アジア経済研究所図書館
+                 </h2>
+                 <p class="slider-text">
+                  本をとおして途上国と出会う――開発途上地域研究を支える世界一の資料センターへ。
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+             <li>
+              <a href="/Japanese/Ideas.html">
+               <dl class="slider-article">
+                <dt>
+                 <img alt="IDEAS" src="/library/Japanese/images/pc_ideas.jpg" title="IDEAS"/>
+                </dt>
+                <dd>
+                 <h2>
+                  IDEAS
+                 </h2>
+                 <p class="slider-text">
+                  アジア経済研究所開発スクール。研修を通じて、世界で活躍する未来の開発専門家を育成しています。
+                 </p>
+                 <p class="slider-link-more">
+                  &gt;&gt; More
+                 </p>
+                </dd>
+               </dl>
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+          <div class="section news pbNested pbNestedWrapper " id="pbBlock72237">
+           <div class="pbNested " id="news">
+            <div class="pbNested pbNestedWrapper " id="pbBlock72232">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <h2>
+                お知らせ
+               </h2>
+              </div>
+             </div>
+            </div>
+            <div class="more pbNested pbNestedWrapper " id="pbBlock72231">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <p>
+                <a href="/Japanese/New.html">
+                 &gt;&gt; 一覧へ
+                </a>
+                <a href="http://www.ide.go.jp/Japanese/news.rdf">
+                 &gt;&gt; RSS
+                </a>
+               </p>
+              </div>
+             </div>
+            </div>
+            <div class=" pbNested pbNestedWrapper " id="pbBlock1149121">
+             <div class="pbNested ">
+              <div class="pbNested pbNestedWrapper " id="pbBlock1149118">
+               <div class="pbBlock pbBlockBase">
+                <div>
+                 <ul>
+                  <li>
+                   <span class="date">
+                    2018.6.19
+                   </span>
+                   <a href="/Japanese/Research/Project/2017/2017110008.html#asia_africa">
+                    アジア・アフリカ開発ビジョン研究会を実施しました。
+                   </a>
+                  </li>
+                  <li>
+                   <span class="date">
+                    2018.6.13
+                   </span>
+                   [IDEAS]
+                   <a class="file-pdf" href="/library/Japanese/Ideas/pdf/2018_0613ideas.pdf">
+                    2018年度のIDEAS研修事業について
+                   </a>
+                   <a class="file-pdf" href="/library/Japanese/Ideas/pdf/2018newideas.pdf">
+                    当チラシ
+                   </a>
+                  </li>
+                  <li>
+                   <span class="date">
+                    2018.6.11
+                   </span>
+                   [記者発表]
+                   <a href="/Japanese/Press/20180611_news.html">
+                    第39回「発展途上国研究奨励賞」受賞作品決定について
+                   </a>
+                  </li>
+                  <li>
+                   <span class="date">
+                    2018.6.4
+                   </span>
+                   [開催報告]
+                   <a href="/Japanese/Event/Reports/20180528.html">
+                    開発途上国における都市・地域経済学に関する「IDEスクール」の開催について
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="section new-report pbNested pbNestedWrapper " id="pbBlock2005125">
+           <div class="pbNested ">
+            <div class="pbNested pbNestedWrapper " id="pbBlock2005126">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <h2>
+                Discussion Papers
+               </h2>
+              </div>
+             </div>
+            </div>
+            <div class="more pbNested pbNestedWrapper " id="pbBlock2005127">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <p>
+                <a href="/English/Publish/Download/Dp.html">
+                 &gt;&gt; 一覧へ
+                </a>
+               </p>
+              </div>
+             </div>
+            </div>
+            <div class="pbNested pbNestedWrapper " id="pbBlock2005128">
+             <ul>
+              <li>
+               <span class="date">
+                2018.06.05 (火曜)
+               </span>
+               <a href="/English/Publish/Download/Dp/720.html">
+                [IDE Discussion Papers]
+			Vietnamese Families and the Lives of Family Members with Disabilities : A Case Study in a Commune of the Red River Delta
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.05.30 (水曜)
+               </span>
+               <a href="/English/Publish/Download/Dp/719.html">
+                [IDE Discussion Papers]
+			Women-Owned Micro and Small Enterprises in Bhutan : What Major Obstacles Impede Their Growth and Innovation?
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.05.25 (金曜)
+               </span>
+               <a href="/English/Publish/Download/Dp/717.html">
+                [IDE Discussion Papers]
+			Love and Hate – "Is Militarization Perceived as Sustainable Development for Chittagong Hill Tracts (CHT)?: A Case Study on CHT, Bangladesh"
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.04.30 (月曜)
+               </span>
+               <a href="/English/Publish/Download/Dp/715.html">
+                [IDE Discussion Papers]
+			Scholarly Communications Revisited: Journal Publishing, Open Access, and Digital-Age Journals
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.04.30 (月曜)
+               </span>
+               <a href="/English/Publish/Download/Dp/716.html">
+                [IDE Discussion Papers]
+			Can RTA Labor Provisions Prevent the Deterioration of Domestic Labor Standards?: the Cases of Statutory Minimum Wages and Employment Protection Regulations
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+          <div class="section new-report pbNested pbNestedWrapper " id="pbBlock2005129">
+           <div class="pbNested " id="new-report">
+            <div class="pbNested pbNestedWrapper " id="pbBlock2005131">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <h2>
+                新着レポート
+               </h2>
+              </div>
+             </div>
+            </div>
+            <div class="more pbNested pbNestedWrapper " id="pbBlock2005130">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <p>
+                <a href="/Japanese/Publish/Download/new.html">
+                 &gt;&gt; 一覧へ
+                </a>
+                <a href="http://www.ide.go.jp/rss/japanese_download.xml">
+                 &gt;&gt; RSS
+                </a>
+               </p>
+              </div>
+             </div>
+            </div>
+            <div class="pbNested pbNestedWrapper " id="pbBlock2005132">
+             <ul>
+              <li>
+               <span class="date">
+                2018.06.22 (金曜)
+               </span>
+               <a href="/Japanese/IDEsquare/Column/ISQ000007/ISQ000007_004.html">
+                [IDEスクエア]
+			（おしえて！知りたい！途上国と社会）第4回　途上国の縫製工場に女性が多いのはなぜですか？
+						/   牧野 百恵
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.21 (木曜)
+               </span>
+               <a href="/Japanese/IDEsquare/Eyes/2018/ISQ201820_011.html">
+                [IDEスクエア]
+			（中国の空は青くなるか？――資源エネルギーから見た低炭素社会への道――）第1回　中国の空を汚しているもの
+						/   森永 正裕
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.18 (月曜)
+               </span>
+               <a href="/Japanese/Publish/Periodicals/Ajia/201806/ZAJ201806_010.html">
+                [アジア経済]
+			上野 祥「今井真士著『権威主義体制と政治制度――「民主化」の時代におけるエジプトの一党優位の実証分析――』」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.18 (月曜)
+               </span>
+               <a href="/Japanese/Publish/Periodicals/Ajia/201806/ZAJ201806_009.html">
+                [アジア経済]
+			倉持 和雄「本田洋著『韓国農村社会の歴史民族誌――産業化過程でのフィールドワーク再考――』」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.18 (月曜)
+               </span>
+               <a href="/Japanese/Publish/Periodicals/Ajia/201806/ZAJ201806_008.html">
+                [アジア経済]
+			安藤 光代「Richard Baldwin, The Great Convergence: Information Technology and the New Globalization」
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+          <div class="section event-seminar pbNested pbNestedWrapper " id="pbBlock72238">
+           <div class="pbNested " id="event-seminar">
+            <div class="pbNested pbNestedWrapper " id="pbBlock72229">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <h2>
+                イベント・セミナー情報
+               </h2>
+              </div>
+             </div>
+            </div>
+            <div class="more pbNested pbNestedWrapper " id="pbBlock72228">
+             <div class="pbBlock pbBlockBase">
+              <div>
+               <p>
+                <a href="/Japanese/Event.html">
+                 &gt;&gt; 一覧へ
+                </a>
+                <a href="http://www.ide.go.jp/rss/japanese_event.xml">
+                 &gt;&gt; RSS
+                </a>
+               </p>
+              </div>
+             </div>
+            </div>
+            <div class="pbNested pbNestedWrapper " id="pbBlock72240">
+             <ul>
+              <li>
+               <span class="date">
+                2018.06.01 (金曜)〜2018.07.30 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Library/20180601_shiryoukouen.html">
+                [図書館イベント] 資料展＆講演会「エチオピアの女性たちの光と影――タペストリーと資料で綴るその歴史と現在――」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.25 (月曜)
+               </span>
+               <a href="/Japanese/Event/Seminar/180625_doko1.html">
+                [講演会] 「『アジア動向年報2018』刊行記念企画――好景気に沸くアジア諸国の政治動向と見通し」（コース1）ASEAN、タイ、フィリピン
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.06.26 (火曜)
+               </span>
+               <a href="/Japanese/Event/Seminar/180626.html">
+                [講演会] 特別講演会「21世紀の産業グローバル化――バリュー・チェーン論からの示唆――」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.02 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180702_shorei.html">
+                [講演会] 第39回発展途上国研究奨励賞　表彰式・受賞講演
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.02 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Apl/180702_apl.html">
+                [APLセミナー] African Entrepreneurs in the new Millennium: Can the "Cheetah Generation" Transform Africa?
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.04 (水曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180704_doko2.html">
+                [講演会] 「『アジア動向年報2018』刊行記念企画――好景気に沸くアジア諸国の政治動向と見通し」（コース2）中国
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.05 (木曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180705.html">
+                [講演会] 専門講座「南北朝鮮の和解と米朝の『終戦』」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.05 (木曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180705_doko3.html">
+                [講演会] 「『アジア動向年報2018』刊行記念企画――好景気に沸くアジア諸国の政治動向と見通し」（コース3）バングラデシュ、パキスタン、インド
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.12 (木曜)
+               </span>
+               <a href="/Japanese/Event/Seminar/180712_doko4.html">
+                [講演会] 「『アジア動向年報2018』刊行記念企画――好景気に沸くアジア諸国の政治動向と見通し」（コース4）カンボジア、ミャンマー、ベトナム
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.14 (土曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180714.html">
+                [講演会] セミナー「発展途上国・新興国研究のための学術誌『アジア経済』への招待」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.17 (火曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180717_summer01.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース1 中東湾岸地域の政治経済：現状と展望
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.07.27 (金曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180727_summer02.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース2 一党優位と二党競合：マレーシア、トルコ、インド
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.01 (水曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180801_summer03.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース3 エチオピアの社会を知る：急激な経済成長のなかで変わる社会
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.02 (木曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180802_summer04.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース4 東アジア・太平洋地域の陸上・海上・航空物流の現状と課題
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.03 (金曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180803_summer05.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース5 中東における「強いリーダー」の統治スタイル：強権支配の現状と課題
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.06 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180806_summer06.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース6 「一帯一路構想」のインパクトと今後の展望
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.20 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180820_summer07.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース7 主権国家の確立/打破を目指すクルド人
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.08.27 (月曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180827_summer08.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース8 ハイチとドミニカ共和国：開発と展望
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.09.07 (金曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180907_summer09.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース9 途上国の障害女性・障害児の貧困削減
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.09.27 (木曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180927_summer10.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース10 「日本型コンビニエンスストアの途上国展開はSDGs達成に寄与するのか（テーマ編）」
+               </a>
+              </li>
+              <li>
+               <span class="date">
+                2018.09.28 (金曜) 受付中
+               </span>
+               <a href="/Japanese/Event/Seminar/180928_summer11.html">
+                [講演会] 2018年アジア経済研究所夏期公開講座（東京）――コース11 「日本型コンビニエンスストアの途上国展開はSDGs達成に寄与するのか（各国編）」
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="pbFooterArea" id="footerArea">
+    <div class="pbArea " id="area4">
+     <div class="pbNested ">
+      <div class=" pbNested pbNestedWrapper " id="pbBlock72260">
+       <div class="pbNested ">
+        <div class="pbNested pbNestedWrapper " id="pbBlock2869">
+         <div class="pbBlock pbBlockBase">
+          <div>
+           <footer>
+            <div class="footer-inner">
+             <div class="footer-about">
+              <a href="/Japanese.html">
+               <img alt="IDE-JETRO ジェトロ・アジア経済研究所" src="/library/common/images/logo-footer.png" title="IDE-JETRO ジェトロ・アジア経済研究所"/>
+              </a>
+              <p>
+               独立行政法人日本貿易振興機構 （法人番号 2010405003693）
+               <br/>
+               アジア経済研究所
+               <br/>
+               〒261-8545　千葉県千葉市美浜区若葉3-2-2
+              </p>
+              <p class="copyright">
+               Copyright (C) JETRO. All rights reserved.
+              </p>
+             </div>
+             <div class="footer-right">
+              <div class="footer-nav">
+               <ul>
+                <li>
+                 <a href="/Japanese/Info/Direct.html">
+                  アクセス
+                 </a>
+                </li>
+                <li>
+                 <a href="/Japanese/sitemap.html">
+                  サイトマップ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Japanese/privacy.html">
+                  個人情報保護
+                 </a>
+                </li>
+                <li>
+                 <a href="/Japanese/Recruit.html">
+                  採用・募集情報
+                 </a>
+                </li>
+               </ul>
+               <ul>
+                <li>
+                 <a href="/Japanese/legal.html">
+                  利用規約・免責事項
+                 </a>
+                </li>
+                <li>
+                 <a href="https://www.jetro.go.jp/procurement/" target="_blank">
+                  調達情報
+                 </a>
+                </li>
+                <li>
+                 <a href="https://www.jetro.go.jp/disclosure/" target="_blank">
+                  情報公開
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <div class="footer-links">
+               <a href="https://twitter.com/ide_jetro" target="_blank">
+                <img alt="Twitter" src="/library/common/images/footer-twitter.png" title="Twitter"/>
+               </a>
+               <a href="https://www.youtube.com/channel/UCaCuR_toRmt4Ww35m-at0Ow" target="_blank">
+                <img alt="Youtube" src="/library/common/images/footer-youtube.png" title="Youtube"/>
+               </a>
+               <a class="pbOpenNewWindow" href="/rss/japanese.xml">
+                <img alt="RSS" src="/library/common/images/footer-rss.png" title="RSS"/>
+               </a>
+               <a href="https://www.jetro.go.jp/mail/list/ide.html" target="_blank">
+                <img alt="メールマガジン" src="/library/common/images/footer-mm.png" title="メールマガジン"/>
+               </a>
+              </div>
+             </div>
+            </div>
+           </footer>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
+<!-- static作成日時 2018/06/23 21:15:17 ,staticファイル名 Japanese.html (from:php) -->

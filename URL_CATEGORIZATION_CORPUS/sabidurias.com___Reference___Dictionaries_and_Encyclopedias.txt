@@ -1,0 +1,1988 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="es" xmlns:fb="http://ogp.me/ns/fb#">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <base href="http://sabidurias.com/"/>
+  <title>
+   Citas y frases célebres | Sabidurias.com
+  </title>
+  <link href="http://feeds2.feedburner.com/Sabiduriascom" rel="alternate" title="Frase del día | Sabidurías" type="application/atom+xml"/>
+  <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+  <link href="/estilo.css" rel="stylesheet" type="text/css"/>
+  <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript">
+  </script>
+  <script src="js/cookies.js" type="text/javascript">
+  </script>
+  <style>
+   #overbox3 {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 999999;
+    display: block;
+}
+#infobox3 {
+    margin: auto;
+    position: relative;
+    top: 0px;
+    height: 58px;
+    width: 100%;
+    text-align:center;
+    background-color: #eeeeee;
+}
+#infobox3 p {
+    line-height:58px;
+    font-size:12px;
+    text-align:center;
+}
+#infobox3 p a {
+    margin-right:5px;
+    text-decoration: underline;
+}
+  </style>
+  <script type="text/javascript">
+   // de
+// German / Deutsch
+a2a_localize = {
+   Share: "Compartir",
+   Save: "Guardar",
+   Subscribe: "Suscribirse",
+   Email: "E-Mail",
+   Bookmark: "Favorios",
+   ShowAll: "Mostrar todos",
+   ShowLess: "Mostrar menos",
+   FindServices: "Encontrar servicios",
+   FindAnyServiceToAddTo: "Encontrar otro servicio para agregar",
+   PoweredBy: "Creado por",
+   ShareViaEmail: "Compartir via E-Mail",
+   SubscribeViaEmail: "Suscribir via E-Mail",
+   BookmarkInYourBrowser: "Favoritos de tu navegador",
+   BookmarkInstructions: "",
+   AddToYourFavorites: "Agregar a tus favoritos",
+   SendFromWebOrProgram: "Enviar desde una web o un programa",
+   EmailProgram: "Programa de e-mail"
+};
+
+function mostrar(enla , etik) { 
+  obj = document.getElementById(etik); 
+  obj.style.display = (obj.style.display == 'block') ? 'none' : 'block'; 
+}
+
+function ocultar(enla , etik) { 
+  obj = document.getElementById(etik); 
+  obj.style.display = (obj.style.display == 'none') ? 'block' : 'none'; 
+}
+  </script>
+  <script type="text/javascript">
+   function mostrar2(enla , etik) { 
+  obj = document.getElementById(etik); 
+  obj.style.display = 'block'; 
+}
+
+function ocultar2(enla , etik) { 
+  obj = document.getElementById(etik); 
+  obj.style.display = 'none'; 
+}
+  </script>
+  <script type="text/javascript">
+   function checkedAll (id, checked) {
+var el = document.getElementById(id);
+for (var i = 0; i < el.elements.length; i++) {
+ el.elements[i].checked = checked;
+}
+}
+function OnRequestPermission() {
+    window.location = "/login.php";
+}
+
+  function registrarUsuario() {
+		FB.api('/me?fields=first_name, last_name, email, gender', function(response) {
+			console.log(JSON.stringify(response));
+			
+			window.location = "/libs/login_facebook_sabidurias2.php?fbcodigo="+response.id+"&fbnombre="+response.first_name+" "+response.last_name+"&email="+response.email+"&gender="+response.gender+"&url=https://graph.facebook.com/"+response.id+"/picture?type=large&return_ssl_results=1";
+			
+		});
+  }
+  
+
+
+function OnLogout() {
+    window.location = "/desconectar/es";
+}
+  </script>
+  <script type="text/javascript">
+   function nuevoAjax()
+    { 
+        var xmlhttp=false; 
+        try 
+        { 
+            xmlhttp=new ActiveXObject("Msxml2.XMLHTTP"); 
+        }
+        catch(e)
+        { 
+            try
+            { 
+                xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
+            } 
+            catch(E) { xmlhttp=false; }
+        }
+        if (!xmlhttp && typeof XMLHttpRequest!='undefined') { xmlhttp=new XMLHttpRequest(); } 
+
+        return xmlhttp; 
+    }
+    function selectAll(){
+        var checkboxes = document.getElementsByTagName('input');
+        for(var i=0; i<checkboxes.length; i++){
+            var obj = checkboxes[i];
+            if(obj){
+                if(obj.name.indexOf('amigo_')!=-1)
+                    obj.checked = true;
+            }
+        }
+    }
+
+    function deselectAll(){
+        var checkboxes = document.getElementsByTagName('input');
+        for(var i=0; i<checkboxes.length; i++){
+            var obj = checkboxes[i];
+            if(obj){
+                if(obj.name.indexOf('amigo_')!=-1)
+                    obj.checked = false;
+            }
+        }
+    }
+
+    function traer_enviar_form(quote_id) {
+        ajax = nuevoAjax();
+        ajax.open("GET", "/quote_enviar_frase.php?quote_id="+quote_id,true);
+        ajax.onreadystatechange=function() {
+            if (ajax.readyState==4) {
+                document.getElementById("contenedor_enviar_quote").innerHTML = ajax.responseText
+            }
+        }
+        //ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        ajax.send();
+    }
+    function enviar_quote(){
+        quote      = document.getElementById('quote').value;
+        checkboxes = document.getElementsByTagName('input');
+        var par = "";
+        for(var i=0; i<checkboxes.length; i++){
+            if(checkboxes[i].name.indexOf('amigo_')!=-1) {
+                if(checkboxes[i].checked == true) {
+                    par += "amigo[" + checkboxes[i].value + "]=true&";
+                }
+            }
+        }
+
+        nom_1 = document.getElementById('nom_1').value;
+        nom_2 = document.getElementById('nom_2').value;
+        ema_1 = document.getElementById('ema_1').value;
+        ema_2 = document.getElementById('ema_2').value;
+
+        par+="noms=" + nom_1 + "|" + nom_2+"&";
+        par+="emails=" + ema_1 + "|" + ema_2;
+
+        ajax=nuevoAjax();
+        ajax.open("POST", "/amigos_mail.php?lang=es",true);
+        ajax.onreadystatechange=function() {
+            if (ajax.readyState==4) {
+                document.getElementById('enviaramigos').innerHTML = ajax.responseText
+            }
+        }
+        ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        ajax.send("&quote="+quote + "&" + par );
+    }
+
+    function addfavorita(quote)
+    {
+        ajax=nuevoAjax();
+        ajax.open("GET", "/work_favorita.php?lang=es&acc=add&quote="+quote, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            {
+                document.getElementById("add_"+quote).innerHTML = "<span class='exito'>Añadiendo...<\/span>";
+            }
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById("add_"+quote).innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+    }
+
+    function delfavorita(quote)
+    {
+        ajax=nuevoAjax();
+        ajax.open("GET", "/work_favorita.php?lang=es&acc=del&quote="+quote, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            {
+                document.getElementById("add_"+quote).innerHTML = "<span class='exito'>Eliminando...<\/span>";
+            }
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById("add_"+quote).innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+    }
+
+    function alertar_frase(quote)
+    {
+        ajax=nuevoAjax();
+        ajax.open("GET", "/work_repetida.php?lang=es&quote="+quote, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==4)
+            { 
+                document.getElementById('alertar_'+quote).innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+    }
+
+    function votar(quote,voto)
+    {
+        ajax=nuevoAjax();
+        ajax.open("GET", "/work_votos.php?lang=es&quote="+quote+"&voto="+voto, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            {
+                document.getElementById('voto_'+quote).innerHTML = "<span class='exito'>Votando...<\/span>";
+            }
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById('voto_'+quote).innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+    }
+
+    function check_user_exist()
+    {
+        var nombre = document.getElementById('nombre').value;
+        var button2 = document.getElementById('button2');
+        ajax=nuevoAjax();
+        ajax.open("GET", "/check_user_exist.php?lang=es&nombre="+nombre, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            { 
+                button2.disabled=false; 
+            } 
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById('user_error').innerHTML=ajax.responseText;
+                if (document.getElementById('user_error').innerHTML) { button2.disabled=true; }
+            } 
+        }
+        ajax.send(null);
+    }
+
+    function crear_codigo()
+    {
+        var fuente_cita  = document.getElementById('fuente_cita').value;
+        var size_cita    = document.getElementById('size_cita').value;
+        var color_cita   = document.getElementById('color_cita').value;
+        var size_autor   = document.getElementById('size_autor').value;
+        var weight_autor = document.getElementById('weight_autor').value;
+        var weight_cita  = document.getElementById('weight_cita').value;
+
+        ajax=nuevoAjax();
+        ajax.open("GET", "/crear_codigo.php?lang=es&fuente_cita="+fuente_cita+"&size_cita="+size_cita+"&color_cita="+color_cita+"&size_autor="+size_autor+"&weight_autor="+weight_autor+"&weight_cita="+weight_cita, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            { 
+                document.getElementById('ejemplo').innerHTML="Creando codigo...";
+            } 
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById('ejemplo').innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+	
+    }
+
+    function crear_codigo_wp()
+    {
+        var fuente_cita  = document.getElementById('fuente_cita').value;
+        var size_cita    = document.getElementById('size_cita').value;
+        var color_cita   = document.getElementById('color_cita').value;
+        var size_autor   = document.getElementById('size_autor').value;
+        var weight_autor = document.getElementById('weight_autor').value;
+        var weight_cita  = document.getElementById('weight_cita').value;
+
+        ajax=nuevoAjax();
+        ajax.open("GET", "/crear_codigo_wp.php?lang=es&fuente_cita="+fuente_cita+"&size_cita="+size_cita+"&color_cita="+color_cita+"&size_autor="+size_autor+"&weight_autor="+weight_autor+"&weight_cita="+weight_cita, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            { 
+                document.getElementById('ejemplo').innerHTML="Creando codigo...";
+            } 
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById('ejemplo').innerHTML=ajax.responseText;
+            }
+        }
+	
+        ajax.send(null);
+
+        css = {
+            family: {'1':"verdana",'2':"arial",'3':"courier",'4':"helvetic",'5':"times new roman"},
+            color: {'1':"#FFFFFF",'2':"#000000",'3':"#555555"},
+            weight: {'1':"normal",'2':"bold"}
+        }
+
+        codigo = "<!-- Inicio de Frase del dia / Sabidurias.com 1.0 -->\n"+
+            '<style type="text/css">\n'+
+            '<!--\n'+
+            'a.sb_cita  { font-family: '+css.family[fuente_cita] +'; font-size: '+size_cita+'pt; font-weight: '+css.weight[weight_cita]+'; color: '+css.weight[color_cita]+'; text-decoration: none; }\n'+
+            'a.sb_autor { font-family: '+css.family[fuente_cita] +'; font-size: '+size_autor+'pt; font-weight: '+css.weight[weight_cita]+'; color: '+css.weight[color_cita]+'; text-decoration: none; }\n'+
+            'a.sb_link { font-family: '+css.family[fuente_cita] +'; font-size: 8pt; color: '+css.weight[color_cita]+'; text-decoration: none; }\n'+
+            '-->\n'+
+            '<\/style>\n'+
+            '<?=php if (function_exists("frasedia_sabidurias")) { frasedia_sabidurias(); } ?><!-- Fin de Frase del dia / Sabidurias.com 1.0 -->';
+        document.getElementById('codigo').innerHTML=codigo;
+
+    }
+
+    function autoComplete(){
+        var i = 0;
+  
+        for(var node; node = document.getElementsByTagName('input')[i]; i++){
+            var type = node.getAttribute('type').toLowerCase();
+            if(type == 'text'){
+                node.setAttribute('autocomplete', 'off');
+            }
+        }
+    }
+
+    // Ejecutas la función luego de cargarse la página
+    window.onload = autoComplete();
+
+    function comprobar_frase()
+    {
+        var frase = document.getElementById('colaborar_frase').value;
+
+        ajax=nuevoAjax();
+        ajax.open("POST", "/work_frase.php?lang=es", true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==1)
+            { 
+                document.getElementById('iguales').innerHTML="Comprobando...";
+            } 
+            else if(ajax.readyState==4)
+            { 
+                document.getElementById('iguales').innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        ajax.send("&frase="+frase )
+    }
+
+    function seguir_frase(accion)
+    {
+        ajax=nuevoAjax();
+        ajax.open("GET", "/work_frase.php?lang=es&accion="+accion, true);
+        ajax.onreadystatechange=function() 
+        { 
+            if(ajax.readyState==4)
+            { 
+                document.getElementById('iguales').innerHTML=ajax.responseText;
+            } 
+        }
+        ajax.send(null);
+    }
+  </script>
+  <meta content="1390297841" property="fb:admins"/>
+  <meta content="217751295245806" property="fb:app_id"/>
+  <meta content="http://www.sabidurias.com/" property="og:url"/>
+  <meta content="es_ES" property="og:locale"/>
+  <meta content="" property="og:title"/>
+  <meta content="Citas y frases célebres | Sabidurias.com" property="og:description"/>
+  <meta content="www.sabidurias.com" property="og:site_name"/>
+ </head>
+ <body>
+  <!--<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/all.js#xfbml=1&appId=217751295245806";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+-->
+  <div class="contenido">
+   <div id="overbox3">
+    <div id="infobox3">
+     <p>
+      Esta web utiliza cookies para obtener datos estadísticos de la navegación de sus usuarios. Si continúas navegando consideramos que aceptas su uso.
+      <a href="politica-cookies/">
+       Más información
+      </a>
+      <a onclick="aceptar_cookies();" style="cursor:pointer;">
+       X Aceptar
+      </a>
+     </p>
+    </div>
+   </div>
+   <div class="contenido_top">
+   </div>
+   <div class="contenido_center">
+    <div class="titulo">
+     <span class="web">
+      Sabidurias.com
+     </span>
+     <span class="duda">
+      Citas y frases célebres
+     </span>
+     <span style="float: right;right: 18px;position: relative;top: 5px;">
+      <a href="https://plus.google.com/+Sabidurias" target="_blank">
+       <img border="0" src="/img/google.png"/>
+      </a>
+     </span>
+     <span style="float: right;right: 18px;position: relative;top: 5px;">
+      <a href="https://www.instagram.com/sabidurias/" target="_blank">
+       <img border="0" src="/img/insta.png"/>
+      </a>
+     </span>
+     <span style="float: right;right: 18px;position: relative;top: 5px;">
+      <a href="https://twitter.com/sabidurias" target="_blank">
+       <img border="0" src="/img/twit.png"/>
+      </a>
+     </span>
+     <span style="float: right;right: 18px;position: relative;top: 5px;">
+      <a href="https://www.facebook.com/sabidurias" target="_blank">
+       <img border="0" src="/img/face.png"/>
+      </a>
+     </span>
+    </div>
+    <div class="conectado">
+     <div class="tabsII" style="padding-left: 7px;">
+      <ul>
+       <li>
+        <a class="link-ruta" href="/registrate/es" rel="nofollow">
+         <span>
+          Regístrate
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="link-ruta" href="/identificate/es" rel="nofollow">
+         <span>
+          Identifícate
+         </span>
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <div class="clear">
+    </div>
+    <br/>
+    <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+    </script>
+    <!-- 728-superior-todas-sabidurias -->
+    <ins class="adsbygoogle" data-ad-client="ca-pub-7978554231337075" data-ad-slot="2077067008" style="display:inline-block;width:728px;height:90px">
+    </ins>
+    <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    <div class="esquerra">
+     <div class="menu_top">
+      <br/>
+     </div>
+     <div class="menu_center">
+      <span>
+       <a href="/citas/es">
+        Citas
+       </a>
+      </span>
+      <span>
+       <a href="/refranes/es">
+        Refranes
+       </a>
+      </span>
+      <span>
+       <a href="/proverbios/es">
+        Proverbios
+       </a>
+      </span>
+      <span>
+       <a href="/frase-infinita/es">
+        Frase infinita
+       </a>
+      </span>
+      <span>
+       <a href="/autores/es">
+        Autores
+       </a>
+      </span>
+      <span>
+       <a href="/top_votos/es">
+        Las más votadas
+       </a>
+      </span>
+      <span>
+       <a href="/top_enviadas/es">
+        Las más enviadas
+       </a>
+      </span>
+     </div>
+     <div class="menu_bottom">
+     </div>
+     <br/>
+     <!--<div class="menu_top"><br></div>
+<div class="menu_center">
+    <div class="clearfix" style="margin-left: 10px; margin-right: -5px;">
+        <div style="float: left; font-size: 10pt; margin-left: 0pt; font-weight: bold; text-align: center; margin-bottom: 6px; margin-right: 12px;">
+            Si te gusta la web, ayudanos a crecer haciendo clic aquí:
+        </div>
+        <div style="float: left; margin-left: 20px;">
+            <!-- Coloca esta etiqueta donde quieras que se muestre el botón +1. 
+            <g:plusone size="tall" href="http://www.sabidurias.com/"></g:plusone>
+            <!-- Coloca esta petición de presentación donde creas oportuno. 
+            <script type="text/javascript">
+                {lang: 'en-GB'}
+                (function() {
+                    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                    po.src = 'https://apis.google.com/js/plusone.js';
+                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                })();
+            </script>        
+        </div>
+        <div style="float: left; font-size: 25px; color: blue; margin-left: 14px; margin-top: 10px;">+1</div>
+    </div>
+</div>
+<div class="menu_bottom"></div>
+-->
+     <br/>
+     <div class="menu_top">
+     </div>
+     <div class="menu_center">
+      <span>
+       <a href="/registrate/es/colaborar">
+        Añadir frases
+       </a>
+      </span>
+      <span>
+       <a href="/webmasters/es">
+        Frases para tu web
+       </a>
+      </span>
+     </div>
+     <div class="menu_bottom">
+     </div>
+     <br/>
+     <div class="menu_top">
+     </div>
+     <div class="menu_center_3">
+      ¿Te gusta sabidurias?
+      <br/>
+      ¡Compartelo!
+      <br/>
+      <br/>
+      <span class="iconos">
+       <a href="http://del.icio.us/post?title=&amp;url=" target="_blank">
+        <img alt="delicious" border="0" src="/imatges/ico_delicious.gif"/>
+       </a>
+       <a href="http://www.digg.com/submit?url=" target="_blank">
+        <img alt="digg" border="0" src="/imatges/ico_digg.gif"/>
+       </a>
+       <a href="http://www.technorati.com/search/" target="_blank">
+        <img alt="technorati" border="0" src="/imatges/ico_technorati.gif"/>
+       </a>
+       <a href="http://tec.fresqui.com/post?url=">
+        <img alt="fresqui" border="0" src="/imatges/ico_fresqui.gif"/>
+       </a>
+       <a href="http://myweb2.search.yahoo.com/myresults/bookmarklet?u=" target="_blank">
+        <img alt="yahoo" border="0" src="/imatges/ico_yahoo.gif"/>
+       </a>
+       <a href="http://meneame.net/submit.php?url=" target="_blank">
+        <img alt="meneame" border="0" src="/imatges/ico_meneame.gif"/>
+       </a>
+      </span>
+     </div>
+     <div class="menu_bottom">
+     </div>
+     <br/>
+     <center>
+      <!--
+Plugin para<br>
+<a href="/wordpress/es"><img src="/imatges/wordpress-logo.gif" alt="WordPress" border="0"></a>
+-->
+     </center>
+    </div>
+    <div class="centre home">
+     <script src="/validator_es.js" type="text/javascript">
+     </script>
+     <script src="/js/ajax.js" type="text/javascript">
+     </script>
+     <script src="/js/ajax-dynamic-list.js" type="text/javascript">
+     </script>
+     <!--<script async language="javascript" type="text/javascript">
+lz="http://ocio.leadzu.com/inter_request.php?m=1GE5SITE41097X1&ip=1&a=&lbox=1&close=1&t=86400&lgid="+((new Date()).getTime() %2147483648) + Math.random();
+document.write("<scr"+"ipt language=javascript type=text/javascript src="+lz+"></scr"+"ipt>");
+</script>-->
+     <script type="text/javascript">
+      <!--
+
+	var img_mostrada = "";
+
+	var img_mostrada_int = 0;
+
+
+	function mostrar_ig(img) {
+
+		clearInterval(img_mostrada_int);
+
+
+
+		i = document.getElementById(img);
+
+		i.style.display = "block";
+
+		img_mostrada = img;
+
+	}
+
+	function mostrar_ig_i(img) {
+
+		clearInterval(img_mostrada_int);
+
+
+
+		img_mostrada = img;
+
+	}
+
+	function ocultar_ig(img) {
+
+		img_mostrada_int = setTimeout(ocultar_ig_i, 100);
+
+	}
+
+	function ocultar_ig_i() {
+
+		i = document.getElementById(img_mostrada);
+
+		i.style.display = "none";
+
+	}
+
+	-->
+     </script>
+     <div class="centre_home">
+      <h1 class="titulo_pagina_home">
+       Citas y frases célebres
+      </h1>
+      <center>
+       <table class="buscador_home">
+        <tr>
+         <td align="left">
+          <form action="buscar.php?lang=es" method="post" name="form_buscar">
+           <p id="span_buscar_frases">
+            <input name="palabra" style="width: 300px; font-size: 25px; padding-top: 5px; padding-bottom: 5px;" type="text" value=""/>
+            <input name="tipos" type="hidden" value="frase"/>
+            <input style="font-size: 30px" type="submit" value="  Buscar  "/>
+           </p>
+          </form>
+          <form action="buscar.php?lang=es" method="post" name="form_buscar">
+           <p id="span_buscar_autores" style="display:none;">
+            <input id="country" name="palabra" onkeyup="ajax_showOptions(this,'getCountriesByLetters',event)" style="width: 300px; font-size: 25px; padding-top: 5px; padding-bottom: 5px;" type="text" value=""/>
+            <input name="tipos" type="hidden" value="autor"/>
+            <input id="country_hidden" name="country_ID" type="hidden"/>
+            <input style="font-size: 30px" type="submit" value="  Buscar  "/>
+           </p>
+          </form>
+          <p style="padding-top: 5px; font-size: 10px; color: #6f6F6F;">
+           <input checked="" id="id_frase" name="ra" onclick="mostrar2(this,'span_buscar_frases'); ocultar2(this,'span_buscar_autores'); id_frase.checked=true; id_autor.checked=false;" type="radio"/>
+           <label for="id_frase" style="font-size: 20px">
+            por frases
+           </label>
+           <input id="id_autor" name="ra" onclick="ocultar2(this,'span_buscar_frases'); mostrar2(this,'span_buscar_autores'); id_frase.checked=false; id_autor.checked=true;" type="radio"/>
+           <label for="id_autor" style="font-size: 20px">
+            por autor
+           </label>
+          </p>
+         </td>
+        </tr>
+       </table>
+      </center>
+      <div style="overflow: hidden;">
+       <br/>
+       <span class="sobre_nube">
+        Frase del día:
+       </span>
+       <br/>
+       <br/>
+       <div onmousemove="document.getElementById('twitter7924').style.display='inline'" onmouseout="document.getElementById('twitter7924').style.display='none'">
+        <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/892/george-bernard-shaw-.jpg" width="80px"/>
+        <img alt="" src="imatges/comillas_izquierda_35.jpg"/>
+        <span id="cita">
+         <a class="result_cita" href="cita/es/7924/george-bernard-shaw/la-virtud-no-consiste-en-abstenerse-del-vicio-sino-en-no-desearlo">
+          La virtud no consiste en abstenerse del vicio, sino en no desearlo.
+         </a>
+        </span>
+        <img align="top" alt="" src="imatges/comillas_derecha_35.jpg"/>
+        <a class="result_autor" href="/autor/george-bernard-shaw/es/892">
+         (
+		George Bernard Shaw)
+        </a>
+        <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CLa virtud no consiste en abstenerse del vicio, sino en no desearlo.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/7924/george-bernard-shaw/la-virtud-no-consiste-en-abstenerse-del-vicio-sino-en-no-desearlo','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none; float:right;">
+         <div class="post-to-twitter" id="twitter7924" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+          <i class="fa fa-twitter">
+          </i>
+          Compartir
+         </div>
+        </a>
+       </div>
+       <div style="width: 40%; float: left;">
+       </div>
+       <!--	<div class="fb-comments" data-href="http://www.sabidurias.com/cita/es/7924/george-bernard-shaw/la-virtud-no-consiste-en-abstenerse-del-vicio-sino-en-no-desearlo" data-numposts="5" data-colorscheme="light"></div>-->
+       <div class="clear">
+       </div>
+       <div style="position: relative; z-index: 10; text-align: right; margin-right: 50px;">
+        La frase del día en tu
+        <a href="webmasters/es">
+         web
+        </a>
+        ,
+        <a href="wordpress/es">
+         blog
+        </a>
+        ,
+        <a href="http://www.facebook.com/sabidurias" target="_blank">
+         facebook
+        </a>
+        ,
+        <a href="http://twitter.com/sabidurias">
+         twitter
+        </a>
+       </div>
+       <br/>
+       <div style="font-size:10px;">
+        <!--
+
+		<div style="margin-bottom: 5px;"><span style="color: red; font-weight: bold;">¡Nuevo!</span> Se de los primeros en hacerte fan</div>
+
+            -->
+        <script type="text/javascript">
+         //		document.write('<fb:fan profile_id="100375209629" stream="0" connections="8" width="540" height="180"><\/fb:fan>');
+        </script>
+       </div>
+       <div style="float: left; width: 50%;">
+       </div>
+       <br/>
+       <br/>
+      </div>
+      <table class="table_dia">
+       <tr>
+        <td>
+         <a class="dia" href="result.php?lang=es&amp;buscarid=8">
+          Frases de
+          <b>
+           amor
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="result.php?lang=es&amp;buscarid=171">
+          Frases de
+          <b>
+           amistad
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="result.php?lang=es&amp;buscarid=223">
+          Frases de
+          <b>
+           trabajo
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="result.php?lang=es&amp;buscarid=183">
+          Frases de
+          <b>
+           sexo
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="result.php?lang=es&amp;buscarid=154">
+          Frases de
+          <b>
+           mujer
+          </b>
+         </a>
+         <br/>
+        </td>
+        <td>
+         <a class="dia" href="autor/woody-allen/es/20">
+          Citas de
+          <b>
+           Woody Allen
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/groucho-marx/es/625">
+          Citas de
+          <b>
+           Groucho Marx
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/albert-einstein/es/318">
+          Citas de
+          <b>
+           Albert Einstein
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/confucio/es/236">
+          Citas de
+          <b>
+           Confucio
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/platon/es/745">
+          Citas de
+          <b>
+           Platón
+          </b>
+         </a>
+         <br/>
+        </td>
+        <td>
+         <a class="dia" href="autor/proverbio-chino/es/770">
+          Proverbios
+          <b>
+           chinos
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/proverbio-arabe/es/768">
+          Proverbios
+          <b>
+           árabes
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="tags/junio/es/12447">
+          Refranes de
+          <b>
+           junio
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="tags/verano/es/6790">
+          Refranes de
+          <b>
+           verano
+          </b>
+         </a>
+         <br/>
+         <a class="dia" href="autor/nonimo/es/30">
+          Frases
+          <b>
+           anónimas
+          </b>
+         </a>
+         <br/>
+        </td>
+       </tr>
+      </table>
+      <br/>
+      <br/>
+      <span class="sobre_nube">
+       Últimas búsquedas:
+      </span>
+      <br/>
+      <span class="nube_home">
+       <a class="tag_14" href="http://www.sabidurias.com/tags/antes/es/592">
+        antes
+       </a>
+       <a class="tag_16" href="http://www.sabidurias.com/tags/aprender/es/1393">
+        aprender
+       </a>
+       <a class="tag_19" href="http://www.sabidurias.com/tags/buen/es/37">
+        buen
+       </a>
+       <a class="tag_13" href="http://www.sabidurias.com/tags/decir/es/287">
+        decir
+       </a>
+       <a class="tag_17" href="http://www.sabidurias.com/tags/dia/es/1197">
+        día
+       </a>
+       <a class="tag_8" href="http://www.sabidurias.com/tags/echar/es/8343">
+        echar
+       </a>
+       <a class="tag_7" href="http://www.sabidurias.com/tags/forma/es/458">
+        forma
+       </a>
+       <a class="tag_12" href="http://www.sabidurias.com/tags/jamas/es/640">
+        jamás
+       </a>
+       <a class="tag_5" href="http://www.sabidurias.com/tags/llegar/es/3343">
+        llegar
+       </a>
+       <a class="tag_3" href="http://www.sabidurias.com/tags/manos/es/906">
+        manos
+       </a>
+       <a class="tag_11" href="http://www.sabidurias.com/tags/mientras/es/616">
+        mientras
+       </a>
+       <a class="tag_1" href="http://www.sabidurias.com/tags/nuestros/es/799">
+        nuestros
+       </a>
+       <a class="tag_4" href="http://www.sabidurias.com/tags/parece/es/295">
+        parece
+       </a>
+       <a class="tag_10" href="http://www.sabidurias.com/tags/parte/es/1015">
+        parte
+       </a>
+       <a class="tag_9" href="http://www.sabidurias.com/tags/pasado/es/98">
+        pasado
+       </a>
+       <a class="tag_6" href="http://www.sabidurias.com/tags/pronto/es/978">
+        pronto
+       </a>
+       <a class="tag_2" href="http://www.sabidurias.com/tags/sabiduria/es/284">
+        sabiduría
+       </a>
+       <a class="tag_20" href="http://www.sabidurias.com/tags/solo/es/110">
+        sólo
+       </a>
+       <a class="tag_15" href="http://www.sabidurias.com/tags/todas/es/9">
+        todas
+       </a>
+       <a class="tag_18" href="http://www.sabidurias.com/tags/ver/es/849">
+        ver
+       </a>
+      </span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="sobre_nube">
+       Autores destacados:
+      </span>
+      <br/>
+      <span class="nube_home">
+       <a class="tag_6" href="http://www.sabidurias.com/autor/epicteto-de-frigia/es/326">
+        Epicteto de Frigia
+       </a>
+       <a class="tag_10" href="http://www.sabidurias.com/autor/honore-de-balzac/es/64">
+        Honoré de Balzac
+       </a>
+       <a class="tag_18" href="http://www.sabidurias.com/autor/johann-wolfgang-goethe/es/409">
+        Johann Wolfgang Goethe
+       </a>
+       <a class="tag_4" href="http://www.sabidurias.com/autor/jose-marti/es/621">
+        José Martí
+       </a>
+       <a class="tag_8" href="http://www.sabidurias.com/autor/khalil-gibran/es/397">
+        Khalil Gibran
+       </a>
+       <a class="tag_20" href="http://www.sabidurias.com/autor/miguel-de-cervantes-saavedra/es/182">
+        Miguel de Cervantes Saavedra
+       </a>
+       <a class="tag_2" href="http://www.sabidurias.com/autor/novalis/es/694">
+        Novalis
+       </a>
+       <a class="tag_16" href="http://www.sabidurias.com/autor/platon/es/745">
+        Platón
+       </a>
+       <a class="tag_12" href="http://www.sabidurias.com/autor/sir-francis-bacon/es/58">
+        Sir Francis Bacon
+       </a>
+       <a class="tag_14" href="http://www.sabidurias.com/autor/woody-allen/es/20">
+        Woody Allen
+       </a>
+      </span>
+      <br/>
+      <br/>
+      <br/>
+      <span class="sobre_nube">
+       Últimas frases:
+      </span>
+      <!--<div class="clearfix" align="center">
+            <script type="text/javascript">
+            sas_tmstp=Math.round(Math.random()*10000000000);sas_masterflag=1;
+            function SmartAdServer(sas_pageid,sas_formatid,sas_target) {
+             if (sas_masterflag==1) {sas_masterflag=0;sas_master='M';} else {sas_master='S';};
+             document.write('<scr'+'ipt src="http://www2.smartadserver.com/call/pubj/' + sas_pageid + '/' + sas_formatid + '/' + sas_master + '/' + sas_tmstp + '/' + escape(sas_target) + '?"></scr'+'ipt>');
+            }
+            </script>
+
+            <script type="text/javascript">
+            sas_pageid='5998/37364';  // Página : tonterias/tonterias
+            sas_formatid=1881;    // Formato : 300x250 300x250
+            sas_target='';      // Targeting
+            SmartAdServer(sas_pageid,sas_formatid,sas_target);
+            </script>
+            <noscript>
+            <a href="http://www2.smartadserver.com/call/pubjumpi/5998/37364/1881/M/[timestamp]/?">
+            <img src="http://www2.smartadserver.com/call/pubi/5998/37364/1881/M/[timestamp]/?" border="0" alt="" /></a>
+            </noscript>
+        </div>-->
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/2421/friedrich-durrenmatt-1.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter2542').style.display='inline'" onmouseout="document.getElementById('twitter2542').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/2542/friedrich-drrenmatt/el-ocio-representara-el-problema-mas-acuciante-pues-es-muy-dudoso-que-el-hombre-se-aguante-a-si-mismo">
+        El ocio representará el problema más acuciante, pues es muy dudoso que el hombre se aguante a sí mismo.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/friedrich-drrenmatt/es/2421">
+        Friedrich Dürrenmatt
+       </a>
+       )
+       <span style="color: white;">
+        _____________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CEl ocio representará el problema más acuciante, pues es muy dudoso que el hombre se aguante a sí mismo.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/2542/friedrich-drrenmatt/el-ocio-representara-el-problema-mas-acuciante-pues-es-muy-dudoso-que-el-hombre-se-aguante-a-si-mismo','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter2542" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_2542">
+        Votar:
+        <a onclick="votar('2542','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('2542','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_2542">
+        <a class="link-ruta" onclick="addfavorita('2542');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_2542">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('2542');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/2542/friedrich-drrenmatt/el-ocio-representara-el-problema-mas-acuciante-pues-es-muy-dudoso-que-el-hombre-se-aguante-a-si-mismo&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/acuciante/es/5236">
+         acuciante
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/aguante/es/5238">
+         aguante
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/dudoso/es/5237">
+         dudoso
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/hombre/es/7">
+         hombre
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/ocio/es/3131">
+         ocio
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/problema/es/455">
+         problema
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/representara/es/5235">
+         representará
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/1122/antonio-porchia-2.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter46157').style.display='inline'" onmouseout="document.getElementById('twitter46157').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/46157/antonio-porchia/pierdo-el-deseo-de-lo-que-busco-buscando-lo-que-deseo">
+        Pierdo el deseo de lo que busco, buscando lo que deseo.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/antonio-porchia/es/1122">
+        Antonio Porchia
+       </a>
+       )
+       <span style="color: white;">
+        ___________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CPierdo el deseo de lo que busco, buscando lo que deseo.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/46157/antonio-porchia/pierdo-el-deseo-de-lo-que-busco-buscando-lo-que-deseo','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter46157" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_46157">
+        Votar:
+        <a onclick="votar('46157','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('46157','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_46157">
+        <a class="link-ruta" onclick="addfavorita('46157');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_46157">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('46157');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/46157/antonio-porchia/pierdo-el-deseo-de-lo-que-busco-buscando-lo-que-deseo&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/buscando/es/8989">
+         buscando
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/busco/es/3133">
+         busco
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/deseo/es/477">
+         deseo
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/pierdo/es/9424">
+         pierdo
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/208/marco-tulio-ciceron-2.jpg" width="100px"/>
+      <a href="cita/es/46406/marco-tulio-ciceron/si-junto-a-la-biblioteca-tienes-un-jardin-ya-no-te-faltara-nada">
+       <img alt="Marco Tulio Cicerón Si junto a la biblioteca tienes un jardín, ya no te faltará nada." class="imagen_autor imagen_autor_frase_dia" src="imagenes-frases/si-junto-a-la-biblioteca-tienes-un-jardin-ya-no-te-faltara-nada.png" width="700px"/>
+      </a>
+      <div id="cita2" onmousemove="document.getElementById('twitter46406').style.display='inline'" onmouseout="document.getElementById('twitter46406').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/46406/marco-tulio-ciceron/si-junto-a-la-biblioteca-tienes-un-jardin-ya-no-te-faltara-nada">
+        Si junto a la biblioteca tienes un jardín, ya no te faltará nada.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/marco-tulio-ciceron/es/208">
+        Marco Tulio Cicerón
+       </a>
+       )
+       <span style="color: white;">
+        ______________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CSi junto a la biblioteca tienes un jardín, ya no te faltará nada.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/46406/marco-tulio-ciceron/si-junto-a-la-biblioteca-tienes-un-jardin-ya-no-te-faltara-nada','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter46406" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_46406">
+        Votar:
+        <a onclick="votar('46406','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('46406','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_46406">
+        <a class="link-ruta" onclick="addfavorita('46406');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_46406">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('46406');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/46406/marco-tulio-ciceron/si-junto-a-la-biblioteca-tienes-un-jardin-ya-no-te-faltara-nada&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/biblioteca/es/2763">
+         biblioteca
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/faltara/es/2916">
+         faltará
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/jardin/es/227">
+         jardín
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/junto/es/3349">
+         junto
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/nada/es/21">
+         nada
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/239/pierre-corneille-1.jpg" width="100px"/>
+      <a href="cita/es/2151/pierre-corneille/el-mentiroso-siempre-es-prodigo-en-juramentos">
+       <img alt="Pierre Corneille El mentiroso siempre es pródigo en juramentos." class="imagen_autor imagen_autor_frase_dia" src="imagenes-frases/el-mentiroso-siempre-es-prodigo-en-juramentos.png" width="700px"/>
+      </a>
+      <div id="cita2" onmousemove="document.getElementById('twitter2151').style.display='inline'" onmouseout="document.getElementById('twitter2151').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/2151/pierre-corneille/el-mentiroso-siempre-es-prodigo-en-juramentos">
+        El mentiroso siempre es pródigo en juramentos.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/pierre-corneille/es/239">
+        Pierre Corneille
+       </a>
+       )
+       <span style="color: white;">
+        __________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CEl mentiroso siempre es pródigo en juramentos.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/2151/pierre-corneille/el-mentiroso-siempre-es-prodigo-en-juramentos','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter2151" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_2151">
+        Votar:
+        <a onclick="votar('2151','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('2151','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_2151">
+        <a class="link-ruta" onclick="addfavorita('2151');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_2151">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('2151');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/2151/pierre-corneille/el-mentiroso-siempre-es-prodigo-en-juramentos&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/juramentos/es/4714">
+         juramentos
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/mentiroso/es/4712">
+         mentiroso
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/prodigo/es/4713">
+         pródigo
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/siempre/es/69">
+         siempre
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/1174/horace-mann-1.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter9552').style.display='inline'" onmouseout="document.getElementById('twitter9552').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/9552/horace-mann/el-tiempo-es-tan-precioso-como-lo-es-el-dinero">
+        El tiempo es tan precioso como lo es el dinero.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/horace-mann/es/1174">
+        Horace Mann
+       </a>
+       )
+       <span style="color: white;">
+        _______________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CEl tiempo es tan precioso como lo es el dinero.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/9552/horace-mann/el-tiempo-es-tan-precioso-como-lo-es-el-dinero','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter9552" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_9552">
+        Votar:
+        <a onclick="votar('9552','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('9552','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_9552">
+        <a class="link-ruta" onclick="addfavorita('9552');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_9552">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('9552');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/9552/horace-mann/el-tiempo-es-tan-precioso-como-lo-es-el-dinero&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/dinero/es/627">
+         dinero
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/precioso/es/7272">
+         precioso
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/tiempo/es/114">
+         tiempo
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/1865/felix-lamennais-1.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter44681').style.display='inline'" onmouseout="document.getElementById('twitter44681').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/44681/felix-lamennais/la-ciencia-apenas-sirve-nada-mas-que-para-darnos-una-idea-de-la-extension-de-nuestra-ignorancia">
+        La ciencia apenas sirve nada mas que para darnos una idea de la extensión de nuestra ignorancia.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/felix-lamennais/es/1865">
+        Felix Lamennais
+       </a>
+       )
+       <span style="color: white;">
+        ___________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CLa ciencia apenas sirve nada mas que para darnos una idea de la extensión de nuestra ignorancia.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/44681/felix-lamennais/la-ciencia-apenas-sirve-nada-mas-que-para-darnos-una-idea-de-la-extension-de-nuestra-ignorancia','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter44681" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_44681">
+        Votar:
+        <a onclick="votar('44681','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('44681','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_44681">
+        <a class="link-ruta" onclick="addfavorita('44681');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_44681">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('44681');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/44681/felix-lamennais/la-ciencia-apenas-sirve-nada-mas-que-para-darnos-una-idea-de-la-extension-de-nuestra-ignorancia&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/apenas/es/1624">
+         apenas
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/ciencia/es/661">
+         ciencia
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/darnos/es/3140">
+         darnos
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/extension/es/20977">
+         extensión
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/idea/es/760">
+         idea
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/ignorancia/es/452">
+         ignorancia
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/nada/es/21">
+         nada
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/sirve/es/3238">
+         sirve
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/2576/friedrich-wilhelm-nietzsche-.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter5897').style.display='inline'" onmouseout="document.getElementById('twitter5897').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/5897/friedrich-wilhelm-nietzsche/sin-arte-la-vida-seria-un-error">
+        Sin arte la vida sería un error.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/friedrich-wilhelm-nietzsche/es/2576">
+        Friedrich Wilhelm Nietzsche
+       </a>
+       )
+       <span style="color: white;">
+        _______________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CSin arte la vida sería un error.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/5897/friedrich-wilhelm-nietzsche/sin-arte-la-vida-seria-un-error','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter5897" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_5897">
+        Votar:
+        <a onclick="votar('5897','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('5897','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_5897">
+        <a class="link-ruta" onclick="addfavorita('5897');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_5897">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('5897');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/5897/friedrich-wilhelm-nietzsche/sin-arte-la-vida-seria-un-error&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/arte/es/34">
+         arte
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/error/es/156">
+         error
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/vida/es/314">
+         vida
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/58/sir-francis-bacon-.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter496').style.display='inline'" onmouseout="document.getElementById('twitter496').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/496/sir-francis-bacon/algunos-libros-son-probados-otros-devorados-poquisimos-masticados-y-digeridos">
+        Algunos libros son probados, otros devorados, poquísimos masticados y digeridos.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/sir-francis-bacon/es/58">
+        Sir Francis Bacon
+       </a>
+       )
+       <span style="color: white;">
+        _________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CAlgunos libros son probados, otros devorados, poquísimos masticados y digeridos.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/496/sir-francis-bacon/algunos-libros-son-probados-otros-devorados-poquisimos-masticados-y-digeridos','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter496" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_496">
+        Votar:
+        <a onclick="votar('496','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('496','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_496">
+        <a class="link-ruta" onclick="addfavorita('496');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_496">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('496');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/496/sir-francis-bacon/algunos-libros-son-probados-otros-devorados-poquisimos-masticados-y-digeridos&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/alguno/es/327">
+         alguno
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/devorados/es/1708">
+         devorados
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/digeridos/es/1711">
+         digeridos
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/libros/es/471">
+         libros
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/masticados/es/1710">
+         masticados
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/poquisimos/es/1709">
+         poquísimos
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/probados/es/1114">
+         probados
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/1089/mayer-amschel-rothschild-.jpg" width="100px"/>
+      <a href="cita/es/9349/mayer-amschel-rothschild/pobre-jamas-sabra-lo-que-es-ser-joven-porque-nacio-banquero">
+       <img alt="Mayer Amschel Rothschild ¡Pobre…! Jamás sabrá lo que es ser joven, porque nació banquero." class="imagen_autor imagen_autor_frase_dia" src="imagenes-frases/pobre-jamas-sabra-lo-que-es-ser-joven-porque-nacio-banquero.png" width="700px"/>
+      </a>
+      <div id="cita2" onmousemove="document.getElementById('twitter9349').style.display='inline'" onmouseout="document.getElementById('twitter9349').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/9349/mayer-amschel-rothschild/pobre-jamas-sabra-lo-que-es-ser-joven-porque-nacio-banquero">
+        ¡Pobre…! Jamás sabrá lo que es ser joven, porque nació banquero.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/mayer-amschel-rothschild/es/1089">
+        Mayer Amschel Rothschild
+       </a>
+       )
+       <span style="color: white;">
+        __________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9C¡Pobre…! Jamás sabrá lo que es ser joven, porque nació banquero.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/9349/mayer-amschel-rothschild/pobre-jamas-sabra-lo-que-es-ser-joven-porque-nacio-banquero','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter9349" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_9349">
+        Votar:
+        <a onclick="votar('9349','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('9349','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_9349">
+        <a class="link-ruta" onclick="addfavorita('9349');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_9349">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('9349');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/9349/mayer-amschel-rothschild/pobre-jamas-sabra-lo-que-es-ser-joven-porque-nacio-banquero&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/banquero/es/10668">
+         banquero
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/jamas/es/640">
+         jamás
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/joven/es/1839">
+         joven
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/nacio/es/7865">
+         nació
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/saber/es/467">
+         saber
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <img alt="" class="imagen_autor imagen_autor_frase_dia" src="/img/autores/1003/voltaire-.jpg" width="100px"/>
+      <div id="cita2" onmousemove="document.getElementById('twitter8846').style.display='inline'" onmouseout="document.getElementById('twitter8846').style.display='none'">
+       <img alt="" src="/imatges/comillas_izquierda_35.jpg"/>
+       <a class="result_cita" href="/cita/es/8846/voltaire/el-secreto-de-no-hacerse-fastidioso-consiste-en-saber-cuando-detenerse">
+        El secreto de no hacerse fastidioso consiste en saber cuando detenerse.
+       </a>
+       <img align="top" alt="" src="/imatges/comillas_derecha_35.jpg"/>
+       <br/>
+       (
+       <a class="result_autor" href="/autor/voltaire/es/1003">
+        Voltaire
+       </a>
+       )
+       <span style="color: white;">
+        __________________________________________________
+       </span>
+       <a href="javascript:window.open('https://twitter.com/intent/tweet?text=%E2%80%9CEl secreto de no hacerse fastidioso consiste en saber cuando detenerse.&amp;via=Sabidurias&amp;url=http://www.sabidurias.com/cita/es/8846/voltaire/el-secreto-de-no-hacerse-fastidioso-consiste-en-saber-cuando-detenerse','','width=600,height=400,left=50,top=50,toolbar=yes');void 0" style="text-decoration: none;">
+        <div class="post-to-twitter" id="twitter8846" onmousemove="this.style.backgroundColor='#59c9f3'" onmouseout="this.style.backgroundColor='#00aced'">
+         <i class="fa fa-twitter">
+         </i>
+         Compartir
+        </div>
+       </a>
+       <br/>
+       <span class="votar" id="voto_8846">
+        Votar:
+        <a onclick="votar('8846','bien');" title="Me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_bien.gif"/>
+        </a>
+        <a onclick="votar('8846','mal');" title="No me gusta">
+         <img align="bottom" alt="" class="hand" src="/imatges/voto_mal.gif"/>
+        </a>
+       </span>
+       |
+       <img align="bottom" alt="" src="/imatges/anadir-cita.png"/>
+       <span id="add_8846">
+        <a class="link-ruta" onclick="addfavorita('8846');">
+         Añadir a mis frases
+        </a>
+       </span>
+       |
+       <span id="alertar_8846">
+        <img align="bottom" alt="" src="/imatges/alert.gif"/>
+        <a class="link-ruta" onclick="alertar_frase('8846');">
+         ¿Frase repetida?
+        </a>
+       </span>
+       <br/>
+       <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http://www.sabidurias.com/cita/es/8846/voltaire/el-secreto-de-no-hacerse-fastidioso-consiste-en-saber-cuando-detenerse&amp;layout=button_count&amp;show_faces=true&amp;width=500&amp;action=like&amp;font=arial&amp;colorscheme=light" scrolling="no" frameborder="0" style="margin-top:10px;border:none; overflow:hidden; width:500px; height:60px"></iframe>-->
+       <div class="tags_frases">
+        <span>
+         Conceptos relacionados:
+        </span>
+        <a class="link-ruta" href="/tags/consiste/es/826">
+         consiste
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/detenerse/es/10811">
+         detenerse
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/fastidioso/es/10810">
+         fastidioso
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/hacerse/es/4228">
+         hacerse
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/saber/es/467">
+         saber
+        </a>
+        ,
+        <a class="link-ruta" href="/tags/secreto/es/1674">
+         secreto
+        </a>
+       </div>
+      </div>
+      <br/>
+      <center>
+       <img alt="" src="/imatges/separador.gif" style="margin: 20px;"/>
+      </center>
+      <br/>
+      <div class="clear">
+      </div>
+     </div>
+    </div>
+    <div class="dreta_home">
+     <div>
+      <a href="http://twitter.com/sabidurias">
+       <img alt="" src="imatges/sabidurias-twitter.png"/>
+      </a>
+     </div>
+     <br/>
+     <div class="menu_top">
+      <br/>
+     </div>
+     <div class="menu_center_ultimo" style="text-align: center;">
+      Último usuario registrado
+      <br/>
+      <p class="polaroid_ultimo">
+       <a href="perfil-publico/es/Dante Negrete">
+        <img alt="" border="0" src="https://graph.facebook.com/118102139090900/picture?type=large" width="130"/>
+       </a>
+      </p>
+      <a href="perfil-publico/es/Dante Negrete">
+       Dante Negr...
+      </a>
+     </div>
+     <div class="menu_bottom">
+     </div>
+     <br/>
+     <div class="menu_top">
+      <br/>
+     </div>
+     <div class="menu_center_usuarios" style="text-align: left;">
+      <center>
+       Usuarios más activos
+      </center>
+      <br/>
+      <span>
+       <a href="/perfil-publico/es/ZULAIRAM">
+        <img border="0" src="/avatar/4efc5f2ec9718.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        ZULAIRAM
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Julian Antonio">
+        <img border="0" src="/avatar/4b631c14b277d.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Julian Ant...
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Advocatus Diaboli">
+        <img border="0" src="/avatar/47e9bf0426aac.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Advocatus ...
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/J.C.GLEZ.">
+        <img border="0" src="/avatar/4bd607714483d.gif" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        J.C.GLEZ.
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Jil">
+        <img border="0" src="/avatar/55ff9f82a92e7.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Jil
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/MELVIRA">
+        <img border="0" src="/avatar/4d8bb14b64ae3.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        MELVIRA
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Jaime Tenorio Valenzuela">
+        <img border="0" src="/avatar/578be75039642.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Jaime Teno...
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Marisa23">
+        <img border="0" src="/avatar/485be9f2a273e.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Marisa23
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/Maru!!">
+        <img border="0" src="/avatar/48d9187ee5c2c.JPG" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        Maru!!
+       </a>
+      </span>
+      <span>
+       <a href="/perfil-publico/es/ciudadana">
+        <img border="0" src="/avatar/48455d52d0eac.jpg" style="width: 40px; height: 30px; vertical-align: middle;"/>
+        ciudadana
+       </a>
+      </span>
+     </div>
+     <div class="menu_bottom">
+     </div>
+     <br/>
+     <!--
+<div class="menu_top"><br /></div>
+<div class="menu_center_usuarios" style="text-align: left;">
+<center>Usuarios con más amigos</center><br />
+<span><a href="/perfil-publico/es/vanis_19"><img src="/avatar/487292450f29d.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> vanis_19</a></span><span><a href="/perfil-publico/es/Daniel Estrada"><img src="/avatar/4a845ad060d69.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> Daniel Est...</a></span><span><a href="/perfil-publico/es/Pere"><img src="/avatar/4a6724081d749.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> Pere</a></span><span><a href="/perfil-publico/es/Roobert65"><img src="/avatar/4a18d5117718f.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> Roobert65</a></span><span><a href="/perfil-publico/es/Nadiuska Platero"><img src="/avatar/49c1424f38799.JPG" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> Nadiuska P...</a></span><span><a href="/perfil-publico/es/cheerly"><img src="/avatar/4821f39634622.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> cheerly</a></span><span><a href="/perfil-publico/es/drupi"><img src="/avatar/47a4f46e8bee8.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> drupi</a></span><span><a href="/perfil-publico/es/payasita1"><img src="/avatar/4afb1d5021fd7.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> payasita1</a></span><span><a href="/perfil-publico/es/doryta"><img src="/avatar/481cb079a8420.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> doryta</a></span><span><a href="/perfil-publico/es/K-RVAJAL"><img src="/avatar/48cc9cdb02ff5.jpg" border="0" style="width: 40px; height: 30px; vertical-align: middle;" /> K-RVAJAL</a></span></div><div class="menu_bottom"></div>
+-->
+    </div>
+    <div style="clear: both">
+    </div>
+    <div style="text-align: center; margin-top: 10px; padding-bottom: 10px; clear: both">
+    </div>
+   </div>
+   <div class="contenido_bottom">
+   </div>
+   <center>
+    <div class="canalmail">
+     1999 - 2018 © Sabidurias.com -
+     <a href="datos-legales.php">
+      Datos legales
+     </a>
+    </div>
+   </center>
+  </div>
+  <div id="fb-root">
+  </div>
+  <script>
+   (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/es_LA/all.js#xfbml=1&appId=107694260078";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+  </script>
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   _uacct = "UA-341694-4";
+urchinTracker();
+  </script>
+ </body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="de">
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Was kostet ein Umzug? Kontakt und Angebote zu Umzugsunternehmen aus Ihrer Region
+  </title>
+  <link href="//umzug-marktplatz.de" rel="dns-prefetch"/>
+  <link href="//umzug-marktplatz.de" rel="preconnect"/>
+  <meta content="Was kostet ein Umzug? Kontakt und Angebote zu Umzugsunternehmen aus Ihrer Region" name="title"/>
+  <meta content="umzug, vergleich, umzugsunternehmen, umzugsfirma" name="keywords"/>
+  <meta content="Was kostet ein Umzug? Das Portal zum Thema Umzug. Angebote und Preise von geprüften Umzugsunternehmen aus der Region. Einfach geplant umziehen." name="description"/>
+  <meta content="umzug, portal, angebote" name="page-topic"/>
+  <meta content="Alle" name="audience"/>
+  <meta content="de" name="language"/>
+  <meta content="General" name="rating"/>
+  <meta content="global" name="distribution"/>
+  <meta content="document" name="resource-type"/>
+  <meta content="all" name="robots"/>
+  <meta content="YES" name="allow-search"/>
+  <meta content="umzug-marktplatz.de" name="copyright"/>
+  <meta content="umzug-marktplatz.de" name="organization"/>
+  <meta content="umzug-marktplatz.de" name="author"/>
+  <meta content="umzug-marktplatz.de" name="publisher"/>
+  <link href="https://umzug-marktplatz.de" rel="canonical"/>
+  <meta content="5 days" name="revisit-after"/>
+  <meta content="fb71003e3204b3456c39256e454fbede" name="verification"/>
+  <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+  <meta content="true" name="HandheldFriendly"/>
+  <link href="./favicon.png" rel="shortcut icon" type="image/x-icon"/>
+  <link href="/apple-touch-icon-120x120-precomposed.png" rel="apple-touch-icon" sizes="120x120"/>
+  <link href="/apple-touch-icon-152x152-precomposed.png" rel="apple-touch-icon" sizes="152x152"/>
+  <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet"/>
+  <link href="./css/css.standard.main.css?v=3" rel="stylesheet" type="text/css"/>
+  <script src="https://maps.google.com/maps/api/js?key=AIzaSyDOCGFDa5zsWRPml7JqWS7g3Jci18sPPlM">
+  </script>
+  <script type="text/javascript">
+   //JavascriptFile von Umzugs-Marktplatz
+//Alle Rechte vorbehalten
+
+var geocoder;
+var geocoder_to;
+var map;
+var map_to;
+
+function google_initialize(address, zoomfaktor) {
+      geocoder = new google.maps.Geocoder();
+      var latlng = new google.maps.LatLng(-34.397, 150.644);
+      var myOptions = {
+            zoom: zoomfaktor,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+	     mapTypeControl: false
+      }
+      map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+      google_codeAddress(address);
+    }
+
+function google_codeAddress(address) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          map.setCenter(results[0].geometry.location);
+          var marker = new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+          });
+        } else {
+          alert("Geocode was not successful for the following reason: " + status);
+        }
+  });
+}
+
+
+function google_initialize_to(address, zoomfaktor) {
+
+      geocoder_to = new google.maps.Geocoder();
+      var latlng = new google.maps.LatLng(-34.397, 150.644);
+      var myOptions = {
+            zoom: zoomfaktor,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+	     mapTypeControl: false
+      }
+      map_to = new google.maps.Map(document.getElementById("map_canvas_to"), myOptions);
+      google_codeAddress_to(address);
+    }
+
+function google_codeAddress_to(address) {
+        geocoder_to.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          map_to.setCenter(results[0].geometry.location);
+          var marker = new google.maps.Marker({
+                  map: map_to,
+                  position: results[0].geometry.location
+          });
+        } else {
+          alert("Geocode was not successful for the following reason: " + status);
+        }
+  });
+}
+
+
+
+
+
+
+
+
+function open_ajax_url_in_id(output_id, path, file, formular_send){
+		
+
+		//alert (formular_send);
+
+		var postData ="";// new FormData();
+		
+		if (formular_send!=''){
+
+			postData = new FormData(document.forms.namedItem(formular_send));
+
+			postData.append('form',formular_send);
+			//alert(postData);
+
+
+		}
+
+	       document.getElementById(output_id).innerHTML = "<span class='wait'> Einen Moment bitte...</span>";    
+
+		//wenn nichts übergeben
+		if (file==""){
+
+
+			document.getElementById(output_id).innerHTML = "Kein Ziel ausgewählt!";
+
+			return true;
+
+		}
+
+		var url = path + file;
+
+
+                 //erstellen des requests
+                var req = null;
+
+                try{
+                    req = new XMLHttpRequest();
+                }
+                catch (ms){
+                    try{
+                        req = new ActiveXObject("Msxml2.XMLHTTP");
+                    } 
+                    catch (nonms){
+                        try{
+                            req = new ActiveXObject("Microsoft.XMLHTTP");
+                        } 
+                        catch (failed){
+                            req = null;
+                        }
+                    }  
+                }
+
+                if (req == null)
+                      alert("Error creating request object!");
+                  
+                  //anfrage erstellen (GET, url ist localhost,
+                  //request ist asynchron      
+                  req.open("POST", url, true);
+
+                //Beim abschliessen des request wird diese Funktion ausgeführt
+                req.onreadystatechange = function(){            
+                    switch(req.readyState) {
+                            case 4:
+                            if(req.status!=200) {
+                                document.write("Fehler:"+req.status);
+
+				    document.write("<br>Der Aufruf der Seite hat leider einen Fehler verursacht. Bitte gehen Sie noch einmal auf unsere <a href='https://umzug-marktplatz.de'>Startseite</a> und wiederholen Sie den Vorgang. Vielen Dank.");
+ 
+                            }else{    
+                                //schreibe die antwort in den div container mit der id content 
+					
+                  			document.getElementById(output_id).innerHTML = req.responseText;
+					//var el = document.getElementById('jump_location_id');
+    					//el.scrollIntoView(true);
+					req = null;
+			          }
+                            break;
+                    
+                            default:
+                                return false;
+                            break;     
+                        }
+                    };
+  		
+		  
+
+   			//req.setRequestHeader("charset=ISO-8859-1");
+ 
+			//req.setCharacterEncoding("UTF-8");
+			//req.setContentType("application/octet-stream; charset=ISO-8859-1");
+
+			//req.setRequestHeader("charset=ISO-8859-1");
+
+  			req.send(postData);
+		 
+}
+
+function getFormData(form) {
+
+	var postData = new FormData();
+
+	var returnstring;
+
+	returnstring = "&";
+
+	
+	var Knoten = document.getElementById(form).firstChild;
+
+	while (Knoten != null) {
+  		if (Knoten.nodeName=='SELECT'){
+			postData.append(Knoten.name, Knoten.value );
+
+		}
+
+		//alert(Knoten.nodeName);
+
+
+		if (Knoten.nodeName=='INPUT'){
+		
+			//alert(Knoten.type);
+
+			if (Knoten.type =='radio' && Knoten.checked){
+				postData.append(Knoten.name, Knoten.value );
+
+			}else{
+
+				if (Knoten.type =='checkbox' && Knoten.checked){
+
+					postData.append(Knoten.name, Knoten.value );
+				}
+
+				if( Knoten.type !='radio' && Knoten.type !='checkbox'){
+					postData.append(Knoten.name, Knoten.value );
+				}
+
+			}
+			
+
+		}
+
+		Knoten = Knoten.nextSibling;
+	}
+
+	
+	//alert (returnstring);
+
+	return postData; 
+
+}
+  </script>
+ </head>
+ <body>
+  <header>
+   <div class="container_top_menue">
+    <div class="container_top_menue_part_left">
+     <a class="a_button a_home" href="https://umzug-marktplatz.de" title="zur Startseite von Umzug-Marktplatz">
+      START
+     </a>
+     <a class="a_button a_network" href="./umzugsnetzwerk-uebersicht.php" title="Alles über das Umzugsnetztwerk">
+      MENÜ
+     </a>
+     <a class="a_button a_weiter" href="./halteverbotszone-online-einrichten.php" title="blätter einfach durch unsere Seiten und informiere Dich rund um den Umzug">
+      BLÄTTERN
+     </a>
+     <a class="a_button a_tweet" href="https://twitter.com/share?url=https%3A%2F%2Fumzug-marktplatz.de%2F&amp;&amp;hashtags=Umzug&amp;text=Was+kostet+ein+Umzug%3F+Kontakt+und+Angebote+zu+Umzugsunternehmen+aus+Ihrer+Region" onclick="window.open('https://twitter.com/share?url=https%3A%2F%2Fumzug-marktplatz.de%2F&amp;&amp;hashtags=Umzug&amp;text=Was+kostet+ein+Umzug%3F+Kontakt+und+Angebote+zu+Umzugsunternehmen+aus+Ihrer+Region', 'Twitter', 'left='+ ((screen.availWidth /2) - 240) +', top='+ ((screen.availHeight /2) - 200) +', width=480,height=400'); return false;" title="sag's bei Twitter...">
+      TWEET
+     </a>
+    </div>
+    <div class="container_top_menue_part_right">
+     <a class="a_button a_email" href="./umzug-marktplatz-sender.php?to=aW5mb0B1bXp1Zy1tYXJrdHBsYXR6LmRl" title="sende eine Email an Umzug-Marktplatz über Dein Emailprogramm">
+      EMAIL
+     </a>
+     <a class="a_button a_kontakt" href="./kontakt-feedback.php" title="Kontakt Umzug-Marktplatz">
+      KONTAKT
+     </a>
+     <a class="a_button a_login" href="./user/" title="Umzugsnetzwerk - Kundenbereich">
+      LOGIN
+     </a>
+    </div>
+   </div>
+   <a id="Start">
+   </a>
+   <div class="container_header">
+    <a href="https://umzug-marktplatz.de/umzugsnetzwerk-uebersicht.php" title="Was ist das Umzugsnetzwerk?">
+     <picture>
+      <source media="(max-width: 600px)" srcset="./css/css_image/logo_aktuell_umzugsnetzwerk_600.png">
+       <source media="(max-width: 800px)" srcset="./css/css_image/logo_aktuell_umzugsnetzwerk_800.png">
+        <source media="(max-width: 1400px)" srcset="./css/css_image/logo_aktuell_umzugsnetzwerk_1400.png">
+         <img alt="Umzug-Marktplatz - Das Umzugsnetzwerk." class="img_header_logo" src="./css/css_image/logo_aktuell_umzugsnetzwerk.png" title="Umzug-Marktplatz - Das Umzugsnetzwerk."/>
+        </source>
+       </source>
+      </source>
+     </picture>
+    </a>
+    <div class="mini_formular">
+     <img alt="Willkommen im Umzugsnetzwerk - Das Portal für den Umzug" src="./galerie/umzug-marktplatz-sommer.jpg" style="width:100%" title="Willkommen im Umzugsnetzwerk - Das Portal für den reibungslosen Umzug"/>
+    </div>
+   </div>
+  </header>
+  <a id="Angebot_anfordern">
+  </a>
+  <div class="container_allgemein container_zusatz_lineheight" style="margin-top:20px;">
+   <h1 style="line-height:130%" title="Umzugsangebote verschiedener Anbieter unverbindlich vergleichen">
+    Was kostet ein Umzug? Angebote von Umzugsunternehmen vergleichen.
+   </h1>
+   <p class="p_einleitungstext">
+    Sie wollen  umziehen und möchten wissen wieviel der Umzug kostet? Um Ihnen einen passenden Preis anbieten zu können, benötigen wir ein paar Angaben. Bitte geben Sie Ihre Umzugsdaten unverbindlich ein und vergleichen Sie die Angebote geprüfter Umzugsfirmen. Wir wünschen einen guten Umzug.
+   </p>
+  </div>
+  <form action="/index.php" method="POST">
+   <div class="container_flex container_zusatz_lineheight">
+    <div class="form_part_div">
+     <h2 class="formular" id="Auszugsort">
+      Auszugsort (Beladeadresse)
+     </h2>
+     <p>
+     </p>
+     <div style="width:100%; height:auto; display:inline-flex;">
+      <select class="allgemein_select" name="from_land" style="width:12%" title="Aus welchem Land ziehen Sie um?">
+       <option>
+        AT
+       </option>
+       <option>
+        CH
+       </option>
+       <option selected="">
+        DE
+       </option>
+       <option>
+        NL
+       </option>
+       <option>
+        FR
+       </option>
+      </select>
+      <input class="allgemein_textfeld " name="from_ort" placeholder="* Auszugsort" style="width:54%" title="Hier den Auszugsort eingeben!" type="text" value=""/>
+      <input class="allgemein_textfeld " name="from_plz" placeholder="* PLZ" style="width:27%" type="text" value=""/>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex;  margin-top:10px;">
+      <input class="allgemein_textfeld " name="from_strasse" placeholder="* Straße und Hausnummer" style="width:68%" type="text" value=""/>
+      <input class="allgemein_textfeld " min="10" name="from_wohnflaeche" placeholder="* m² Wohnfläche" style="width:27%" type="number" value=""/>
+     </div>
+     <div id="div_auszug" style="width:100%; height:auto; display:block; margin-top:15px">
+      <input class="mehr_infos_button" name="mehr_infos_einzug" onclick='open_ajax_url_in_id("div_auszug","./inc/module/","umzug-markplatz_operator.php?action=show_zusatz_auszug",""); return false' style="background-color: rgba(255,255,255,0.1)" title="Mehr Angaben zum Auszugsort" type="button" value="Optionen zum Auszug"/>
+     </div>
+    </div>
+    <div class="form_part_div">
+     <h2 class="formular">
+      Einzugsort (Entladeadresse)
+     </h2>
+     <p>
+     </p>
+     <div style="width:100%; height:auto; display:inline-flex;">
+      <select class="allgemein_select" name="to_land" style="width:12%" title="In welches Land ziehen Sie um?">
+       <option title="nach Österreich">
+        AT
+       </option>
+       <option title="in die Schweiz">
+        CH
+       </option>
+       <option selected="" title="nach Deutschland">
+        DE
+       </option>
+       <option title="nach Niederlande">
+        NL
+       </option>
+       <option title="nach Frankreich">
+        FR
+       </option>
+      </select>
+      <input class="allgemein_textfeld " name="to_ort" placeholder="* Einzugsort oder PLZ" style="width:54%" title="Hier den Auszugsort oder die Postleitzahl eingeben!" type="text" value=""/>
+      <input class="allgemein_textfeld" name="to_wohnflaeche" placeholder="m² neu" style="width:27%" type="text" value=""/>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex; margin-top:10px;">
+      <input class="allgemein_textfeld" name="to_strasse" placeholder="Straße Hausnummer" style="width:68%" type="text"/>
+      <input class="allgemein_textfeld" name="from_datum" placeholder="Umzugsdatum" style="width:27%" type="text"/>
+     </div>
+     <div id="div_einzug" style="width:100%; height:auto; display:block; margin-top:15px; margin-bottom:10px">
+      <input class="mehr_infos_button" name="mehr_infos_einzug" onclick='open_ajax_url_in_id("div_einzug","./inc/module/", "umzug-markplatz_operator.php?action=show_zusatz_einzug",""); return false;' style="background-color: rgba(255,255,255,0.1)" title="Mehr Angaben zum Einzugsort" type="button" value="Optionen zum Einzug"/>
+     </div>
+    </div>
+    <div class="form_part_div">
+     <h2 class="formular">
+      Kommunikation
+     </h2>
+     <p>
+     </p>
+     <div style="width:100%; height:auto; display:inline-flex;">
+      <input class="allgemein_textfeld" name="kontakt_name" placeholder="Familienname" style="width:97%" type="text" value=""/>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex; margin-top:10px;">
+      <input class="allgemein_textfeld " name="kontakt_email" placeholder="* Email für Angebote" style="width:97%" type="text" value=""/>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex; margin-top:10px;">
+      <input class="allgemein_textfeld" name="kontakt_telefon" placeholder="Telefon für Rücksprache" style="width:97%" type="text" value=""/>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex; margin-top:10px; margin-bottom:5px">
+      <a class="textlinks_cms" href="#datenschutz" style="font-size:0.9em; color:#404040; margin:1%" title="Infos zum Datenschutz auf Umzug-Marktplatz.de">
+       Datenschutz. Was passiert mit den Daten?
+      </a>
+     </div>
+     <div style="width:100%; height:auto; display:inline-flex; margin-top:5px; margin-bottom:5px">
+      <input name="long_id" type="hidden" value="642627698242"/>
+      <input name="site_referer" type="hidden" value=""/>
+      <input class="submit_senden_button" name="send_umzugsanfrage" title="Anfrage unverbindlich, vertragsfrei und kostenlos absenden und Umzugsangebote einholen" type="SUBMIT" value="Anfrage absenden - Kosten vergleichen"/>
+     </div>
+     <p style="font-size:0.9em">
+      Eine
+      <strong>
+       Umzugsversicherung
+      </strong>
+      wird garantiert.
+     </p>
+     <div style="width:98%; padding:1%; height:auto; margin-bottom:15px; text-align:right">
+      <span style="font-size:0.8em;">
+       * Pflichtfelder
+      </span>
+     </div>
+    </div>
+   </div>
+  </form>
+  <div class="container_flex container_zusatz_lineheight">
+   <div class="container_fuer_zweispaltiges_layout">
+    <a id="fragen_zum_umzugsnetzwerk">
+    </a>
+    <h2 class="formular">
+     Häufig gestellte Fragen zum Umzugnetzwerk
+    </h2>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Herzlich Willkommen" src="./image_content/fragezeichen.png" title="Herzlich Willkommen"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Herzlich Willkommen
+       </h3>
+       Mithilfe Ihrer Angaben erhalten Sie Umzugsangebote von Umzugsunternehmen oder Speditionen im Umzugsnetzwerk. Nennen Sie uns einfach Ihren Auszugsort und Ihren Einzugsort und schon gelangen Sie zu mehreren Umzugsangeboten. Auch für Auslandsumzüge erhalten Sie hier Kostenvoranschläge.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Wie funktioniert das Umzugsnetzwerk?" src="./image_content/fragezeichen.png" title="Wie funktioniert das Umzugsnetzwerk?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Wie funktioniert das Umzugsnetzwerk?
+       </h3>
+       Sie ziehen  um und möchten ein Unternehmen beauftragen, das Ihnen dabei hilft? Dann sind Sie im Umzugsnetzwerk genau richtig. Auf unserer Startseite steht für Sie eine Eingabemaske mit allen relevanten Angaben zu Ihrem Umzug bereit. Diese füllen Sie bitte mit den wichtigsten Angaben aus. Wenn Sie das getan haben, können Sie sich ganz entspannt zurücklehnen, denn den Rest übernehmen wir. Unser System leitet Ihre Umzugsanfrage an von uns geprüfte Umzugsfirmen im Umzugsnetzwerk weiter. Innerhalb kurzer Zeit erhalten Sie entsprechende Angebote von interessierten Umzugsunternehmen. Ihre Aufgabe ist es nur noch, den für Sie besten Anbieter auszusuchen.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Was kostet mich dieser Service?" src="./image_content/fragezeichen.png" title="Was kostet mich dieser Service?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Was kostet mich dieser Service?
+       </h3>
+       Unsere Dienstleistung ist für Sie kostenfrei und unverbindlich. Ebenso unser
+       <a class="textlinks_cms" href="./halteverbotszone-online-einrichten.php" title="Halteverbotszone einfach online beantragen...">
+        online Halteverbotsservice
+       </a>
+       und unser
+       <a class="textlinks_cms" href="./mitnahme-stueckgut-sammeltransport.php" title="Transportauftrag einfach online einstellen...">
+        online Stückgutservice
+       </a>
+       .
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Wie lange muss ich warten, bis ich Angebote erhalte?" src="./image_content/fragezeichen.png" title="Wie lange muss ich warten, bis ich Angebote erhalte?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Wie lange muss ich warten, bis ich Angebote erhalte?
+       </h3>
+       Sie erhalten zeitnah passende Angebote verschiedener regionaler Umzugsdienstleister. Bitte beachten Sie die unterschiedlichen Bearbeitungszeiten jeder Umzugsfirma.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Ist es möglich Kostenvoranschläge für den Arbeitgeber oder eine Behörde zu erhalten?" src="./image_content/fragezeichen.png" title="Ist es möglich Kostenvoranschläge für den Arbeitgeber oder eine Behörde zu erhalten?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Ist es möglich Kostenvoranschläge für den Arbeitgeber oder eine Behörde zu erhalten?
+       </h3>
+       Alle Angebote können grundsätzlich als Kostenvoranschlag bei Ihrer zuständigen ARGE, Jobcenter oder Arbeitgeber vorgelegt werden.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Welche Möglichkeiten habe ich, eine bereits versandte Anfrage zu ändern?" src="./image_content/fragezeichen.png" title="Welche Möglichkeiten habe ich, eine bereits versandte Anfrage zu ändern?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Welche Möglichkeiten habe ich, eine bereits versandte Anfrage zu ändern?
+       </h3>
+       Sollten Sie in Ihrer Umzugsanfrage vergessen haben etwas anzugebeben, falsch angegeben haben, oder ein Detail fällt weg so ist das kein Problem. Einzelheiten können Sie gerne direkt mit den jeweiligen Umzugsfirmen besprechen.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Was ist das Umzugsnetzwerk?" src="./image_content/fragezeichen.png" title="Was ist das Umzugsnetzwerk?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Was ist das Umzugsnetzwerk?
+       </h3>
+       Im Umzugsnetzwerk sind alle bei uns registrierten Umzugsunternehmen, Speditionen und andere Partnerfirmen wie Halteverbotsservice oder Selbslagerboxanbieter vernetzt.  Dies garantiert Ihnen ein bestmögliches Angebot an seriösen Unternehmen.
+      </td>
+     </tr>
+    </table>
+    <a id="datenschutz">
+    </a>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Was passiert mit Ihren Daten, Datenschutz?" src="./image_content/fragezeichen.png" title="Was passiert mit Ihren Daten, Datenschutz?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Was passiert mit Ihren Daten, Datenschutz?
+       </h3>
+       Wir garantieren Ihnen, Ihre Daten nur im Umzugsnetzwerk registrierten und geprüften Umzugsunternehmen zur Verfügung zu stellen.
+Alle Daten werden sicher mit SSL über HTTPS übertragen und dem Stand der Technik für Unbefugte unzugänglich gespeichert. Ihre Angaben speichern wir für 365 Tage. Danach werden Diese automatisch gelöscht. Wurde Ihre Anfrage innerhalb 10 Werktagen keinem Umzugsunternehmen zur Verfügung gestellt, löschen wir Ihrer Daten nach 10 Werktagen. Alle Umzugsunternehmen im Umzugsnetzwerk haben sich verpflichtet, Daten nicht an Dritte weiter zu geben. Alles weitere finden Sie in unserer
+       <a class="textlinks_cms" href="./datenschutzverordnung.php" title="Infos zum Datenschutz auf Umzug-Marktplatz.de">
+        Datenschutzerklärung
+       </a>
+       .
+       <br/>
+       <br/>
+       <a class="textlinks_cms" href="#Auszugsort" style="color:#8eb600; font-weight:bold">
+        Zurück zum Umzug-Formular.
+       </a>
+       <br/>
+       <br/>
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Haben Sie keine Antwort auf Ihre Fragen gefunden?" src="./image_content/fragezeichen.png" title="Haben Sie keine Antwort auf Ihre Fragen gefunden?"/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Haben Sie keine Antwort auf Ihre Fragen gefunden?
+       </h3>
+       Nutzen Sie unser
+       <a class="textlinks_cms" href="./kontakt-feedback.php?action=16" title="zum Kontaktformular von umzug-marktplatz.de">
+        Kontaktformular
+       </a>
+       . Alle Anfragen werden schnellstmöglich beantwortet.
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div class="container_fuer_zweispaltiges_layout">
+    <h2 class="formular">
+     Die wichtigsten Infos zum Umzug
+    </h2>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Private Umzugskosten durch Finanzamt erstatten." src="./image_content/fragezeichen.png" title="Private Umzugskosten durch Finanzamt erstatten."/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Private Umzugskosten durch Finanzamt erstatten.
+       </h3>
+       Bei einem privat gezahlten Umzug können die Kosten gegenüber dem Finanzamt erklärt werden. Verschiedene Kosten für einen Umzugswagen, Leih-LKW, Umzugsspedition, Malerfirma, Maklergebühren der neuen Wohnung, oder Handwerker entstehen in den meisten Fällen, wenn Sie ihren Umzug in Eigenleistung durchführen. Zur Umzugsplanung beraten Sie sich mit ihrem Steuerberater was für Umzugskosten erstattet werden und in welcher Höhe.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Wenn der Arbeitgeber Umzugskosten zahlt." src="./image_content/fragezeichen.png" title="Wenn der Arbeitgeber Umzugskosten zahlt."/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Wenn der Arbeitgeber Umzugskosten zahlt.
+       </h3>
+       Aus beruflichen Gründen kommt es zum Umzug (sie ziehen der Arbeit hinterher), so trägt grundsätzlich ihr Arbeitgeber die Umzug-Kosten. Verfügt ihr Arbeitgeber nicht über die finanziellen Mittel und Sie auch nicht, droht unter Umständen die Arbeitslosigkeit. Aus dieser Lage könnte ihnen ihr zuständiges Arbeitsamt, Arge, Jobcenter oder Kommune helfen, was je nach Bundesland entschieden wird.
+       <br/>
+       <br/>
+       Wird ein Arbeitgeber-Umzug vom Arbeitgeber ausdrücklich verlangt, trägt er auch die notwendigen Umzugskosten. 3 Umzugsangebote von verschiedenen Umzugsfirmen zur Vorlage verlangt ihr Personalbüro. Das Angebot mit dem ausgewogensten Preis-Leistungsverhältnis bekommt meistens den Zuschlag und mit dieser schriftlichen Kostenübernahme beauftragen Sie das bestätigte Umzugsunternehmen. Besprechen Sie speziell die Zahlungsmodalitäten mit ihrer Umzugsfirma, damit der Umzug zur Zufriedenheit beider Seiten durchgeführt werden kann. Verschiedene Möglichkeiten der Zahlungen sind bei bundesweiten Umzügen und bei Auslandsumzügen zu beachten.
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Umzugskostenbeihilfe von Behörden." src="./image_content/fragezeichen.png" title="Umzugskostenbeihilfe von Behörden."/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Umzugskostenbeihilfe von Behörden.
+       </h3>
+       Unter Umständen steht ihnen eine Übernahme von Umzugskosten der Argen oder Arbeitsämter laut SGBII zu. Für die Kostenübernahme benötigen Sie in der Regel 3 Angebote verschiedener Umzugsspeditionen ihrer Wahl. Informieren Sie sich bei ihrem Bearbeiter der jeweils zuständigen Behörde ob ihnen Umzugskosten gewährt werden. Ein Umzug kann nötig sein bei erneuter Arbeitsaufnahme in einer anderen Stadt oder Ausland.
+       <br/>
+       <br/>
+       Weitere Erstattungen von Kosten der Behörden können Malerarbeiten bei Auszug sein, Kautionszahlung der neuen Wohnung usw. und stehen meist im Zusammenhang mit der Notwendigkeit eines Umzugs nach Aufforderung der Behörde. Umzüge könnten nötig werden bei Scheidung, Familienzuwachs, Vermieter kündigt, Schimmelbefall, Rekonstruktion etc. Erstattung der Umzugskosten vom Arbeitsamt erfolgt nur, wenn Sie vor dem Umzug einen Antrag auf Übernahme der verschiedenen Umzugskosten stellen und mit ihrem Bearbeiter abstimmen.
+       <br/>
+       Mehr Informationen erhalten Sie in unserem Tipps-Thema
+       <a class="textlinks_cms" href="./umzugskostenbeihilfe-behoerden.php" title="Umzugskostenbeihilfe von Behörden...">
+        Umzugskostenbeihilfe von Behörden
+       </a>
+      </td>
+     </tr>
+    </table>
+    <table style="width:98%;padding:0px; margin-top:5px; font-size:0.9em">
+     <tr>
+      <td style="width:5%; vertical-align:top">
+       <img alt="Halteverbotszone (HVZ)." src="./image_content/fragezeichen.png" title="Halteverbotszone (HVZ)."/>
+      </td>
+      <td style="width:95%">
+       <h3 class="h3_ueberschrift">
+        Halteverbotszone (HVZ).
+       </h3>
+       Ein Halteverbot einrichten ist nichts anderes als einen Parkplatz oder Stellfläche für den Umzug-LKW am Umzugstag absperren oder bereitstellen. Bei Umzügen kommt manchmal ein Möbellift zum Einsatz damit ihre Möbel schnell, sauber und professionell Beladen oder Entladen werden können. Dieser Möbelaufzug benötigt ebenfalls einen Parkplatz oder Stellfläche vor dem Haus um den Umzug fachgerecht durchzuführen. Sie müssten überlegen ob eventuell 2 Halteverbotszonen nötig sind. Unter Umständen ergibt sich eine Haltezone für den Auszugsort und eine zweite Haltezone für den Einzugsort. Viele Umzugsspeditionen beraten Sie gern kostenlos vor Ort um eine exakte Umzugsplanung aufzustellen. Mit unserem online Service können Sie eine
+       <a class="textlinks_cms" href="./halteverbotszone-online-einrichten.php" title="HVZ direkt online beantragen...">
+        Halteverbotszone unbürokratisch und schnell beantragen.
+       </a>
+      </td>
+     </tr>
+    </table>
+   </div>
+  </div>
+  <div class="container_flex container_zusatz_lineheight" style="margin-bottom:25px">
+   <div class="form_part_div">
+    <h2 class="formular">
+     Was kostet ein Umzug?
+    </h2>
+    <div class="mini_formular">
+     <form action="./index.php#Angebot_anfordern" method="post" name="angeboteanfordern_klein">
+      <input class="mini_formular_input" name="short_from" placeholder="Ihr Auzugsort" title="Geben Sie hier Ihren Auszugsort ein zum Beispiel Berlin" type="text"/>
+      <input class="mini_formular_input" name="short_to" placeholder="Ihr Einzugsort" title="Geben Sie hier Ihren Einzugssort ein zum Beispiel München" type="text" value=""/>
+      <input class="mini_formular_input add_submit" name="angebot_anfordern_klein" type="SUBMIT" value="Angebote für Umzug anfordern"/>
+     </form>
+    </div>
+    <br/>
+   </div>
+   <div class="form_part_div">
+    <h2 class="formular">
+     Clever umziehen mit Umzugsratgeber
+    </h2>
+    <p>
+     <a href="./umzugs-ratgeber.php" title="zum Umzugsratgeber">
+      <img alt="Umzugsratger - Tipps vom Umzugsprofi" src="./galerie/icon-umzug-ratgeber.png" style="float:left; padding-right:10px; padding-bottom:10px; width:130px;" title="Der Umzugsratgeber"/>
+     </a>
+     Der Umzugratgeber - Umzug planen, Umzugkosten überschauen, Abzocke erkennen, Umzugstag genießen. Machen Sie sich vor Ihrem Umzug schlau mit Tipps vom Profi.
+     <a class="textlinks_cms" href="./umzugs-ratgeber.php" title="zum Umzugsratgeber">
+      Klicken Sie hier für Leseprobe und mehr...
+     </a>
+    </p>
+   </div>
+   <div class="form_part_div" id="nl_container">
+    <h2 class="formular">
+     Bleiben Sie am Ball
+    </h2>
+    <form action="./index.php" enctype="multipart/form-data" method="POST" name="nl_reg">
+     <p>
+      Newsletter vom Umzugsnetzwerk anfordern
+      <br/>
+      <br/>
+      <input name="nl_em" placeholder="Emailadresse für Newsletter" style="width:94%; padding:2%; font-size:0.9em" type="text"/>
+      <br/>
+      <br/>
+      <input class="mini_formular_input add_submit" name="nl_anmelden" onclick='open_ajax_url_in_id("nl_container","./inc/module/", "umzug-markplatz_operator.php?action=reg_nl","nl_reg"); return false;' style="margin:0px; width:98.5%; padding:2%; font-size:0.9em" type="Submit" value="Newsletter bestellen"/>
+      <br/>
+      <br/>
+      Newsletter können Sie jederzeit abmelden.
+     </p>
+    </form>
+   </div>
+  </div>
+  <div class="container_allgemein container_zusatz_lineheight" style="margin-top:30px">
+   <br/>
+   Die wichtigsten Umzug-Infos über
+   <br/>
+   <a class="textlinks_cms link_liste" href="./umziehen/domstadt-aachen.php" title="Informationen zu Aachen">
+    Aachen
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/fuggerstadt-augsburg.php" title="Informationen zu Augsburg">
+    Augsburg
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/bundeshauptstadt-berlin.php" title="Informationen zu Berlin">
+    Berlin
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/bielefeld.php" title="Informationen zu Bielefeld">
+    Bielefeld
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/kulturstadt-bochum.php" title="Informationen zu Bochum">
+    Bochum
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/beethovenstadt-bonn.php" title="Informationen zu Bonn">
+    Bonn
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/loewenstadt-braunschweig.php" title="Informationen zu Braunschweig">
+    Braunschweig
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/landeshauptstadt-bremen.php" title="Informationen zu Bremen">
+    Bremen
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/stadt-der-moderne-chemnitz.php" title="Informationen zu Chemnitz">
+    Chemnitz
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/borussiastadt-dortmund.php" title="Informationen zu Dortmund">
+    Dortmund
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/landeshauptstadt-dresden.php" title="Informationen zu Dresden">
+    Dresden
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/schimanskistadt-duisburg.php" title="Informationen zu Duisburg">
+    Duisburg
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/karnevalstadt-duesseldorf.php" title="Informationen zu Düsseldorf">
+    Düsseldorf
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/kruppstadt-essen.php" title="Informationen zu Essen">
+    Essen
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/finanzmetropole-frankfurt-am-main.php" title="Informationen zu Frankfurt am Main">
+    Frankfurt am Main
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/freiburg-im-breisgau.php" title="Informationen zu Freiburg im Breisgau">
+    Freiburg im Breisgau
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/solarstadt-gelsenkirchen.php" title="Informationen zu Gelsenkirchen">
+    Gelsenkirchen
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/haendelstadt-halle.php" title="Informationen zu Halle (Saale)">
+    Halle (Saale)
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/hansestadt-hamburg.php" title="Informationen zu Hamburg">
+    Hamburg
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/messestadt-hannover.php" title="Informationen zu Hannover">
+    Hannover
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/faecherstadt-karlsruhe.php" title="Informationen zu Karlsruhe">
+    Karlsruhe
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/marinestadt-kiel.php" title="Informationen zu Kiel">
+    Kiel
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/samt-und-seidenstadt-krefeld.php" title="Informationen zu Krefeld">
+    Krefeld
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/domstadt-koeln.php" title="Informationen zu Köln">
+    Köln
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/messestadt-leipzig.php" title="Informationen zu Leipzig">
+    Leipzig
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/hansestadt-luebeck.php" title="Informationen zu Lübeck">
+    Lübeck
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/ottostadt-magdeburg.php" title="Informationen zu Magdeburg">
+    Magdeburg
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/quadratestadt-mannheim.php" title="Informationen zu Mannheim">
+    Mannheim
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/olympiastadt-muenchen.php" title="Informationen zu München">
+    München
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/fahrradstadt-muenster.php" title="Informationen zu Münster">
+    Münster
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/fussballstadt-moenchengladbach.php" title="Informationen zu Mönchengladbach">
+    Mönchengladbach
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/duererstadt-nuernberg.php" title="Informationen zu Nürnberg">
+    Nürnberg
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/centrostadt-oberhausen.php" title="Informationen zu Oberhausen">
+    Oberhausen
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/weinstadt-stuttgart.php" title="Informationen zu Stuttgart">
+    Stuttgart
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/kurstadt-wiesbaden.php" title="Informationen zu Wiesbaden">
+    Wiesbaden
+   </a>
+   |
+   <a class="textlinks_cms link_liste" href="./umziehen/tuffistadt-wuppertal.php" title="Informationen zu Wuppertal">
+    Wuppertal
+   </a>
+  </div>
+  <div class="container_footer">
+   <footer>
+    <a href="./umzugsnetzwerk-uebersicht.php" title="Umzug-Marktplatz.de - Das Umzugnetzwerk">
+     <img alt="Logo Umzug Marktplatz" class="logo_footer" src="./css/css_image/logo_aktuell_umzugsnetzwerk_600px.png" title="Umzug-Marktplatz.de - Das Umzugnetzwerk"/>
+    </a>
+    <br/>
+    <br/>
+    © 2010 - 2018 bei Umzug-Marktplatz.de. Alle Rechte vorbehalten. Umsetzung durch
+    <a class="footer_linkstext" href="https://internetfirma-leipzig.de" target="_blank" title="erstellt duch internetfirma-leipzig.de">
+     Internetfirma-leipzig
+    </a>
+    <br/>
+    <a class="footer_linkstext" href="./umzugsfirma-umzugsnetzwerk-eintragen.php" title="Umzugsfirma, Umzugsunternehmen, Spedition im Umzugnetzwerk eintragen">
+     Umzugsfirma, Spedition eintragen
+    </a>
+    |
+    <a class="footer_linkstext" href="./ueber-uns.php" title="Über uns - Die hinter dem Umzugsnetzwerk">
+     Über uns
+    </a>
+    |
+    <a class="footer_linkstext" href="http://umzugnetzwerk.de/" title="Das Umzugnetzwerk">
+     Das Umzugnetzwerk
+    </a>
+    |
+    <a class="footer_linkstext" href="./send_link_mail.php?title=Was+kostet+ein+Umzug%3F+Kontakt+und+Angebote+zu+Umzugsunternehmen+aus+Ihrer+Region&amp;url=https%3A%2F%2Fumzug-marktplatz.de%2Findex.php" title="den Link zu dieser Seite per Email versenden.">
+     Link senden
+    </a>
+    |
+    <a class="footer_linkstext" href="https://twitter.com/UmzugMarktplatz" target="_blank" title="Umzug Marktplatz bei Twitter">
+     Twitter
+    </a>
+    |
+    <a class="footer_linkstext" href="https://plus.google.com/+UmzugMarktplatz" target="_blank" title="Umzug Marktplatz bei Google plus">
+     GOOGLE+
+    </a>
+    <br/>
+    <a class="footer_linkstext" href="./datenschutzverordnung.php" title="Datenschutzerklärung" umzug-marktplatz.de="" von="">
+     Datenschutzerklärung
+    </a>
+    |
+    <a class="footer_linkstext" href="./impressum.php" title="Kontakt und Impressum von umzug-marktplatz.de">
+     Impressum
+    </a>
+   </footer>
+  </div>
+ </body>
+</html>

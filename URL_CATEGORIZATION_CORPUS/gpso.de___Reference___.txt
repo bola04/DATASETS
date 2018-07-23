@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="de">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" name="viewport"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="telephone=no" name="format-detection"/>
+  <meta content="Nathansen" name="author"/>
+  <meta content="GPS-Koordinaten und Höhen/Tiefen per Mausklick, UTM/Lat/Lon-Eingabe, Adresseneingabe oder File-Upload. GPS-Wegpunkte und Routen erstellen und downloaden. Routenplaner, Tourenplaner kostenlos." name="description"/>
+  <meta content="Global Positioning System, GPS, UTM, Routenplaner, Tourenplaner, Gitter, Längengrad, Breitengrad, Longitude, Latitude, GoogleMaps, GoogleEarth, Geocoder, Geoplaner, GeoCaching, online" name="keywords"/>
+  <meta content="index,follow" name="robots"/>
+  <meta content="de" name="content-language"/>
+  <link href="https://www.geoplaner.de/" hreflang="de" rel="alternate"/>
+  <link href="https://www.geoplaner.com/" hreflang="en" rel="alternate"/>
+  <link href="zzpic/geoplaner-icon.png" rel="apple-touch-icon-precomposed"/>
+  <title>
+   GPS Geoplaner - GeoConverter | Routenplaner online
+  </title>
+  <link href="zzco/style1gp8x.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="zzco/base64.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="https://maps.google.com/maps/api/js?key=AIzaSyARxZGv9CQzLKSJ1-UEr_OG1iTz6vIK9fg&amp;sensor=false" type="text/javascript">
+  </script>
+  <script src="zzco/jscoord-1.1.1.js" type="text/javascript">
+  </script>
+  <script src="zzco/gpso28.js" type="text/javascript">
+  </script>
+ </head>
+ <body>
+  <div id="geoplaner">
+   <iframe id="upload_target" name="upload_target" src="zzco/blank.html">
+   </iframe>
+   <form action="https://www.geoplaner.de/zzco/gpcom27.php" enctype="multipart/form-data" method="post" name="gf" onsubmit="0" target="upload_target">
+    <p id="lang">
+     Geoplaner V2.8  [
+     <a href="https://www.geoplaner.com" title="Geo-Routeplanner in English">
+      in English
+     </a>
+     | auf deutsch ]
+    </p>
+    <div id="tleft">
+     <div class="td50">
+      <div class="geo1 td1">
+       <div class="pline1">
+        <b>
+         dd.ddddd°
+        </b>
+       </div>
+       <div class="pline1">
+        <input class="etxt ell" maxlength="9" readonly="readonly" size="8" type="text" value="Breite/Lat:"/>
+        <input class="etxt e10" maxlength="10" name="da1" onkeyup="gp.hkr(2)" size="10" tabindex="8" type="text"/>
+        °N
+       </div>
+       <div class="pline1">
+        <input class="etxt ell" maxlength="9" readonly="readonly" size="8" type="text" value="Länge/Lon:"/>
+        <input class="etxt e10" maxlength="10" name="do1" onkeyup="gp.hkr(2)" size="10" tabindex="9" type="text"/>
+        °E
+       </div>
+       <div class="pline1">
+        <input class="butt" onclick="gp.hhgeo(1)" tabindex="10" title="geographische Breite/Länge - Dezimalgrad" type="button" value="ok"/>
+       </div>
+      </div>
+      <div class="utm td1">
+       <div class="pline1">
+        <b>
+         UTM
+        </b>
+        <select name="he" tabindex="3" title="nördliche oder südliche Hemisphere">
+         <option value="N">
+          N
+         </option>
+         <option value="S">
+          S
+         </option>
+        </select>
+        Hemis.
+       </div>
+       <div class="pline1">
+        <input class="etxt e2" maxlength="2" name="zn" onkeyup="gp.hkr(1)" size="2" tabindex="4" title="Meridianstreifen" type="text"/>
+        <input class="etxt e1" maxlength="1" name="zl" readonly="readonly" size="1" type="text"/>
+        <input class="etxt e8" maxlength="10" name="ea" onkeyup="gp.hkr(1)" size="8" tabindex="5" title="Rechtswert / Ostwert" type="text"/>
+        x-re.
+       </div>
+       <div class="pline1">
+        <input class="etxt e2h" maxlength="2" readonly="readonly" size="2" type="text"/>
+        <input class="etxt e1" maxlength="1" readonly="readonly" size="1" type="text"/>
+        <input class="etxt e8" maxlength="10" name="no" onkeyup="gp.hkr(1)" size="8" tabindex="6" title="Hochwert / Nordwert" type="text"/>
+        y-ho
+       </div>
+       <div class="pline1">
+        <input class="butt" onclick="gp.hhutm()" tabindex="7" title="Konvertierung: UTM -&gt; Breitengrad / Längengrad" type="button" value="ok"/>
+       </div>
+      </div>
+      <div class="adr td2a">
+       <div class="pline2">
+        <b>
+         Adresse: Land, Ort, Straße
+        </b>
+        <i>
+         oder
+        </i>
+        <b>
+         POI
+        </b>
+        <input class="butt3" onclick="gp.hrg()" tabindex="30" title="Reverse Geocoding: Ermittlung der Postadresse" type="button" value="--&gt;"/>
+       </div>
+       <div class="pline2">
+        <input class="e80adr" maxlength="100" name="ad" onkeyup="gp.hkr(5)" size="45" tabindex="31" type="text"/>
+        <input class="butt3" onclick="gp.hhadr()" tabindex="32" title="Geocoding - ermittle geographische Position von Adresse" type="button" value="ok"/>
+       </div>
+      </div>
+     </div>
+     <div class="td50">
+      <div class="geo2 td1">
+       <div class="pline1">
+        <b>
+         dd° mm.mmm'
+        </b>
+       </div>
+       <div class="pline1">
+        <input class="etxt e3" maxlength="3" name="da2" onkeyup="gp.hkr(3)" size="3" tabindex="11" type="text"/>
+        °
+        <input class="etxt e6" maxlength="6" name="ma2" onkeyup="gp.hkr(3)" size="6" tabindex="12" type="text"/>
+        '
+        <select name="la2" tabindex="13" title="nördliche oder südliche Breite">
+         <option value="N">
+          N
+         </option>
+         <option value="S">
+          S
+         </option>
+        </select>
+       </div>
+       <div class="pline1">
+        <input class="etxt e3" maxlength="3" name="do2" onkeyup="gp.hkr(3)" size="3" tabindex="14" type="text"/>
+        °
+        <input class="etxt e6" maxlength="6" name="mo2" onkeyup="gp.hkr(3)" size="6" tabindex="15" type="text"/>
+        '
+        <select name="lo2" tabindex="16" title="östliche oder westliche Länge">
+         <option value="E">
+          E
+         </option>
+         <option value="W">
+          W
+         </option>
+        </select>
+       </div>
+       <div class="pline1">
+        <input class="butt" onclick="gp.hhdmm()" tabindex="17" title="geographische Breite/Länge - Grad, Dezimalminuten" type="button" value="ok"/>
+       </div>
+      </div>
+      <div class="geo3 td1">
+       <div class="pline1">
+        <b>
+         dd° mm' ss.s''
+        </b>
+       </div>
+       <div class="pline1">
+        <input class="etxt e3" maxlength="3" name="da3" onkeyup="gp.hkr(4)" size="3" tabindex="18" type="text"/>
+        °
+        <input class="etxt e2" maxlength="2" name="ma3" onkeyup="gp.hkr(4)" size="2" tabindex="19" type="text"/>
+        '
+        <input class="etxt e4" maxlength="4" name="sa3" onkeyup="gp.hkr(4)" size="4" tabindex="20" type="text"/>
+        ''
+        <select name="la3" tabindex="21" title="nördliche oder südliche Breite">
+         <option value="N">
+          N
+         </option>
+         <option value="S">
+          S
+         </option>
+        </select>
+       </div>
+       <div class="pline1">
+        <input class="etxt e3" maxlength="3" name="do3" onkeyup="gp.hkr(4)" size="3" tabindex="22" type="text"/>
+        °
+        <input class="etxt e2" maxlength="2" name="mo3" onkeyup="gp.hkr(4)" size="2" tabindex="23" type="text"/>
+        '
+        <input class="etxt e4" maxlength="4" name="so3" onkeyup="gp.hkr(4)" size="4" tabindex="24" type="text"/>
+        ''
+        <select name="lo3" tabindex="25" title="östliche oder westliche Länge">
+         <option value="E">
+          E
+         </option>
+         <option value="W">
+          W
+         </option>
+        </select>
+       </div>
+       <div class="pline1">
+        <input class="butt" onclick="gp.hhdms()" tabindex="26" title="geographische Breite/Länge - Grad, Minuten, Sekunden" type="button" value="ok"/>
+       </div>
+      </div>
+      <div class="ele td2b">
+       <div class="pline2">
+        <b>
+         Höhe
+        </b>
+        <i>
+         in
+        </i>
+        <select name="ft" onchange="gp.hsh()" title="Höhe/Meerestiefe in Meter oder Feet">
+         <option value="m">
+          m
+         </option>
+         <option value="ft">
+          ft
+         </option>
+        </select>
+       </div>
+       <div class="pline2">
+        <input class="e15ele" name="el" readonly="readonly" size="15" type="text"/>
+       </div>
+      </div>
+      <div class="let td2b">
+       <div class="pline2">
+        <input class="e10edit" name="wn" readonly="readonly" size="10"/>
+        <input class="butt3" onclick="gp.hwe()" title="Titel/Name des Wegpunkts editieren" type="button" value="edit"/>
+       </div>
+       <div class="pline2">
+        <input class="butt2" onclick="gp.hhfoc(-1000)" type="button" value="&lt;&lt;"/>
+        <input class="butt2" onclick="gp.hhfoc(-1)" type="button" value="&lt;"/>
+        <input class="e4wpt" name="wl" readonly="readonly" size="4"/>
+        <input class="butt2" onclick="gp.hhfoc(1)" type="button" value="&gt;"/>
+        <input class="butt2" onclick="gp.hhfoc(1000)" type="button" value="&gt;&gt;"/>
+       </div>
+      </div>
+     </div>
+     <div id="map_canvas">
+     </div>
+     <div id="map_copyright">
+      Maps © 2018
+      <a href="https://wiki.openstreetmap.org/wiki/Main_Page" onfocus="this.blur()" target="_blank">
+       OpenStreetMap
+      </a>
+      <a href="https://creativecommons.org/licenses/by-sa/2.0/" onfocus="this.blur()" target="_blank">
+       CC-BY-SA
+      </a>
+      -
+     </div>
+    </div>
+    <div id="tright">
+     <div class="pline1">
+      <b>
+       POI / WPT / Wegpunkte
+      </b>
+     </div>
+     <div id="dt">
+     </div>
+     <div id="btns">
+      <a id="Linkage">
+      </a>
+      <input class="buttlarge" name="wb" onclick="gp.hcw()" title="lösche einzelnen Wegpunkt" type="button" value="lösche WPT"/>
+      <input class="buttlarge" onclick="gp.hhcl()" title="lösche alle Wegpunkte (RESET)" type="button" value="lösche alle WPTs"/>
+      <br/>
+      <input class="buttlarge" name="hwd" onclick="gp.hwd(this)" title="Wegpunkte als GPX-Wegpunkteliste herunterladen" type="button" value="download WPTs"/>
+      <input class="buttlarge" name="hrd" onclick="gp.hrd(this)" title="Wegpunkte als GPX-Route herunterladen" type="button" value="download Route"/>
+      <br/>
+      <input accept="text/*" class="buttfile" maxlength="1048576" name="smf" title="GPX-File zum Hochladen auswählen" type="file"/>
+      <br/>
+      <input class="buttlarge" name="hwu" onclick="gp.hwu(this,1)" title="GPX-File mit Wegpunkten hochladen (Routen und Tracks werden ignoriert)" type="button" value="upload WPTs"/>
+      <input class="buttlarge" name="hru" onclick="gp.hwu(this,2)" title="GPX-File mit Route hochladen (Wegpunkte und Tracks werden ignoriert)" type="button" value="upload Route"/>
+      <br/>
+      <input name="sfb" type="hidden"/>
+      <input name="swc" type="hidden" value="---"/>
+      <input name="sfm" type="hidden" value="undef"/>
+      <input name="sid" type="hidden" value="0"/>
+      <input name="lng" type="hidden" value="de"/>
+     </div>
+    </div>
+   </form>
+  </div>
+  <div id="nav">
+   <a href="#Linkage">
+    Verlinkung
+   </a>
+   |
+   <a href="#Koordinaten-Konverter">
+    Koordinaten-Konverter
+   </a>
+   |
+   <a href="#GoogleMaps">
+    GoogleMaps/OSM
+   </a>
+   |
+   <a href="#numerische_Koordinateneingabe">
+    UTM/Latitude/Longitude
+   </a>
+   |
+   <a href="#Adressensuche">
+    Adressensuche
+   </a>
+   |
+   <a href="#GPS-Routenplaner">
+    Routenplaner
+   </a>
+   |
+   <a href="#Genauigkeit">
+    Genauigkeit
+   </a>
+   |
+   <a href="#Changelog">
+    Changelog/Änderungen
+   </a>
+   |
+   <a href="https://www.geoplaner.de/impressum/" target="_blank">
+    Nutzungsbedingungen | Datenschutz
+   </a>
+  </div>
+  <div id="content">
+   <div class="linkbx">
+    <p class="linkhl">
+     <b>
+      Link erstellen −&gt; URL + Wegpunkte (Latitude, Longitude, Name (optional))
+     </b>
+    </p>
+    <p class="linkp">
+     1)  Mithilfe des Geoplaners die für die Verlinkung gewünschten Wegpunkte erstellen bzw. bearbeiten.
+    </p>
+    <p class="linkp">
+     2)  Sollen auch die Wegpunkte-
+     <wbr>
+      Namen mit eingefügt werden (ergibt längere Links)?
+      <input id="llcb" type="checkbox" value="WPT Namen mit einfügen"/>
+      <b>
+       ja
+      </b>
+     </wbr>
+    </p>
+    <p class="linkp">
+     3)  Soll OpenStreetMap anstatt GoogleMaps (default) angezeigt werden?
+     <input id="llcc" type="checkbox" value="OSM statt GoogleMaps"/>
+     <b>
+      ja
+     </b>
+    </p>
+    <p class="linkp">
+     4)  Hier klicken
+     <b>
+      −&gt;
+     </b>
+     <input class="buttlarge linkbt" id="hpl" onclick="gp.hlc(this)" title="Link erstellen
+mit URL und Wegpunkten" type="button" value="Link erstellen"/>
+    </p>
+    <input id="llgp" onclick="this.select()" size="1000"/>
+    <p id="llpv">
+    </p>
+    <p class="linkp">
+     5)  Erstellten Link mit "
+     <b>
+      Strg+C
+     </b>
+     " kopieren und mit "
+     <b>
+      Strg+V
+     </b>
+     " in die Ziel-
+     <wbr>
+      Applikation
+einfügen.
+     </wbr>
+    </p>
+   </div>
+   <a class="ctop2" href="#">
+    <img alt="top" src="zzpic/top.png"/>
+   </a>
+   <h3 style="color:red">
+    Die GPS-Seite
+    <i>
+     "GPSo.de gehts"
+    </i>
+    habe ich wegen der neuen EU-DSGVO vom Netz genommen: Mir waren die datenschutzrechtlichen Risiken bzw. Anpassungsaufwände zu hoch. Beschwerden bitte direkt an die verantwortliche EU-Kommissarin.
+   </h3>
+   <h1>
+    Geoplaner - Info/Hilfe
+   </h1>
+   <p>
+    Der
+    <b>
+     Geoplaner
+    </b>
+    (
+    <b>
+     Geo
+    </b>
+    Converter + Routen
+    <b>
+     planer
+    </b>
+    ) konvertiert geografische Breitengrade/Längengrade
+(Latitude/Longitude) und UTM-Koordinaten und bietet einfache Funtionen für die GPS-Routenplanung. Die Koordinaten-Eingabe
+erfolgt entweder:
+   </p>
+   <ul>
+    <li>
+     <b>
+      graphisch
+     </b>
+     per Mausklick
+     <i>
+      oder
+     </i>
+    </li>
+    <li>
+     <b>
+      numerisch:
+     </b>
+     UTM-Koordinate oder Latitude/Breitengrad &amp; Longitude/Längengrad
+     <i>
+      oder
+     </i>
+    </li>
+    <li>
+     <b>
+      als Adresse:
+     </b>
+     Land, Ort, Straße, Hausnummer
+     <i>
+      oder
+     </i>
+    </li>
+    <li>
+     <b>
+      als POI:
+     </b>
+     Berggipfel, See, Stadt, Insel, ...
+     <i>
+      oder
+     </i>
+    </li>
+    <li>
+     <b>
+      per File-Upload:
+     </b>
+     Wegpunkte oder Route im *.gpx-Format.
+    </li>
+   </ul>
+   <p>
+    Die erstellten Koordinaten werden zusammen mit den Höhen u. Meerestiefen graphisch in GoogleMaps oder Open Street Map
+(OSM), sowie numerisch angezeigt und im GPX-Format zum Download zur Verfügung gestellt. Da der Koordinaten-
+    <wbr>
+     Download
+auch als GPX-Route möglich ist, eignet sich der Geoplaner als einfacher (manueller) GPS-
+     <wbr>
+      Routenplaner oder Tourenplaner.
+     </wbr>
+    </wbr>
+   </p>
+   <p class="noja">
+    Google hat leider den Zugriff auf viele bisher kostenfreie Karten-
+    <wbr>
+     Services stark begrenzt. Sollten im
+Geoplaner die Adressensuche, die Höhenausgabe oder auch die Kartenanzeige nicht mehr funktionieren, ist unser Tageslimit
+für diese Services überschritten worden.
+    </wbr>
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="Koordinaten-Konverter" name="Koordinaten-Konverter">
+    </a>
+    Koordinaten umrechnen (WGS84) und File Upload/Download
+   </h2>
+   <p>
+    Der Geoplaner rechnet UTM-Koordinaten in Breitengrade und Längengrade
+(Latitude, Longitude) um und umgekehrt. Die Umrechnung bzw. Konversion basiert auf
+    <b>
+     <a href="http://www.jstott.me.uk/jscoord/" target="_blank">
+      JScoord V1.1.1.
+     </a>
+    </b>
+    Das
+    <b>
+     Kartendatum
+    </b>
+    ist fest eingestellt auf
+    <b>
+     WGS84
+    </b>
+    .
+   </p>
+   <p>
+    Die Positionen der geographischen Koordinaten werden jeweils auf der
+    <b>
+     GoogleMaps
+    </b>
+    - oder
+    <b>
+     OSM
+    </b>
+    -
+    <wbr>
+     Karte durch
+Marker markiert. Außerdem werden alle Koordinaten im UTM-Format und in Dezimalgrad im WPT/POI/Wegpunkte-
+     <wbr>
+      Fenster (rechts)
+aufgelistet.
+     </wbr>
+    </wbr>
+   </p>
+   <p>
+    Unterhalb des WPT/POI/Wegpunkte-
+    <wbr>
+     Fensters befinden sich Buttons zum Löschen einzelner oder aller Koordinaten und zum
+Upload oder Download der Koordinaten in Form eines "
+     <b>
+      *.gpx-Files
+     </b>
+     ". Intern speichert der Geoplaner die Koordinaten als
+Liste ab. Der Download der Koordinaten kann jedoch optional als Wegpunkte-
+     <wbr>
+      Liste oder Route erfolgen. Der Koordinaten-Upload
+erfolgt entsprechend als Wegpunkte- oder Route-
+      <wbr>
+       Upload. Der Geoplaner konvertiert automatisch hochgeladene Routen in
+eine Wegpunkte-Liste. Das Hochladen von GPS-Tracks wird (noch) nicht unterstützt. Während des Up- oder Downloads werden keine
+Daten auf dem Geoplaner-
+       <wbr>
+        Server
+gespeichert!
+       </wbr>
+      </wbr>
+     </wbr>
+    </wbr>
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="GoogleMaps" name="GoogleMaps">
+    </a>
+    GoogleMaps/OSM: GPS-Wegpunkte oder Routen per Mausklick erstellen
+   </h2>
+   <p>
+    Bedienung von GoogleMaps/OSM wie üblich: Wechsel der Kartendarstellung, Zoomen, Kartenausschnitt schieben, Wegpunkte setzen,
+Koordinaten oder Wegpunkte verschieben usw.
+    <b>
+     mit linker Maustaste.
+    </b>
+   </p>
+   <p>
+    Außerdem besteht die Möglichkeit, innerhalb der erstellten Wegpunkte-Liste zu scrollen und einzelne oder alle Koordinaten
+oder Wegpunkte zu löschen. Die Namen der Wegpunkte können geändert bzw. editiert werden.
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="numerische_Koordinateneingabe" name="numerische_Koordinateneingabe">
+    </a>
+    numerische Koordinateneingabe: UTM-Koordinate oder Longitude u. Latitude
+   </h2>
+   <p>
+    Die Eingabe einer UTM-Koordinate umfasst die Auswahl bzw. Eingabe:
+   </p>
+   <ul>
+    <li>
+     der
+     <b>
+      Hemisphere
+     </b>
+     (nördliche oder südliche Halbkugel),
+    </li>
+    <li>
+     des
+     <b>
+      Meridianstreifens
+     </b>
+     ,
+    </li>
+    <li>
+     des
+     <b>
+      Rechtswerts
+     </b>
+     (Ostwert,
+     <b>
+      x
+     </b>
+     )
+     <i>
+      und
+     </i>
+    </li>
+    <li>
+     des
+     <b>
+      Hochwerts
+     </b>
+     (Nordwert,
+     <b>
+      y
+     </b>
+     )
+    </li>
+   </ul>
+   <p>
+    Die Längen- und Breitengrade (Longitude u. Latitude) können in drei verschiedenen Formaten eingegeben werden:
+   </p>
+   <ul>
+    <li>
+     Dezimalgrad:
+     <b>
+      dd.ddddd°
+     </b>
+    </li>
+    <li>
+     Grad, Dezimalminuten:
+     <b>
+      dd° mm.mmm'
+     </b>
+    </li>
+    <li>
+     Grad, Minuten, Sekunden:
+     <b>
+      dd° mm' ss.s''
+     </b>
+    </li>
+   </ul>
+   <p>
+    Die Koordinaten-Formate werden jeweils ineinander umgerechnet.
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="Adressensuche" name="Adressensuche">
+    </a>
+    Adressensuche: Land, Ort, Straße oder POI-Eingabe: Berggipfel, See, Stadt, etc.
+   </h2>
+   <p>
+    Adressen werden als
+    <b>
+     Postadressen (Straße u. evtl. Hausnummer, Ort mit/ohne Postleitzahl, evtl. Land)
+    </b>
+    oder
+    <b>
+     POI
+(Points of Interest: Berggipfel, See, Stadt o.ä.)
+    </b>
+    eingegeben. Die ermittelten Positionen sind allerdings nicht immer
+korrekt: Während die Postadressen-Suche sehr gut funktioniert, kommt es bei der POI-Suche zu Problemen, falls der Google-
+    <wbr>
+     Geocoder
+mehrere Positionen zurückliefert: Z.Bsp. liefert "Zugspitze" die richtige Position, während man mit "Wendelstein" leider
+nicht zum Gipfel gelangt. In diesem Fall muss man sich mit Hilfe der GoogleMaps- oder OSM-Karten über in der Nähe liegende
+Orte oder
+POI an den Gipfel herantasten.
+    </wbr>
+   </p>
+   <p>
+    Schaltet man GoogleMaps auf
+    <b>
+     Terrain- bzw. Gelände-
+     <wbr>
+      Darstellung
+     </wbr>
+    </b>
+    um, werden auch
+    <b>
+     Höhenlinien
+    </b>
+    angezeigt.
+Dies ist besonders hilfreich zur eindeutigen Identifikation von Gipfeln. Für Postadressen ist dagegen die Map- bzw.
+    <b>
+     Kartendarstellung
+(Stadtplan)
+    </b>
+    am besten geeignet.
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="GPS-Routenplaner" name="GPS-Routenplaner">
+    </a>
+    GPS-Routenplaner | Tourenplaner
+   </h2>
+   <p>
+    Als einfacher (manueller) GPS-Routenplaner oder -Tourenplaner lässt sich der Geoplaner seit Version V1.5 ebenfalls verwenden.
+Die online erstellten Koordinaten und Höhen können dazu mit dem Button
+    <b>
+     "download Route"
+    </b>
+    auf dem PC als GPX-File zwischengespeichert
+und anschließend in den internen Speicher oder die SD-Karte des GPS-Empfängers geladen werden. Die nachträgliche Bearbeitung
+oder Erweiterung von vorhandenen GPS-Routen ist seit Version 1.7 über
+    <b>
+     "upload Route"
+    </b>
+    möglich. Außerdem kann der Geoplaner
+eine Wegpunkte-
+    <wbr>
+     Liste in eine GPS-Route umwandeln und umgekehrt. Beim File-
+     <wbr>
+      Upload ist zu beachten, dass bereits
+vorhandene Höhenangaben nicht importiert werden. Während des Scrollens durch die Wegpunkte-
+      <wbr>
+       Liste oder durch Klicken
+auf einzelne Wegpunkte werden die zugehörigen Höhenangaben
+durch Googles Elevation-
+       <wbr>
+        Service jedoch automatisch ergänzt.
+        <br/>
+        Seit Version 2.0 zeigt der Geoplaner
+Open Street Map (OSM) an. Die Open Street Map-Karten sind besonders zur Planung von Bergtouren oder Wandertouren
+geeignet, da sie auch Pfade und Wanderwege enthalten.
+        <br/>
+        <b>
+         Hinweis: Der Geoplaner unterstützt kein automatisches Routing,
+sondern die Wegpunkte der Route werden einzeln per Mausklick, Adressen-Eingabe oder auch Koordinateneingabe erstellt!
+        </b>
+       </wbr>
+      </wbr>
+     </wbr>
+    </wbr>
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    Wozu lässt sich der Geoplaner sonst noch verwenden?
+   </h2>
+   <h3>
+    Straßennavigation
+   </h3>
+   <p>
+    Sie möchten Ihren Outdoor GPS-Empfänger im Auto in der Straßennavigation
+einsetzen? Mithilfe des Routenplaners können sehr bequem GPS-
+    <wbr>
+     Koordinaten der gewünschten Zieladressen ermittelt und
+manuell in den Outdoor GPS-
+     <wbr>
+      Empfänger eingegeben oder über einen Download auf den PC und dann in den Outdoor GPS-Empfänger
+geladen werden. Hier empfiehlt es sich, Google Maps auf Map- bzw. Karten-Darstellung (Stadtplan) umzuschalten.
+     </wbr>
+    </wbr>
+   </p>
+   <h3>
+    Stadtbummel
+   </h3>
+   <p>
+    Auch zur Orientierung in der Stadt können mithilfe des Geoplaners recht schnell die GPS-
+    <wbr>
+     Koordinaten aller interessierenden
+Wegpunkte eingesammelt werden. Auch hier empfiehlt es sich, zur Map- bzw. Karten-
+     <wbr>
+      Darstellung zu wechseln (Stadtplan-
+      <wbr>
+       Darstellung).
+      </wbr>
+     </wbr>
+    </wbr>
+   </p>
+   <h3>
+    Urlaub, Fernreisen
+   </h3>
+   <p>
+    Im Urlaub bzw. auf Fernreisen kann der Geoplaner eingesetzt werden, um im nächsten Internetcafé den aktuellen Standort
+bzw. die schönsten Plätze des Urlaubs von oben bewundern zu können. Voraussetzung ist natürlich, dass man den Outdoor GPS-
+    <wbr>
+     Empfänger
+dabei hat und gelegentlich mit der "mark"-Taste GPS-
+     <wbr>
+      Koordinaten abspeichert.
+     </wbr>
+    </wbr>
+   </p>
+   <h3>
+    Geocaching
+   </h3>
+   <p>
+    Vor dem Suchen können die Geocaches anhand der Koordinaten in GoogleMaps oder OSM lokalisiert werden. Bei Erstellung neuer
+GeoCaches können die Koordinaten mithilfe des Geoplaners überprüft werden. Die Ein- und Ausgabe der Geocache-Koordinaten
+erfolgt entweder manuell oder per GPX-File - Upload oder Download.
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="Genauigkeit" name="Genauigkeit">
+    </a>
+    Genauigkeit der Koordinaten und Höhen
+   </h2>
+   <h3>
+    GoogleMaps-Koordinaten
+   </h3>
+   <p>
+    Der größte Teil der Google-Karten sind laut Wikipedia
+    <a href="https://de.wikipedia.org/wiki/Landsat_7" target="_blank">
+     aufbereitete Daten aus Landsat-7 Satellitenbildern
+    </a>
+    . Landsat-7 ist ein im April 1999 gestarteter Erdbeobachtungssatellit
+der US-amerikanischen Luft- und Raumfahrtbehörde NASA. Die für GoogleMaps/GoogleEarth aufbereiteten Kartendaten weisen eine
+    <a href="https://de.wikipedia.org/wiki/Google_Earth#Bilddaten" target="_blank">
+     Genauigkeit zwischen 0.1m in einigen Ballungsgebieten
+und 15m z.Bsp. in der Antarktis auf
+    </a>
+    . Die angezeigten Koordinaten werden im Geoplaner auf 1m Genauigkeit gerundet.
+   </p>
+   <h3>
+    OpenStreetMap-Koordinaten
+   </h3>
+   <p>
+    Feld- und Wanderwege auf den OpenStreetMaps-Karten (OSM) könnten dagegen schon mal 10m oder mehr daneben liegen. Es handelt
+sich hier um GPS-Tracks, die von Freiwilligen mit ihren GPS-Empfängern aufgezeichnet und in die OSM-Datenbank eingepflegt
+wurden. Je nach verwendetem GPS-Empfänger und je nach Empfangslage variiert deshalb die Genauigkeit der aufgezeichneten
+Tracks zwischen 3m und 30m. Bei OSM-Stadtplänen und Straßenkarten ist die Genauigkeit dagegen deutlich höher. Im direkten
+Vergleich zwischen GoogleMaps und OSM sind jedoch auch hier z.Tl. Abweichungen von einigen Metern zu finden.
+   </p>
+   <h3>
+    Genauigkeit der Höhen
+   </h3>
+   <p>
+    Die im Geoplaner angezeigten Höhen werden über den Google Elevation Service bereitgestellt. Ursprünglich wurden diese
+Höhendaten während der
+    <a href="https://de.wikipedia.org/wiki/SRTM-Daten" target="_blank">
+     Shuttle Radar Topography Mission
+(SRTM)
+    </a>
+    der NASA erfasst. Die frei zur Verfügung stehenden SRTM-Daten setzen sich aus SIR-C-Daten der NASA und X-SAR-Daten
+des
+Deutschen Zentrums für Luft- und Raumfahrt (DLR) zusammen. Die SIR-C-Daten der NASA weisen eine
+    <a href="https://de.wikipedia.org/wiki/SRTM-Daten#Erfassung_der_Daten:_SIR-C.2C_X-SAR" target="_blank">
+     Höhengenauigkeit von etwa
+6m auf bei einer horizontalen Auflösung von 30m
+    </a>
+    . Die X-SAR-Daten des DLR sollen zwar eine deutlich höhere Genauigkeit (1m?) besitzen,
+decken jedoch nur 40% der Erdoberfläche ab. Welche dieser Daten von Google tatsächlich verwendet und über die Google Elevation-API
+bereitgestellt werden, ist uns leider nicht bekannt. Auch wenn die Höhenwerte sehr viel ungenauer sind, werden sie im Geoplaner
+mit einer Genauigkeit von 0.1m bzw. 1ft. dargestellt. Dadurch lassen sich Steigungen und Gefälle in sehr flachem Gelände
+oder zwischen eng liegenden Wegpunkten besser erkennen.
+   </p>
+   <a class="ctop" href="#">
+    <i class="top">
+    </i>
+   </a>
+   <h2>
+    <a id="Changelog" name="Changelog">
+    </a>
+    Changelog / Änderungen
+   </h2>
+   <h3>
+    26.08.2017 - GPS Geoplaner V2.8
+   </h3>
+   <p>
+    a) Umstellung auf HTTPS mit
+    <i>
+     Let's encrypt
+    </i>
+    . b) Neue Option "OpenStreetMap" für die Linkerstellung.
+   </p>
+   <h3>
+    06.12.2014 - GPS Geoplaner V2.7
+   </h3>
+   <p>
+    Erhöhung der maximal hochladbaren Wegpunkte oder Routenpunkte auf 2000.
+   </p>
+   <h3>
+    05.02.2014 - GPS Geoplaner V2.6
+   </h3>
+   <p>
+    Neue Verlinkungsfunktion: Link erstellen mit URL und Wegpunkten (Breite/Latitude, Länge/Longitude, Name).
+   </p>
+   <h3>
+    22.03.2013 - GPS Geoplaner V2.5
+   </h3>
+   <p>
+    a) Verbesserung der Grafik, Anpassung an verschiedene Bildschirmgößen. b) Aktivierung des HTML5-Speichers.
+   </p>
+   <h3>
+    05.12.2011 - GPS Geoplaner V2.4
+   </h3>
+   <p>
+    a) Erleichterte Eingabe von UTM-Koordinaten durch Verwendung von Trennzeichen, z.Bsp: "5.865.883". b) Erhöhung der maximal
+hochladbaren Wegpunkte oder Routenpunkte auf 500.
+   </p>
+   <h3>
+    20.10.2010 GPS Geoplaner V2.3
+   </h3>
+   <p>
+    a) Google Street View freigeschaltet (in Deutschland bisher nicht funktionsfähig). b) Einige kleinere Verbesserungen fCr:
+File Upload, Adressen-Eingabe, Löschen vom Wegpunkten.
+   </p>
+   <h3>
+    18.08.2010 GPS Geoplaner V2.2
+   </h3>
+   <p>
+    a) Implementierung von Reverse Geocoding, aufrufbar mit dem
+    <b>
+     "--&gt;"
+    </b>
+    - Button. Reverse Geocoding von Google liefert
+Postadressen zu Wegpunkten (Koordinaten). b) Ausgabe der Höhe/Elevation optional auch in "ft".
+   </p>
+   <h3>
+    01.07.2010 GPS Geoplaner V2.1b
+   </h3>
+   <p>
+    Performance-Verbesserungen für große Uploads.
+   </p>
+   <p>
+    <b>
+     ...
+    </b>
+   </p>
+  </div>
+  <p>
+  </p>
+  <p>
+  </p>
+  <div id="footer">
+   <p style="float:left;">
+    © 2009-2018
+    <a href="https://www.nathansen.de/" target="_blank">
+     Martin Nathansen
+    </a>
+   </p>
+   <p style="float:right;">
+    <a href="https://www.geoplaner.de/impressum/" rel="nofollow">
+     Impressum u. Datenschutz
+    </a>
+   </p>
+  </div>
+  <img alt="wpt" id="iwpx" src="https://www.geoplaner.de/wpt.png"/>
+ </body>
+</html>

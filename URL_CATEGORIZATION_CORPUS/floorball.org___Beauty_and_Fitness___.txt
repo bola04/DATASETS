@@ -1,0 +1,2658 @@
+<!DOCTYPE html>
+<html lang="en-us" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
+ <head>
+  <title>
+   IFF
+  </title>
+  <!-- Base href, käytettävä jos URLReWrite käytössä -->
+  <base href="http://www.floorball.org/"/>
+  <!-- Dynaamiset meta-tagit -->
+  <meta content="IFF" name="author"/>
+  <meta content="IFF - IFF" name="description"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="public" http-equiv="Cache-control"/>
+  <link href="main.css" media="all" rel="stylesheet" type="text/css"/>
+  <!-- Liquid Slider -->
+  <link href="liquid-slider/css/liquid-slider.css" rel="stylesheet"/>
+  <link href="liquid-slider/css/animate.css" rel="stylesheet"/>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+  </script>
+  <!-- Liquid Slider -->
+  <!-- Ylämenu -->
+  <script language="javascript" src="include/hoverIntent.js" type="text/javascript">
+  </script>
+  <script language="javascript" src="include/NEmenu2011.js" type="text/javascript">
+  </script>
+  <!-- Ylämenu -->
+  <!-- qTip2 -->
+  <link href="include/qtip/jquery.qtip.min.css" rel="stylesheet"/>
+  <script language="javascript" src="include/qtip/jquery.qtip.min.js" type="text/javascript">
+  </script>
+  <!-- qTip2 -->
+  <!-- Bannerimoottori -->
+  <script language="javascript" src="include/jqueryCycle/jqueryCycle.js" type="text/javascript">
+  </script>
+  <!-- Bannerimoottori -->
+  <script language="javascript" type="text/javascript">
+   <!--
+	// Email validaattori
+	var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+	// Trim funktio
+	function trimSpace(inputString){
+
+		if (typeof inputString != "string") { return inputString; }
+			var retValue = inputString;
+			var ch = retValue.substring(0, 1);
+
+		while (ch == " ") { // Tarkistetaan välilyönnit stringin alusta
+		   retValue = retValue.substring(1, retValue.length);
+		   ch = retValue.substring(0, 1);
+	 	}
+
+		ch = retValue.substring(retValue.length-1, retValue.length);
+		while (ch == " ") { // Tarkistetaan välilyönnit stringin lopusta
+			   retValue = retValue.substring(0, retValue.length-1);
+			   ch = retValue.substring(retValue.length-1, retValue.length);
+		 }
+
+		return retValue; // Palautetaan trimmattu stringgi
+	}
+
+	// 
+	var ikkuna;
+
+	function orderForm(){
+		ikkuna = window.open('orderNewsLetter.htm','doc','toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=1,width=635,height=666,left=0,top=0');
+		ikkuna.focus();
+	}
+
+	// AJAX funktio käsittelee tapahtumakalenterin selauksen
+	function selaaKalenteria(sivu,id_sivu,kpaiva){
+
+		//alert(sivu + unescape(kpaiva));
+
+		// Ajax funktio
+		var ajaxRequest;
+		var sivu = 'include/ajax_noudakalenteri.asp?kieli=826&kpaiva='+ unescape(kpaiva) +'&foo=84248';
+
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					alert("Your browser does not support XML-HTTP -requests");
+					return false;
+				}
+			}
+		}
+		ajaxRequest.onreadystatechange = function(){
+
+			if(ajaxRequest.readyState == 4){
+
+				document.getElementById('kalenteripalsta2').innerHTML=ajaxRequest.responseText;
+
+				// Kalenterilinkeille asetettava uudestaan qTip
+				$('#kalenteritaulukko a[href]').qtip({
+					content: {
+					text: false
+				},
+				position: {
+					my: 'bottom left',
+					at: 'top right',
+				},
+				style: {
+					classes: 'qtip-shadow qtip-rounded'
+				}
+				});
+
+			}
+
+		}
+		ajaxRequest.open("GET", sivu, true);
+		ajaxRequest.send(null);
+	}
+
+
+	// AJAX funktio käsittelee tapahtumakalenterin selauksen
+	function noudaBannerit(id_alue){
+
+		// Ajax funktio
+		var ajaxRequest;
+		var sivu = 'include/ajax_noudaBannerit.asp?kieli=826&id_alue='+ unescape(id_alue) +'&foo=84248';
+
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					alert("Your browser does not support XML-HTTP -requests.");
+					return false;
+				}
+			}
+		}
+		ajaxRequest.onreadystatechange = function(){
+
+			if(ajaxRequest.readyState == 4){
+
+				document.getElementById('banneriContainer').innerHTML=ajaxRequest.responseText;
+				// Init slideri uudestaan
+				$('#sponsor-slider').liquidSlider();
+			}
+
+		}
+		ajaxRequest.open("GET", sivu, true);
+		ajaxRequest.send(null);
+	}
+
+
+	// Lappuliisa
+	function vaihdaLappu(div,painike,url){
+
+		if(div=='container_channel1'){
+			document.getElementById('container_channel1').style.display='';
+			document.getElementById('container_channel2').style.display='none';
+		}
+
+		if(div=='container_channel2'){
+			document.getElementById('container_channel2').style.display='';
+			document.getElementById('container_channel1').style.display='none';
+		}		
+
+	}
+
+	// 
+	function lappuLiisa(elem1,elem2){
+
+		document.getElementById(elem1).style.display='';
+		document.getElementById(elem2).style.display='none';
+
+	}
+	-->
+  </script>
+  <script language="javascript" type="text/javascript">
+   <!--
+	// Tooltipsit kun dokumentti on ladattu
+	$(document).ready(function()
+	{
+		// Kalenterilinkit
+		$('#kalenteritaulukko a[href]').qtip({
+			content: {
+			text: false
+		},
+		position: {
+			my: 'bottom left',
+			at: 'top right',
+		},
+		style: {
+			classes: 'qtip-shadow qtip-rounded'
+		}
+		});
+
+		// Uutislinkit
+		$('#uutislinkki a[href]').qtip({
+			content: {
+			text: false
+		},
+		position: {
+			my: 'bottom left',
+			at: 'top left',
+		},
+		style: { 
+			classes: 'qtip-shadow qtip-rounded'
+		}
+		});
+
+		// RSS linkit
+		$('#uutislinkki_RSS a[href]').qtip({
+			content: {
+			text: false
+		},
+		position: {
+			my: 'bottom left',
+			at: 'top left',
+		},
+		style: { 
+			classes: 'qtip-shadow qtip-rounded'
+		}
+		});
+
+		// Events linkit
+		$('#container_event a[href]').qtip({
+			content: {
+			text: false
+		},
+		position: {
+			my: 'bottom left',
+			at: 'top left',
+		},
+		style: { 
+			classes: 'qtip-shadow qtip-rounded'
+		}
+		});
+
+	});
+	-->
+  </script>
+  <link href="http://fonts.googleapis.com/css?family=Oxygen:400,300,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
+  <link href="http://www.floorball.org/iff.ico" rel="SHORTCUT ICON"/>
+  <script type="text/javascript">
+   var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-20079543-1']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+  </script>
+  <script language="javascript">
+   // 
+	function silentHandler(){
+		return(false);
+	}
+	window.onerror = silentHandler();
+  </script>
+ </head>
+ <body onload="if(document.getElementById('main-slider')){document.getElementById('main-slider').style.visibility='visible';};if(document.getElementById('news-slider')){document.getElementById('news-slider').style.visibility='visible';}">
+  <div id="fb-root">
+  </div>
+  <script>
+   (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/fi_FI/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div id="wrap">
+   <!-- Ylätunniste -->
+   <style type="text/css">
+    .cycle-slideshow, .cycle-slideshow * {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.cycle-slideshow {
+	width: 490px;
+	min-width: 490px;
+	max-width: 490px;
+	padding: 0;
+	position: relative;
+	margin: auto;
+	height: 63px;
+}
+.cycle-slideshow > a { 
+    position: absolute;
+	top: 0;
+	left: 0;
+    width: 100%; padding: 0;
+	display: block;
+}
+.cycle-slideshow > a > img { 
+    /*width: 100%;*/
+    position: static;
+    display: block;
+}
+.cycle-slideshow img:first-child {
+    position: static; z-index: 100;
+}
+.cycle-pager span.cycle-pager-active { color: #D69746; }
+.cycle-pager > * { cursor: pointer; }
+.cycle-caption { position: absolute; color: white; bottom: 15px; right: 15px; z-index: 700; }
+@media only screen and (max-width: 490px), only screen and (max-device-width: 490px) {
+    .cycle-slideshow { width: 490px; }
+    .cycle-overlay { padding: 0px }
+    .cycle-caption { bottom: 0px; right: 0px }
+}
+   </style>
+   <div id="header_container">
+    <div id="logo_left">
+     <a href="http://www.floorball.org/">
+      <img alt="IFF" border="0" src="images/iff_logo.png" title="IFF"/>
+     </a>
+    </div>
+    <div id="logo_right" style="width: 150px;">
+    </div>
+    <div id="main_banner_container">
+     <div class="cycle-slideshow" data-cycle-fx="scrollHorz" data-cycle-slides="&gt; a" data-cycle-timeout="3000">
+      <!-- TekstiÃ¤ varten -->
+      <div class="cycle-overlay">
+      </div>
+      <a href="http://www.floorball.org/pages/EN/Mens-WFC-2018" target="_blank">
+       <img src="http://www.floorball.org/Bannerit/WFC%202018%20banner_384x65.jpg"/>
+      </a>
+     </div>
+    </div>
+    <ul id="mainmenu_vertical">
+     <li>
+      <a class="painike_main_off" href="pages/EN/IFF">
+       IFF
+      </a>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/ORGANISATION">
+       ORGANISATION
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/Central-Board">
+          Central Board
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Committees">
+          Committees
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Member-Associations">
+          Member Associations
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Athletes-Commission">
+          Athletes Commission
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Office-Contacts">
+          Office Contacts
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/AOFC">
+          AOFC
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Referee-Observers">
+          Referee Observers
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Referees">
+          Referees
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="pages/EN/Other-Countries">
+          Other Countries
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Member-Statistics">
+          Member Statistics
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Finances">
+          Finances
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Meetings">
+          Meetings
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/ParaFloorball">
+          ParaFloorball
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Today-and-History-in-short">
+          IFF Today and History in short
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Strategic-Documents">
+          IFF Strategic Documents and Policies
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/EVENTS">
+       EVENTS
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/Events-and-Organisers">
+          Events &amp; Organisers
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/World-Championships">
+          World Championships
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/The-World-Games">
+          The World Games
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Champions-Cup">
+          Champions Cup
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/EuroFloorball-Cup">
+          EuroFloorball Cup
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/EuroFloorball-Challenge">
+          EuroFloorball Challenge
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/SEA-Games">
+          SEA Games
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/AOFC-Cup">
+          AOFC Cup
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="pages/EN/South-East-Asian-Championships">
+          South East Asian Championships
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Asia-Pacific-Floorball-Championships">
+          Asia Pacific Floorball Championships
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/World-University-Championships">
+          World University Championships
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/International-Matches">
+          International Matches
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/International-Club-Tournaments">
+          International Club Tournaments
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/European-Championships">
+          European Championships
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Rankings">
+          Rankings
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/License-System">
+          License System
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="pages/EN/Records-in-IFF-Events">
+          Records in IFF Events
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Events-Mobile-App">
+          IFF Events Mobile App
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Participant-Info">
+          Participant Info
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/National-Training-Camps">
+          National Training Camps
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/DEVELOPMENT">
+       DEVELOPMENT
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/IFF-Development-Programme">
+          IFF Development Programme
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/GoGirls-Floorball">
+          GoGirls! Floorball
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Kids-with-Sticks-Support-Project">
+          Kids with Sticks Support Project
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Equipment-Support">
+          IFF Equipment Support
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/RULES-and-REGULATIONS">
+       RULES &amp; REGULATIONS
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/Rules-of-the-game-">
+          Rules of the game
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Regulations">
+          IFF Regulations &amp; Guidelines
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Statutes">
+          Statutes
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Certified-Equipment">
+          Certified Equipment
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Permissions-to-use-over-length-stick">
+          Permissions to use over-length stick
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/ANTI-DOPING-and-MEDICAL">
+       ANTI-DOPING &amp; MEDICAL
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/Anti-Doping-Rules-and-Regulations">
+          Anti-Doping Rules and Regulations
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Prohibited-List-and-Therapeutic-Use-Exemption-TUE">
+          Prohibited List &amp; Therapeutic Use Exemption (TUE)
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Testing-Pools-and-Whereabouts">
+          Testing Pools &amp; Whereabouts
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Doping-Control-information">
+          Doping-Control-information
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Anti-Doping-Information-and-Education">
+          Anti-Doping Information &amp; Education
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Medical-Committee">
+          IFF Medical Committee
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Injury-Assessment">
+          IFF Injury Assessment
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Test-Statistics-">
+          IFF Test Statistics
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/TRANSFERS">
+       TRANSFERS
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/Transfer-List-2018">
+          Transfer List 2018
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Transfer-List-2017">
+          Transfer List 2017
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Temporary---Student---Visitor-Transfer-list-2017">
+          Temporary / Student / Visitor Transfer list 2017
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Transfer-list-2016">
+          Transfer List 2016
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Temporary-Play-Transfer-List-2016">
+          Temporary Play List 2016
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Transfer-Regulations">
+          Transfer Regulations
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/International-transfer">
+          International transfer
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Visitor-and-Student-Transfers">
+          Visitor and Student Transfers
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="pages/EN/Temporary-Play">
+          Temporary Play
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Transfer-Statistics">
+          Transfer Statistics
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Previous-Transfers">
+          Previous Transfers
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/MATERIALS">
+       MATERIALS
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/IFF-Forms">
+          IFF Forms
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Logos">
+          IFF Logos
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Pictures">
+          Pictures
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Downloads">
+          Downloads
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Scientific-studies-of-Floorball">
+          Scientific studies of Floorball
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+     <li>
+      <a class="painike_main_off" href="pages/EN/LINKS">
+       LINKS
+      </a>
+      <div class="alamenu">
+       <ul>
+        <li>
+         <a href="pages/EN/International-organisations">
+          International organisations
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/IFF-Member-Associations">
+          IFF Member Associations
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Floorball-Club-Links">
+          Floorball Club Links
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Floorball-Equipment-Manufacturers">
+          Floorball Equipment Manufacturers
+         </a>
+        </li>
+        <li>
+         <a href="pages/EN/Other-Floorball-Links">
+          Other Floorball Links
+         </a>
+        </li>
+       </ul>
+      </div>
+     </li>
+    </ul>
+    <div id="kielivalintacontainer">
+     <div style="float: right;">
+      <a class="kielilinkki" href="javascript:window.print();">
+       Print
+      </a>
+     </div>
+     <div style="float: right;">
+      <a class="kielilinkki" href="sitemap.asp?kieli=826">
+       Sitemap
+      </a>
+     </div>
+     <div style="float: right;">
+      <a class="kielilinkki" href="search.asp?kieli=826">
+       Search
+      </a>
+     </div>
+     <div style="float: right;">
+      <a class="kielilinkki" href="default.asp?id_sivu=18&amp;alasivu=18&amp;kieli=826">
+       Contacts
+      </a>
+     </div>
+    </div>
+   </div>
+   <div id="main_container">
+    <table border="0" cellpadding="0" cellspacing="0" class="maintable" width="1000">
+     <tr>
+      <td align="left" valign="top">
+      </td>
+      <td align="center" nowrap="nowrap" valign="middle">
+      </td>
+      <td align="left" valign="top">
+      </td>
+     </tr>
+     <tr>
+      <td align="center" colspan="3" height="64" valign="middle">
+       <div class="liquid-slider" id="main-slider" style="text-align: center;visibility: hidden;">
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479436">
+           <div id="tuloslappu_pvm">
+            Monday 18.06.2018 10:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1233060400.gif" style="border:solid 2px #eede57;" title="MAS W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479436">
+           14 – 1
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418896165.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="PHI W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           MAS W  –  PHI W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482796">
+           <div id="tuloslappu_pvm">
+            Monday 18.06.2018 13:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1432796794.gif" style="border:solid 2px #eede57;" title="THA W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482796">
+           15 – 1
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1524481051.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IND W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           THA W  –  IND W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482827">
+           <div id="tuloslappu_pvm">
+            Monday 18.06.2018 16:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174299455">
+           <img align="absmiddle" alt="SGP W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174299455.gif" style="border:solid 2px #eede57;" title="SGP W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482827">
+           18 – 0
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418895951">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418895951.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="INA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="INA W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           SGP W  –  INA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479486">
+           <div id="tuloslappu_pvm">
+            Monday 18.06.2018 19:30
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174478438">
+           <img align="absmiddle" alt="JPN W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174478438.gif" style="border:solid 2px #eede57;" title="JPN W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479486">
+           27 – 0
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1476787280">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1476787280.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="IRI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IRI W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           JPN W  –  IRI W
+          </div>
+         </div>
+        </div>
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482855">
+           <div id="tuloslappu_pvm">
+            Tuesday 19.06.2018 10:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418895951">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418895951.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="INA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="INA W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482855">
+           0 – 20
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1432796794.gif" style="border:solid 2px #eede57;" title="THA W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           INA W  –  THA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479569">
+           <div id="tuloslappu_pvm">
+            Tuesday 19.06.2018 13:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418896165.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="PHI W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479569">
+           3 – 7
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174478438">
+           <img align="absmiddle" alt="JPN W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174478438.gif" style="border:solid 2px #eede57;" title="JPN W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           PHI W  –  JPN W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479597">
+           <div id="tuloslappu_pvm">
+            Tuesday 19.06.2018 16:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1476787280">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1476787280.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="IRI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IRI W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479597">
+           2 – 27
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1233060400.gif" style="border:solid 2px #eede57;" title="MAS W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IRI W  –  MAS W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482890">
+           <div id="tuloslappu_pvm">
+            Tuesday 19.06.2018 19:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1524481051.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IND W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482890">
+           0 – 16
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174299455">
+           <img align="absmiddle" alt="SGP W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174299455.gif" style="border:solid 2px #eede57;" title="SGP W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IND W  –  SGP W
+          </div>
+         </div>
+        </div>
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479646">
+           <div id="tuloslappu_pvm">
+            Wednesday 20.06.2018 10:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1418896165.gif" style="border:solid 2px #eede57;" title="PHI W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479646">
+           12 – 6
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1476787280">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1476787280.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="IRI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IRI W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           PHI W  –  IRI W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482918">
+           <div id="tuloslappu_pvm">
+            Wednesday 20.06.2018 13:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1524481051.gif" style="border:solid 2px #eede57;" title="IND W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482918">
+           7 – 5
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418895951">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418895951.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="INA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="INA W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IND W  –  INA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479677">
+           <div id="tuloslappu_pvm">
+            Wednesday 20.06.2018 16:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174478438">
+           <img align="absmiddle" alt="JPN W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174478438.gif" style="border:solid 2px #eede57;" title="JPN W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524479677">
+           6 – 4
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1233060400.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="MAS W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           JPN W  –  MAS W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482942">
+           <div id="tuloslappu_pvm">
+            Wednesday 20.06.2018 19:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1432796794.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="THA W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524482942">
+           1 – 2
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174299455">
+           <img align="absmiddle" alt="SGP W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174299455.gif" style="border:solid 2px #eede57;" title="SGP W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           THA W  –  SGP W
+          </div>
+         </div>
+        </div>
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483068">
+           <div id="tuloslappu_pvm">
+            Thursday 21.06.2018 14:32
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1233060400.gif" style="border:solid 2px #eede57;" title="MAS W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483068">
+           4 – 2
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1524481051.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IND W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           MAS W  –  IND W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483111">
+           <div id="tuloslappu_pvm">
+            Thursday 21.06.2018 17:32
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418896165.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="PHI W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483111">
+           2 – 8
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1432796794.gif" style="border:solid 2px #eede57;" title="THA W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           PHI W  –  THA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483154">
+           <div id="tuloslappu_pvm">
+            Friday 22.06.2018 10:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1476787280">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1476787280.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="IRI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IRI W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483154">
+           0 – 15
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1524481051.gif" style="border:solid 2px #eede57;" title="IND W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IRI W  –  IND W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483190">
+           <div id="tuloslappu_pvm">
+            Friday 22.06.2018 13:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418895951">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1418895951.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="INA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="INA W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483190">
+           1 – 4
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1418896165.gif" style="border:solid 2px #eede57;" title="PHI W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           INA W  –  PHI W
+          </div>
+         </div>
+        </div>
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483363">
+           <div id="tuloslappu_pvm">
+            Friday 22.06.2018 16:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174478438">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1174478438.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="JPN W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="JPN W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483363">
+           4 – 9
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1432796794.gif" style="border:solid 2px #eede57;" title="THA W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           JPN W  –  THA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483398">
+           <div id="tuloslappu_pvm">
+            Friday 22.06.2018 19:01
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174299455">
+           <img align="absmiddle" alt="SGP W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174299455.gif" style="border:solid 2px #eede57;" title="SGP W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483398">
+           7 – 1
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1233060400.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="MAS W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           SGP W  –  MAS W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483439">
+           <div id="tuloslappu_pvm">
+            Saturday 23.06.2018 09:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1476787280">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1476787280.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="IRI W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IRI W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483439">
+           1 – 6
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418895951">
+           <img align="absmiddle" alt="INA W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1418895951.gif" style="border:solid 2px #eede57;" title="INA W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IRI W  –  INA W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483483">
+           <div id="tuloslappu_pvm">
+            Saturday 23.06.2018 11:45
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1524481051">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1524481051.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="IND W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="IND W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483483">
+           6 – 8
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1418896165">
+           <img align="absmiddle" alt="PHI W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1418896165.gif" style="border:solid 2px #eede57;" title="PHI W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           IND W  –  PHI W
+          </div>
+         </div>
+        </div>
+        <div class="panel">
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483548">
+           <div id="tuloslappu_pvm">
+            Saturday 23.06.2018 14:30
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174478438">
+           <img align="absmiddle" alt="JPN W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174478438.gif" style="border:solid 2px #eede57;" title="JPN W" width="54"/>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483548">
+           4 – 3
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1233060400">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1233060400.gif);background-size: 100% 100%;width: 54px;height: 40px;float: right;margin-right: 5px;margin-left: -5px;">
+            <img align="absmiddle" alt="MAS W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="MAS W" width="54"/>
+           </div>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           JPN W  –  MAS W
+          </div>
+         </div>
+         <div id="tuloslappu">
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483573">
+           <div id="tuloslappu_pvm">
+            Saturday 23.06.2018 18:00
+           </div>
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1432796794">
+           <div style="background-image: url(http://stats.floorball.fi/iff/pics/teams_gray/1432796794.gif);background-size: 100% 100%;width: 54px;height: 40px;float: left;margin-left: 5px;margin-right: -5px;">
+            <img align="absmiddle" alt="THA W" border="0" height="40" id="tuloskuvake" src="images/whitemask.png" title="THA W" width="54"/>
+           </div>
+          </a>
+          <a href="ottelukooste.asp?sarjaId=35&amp;ottelu_id=1524483573">
+           1 – 4
+          </a>
+          <a href="joukkuekortti.asp?joukkue_id=1174299455">
+           <img align="absmiddle" alt="SGP W" border="0" height="40" id="tuloskuvake" src="http://stats.floorball.fi/iff/pics/teams/1174299455.gif" style="border:solid 2px #eede57;" title="SGP W" width="54"/>
+          </a>
+          <div id="tuloslappu_joukkueet">
+           THA W  –  SGP W
+          </div>
+         </div>
+        </div>
+       </div>
+      </td>
+     </tr>
+     <tr>
+      <td align="left" valign="top" width="190">
+       <div id="genereal_container" style="width: 190px;">
+        <select id="quicklink" name="quicklink" onchange="if(this.selectedIndex&gt;0){location.replace('default.asp?id_sivu='+this[this.selectedIndex].value);}">
+         <option value="0">
+          Quicklinks
+         </option>
+         <option value="17">
+          AOFC
+         </option>
+         <option value="448">
+          Certified Equipment
+         </option>
+         <option value="876">
+          Champions Cup 2017
+         </option>
+         <option value="377">
+          Croatia
+         </option>
+         <option value="26">
+          Events &amp; Organisers
+         </option>
+         <option value="654">
+          GoGirls! Floorball
+         </option>
+         <option value="25">
+          IFF Today and History in short
+         </option>
+         <option value="851">
+          Member Statistics-2016-
+         </option>
+         <option value="775">
+          Men´s WFC 2016
+         </option>
+         <option value="18">
+          Office Contacts
+         </option>
+         <option value="466">
+          ParaFloorball
+         </option>
+         <option value="320">
+          Prohibited List &amp; Therapeutic Use Exemption (TUE)
+         </option>
+         <option value="462">
+          Rankings
+         </option>
+         <option value="31">
+          Rules of the game
+         </option>
+         <option value="8">
+          TRANSFERS
+         </option>
+        </select>
+        <select id="country" name="country" onchange="if(this.selectedIndex&gt;0){location.replace('default.asp?id_sivu='+this[this.selectedIndex].value);}">
+         <option value="0">
+          Countries
+         </option>
+         <optgroup label="Members">
+          <option value="369">
+           Argentina
+          </option>
+          <option value="370">
+           Armenia
+          </option>
+          <option value="368">
+           Australia
+          </option>
+          <option value="371">
+           Austria
+          </option>
+          <option value="374">
+           Belarus
+          </option>
+          <option value="375">
+           Belgium
+          </option>
+          <option value="376">
+           Brazil
+          </option>
+          <option value="651">
+           Cameroon
+          </option>
+          <option value="379">
+           Canada
+          </option>
+          <option value="434">
+           China
+          </option>
+          <option value="787">
+           Cote d´Ivoire
+          </option>
+          <option value="377">
+           Croatia
+          </option>
+          <option value="378">
+           Czech Republic
+          </option>
+          <option value="380">
+           Denmark
+          </option>
+          <option value="381">
+           Estonia
+          </option>
+          <option value="382">
+           Finland
+          </option>
+          <option value="383">
+           France
+          </option>
+          <option value="428">
+           Georgia
+          </option>
+          <option value="384">
+           Germany
+          </option>
+          <option value="811">
+           Haiti
+          </option>
+          <option value="856">
+           Hong Kong
+          </option>
+          <option value="385">
+           Hungary
+          </option>
+          <option value="386">
+           Iceland
+          </option>
+          <option value="387">
+           India
+          </option>
+          <option value="388">
+           Indonesia
+          </option>
+          <option value="450">
+           Iran
+          </option>
+          <option value="436">
+           Ireland
+          </option>
+          <option value="392">
+           Israel
+          </option>
+          <option value="389">
+           Italy
+          </option>
+          <option value="491">
+           Jamaica
+          </option>
+          <option value="393">
+           Japan
+          </option>
+          <option value="885">
+           Kenya
+          </option>
+          <option value="394">
+           Korea
+          </option>
+          <option value="395">
+           Latvia
+          </option>
+          <option value="396">
+           Liechtenstein
+          </option>
+          <option value="399">
+           Lithuania
+          </option>
+          <option value="475">
+           Malaysia
+          </option>
+          <option value="764">
+           Malta
+          </option>
+          <option value="426">
+           Moldova
+          </option>
+          <option value="427">
+           Mongolia
+          </option>
+          <option value="570">
+           Mozambique
+          </option>
+          <option value="398">
+           Netherlands
+          </option>
+          <option value="400">
+           New Zealand
+          </option>
+          <option value="435">
+           Nigeria
+          </option>
+          <option value="401">
+           Norway
+          </option>
+          <option value="423">
+           Pakistan
+          </option>
+          <option value="429">
+           Philippines
+          </option>
+          <option value="402">
+           Poland
+          </option>
+          <option value="424">
+           Portugal
+          </option>
+          <option value="430">
+           Romania
+          </option>
+          <option value="403">
+           Russia
+          </option>
+          <option value="404">
+           Serbia
+          </option>
+          <option value="405">
+           Sierra Leone
+          </option>
+          <option value="406">
+           Singapore
+          </option>
+          <option value="407">
+           Slovakia
+          </option>
+          <option value="408">
+           Slovenia
+          </option>
+          <option value="854">
+           Somalia
+          </option>
+          <option value="628">
+           South Africa
+          </option>
+          <option value="409">
+           Spain
+          </option>
+          <option value="415">
+           Sweden
+          </option>
+          <option value="413">
+           Switzerland
+          </option>
+          <option value="419">
+           Thailand
+          </option>
+          <option value="420">
+           Turkey
+          </option>
+          <option value="803">
+           Uganda
+          </option>
+          <option value="421">
+           Ukraine
+          </option>
+          <option value="425">
+           United Kingdom
+          </option>
+          <option value="422">
+           USA
+          </option>
+          <option value="886">
+           Venezuela
+          </option>
+         </optgroup>
+         <optgroup label="Other countries">
+          <option value="432">
+           Bangladesh
+          </option>
+          <option value="433">
+           Bosnia and Herzegovina
+          </option>
+          <option value="431">
+           Bulgaria
+          </option>
+          <option value="949">
+           Burkina Faso
+          </option>
+          <option value="497">
+           Greece
+          </option>
+          <option value="950">
+           Jordan
+          </option>
+          <option value="951">
+           Kazakhstan
+          </option>
+          <option value="592">
+           Luxembourg
+          </option>
+          <option value="952">
+           Mali
+          </option>
+          <option value="546">
+           Nepal
+          </option>
+          <option value="591">
+           Qatar
+          </option>
+          <option value="507">
+           Sri Lanka
+          </option>
+         </optgroup>
+        </select>
+        <div style="height: 12px;">
+        </div>
+        <!-- Vasen pystyvalikko -->
+        <ul style="list-style-type: none;margin-top: -5px;">
+        </ul>
+        <h1>
+         IFF Events
+        </h1>
+        <div id="black_label">
+         <div id="white_label">
+          <div id="container_event">
+           <div>
+            <a href="http://www.floorball.org/pages/EN/AOFC-Cup-2018-Women" style="color: #000;" title="AOFC Cup 2018&lt;br /&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Singapore:    18-23.06.2018
+
+
+
+">
+             <div id="event_teksti">
+              <span style="font-size: 9pt;font-weight: 600;">
+               AOFC Cup 2018
+               <br/>
+              </span>
+              <span style="font-size: 8pt;">
+               Singapore:    18-23.06.2018
+              </span>
+             </div>
+             <div id="event_kuva" style="background-image: url(headerkuvat/uutiskuvat/4608.jpg);">
+             </div>
+            </a>
+           </div>
+           <div>
+            <a href="http://www.floorball.org/pages/EN/WUC-2018" style="color: #000;" title="WUC 2018&lt;br /&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Poland: 26.-30.06.2018
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+">
+             <div id="event_teksti">
+              <span style="font-size: 9pt;font-weight: 600;">
+               WUC 2018
+               <br/>
+              </span>
+              <span style="font-size: 8pt;">
+               Poland: 26.-30.06.2018
+              </span>
+             </div>
+             <div id="event_kuva" style="background-image: url(headerkuvat/uutiskuvat/4154.jpg);">
+             </div>
+            </a>
+           </div>
+           <div>
+            <a href="http://www.floorball.org/pages/EN/Mens-WFC-2018" style="color: #000;" title="Men´s WFC 2018&lt;br /&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Czech Republic: 1.-9.12.2018
+
+
+
+
+
+
+
+">
+             <div id="event_teksti">
+              <span style="font-size: 9pt;font-weight: 600;">
+               Men´s WFC 2018
+               <br/>
+              </span>
+              <span style="font-size: 8pt;">
+               Czech Republic: 1.-9.12.2018
+              </span>
+             </div>
+             <div id="event_kuva" style="background-image: url(headerkuvat/uutiskuvat/4605.jpg);">
+             </div>
+            </a>
+           </div>
+           <div>
+            <a href="http://www.floorball.org/pages/EN/Mens-U19-WFC-2019" style="color: #000;" title="Men´s U19 WFC 2019&lt;br /&gt;
+
+
+
+
+
+
+
+ Canada: 7.-12.05.2019 
+
+
+
+">
+             <div id="event_teksti">
+              <span style="font-size: 9pt;font-weight: 600;">
+               Men´s U19 WFC 2019
+               <br/>
+              </span>
+              <span style="font-size: 8pt;">
+               Canada: 7.-12.05.2019
+              </span>
+             </div>
+             <div id="event_kuva" style="background-image: url(headerkuvat/uutiskuvat/5690.jpg);">
+             </div>
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- Blogs -->
+        <h1>
+         Players' Blogs
+        </h1>
+        <div id="black_label">
+         <div id="white_label">
+          <div id="blogilinkki">
+           <a href="pages/EN/Jun-Oh-Lee-My-journey-to-the-Olympic-Games-from-floorball" style="color: #000;">
+            Jun Oh Lee: My journey to the Olympic Games from floorball
+           </a>
+           <br/>
+           <div style="float: right;font-size: 8pt;">
+            – 26.03.2018
+           </div>
+          </div>
+          <div id="blogilinkki">
+           <a href="pages/EN/Yui-Takahashi-I-want-to-play-floorball-in-Sweden-someday--A-dream-come-true" style="color: #000;">
+            Yui Takahashi: “I want to play floorball in Sweden someday” – A dream come true
+           </a>
+           <br/>
+           <div style="float: right;font-size: 8pt;">
+            – 22.02.2018
+           </div>
+          </div>
+          <div id="blogilinkki">
+           <a href="pages/EN/Tomas-Sladky-How-to-connect-playing-and-coaching-floorball-in-the-same-time" style="color: #000;">
+            Tomas Sladky: How to connect playing and coaching floorball in the same time
+           </a>
+           <br/>
+           <div style="float: right;font-size: 8pt;">
+            – 10.01.2018
+           </div>
+          </div>
+          <div id="blogilinkki">
+           <a href="pages/EN/Agata-Plechan-How-to-prepare-yourself-for-important-games-when-facilities-are-not-optimal" style="color: #000;">
+            Agata Plechan: How to prepare yourself for important games when facilities are not optimal?
+           </a>
+           <br/>
+           <div style="float: right;font-size: 8pt;">
+            – 09.11.2017
+           </div>
+          </div>
+          <div id="blogilinkki">
+           <a href="pages/EN/Yui-Takahashi-Promoting-TWG-at-the-1st-AOFC-cup" style="color: #000;">
+            Yui Takahashi: Promoting TWG at the 1st AOFC cup
+           </a>
+           <br/>
+           <div style="float: right;font-size: 8pt;">
+            – 26.07.2017
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- Blogs -->
+        <h1>
+         Find IFF on:
+        </h1>
+        <div id="black_label">
+         <div id="white_label">
+          <div style="padding-top: 2px;padding-bottom: 2px;">
+           <a href="http://www.floorball.org/default.asp?sivu=5&amp;alasivu=572&amp;kieli=826">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_mobileApp">
+             </div>
+             IFF Events Mobile App
+            </div>
+           </a>
+           <a href="http://www.flickr.com/photos/IFF_Floorball" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_flickr">
+             </div>
+             Flickr
+            </div>
+           </a>
+           <a href="http://instagram.com/iff_floorball" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_instagram">
+             </div>
+             Instagram
+            </div>
+           </a>
+           <a href="http://www.youtube.com/user/IFFchannel" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_youtube">
+             </div>
+             YouTube
+            </div>
+           </a>
+           <a href="http://www.facebook.com/IFF.Floorball" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_facebook">
+             </div>
+             Facebook
+            </div>
+           </a>
+           <a href="http://www.twitter.com/IFF_Floorball" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_twitter">
+             </div>
+             Twitter
+            </div>
+           </a>
+           <a href="http://issuu.com/iff_floorball/" target="_blank">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_issuu">
+             </div>
+             Issuu web publications
+            </div>
+           </a>
+           <a href="materials.asp?kieli=826">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_iff">
+             </div>
+             Order IFF materials
+            </div>
+           </a>
+           <a href="javascript:orderForm();">
+            <div class="palstaPainike" onmouseout="this.className='palstaPainike';" onmouseover="this.className='palstaPainike_ovr';">
+             <div class="ico_iff">
+             </div>
+             <strong>
+              Order IFF Newsletter
+             </strong>
+            </div>
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </td>
+      <td align="left" valign="top">
+       <div id="middle_container">
+        <h1>
+         News
+         <a href="rss/news.asp?kieli=826" target="_blank">
+          <img alt="IFF news RSS feed" border="0" class="rss_ikoni" height="16" hspace="0" src="images/ico_rss.gif" title="IFF news RSS feed" vspace="0" width="16"/>
+         </a>
+         <a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4c065e242b3e7de6" id="sharebutt" style="float: right;">
+          <img alt="Bookmark and Share" height="16" src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" style="border:0" title="Bookmark and Share" width="125"/>
+         </a>
+         <script src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4c065e242b3e7de6" type="text/javascript">
+         </script>
+        </h1>
+        <div id="container_etusivu_2palstaa">
+         <div id="black_label" style="height: 250px;">
+          <div id="white_label" style="height: 250px;">
+           <div id="uutispalsta_left">
+            <div id="uutiskuva" style="background-image: url(http://www.floorball.org/Yleiskuvat/LogosBanners/IFF%20Logos/IFFSOME2017_200x200.png);">
+            </div>
+           </div>
+           <script language="javascript" type="text/javascript">
+            <!--
+			// 
+			function naytaUutisKuva(nro){
+
+				var arrUutiskuvat = new Array();
+
+					arrUutiskuvat[1] = "http://www.floorball.org/Yleiskuvat/LogosBanners/IFF%20Logos/IFFSOME2017_200x200.png";
+arrUutiskuvat[2] = "http://www.floorball.org/Yleiskuvat/Transfers/2018-2019%20Transfers/Salo_500x273.jpg";
+arrUutiskuvat[3] = "http://www.floorball.org/Yleiskuvat/poland/chomnickiTWG.jpg";
+arrUutiskuvat[4] = "http://www.floorball.org/Yleiskuvat/Ukraine/2018%20Ukraine/UkrOpenWWinners.jpg";
+arrUutiskuvat[5] = "http://www.floorball.org/Yleiskuvat/AOFC/2018%20AOFC%20Cup/AOFC%202018%20Event%20logo_200x200.png";
+arrUutiskuvat[6] = "http://www.floorball.org/Yleiskuvat/anti-doping/2018/CzeAo.jpg";
+arrUutiskuvat[7] = "http://www.floorball.org/Yleiskuvat/2018%20WU19%20WFC/FlooringAdmin.png";
+arrUutiskuvat[8] = "http://www.floorball.org/Yleiskuvat/2018%20WU19%20WFC/W-U19-2018-4C-Blue-BG-portrait-500px.png";
+
+
+				//alert(arrUutiskuvat[nro]);
+				sKuva = arrUutiskuvat[nro];
+
+				document.getElementById('uutiskuva').style.backgroundImage='url('+ arrUutiskuvat[nro] +')';
+
+			}
+			-->
+           </script>
+           <div id="uutispalsta_right">
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5861" onmouseover="naytaUutisKuva('1');" style="color: #000;" title="IFF Office closed for Midsummer —  21.06.2018&lt;br/&gt;
+
+
+
+﻿﻿The upcoming weekend is the Midsummer in both Finland and Sweden. ">
+              IFF Office closed for Midsummer
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5859" onmouseover="naytaUutisKuva('2');" style="color: #000;" title="Salo top transfer of the week —  21.06.2018&lt;br/&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Finnish national team player Nico Salo is the top transfer of the week. ">
+              Salo top transfer of the week
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5862" onmouseover="naytaUutisKuva('3');" style="color: #000;" title="Marek Chomnicki re-elected President in Poland —  20.06.2018&lt;br/&gt;
+
+
+
+
+
+
+
+﻿On June, 10, the General Assembly of Polish Floorball Federation took place in Zielonka. ">
+              Marek Chomnicki re-elected Presiden…
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5863" onmouseover="naytaUutisKuva('4');" style="color: #000;" title="Ukraine Open 2018 results —  19.06.2018&lt;br/&gt;
+
+
+
+
+
+8th edition of the international tournament Ukraine Open was played a few weeks ago. ">
+              Ukraine Open 2018 results
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5860" onmouseover="naytaUutisKuva('5');" style="color: #000;" title="First Women‘s AOFC Cup has begun! —  18.06.2018&lt;br/&gt;
+
+﻿﻿The Asia-Oceania Floorball Cup is organised by the Asia Oceania Floorball Confederation (AOFC) and was organised for the first time in 2017. ">
+              First Women‘s AOFC Cup has begun!
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5858" onmouseover="naytaUutisKuva('6');" style="color: #000;" title="Anti-Doping Education during U19 WFC 2018 —  15.06.2018&lt;br/&gt;
+
+
+
+
+
+
+
+
+
+﻿﻿Clean Sports is one of the core values of the IFF. ">
+              Anti-Doping Education during U19 WF…
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5857" onmouseover="naytaUutisKuva('7');" style="color: #000;" title="The evolution of floorball from parquets to synthetic flooring —  14.06.2018&lt;br/&gt;
+
+
+
+
+
+In the beginning of the 90s most of the indoor sports venues were still equipped with parquets. ">
+              The evolution of floorball from par…
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki">
+             <a href="news.asp?kieli=826&amp;id_tiedote=5855" onmouseover="naytaUutisKuva('8');" style="color: #000;" title="Women´s U19 WFC 2018 in facts &amp; figures —  12.06.2018&lt;br/&gt;
+
+
+
+
+
+
+
+﻿The Women‘s U19 WFC 2018 was played in St. ">
+              Women´s U19 WFC 2018 in facts &amp; fig…
+             </a>
+             <!--<span class="uutispvm" style="float: right;"></span>-->
+            </div>
+            <div id="uutislinkki" style="text-align: right;padding-right: 15px;">
+             <a href="news.asp?kieli=826" style="text-align: right;color: #000;" title="More news">
+              More news »
+             </a>
+            </div>
+           </div>
+          </div>
+          <!-- labels -->
+          <!--<div id="clear"></div>-->
+         </div>
+        </div>
+        <!-- Up and coming -osio -->
+        <div id="container_etusivu_2palstaa">
+         <h1>
+          UP AND COMING
+         </h1>
+         <div id="black_label">
+          <div id="white_label">
+           <!-- Slider -->
+           <div class="liquid-slider" id="news-slider" style="width: 565px;height: 100px;text-align: center;visibility: hidden;">
+            <div class="panel" style="height: 100px;width: 567px;">
+             <div id="uutislappu">
+              <a href="news.asp?kieli=826&amp;id_tiedote=4336">
+               <div id="uutislappu_kuva" style="background-position: center center;background-image: url(headerkuvat/uutiskuvat/4336.jpg);">
+               </div>
+               <div id="uutislappu_teksti">
+                <strong>
+                 National League Champions 2018
+                </strong>
+                <br/>
+                The 2017/18 National League Champions are starting to be set…
+               </div>
+              </a>
+             </div>
+             <div id="uutislappu">
+              <a href="news.asp?kieli=826&amp;id_tiedote=3696">
+               <div id="uutislappu_kuva" style="background-position: center center;background-image: url(headerkuvat/uutiskuvat/3696.jpg);">
+               </div>
+               <div id="uutislappu_teksti">
+                <strong>
+                 XF Ball - Educational Floorball platform
+                </strong>
+                <br/>
+                The Swedish-based Company Excellent Floorball, tog…
+               </div>
+              </a>
+             </div>
+            </div>
+            <!-- Paneli -->
+           </div>
+           <!-- Slider -->
+          </div>
+          <!-- Labels -->
+         </div>
+         <!-- Labels -->
+         <!-- YouTube -osio -->
+         <div id="container_etusivu_2palstaa">
+          <!-- Ohjaimet -->
+          <h1 style="height: 22px;">
+           <ul id="selectorlist" style="margin: 0px;padding: 0px;">
+            <li class="selector_left_selected" id="s1">
+             <a href="javascript:void(0)" onclick="vaihdaLappu('container_channel1','s1','');document.getElementById('s1').className='selector_left_selected';document.getElementById('s2').className='selector_right';">
+              Channel 1
+             </a>
+            </li>
+            <li class="selector_right" id="s2">
+             <a href="javascript:void(0)" onclick="vaihdaLappu('container_channel2','s2','');document.getElementById('s2').className='selector_right_selected';document.getElementById('s1').className='selector_left';">
+              Channel 2
+             </a>
+            </li>
+           </ul>
+          </h1>
+          <div id="black_label">
+           <div id="white_label">
+            <div id="container_channel1" style="display:;">
+             <iframe allowfullscreen="" frameborder="0" height="300" src="http://www.youtube.com/embed/GJqsNcGBXHw?rel=0" style="padding-left: 6px;padding-top: 6px;" width="550">
+             </iframe>
+             <!--<iframe style="padding-left: 6px;padding-top: 6px;height: 120px;" id="iframecode" marginheight="0" src="http://www.ytchannelembed.com/gallery.php?vids=4&user=iffchannel&row=4&width=130&hd=0&margin_right=10&desc=100&desc_color=9E9E9E&title=29&title_color=000000&views=0&likes=0&dislikes=0&fav=0&playlist=" frameborder="0" scrolling="no" width="550"></iframe>-->
+             <div id="videolinkki" style="text-align: right;padding-right: 15px;">
+              <a href="http://www.youtube.com/iffchannel" style="text-align: right;" target="_blank" title="More videos">
+               More videos »
+              </a>
+             </div>
+            </div>
+            <div id="container_channel2" style="display: none;">
+             <iframe allowfullscreen="" frameborder="0" height="300" src="http://www.youtube.com/embed/hhPvbd0NHKk?rel=0" style="padding-left: 6px;padding-top: 6px;" width="550">
+             </iframe>
+             <!--<iframe style="padding-left: 6px;padding-top: 6px;height: 120px;" id="iframecode" marginheight="0" src="http://www.ytchannelembed.com/gallery.php?vids=4&user=ifflive&row=4&width=130&hd=0&margin_right=10&desc=100&desc_color=9E9E9E&title=29&title_color=000000&views=0&likes=0&dislikes=0&fav=0&playlist=" frameborder="0" scrolling="no" width="550"></iframe>-->
+             <div id="videolinkki" style="text-align: right;padding-right: 15px;">
+              <a href="http://www.youtube.com/ifflive" style="text-align: right;" target="_blank" title="More videos">
+               More videos »
+              </a>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div style="margin-bottom: 0px;">
+         </div>
+         <h1>
+          Member Association News
+          <div style="float: right;padding-right: 85px;">
+           Other Floorball news
+          </div>
+         </h1>
+         <div id="black_label">
+          <div id="white_label" style="padding-bottom: 3px;">
+           <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td align="left" valign="top" width="50%">
+              <div id="sisaltopalsta_vasen">
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/usa_0.jpg);">
+                 <img alt="United States" border="0" height="25" src="images/iptrick.gif" title="United States" width="25"/>
+                </div>
+                <a href="http://www.usafloorball.org/us-nationals-2018/" target="_blank" title="US Nationals 2018">
+                 US Nationals 2018
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/sweden_0.jpg);">
+                 <img alt="Sweden" border="0" height="25" src="images/iptrick.gif" title="Sweden" width="25"/>
+                </div>
+                <a att="" en="" fokuserar="" ha="" href="http://www.innebandy.se/Nyheter/forALLball/Natverken-fokuserar-pa-att-vi-ska-ha-en-jamstalld-innebandy/" innebandy="" j="" n="" p="" ska="" target="_blank" title="" vi="">
+                 "Nätverken fokuserar p&amp;…
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/Switzerland.jpg);">
+                 <img alt="Switzerland" border="0" height="25" src="images/iptrick.gif" title="Switzerland" width="25"/>
+                </div>
+                <a href="http://www.swissunihockey.ch/de/news/david-gruenwald-erster-berufstrainer-aus-dem-wallis/" target="_blank" title="David Grünwald erster Berufstrainer aus dem Wallis">
+                 David Grünwald erster B…
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/slovakia_0.jpg);">
+                 <img alt="Slovakia" border="0" height="25" src="images/iptrick.gif" title="Slovakia" width="25"/>
+                </div>
+                <a href="http://www.szfb.sk/slovensko-napokon-zajtra-o-tretie-miesto/" target="_blank" title="Slovensko napokon zajtra o tretie miesto">
+                 Slovensko napokon zajtra o t…
+                </a>
+               </div>
+               <a href="javascript:void(0);" onclick="document.getElementById('member_associations_rest').style.display='';this.style.display='none';" style="color: #000;float: right;padding-right: 8px;">
+                More feeds ›
+               </a>
+               <div id="member_associations_rest" style="display:none;">
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Latvia_0.jpg);">
+                  <img alt="Latvia" border="0" height="25" src="images/iptrick.gif" title="Latvia" width="25"/>
+                 </div>
+                 <a href="http://www.floorball.lv/lv/2018/jaunumi/id/5143/sadalitas-rigas-atklata-cempionata-florbola-medalas" target="_blank" title="Sadalitas Rigas atklata cempionata florbola medalas">
+                  Sadalitas Rigas atklata cemp…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/france_0.jpg);">
+                  <img alt="France" border="0" height="25" src="images/iptrick.gif" title="France" width="25"/>
+                 </div>
+                 <a href="http://www.floorball.fr/FRANCE-H-U19-Ces-Bleus-aussi-vont" target="_blank" title="[FRANCE H U19] Ces Bleus aussi vont en Russie ! ?">
+                  [FRANCE H U19] Ces Bleus aus…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Belgium_0.jpg);">
+                  <img alt="Belgium" border="0" height="25" src="images/iptrick.gif" title="Belgium" width="25"/>
+                 </div>
+                 <a href="http://www.floorballbelgium.be/?q=node/239" target="_blank" title="New champions of Belgium!">
+                  New champions of Belgium!
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/italy_0.jpg);">
+                  <img alt="Italy" border="0" height="25" src="images/iptrick.gif" title="Italy" width="25"/>
+                 </div>
+                 <a href="http://www.fiuf.it/joomla/index.php?option=com_content&amp;view=article&amp;id=528:bolzano-ospitera-le-qualificazioni-ai-mondiali-under19&amp;catid=34:news&amp;Itemid=1" target="_blank" title="Bolzano ospiterà le qualificazioni ai mondiali Under19">
+                  Bolzano ospiterà le q…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/slovenia_1.jpg);">
+                  <img alt="Slovenia" border="0" height="25" src="images/iptrick.gif" title="Slovenia" width="25"/>
+                 </div>
+                 <a href="http://floorballzveza.si/index.php/18-splosne-novice/347-razpis-drzavnih-prvenstev-in-pokala-slovenije-v-floorballu-za-sezono-2018-2019" target="_blank" title="Razpis državnih prvenstev in pokala Slovenije v floorballu za sezono 2018/2019">
+                  Razpis državnih prvenstev in…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/LuxembourgFlag.jpg);">
+                  <img alt="Luxembourg" border="0" height="25" src="images/iptrick.gif" title="Luxembourg" width="25"/>
+                 </div>
+                 <a href="http://www.floorball.lu/try-out-floorball/" target="_blank" title="Try out Floorball!">
+                  Try out Floorball!
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Jamaica_0.jpg);">
+                  <img alt="Jamaica" border="0" height="25" src="images/iptrick.gif" title="Jamaica" width="25"/>
+                 </div>
+                 <a href="http://www.floorballjamaica.org/2015/12/03/en/tampere-ready-for-the-womens-wfc-29525376" target="_blank" title="Tampere ready for the Women's WFC">
+                  Tampere ready for the Women'…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Netherlands.jpg);">
+                  <img alt="Netherlands" border="0" height="25" src="images/iptrick.gif" title="Netherlands" width="25"/>
+                 </div>
+                 <a href="http://nefub.nl/pages/default.asp?subject_id=19&amp;text_id=3099" target="_blank" title="30-05-2018 Jeugdkampioenen 2017-2018">
+                  30-05-2018 Jeugdkampioenen 2…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Estonia.jpg);">
+                  <img alt="Estonia" border="0" height="25" src="images/iptrick.gif" title="Estonia" width="25"/>
+                 </div>
+                 <a href="http://www.saalihoki.ee/Uudised/Uudis.aspx?u=1205" target="_blank" title="ESHL liikmesklubide üldkoosolek toimub 27. juunil">
+                  ESHL liikmesklubide üld…
+                 </a>
+                </div>
+               </div>
+              </div>
+             </td>
+             <td align="left" valign="top" width="50%">
+              <div id="sisaltopalsta_oikea">
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/Ladystrike_square.jpg);">
+                 <img alt="ladystrike.com" border="0" height="25" src="images/iptrick.gif" title="ladystrike.com" width="25"/>
+                </div>
+                <a href="http://www.ladystrike.com/?p=15121" target="_blank" title="Quo vadis Schweizer Damen-Unihockey">
+                 Quo vadis Schweizer Damen-Un…
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/Unihockey.jpg);">
+                 <img alt="Unihockey.ch GER" border="0" height="25" src="images/iptrick.gif" title="Unihockey.ch GER" width="25"/>
+                </div>
+                <a href="http://unihockey.ch/meisterschaft/sml-frauen/news/ein-umbruch-als-chance-20627/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=rss" target="_blank" title="Ein Umbruch als Chance">
+                 Ein Umbruch als Chance
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/Unihockey.jpg);">
+                 <img alt="unihockey.ch ENG" border="0" height="25" src="images/iptrick.gif" title="unihockey.ch ENG" width="25"/>
+                </div>
+                <a href="http://unihockey.ch/english/articles/overhaul-for-finlands-womens-league-20624/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=rss" target="_blank" title="Overhaul for Finlands women's league">
+                 Overhaul for Finlands women'…
+                </a>
+               </div>
+               <div id="uutislinkki_RSS">
+                <div id="rsskuva" style="background-image: url(rss/images/pääkallo2.jpg);">
+                 <img alt="paakallo.fi" border="0" height="25" src="images/iptrick.gif" title="paakallo.fi" width="25"/>
+                </div>
+                <a href="http://paakallo.fi/2018/06/video-maailman-parhaaksi-valittu-veera-kauppi-satsaa-harkitusti-huipulle-yritan-paasta-parhaiden-paan-sisalle/" target="_blank" title="Video: Maailman parhaaksi valittu Veera Kauppi satsaa harkitusti huipulle – ”Yritän päästä parhaiden pään sisälle”">
+                 Video: Maailman parhaaksi va…
+                </a>
+               </div>
+               <a href="javascript:void(0);" onclick="document.getElementById('other_floorball_news_rest').style.display='';this.style.display='none';" style="color: #000;float: right;padding-right: 8px;">
+                More feeds ›
+               </a>
+               <div id="other_floorball_news_rest" style="display:none;">
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/253454_111294655627074_3382416_n.jpg);">
+                  <img alt="innebandyavisen.no" border="0" height="25" src="images/iptrick.gif" title="innebandyavisen.no" width="25"/>
+                 </div>
+                 <a href="http://innebandyavisen.no/index.php/elite/eliteserien-herrer/1973-har-gitt-resultater" target="_blank" title="– Har gitt resultater">
+                  – Har gitt resultater
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Florbal.jpg);">
+                  <img alt="florbal.cz" border="0" height="25" src="images/iptrick.gif" title="florbal.cz" width="25"/>
+                 </div>
+                 <a href="http://florbal.cz/68326-juhanak-a-bauer-budou-hrat-za-ostravu-brno-opousti-dalsi-dve-opory/" target="_blank" title="Juhanák a Bauer budou hrát za Ostravu! Brno opouští další dve opory">
+                  Juhanák a Bauer budou…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/FloorballmagLogo.jpg);">
+                  <img alt="Floorballmag.com" border="0" height="25" src="images/iptrick.gif" title="Floorballmag.com" width="25"/>
+                 </div>
+                 <a href="http://floorballmag.com/2016/12/19/czechs-look-back-and-forward-in-wfc-2018-video/" target="_blank" title="Czechs Look Back And Forward In WFC 2018 Video">
+                  Czechs Look Back And Forward…
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/Unihoc_logo2015_white_150x90.jpg);">
+                  <img alt="UNIHOC" border="0" height="25" src="images/iptrick.gif" title="UNIHOC" width="25"/>
+                 </div>
+                 <a href="http://www.unihoc.se/2016/05/07/epic-post/" target="_blank" title="Epic season">
+                  Epic season
+                 </a>
+                </div>
+                <div id="uutislinkki_RSS">
+                 <div id="rsskuva" style="background-image: url(rss/images/FM-logo.jpg);">
+                  <img alt="floorballmagazin.de" border="0" height="25" src="images/iptrick.gif" title="floorballmagazin.de" width="25"/>
+                 </div>
+                 <a href="http://www.floorballmagazin.de/2016/06/30/berliner-landesverband-kooperiert-mit-special-olympics/" target="_blank" title="Berliner Landesverband kooperiert mit Special Olympics">
+                  Berliner Landesverband koope…
+                 </a>
+                </div>
+               </div>
+              </div>
+             </td>
+            </tr>
+           </table>
+          </div>
+         </div>
+        </div>
+        <!-- middle container -->
+       </div>
+      </td>
+      <td align="left" valign="top" width="204">
+       <div id="genereal_container" style="width: 204px;">
+        <!-- Twitter -->
+        <a href="https://twitter.com/IFF_Floorball" target="_blank">
+         <h1 style="">
+          Floorball Tweets
+         </h1>
+        </a>
+        <div id="black_label" style="max-width: 200px;">
+         <a class="twitter-timeline" data-chrome="noheader" data-dnt="true" data-widget-id="387466263305277440" href="https://twitter.com/search?q=%23Floorball">
+          Tweets about "#Floorball"
+         </a>
+         <script>
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+         </script>
+        </div>
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/IFF.Floorball" target="_blank">
+         <h1>
+          IFF Facebook
+         </h1>
+        </a>
+        <div id="black_label">
+         <div id="white_label" style="text-align: center;">
+          <iframe allowtransparency="false" frameborder="0" scrolling="no" src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2FIFF.Floorball&amp;width=190&amp;height=258&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=false" style="border:none; overflow:hidden; width:190px; height:258px;">
+          </iframe>
+         </div>
+        </div>
+        <!-- Flickr / Instagram -->
+        <h1>
+         <a href="javascript:lappuLiisa('container_flickr','container_instagram');" style="color: #FFF;">
+          IFF Flickr
+         </a>
+         <a href="javascript:lappuLiisa('container_instagram','container_flickr');" style="color: #FFF;">
+          Instagram
+         </a>
+        </h1>
+        <div id="container_flickr" style="display: ;">
+         <div id="black_label">
+          <div id="white_label">
+           <!-- Flickr Badge -->
+           <style type="text/css">
+            .flickr_badge_image {margin: 0px;display: inline;}
+				.flickr_badge_image img {border: 0px solid #666666 !important; padding: 1px; margin: 2px;}
+				#flickr_badge_wrapper {width: 190px;text-align: center}
+           </style>
+           <div id="flickr_badge_wrapper">
+            <script src="http://www.flickr.com/badge_code_v2.gne?count=6&amp;display=latest&amp;size=s&amp;layout=x&amp;source=user&amp;user=52595108@N05" type="text/javascript">
+            </script>
+           </div>
+           <!-- Flickr Badge -->
+          </div>
+         </div>
+        </div>
+        <div id="container_instagram" style="display: none;">
+         <div id="black_label">
+          <div id="white_label">
+           <!-- IFF Instagram -->
+           <iframe allowtransparency="true" frameborder="0" height="380" scrolling="no" src="http://iconosquare.com/widget.php?choice=myfeed&amp;username=iff_floorball&amp;show_infos=false&amp;linking=instagram&amp;width=204&amp;height=406&amp;mode=grid&amp;layout_x=2&amp;layout_y=3&amp;padding=0&amp;photo_border=false&amp;background=FFFFFF&amp;text=777777&amp;widget_border=false&amp;radius=5&amp;border-color=DDDDDD&amp;user_id=745462024&amp;time=1418030063171" style="border:none; overflow:hidden; width:100%; height: 380px;" width="100%">
+           </iframe>
+          </div>
+         </div>
+        </div>
+       </div>
+      </td>
+     </tr>
+     <tr>
+      <td colspan="3">
+       <h1 style="height: 22px;">
+        <ul id="selectorlist" style="margin: 0px;padding: 0px;">
+         <li class="selector_left_selected" id="s3" style="width: 260;">
+          <a href="javascript: void(0)" onclick="noudaBannerit('638');vaihdaLappu('i1','s3','');document.getElementById('s3').className='selector_left_selected';document.getElementById('s4').className='selector_right';document.getElementById('s5').className='selector_left';">
+           IFF Sponsors
+          </a>
+         </li>
+         <li class="selector_right" id="s4" style="width: 260;">
+          <a href="javascript: void(0)" onclick="noudaBannerit('639');vaihdaLappu('i1','s4','');document.getElementById('s4').className='selector_right_selected';document.getElementById('s3').className='selector_left';document.getElementById('s5').className='selector_left';">
+           IFF Partners
+          </a>
+         </li>
+         <li class="selector_right" id="s5" style="width: 260;">
+          <a href="javascript: void(0)" onclick="noudaBannerit('640');vaihdaLappu('i1','s5','');document.getElementById('s5').className='selector_right_selected';document.getElementById('s3').className='selector_left';document.getElementById('s4').className='selector_left';">
+           IFF Campaigns
+          </a>
+         </li>
+        </ul>
+       </h1>
+       <div id="black_label" style="margin-bottom: 12px;-webkit-border-radius: 0px 0px 64px 64px;border-radius: 0px 0px 40px 40px;">
+        <div id="white_label" style="-webkit-border-radius: 0px 0px 32px 32px;border-radius: 0px 0px 40px 40px;">
+         <div id="banneriContainer">
+          <!-- Container -->
+          <div class="liquid-slider" id="sponsor-slider" style="width: 990px;height: 90px;text-align: center;-webkit-border-radius: 0px 0px 34px 34px;border-radius: 0px 0px 34px 34px;">
+           <div class="panel" style="height: 90px;width: 990px;">
+            <a href="http://www.gerflor.com/">
+             <img alt="Gerflor" border="0" src="http://www.floorball.org/Bannerit/banneri1.gif" title="Gerflor"/>
+            </a>
+            <a href="http://www.unihoc.se/">
+             <img alt="Unihoc" border="0" src="http://www.floorball.org/Bannerit/Unihoc_logo2015_white_150x90.jpg" title="Unihoc"/>
+            </a>
+            <a href="http://www.asics.com/">
+             <img alt="ASICS" border="0" src="http://www.floorball.org/Bannerit/banneri3.gif" title="ASICS"/>
+            </a>
+            <a href="http://www.unihoc.se/product-category/basic-collection/balls/">
+             <img alt="CR8ER" border="0" src="http://www.floorball.org/Bannerit/banneri4.gif" title="CR8ER"/>
+            </a>
+            <a href="">
+             <img alt="Swerink" border="0" src="http://www.floorball.org/Bannerit/swerinksmall.jpg" title="Swerink"/>
+            </a>
+           </div>
+           <!-- Paneli -->
+          </div>
+          <!-- Slider -->
+         </div>
+         <!-- Container -->
+        </div>
+        <!-- Labels -->
+       </div>
+       <!-- Labels -->
+       <div id="footer_yhteystiedot">
+        <p>
+         IFF Alakiventie 2, 00920 
+Helsinki, Finland Phone:
+         <span class="baec5a81-e4d6-4674-97f3-e9220f0136c1" style="white-space: nowrap;">
+          +358-9 454 214 25
+         </span>
+         Fax: +358-9
+ 454 214 50 E-mail:
+         <a href="mailto:office@floorball.org">
+          <strong>
+           office(at)floorball.org
+          </strong>
+         </a>
+        </p>
+       </div>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <div id="footer_container">
+    2018 Powered by
+    <a href="http://www.openspace.fi/" style="color: #CCC;" target="_blank">
+     NetEazer 3.9
+    </a>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+   </div>
+   <link href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" rel="stylesheet" type="text/css"/>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js">
+   </script>
+   <script>
+    window.addEventListener("load", function(){
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#252e39"
+    },
+    "button": {
+      "background": "#14a7d0"
+    }
+  },
+  "showLink": false,
+  "content": {
+    "message": "This website uses cookies to ensure you get the best experience on our website.",
+    "dismiss": "Got it!"
+  }
+})});
+   </script>
+   <!-- wrap -->
+  </div>
+  <div id="taustakuva">
+   <img border="0" src="images/tausta_sivu_13.jpg" width="100%"/>
+  </div>
+  <script src="liquid-slider/js/jquery.easing.1.3.js">
+  </script>
+  <script src="liquid-slider/js/jquery.touchSwipe.min.js">
+  </script>
+  <script src="liquid-slider/js/jquery.liquid-slider.min.js">
+  </script>
+  <script language="javascript" type="text/javascript">
+   $('#main-slider').liquidSlider({
+		slideEaseDuration: 500,
+		firstPanelToLoad: 1
+	});
+	
+    $('#news-slider').liquidSlider({
+		slideEaseDuration: 500
+	});
+
+	
+   $('#sponsor-slider').liquidSlider({
+		slideEaseDuration: 500,
+		autoSlide: true,
+		autoSlideInterval: 5000,
+		pauseOnHover: true
+	});
+  </script>
+ </body>
+</html>

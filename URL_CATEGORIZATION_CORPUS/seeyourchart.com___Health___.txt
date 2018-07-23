@@ -1,0 +1,1020 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+ <head id="Head1">
+  <script id="jQuery1_7" src="/static/jQuery/jquery-1.7.min.js" type="text/javascript">
+  </script>
+  <script id="SycGlobalJs" src="/static/global.js" type="text/javascript">
+  </script>
+  <script id="SycCompatibilityJs" src="/static/compatibility.js" type="text/javascript">
+  </script>
+  <title>
+   SeeYourChart Login
+  </title>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <link href="/css/style.css" rel="stylesheet" type="text/css"/>
+  <style type="text/css">
+   #iFrmDlg
+	{
+		background-color: transparent;
+		position: relative;
+		z-index: 100;
+	}
+	#iFrmLoading 
+	{
+		margin: 20px 25px;
+		padding: 50px 0;
+		text-align: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ddd;
+		color: #000;
+		font-weight: 700;
+		font-size: 15px;
+		z-index: 1;
+/*cjg 7/2/13: Temporary hide this overlay, causes problems with chart rendering */
+		display: none;
+/*cjg 7/2/13: End */
+	}
+  </style>
+  <script type="text/javascript">
+   //<![CDATA[
+   //ref 6/8/12: Remove to prevent iframe page load once doc is displayed
+   //   $(document).ready(function () {
+   //      $('#dlgFooter').dialog({
+   //         autoOpen: false,
+   //         modal: true
+   //      });
+   //   });
+   //ref 6/8/12: end
+
+   //tmf 05/07/2015: [SYC-152] Simple function to support opening a PDF in a new tab on the iPad
+   function openWindow(sURL) {
+      var w = window.open(sURL, "PDF", "");
+      if (w) try { w.focus(); } catch (xcp) { }
+   }
+   //tmf 05/07/2015: end
+   //ref 5/31/12: Added
+   function openDialog(sURL, sTitle, iHeight, iWidth, allowScroll) {
+      var sIFrameScroll = '';
+      //tmf 05/07/2015: [SYC-152] PDFs do not display properly in iframes on the iPad. just open the PDF in a separate browser tab
+      //                and let iOS Safari handle the scrolling and display natively
+      var bIsIPad = (/iPad/i).test(navigator.userAgent);
+      if (bIsIPad) {
+         openWindow(sURL);
+         return;
+      }
+      //tmf 05/07/2015: end
+      if (allowScroll == "no") sIFrameScroll = 'scrolling="no"';
+      //ref 6/8/12: Was causing src page to be loaded multiple times. moved to open function of dialog. 
+      //      $('#dlgFooter').html('<iframe id="iFrmDlg1" ' + sIFrameScroll + '" style ="width:' + iWidth + 'px;height:' + iHeight + 'px;"></iframe>');
+      //      $('#iFrmDlg').attr('src', sURL);
+      //ref 6/8/12: end
+      //cjg 3/7/13: Automatically add dialog querystring parameter to support authentication expired handling
+      if (sURL.indexOf("?") < 0) { sURL += "?bDlg=true"; }
+         //pdh 3/18/14: WCAG Fix. Valid HTML must use encoding
+         //	  else { sURL += "&bDlg=true"; }
+      else { sURL += "&amp;bDlg=true"; }
+      //pdh 3/18/14: End	  
+      //cjg 3/7/13: End
+      var oDiv = document.getElementById('divDialog');
+      //cjg 11/28/2014: Ensure div element exists to create the dialog, this can happen if the page is a dialog that does not implement the header control.
+      if (oDiv == null) {
+         oDiv = document.createElement("div");
+         oDiv.id = "divDialog";
+         /*cjg 1/5/15: Fixed for cross browser support, older versions of IE failed with .style notation */
+         /*      	oDiv.style = "background-color: #fff; display:none;"; */
+         oDiv.style.backgroundColor = "#fff";
+         oDiv.style.display = "none";
+         /*cjg 1/5/15: End */
+         document.getElementsByTagName("body")[0].appendChild(oDiv);
+      }
+      //cjg 11/20/2014: End
+      //pdh 4/18/13: correct visibility property for document flow	  
+      //oDiv.style.visibility = "visible";
+      oDiv.style.display = "block";
+      //pdh 4/18/13: End	  
+      var d = $('#divDialog');
+      d.dialog({
+         autoOpen: false,
+         title: sTitle,
+         modal: true,
+         //ref 6/13/12: setting height, width, draggable, and resizable
+         height: iHeight,
+         width: iWidth,
+         draggable: true,
+         resizable: true,
+         //ref 6/13/12: end
+         open: function () {
+            //ref 6/13/12: Height and width are now % instead of px. For resize            
+            //  $('#divDialog').html('<iframe id="iFrmDlg2" ' + sIFrameScroll + '" style ="width:' + iWidth + 'px;height:' + iHeight + 'px;"></iframe>');
+            //pdh 4/18/13: Adjusting to 100% for better sizing compatibility in IE
+            //  $('#divDialog').html('<iframe id="iFrmDlg3" ' + sIFrameScroll + '" style="height:98%;" width="98%"></iframe>');		
+            //cjg 5/13/13: Added content to display loading message while iframe loads
+            //            $('#divDialog').html('<iframe id="iFrmDlg4" ' + sIFrameScroll + '" style="height:100%;" width="100%"></iframe>');
+            //pdh 3/18/14: WCAG Fix. iFrame needs a title
+            $('#divDialog').html('<div id="iFrmLoading">Loading Content, please wait...</div><iframe title="Popup Dialog" id="iFrmDlg" ' + sIFrameScroll + '" style="height:100%;" width="100%;" allowTransparency="true"></iframe>');
+            //cjg 5/13/13: End			
+            //pdh 4/18/13: End			
+            //ref 6/13/12: end
+            $('#iFrmDlg').attr('src', sURL);
+            $(this).dialog('option', 'position', 'center');  //need to reposition after iframe is loaded.
+         },
+         close: function () {
+            //ref 6/8/12: set src to prevent page refresh on close            
+            //            $("#divDialog>#iFrmDlg").attr('src', 'javascript:false');
+            //cjg 2/19/2014: IE9 native would not properly release the iFrame if source unless the source is changed to "" only.
+            $("#divDialog>#iFrmDlg").attr('src', '');
+            //cjg 2/19/2014: End
+            //ref 6/8/12: end
+            d.dialog("destroy");
+         }
+      });
+
+      d.dialog('open');
+   }
+
+   //cjg 2/12/13: To trigger the jqueryUI dialog close from within an iFrame, jQuery must be called from the parent page, this method will look for a parent, 
+   //             if found it will call the jquery close from the parent, if not found, it will try to make a standard direct call to close the dialog.
+   //cjg 3/13/13: Added parent refresh boolean parameter to allow parent refresh on close
+   function closeDialog(bRefreshParent) {
+      //Get a reference to the window that contains the iFrame for the dialog
+      var iFrameParent = top.window;
+      //Try closing from the iFrame parent falling back on direct call to close
+      //if(iFrameParent != null && iFrameParent.jQuery("#divDialog").length > 0) { iFrameParent.jQuery("#divDialog").dialog("close"); }
+      //else { $("#divDialog").dialog("close"); }
+      if (iFrameParent != null && iFrameParent.jQuery("#divDialog").length > 0) {
+         if (bRefreshParent != null && bRefreshParent == true) { reloadParent(); }
+         else { iFrameParent.jQuery("#divDialog").dialog("close"); }
+      }
+      else {
+         if (bRefreshParent != null && bRefreshParent == true) { window.location.reload(); }
+         else { $("#divDialog").dialog("close"); }
+      }
+      //cjg 3/13/13: End
+   }
+   //cjg 2/12/13: end
+
+   //cjg 3/6/13: Added to handle auth expired inside of a dialog, will cause parent page to reload
+   //					instead of causing the login page to appear in the dialog
+   function reloadParent() {
+      if (top.window != null) { top.window.location.reload(); }
+   }
+   //cjg 3/6/13: End
+
+   // $(".item img").css({"display":"none");
+
+   // On window load. This waits until images have loaded which is essential
+   $(window).load(function () {
+      // Fade in images so there isn't a color "pop" document load and then on window load
+      $(".item img").animate({ opacity: 2 }, 500);
+
+      // clone image
+      $('.item img').each(function () {
+         var el = $(this);
+         el.css({ "position": "absolute" }).wrap("<div class='img_wrapper' style='display: inline-block'>").clone().addClass('img_grayscale').css({ "position": "absolute", "z-index": "998", "opacity": "2" }).insertBefore(el).queue(function () {
+            var el = $(this);
+            el.parent().css({ "width": this.width, "height": this.height });
+            el.dequeue();
+         });
+         var imgTemp = grayscale(this.src);
+         if (imgTemp.length > 0) {
+            this.src = imgTemp;
+         }
+      });
+
+      // Fade image 
+      $('.item img').mouseover(function () {
+         $(this).parent().find('img:first').stop().animate({ opacity: 1 }, 200);
+      })
+      $('.img_grayscale').mouseout(function () {
+         $(this).stop().animate({ opacity: 2 }, 900);
+      });
+   });
+
+   // Grayscale w canvas method
+   function grayscale(src) {
+      var canvas = document.createElement('canvas');
+
+      if (canvas.getContext == undefined) {
+         return "";
+      }
+
+      var ctx = canvas.getContext('2d');
+      var imgObj = new Image();
+      imgObj.src = src;
+      canvas.width = imgObj.width;
+      canvas.height = imgObj.height;
+      ctx.drawImage(imgObj, 0, 0);
+      var imgPixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      for (var y = 0; y < imgPixels.height; y++) {
+         for (var x = 0; x < imgPixels.width; x++) {
+            var i = (y * 4) * imgPixels.width + x * 4;
+            var avg = (imgPixels.data[i] + imgPixels.data[i + 1] + imgPixels.data[i + 2]) / 3.5;
+            imgPixels.data[i] = avg;
+            imgPixels.data[i + 1] = avg;
+            imgPixels.data[i + 2] = avg;
+         }
+      }
+      ctx.putImageData(imgPixels, 0, 0, 0, -25, imgPixels.width, imgPixels.height);
+      return canvas.toDataURL();
+   }
+   
+   function toggleUIState(oSender) {
+      var oButton = jQuery(oSender);
+      var sBackground = oButton.css('background');
+      if (oButton.hasClass('forceon')) {
+         oButton.removeClass('forceon');
+      }
+      else {
+         oButton.addClass('forceon');
+      }
+   }
+   
+   //]]>
+  </script>
+  <script src="/static/OncoEMRJScript_1_0.js" type="text/javascript">
+  </script>
+  <script src="/static/RemoteScripting.js" type="text/javascript">
+  </script>
+  <script src="/static/date.js" type="text/javascript">
+  </script>
+  <script src="/static/jQuery/jquery-ui-1.8.6.min.js" type="text/javascript">
+  </script>
+  <script src="/static/sorttable-3_6_0_21.js" type="text/javascript">
+  </script>
+  <link href="/css/redmond/jquery-ui-1.8.20.custom.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   //mch 8/2/12: Put it back in here and moved commonscripts up.  Needs to be here because in startup, it was causing a render issue
+//ref 5/29/12: Moved to local startup. Jquery files were moved to commonscripts. 
+//             Commonscripts needs to load before calling jquery.
+//pdh 10/31/14: Removing slider
+      //$(document).ready(function(){	
+	  //  $("#slider").easySlider({
+	  //  		auto: true, 
+	  //  		continuous: true
+	  //  	});
+	  //  });
+//pdh 10/31/14: End	  
+//ref 5/29/12: end
+//mch 8/2/12: End
+  </script>
+  <!-- SLIDER js css END -->
+  <style type="text/css">
+   #pinPromptWrapper
+		{
+			margin: 0;
+			padding: 10px;
+			display: none;
+			color: #000;
+			height: 250px;
+			width: 480px;
+		}
+
+			#pinPromptWrapper h4
+			{
+				margin: 4px;
+				padding: 4px 8px;
+				font-weight: 700;
+				font-size: 12px;
+				color: #000;
+			}
+
+				#pinPromptWrapper h4.promptHeader
+				{
+					margin: 10px 0 20px 0;
+				}
+
+			#pinPromptWrapper div
+			{
+				margin: 0;
+				padding: 0;
+				font-size: 12px;
+			}
+
+				#pinPromptWrapper div.promptRow
+				{
+					margin: 0;
+					padding: 1px;
+					text-align: center;
+				}
+
+					#pinPromptWrapper div.promptRow label
+					{
+						font-weight: 700;
+					}
+
+				#pinPromptWrapper div.promptFooter
+				{
+					margin: 24px 0 0 0;
+					padding: 4px;
+					text-align: center;
+				}
+
+					#pinPromptWrapper div.promptFooter a
+					{
+						border: 1px solid #DDD;
+						font-family: Arial, Helvetica, sans-serif;
+						color: #FFF;
+						font-weight: 700;
+						background-color: #027FFF;
+						padding: 6px 12px;
+					}
+
+		.tooltip
+		{
+			margin: 0 0 18px 0;
+			padding: 8px 12px;
+			border: 1px solid #ccc;
+			background-color: #fff;
+			width: 225px;
+			color: #000;
+			position: absolute;
+			bottom: 0;
+			left: -25px;
+			display: none; 
+		}
+
+		.moreInfoIcon
+		{
+			height: 16px;
+		}
+  </style>
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic" id="googleFont" rel="stylesheet" type="text/css"/>
+  <script id="piwiktracking" src="/static/piwik.analytics.js" type="text/javascript">
+  </script>
+ </head>
+ <body onload="localStartUp();">
+  <form action="./" autocomplete="off" id="Form1" method="post" name="Form1">
+   <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value="/wEPDwULLTE4MzYxNTUzNTBkGAEFHl9fQ29udHJvbHNSZXF1aXJlUG9zdEJhY2tLZXlfXxYBBQ5jaGtSZW1lbWJlclBJTqJJuOBykKFnv71uC9WMzLeb9AxCw6b1NTVInwLkxrqb"/>
+   <script type="text/javascript">
+    //<![CDATA[
+$(document).ready(function () {$('#PageHeader_helpicon_imgHelp').click(function () { openDialog('https://secure.seeyourchart.com/Help/HelpDialog.aspx?key=' , 'SeeYourChart&reg; Site Help', 600, 800, 'yes');});$('#PageHeader_helpicon_hypNeedHelp').click(function () { openDialog('https://secure.seeyourchart.com/Help/HelpDialog.aspx?key=' , 'SeeYourChart&reg; Site Help', 600, 800, 'yes');});});//]]>
+   </script>
+   <input id="__VIEWSTATEGENERATOR" name="__VIEWSTATEGENERATOR" type="hidden" value="90059987"/>
+   <input id="__EVENTVALIDATION" name="__EVENTVALIDATION" type="hidden" value="/wEdAAZkyROO9SYOV9WYcbJY51me8N4azi4ulrz5fvO5BU6Lmr00EBRu0ZwWQ/eq9uql1dFjemWCTRgEB59HPczIGVNwieSD+63sl7gC2gSx/NkA4uvFx0r053S/qmm/gQnfy5Y84CZB02l3b/gXKUDAuQaWxnkYdVITGcWvS6eB2zc1Og=="/>
+   <script language="javascript" type="text/javascript">
+    function checkUserName() {
+
+
+		var pagePath = "/Index.aspx";
+		RS.Execute(pagePath, "sCheckScreenName", '', checkUserName_Rtn);
+
+	}
+
+   function checkUserName_Rtn(sReturn) {
+      var asReturn = sReturn.split("\u0001");
+      if (asReturn[0] == 'false')
+         alert("A Screen Name is required to use the Forums.");
+
+      window.location.href = asReturn[1];
+   }
+
+//cjg 3/15/13: Added call to clear viewing relationship
+   function clearRelationship(sRelationshipID) {
+
+
+   	var pagePath = "/Dashboard.aspx";
+   	RS.Execute(pagePath, "sClearRelationshipRS", sRelationshipID, sClearRelationshipRtrn);
+
+   }
+
+   function sClearRelationshipRtrn(sReturn) {
+   	if (sReturn == 'ok') {
+
+
+   		var pagePath = "/Dashboard.aspx";
+   		window.location.href = pagePath;
+
+   	}
+   }
+//pdh 6/20/13: New function   
+   function cmbRelationships_changed() {
+//pdh 6/21/13: First condition to handle self, clears the relationship   
+   // loadRelationship($("#PageHeader_cmbRelationships option:selected").val());
+      var sSelectedOptionValue = $("#PageHeader_cmbRelationships option:selected").val();
+      if (sSelectedOptionValue.indexOf("*") == 0) {
+         clearRelationship(sSelectedOptionValue.substring(1));
+      }
+      else {
+         loadRelationship(sSelectedOptionValue);
+      }
+//pdh 6/21/13: End	  
+   }
+//pdh 6/20/13: End   
+   
+//cjg 3/15/13: End
+
+/*cjg 10/07/14: handle the tutorial video dialog */
+   function openTutorialVideos() {
+      var iHeight = 500;
+      var iWidth = 825;
+      var sSrc = "https%3a%2f%2fsecure.seeyourchart.com%2fIndex.aspx";
+      openDialog(sApplicationPath + "TutorialVideos.aspx?src=" + sSrc, "Tutorial Videos", iHeight, iWidth, "yes");
+   }
+/*cjg 10/07/14: end */
+   </script>
+   <div id="divDialog" style="background-color: #FFF; display:none;">
+   </div>
+   <div class="pageOverlay">
+   </div>
+   <div id="pagecontainer">
+    <div class="page_size" id="page_header_box">
+     <div class="logobox">
+      <img alt="SeeYourChart Logo" src="/images/top_navigation_images/logo.jpg"/>
+     </div>
+     <div class="welcomebox">
+      <div class="spanPatName" id="PageHeader_spanPatName">
+      </div>
+      <div class="divPracticeInfo" id="PageHeader_divPracticeInfo">
+       <div class="spanPractice" id="PageHeader_spanPractice">
+       </div>
+       <div class="spanPracticePhone" id="PageHeader_spanPracticePhone">
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="page_menu_box">
+     <div class="page_size">
+      <div id="PageHeader_divMenu" style="float:left;width:574px;display:none;">
+       <div>
+        <ul id="topNav">
+         <li class="menu_home">
+          <a href="/dashboard.aspx">
+           HOME
+          </a>
+         </li>
+         <li id="PageHeader_liOrganizer">
+          ORGANIZER
+          <ul id="help">
+           <li id="PageHeader_liDashboard">
+            <a href="/Dashboard.aspx">
+             DASHBOARD
+            </a>
+           </li>
+           <li id="PageHeader_liCalendar">
+            <a href="/Schedule/Calendar.aspx">
+             CALENDAR
+            </a>
+           </li>
+           <li id="PageHeader_liMedications">
+            <a href="/Medications.aspx">
+             MEDICATIONS
+            </a>
+           </li>
+           <li id="PageHeader_liJournal">
+            <a href="/PatientJournal.aspx">
+             JOURNAL
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li id="PageHeader_liRecords">
+          RECORDS
+          <ul id="Ul1">
+           <li id="PageHeader_liDemographics">
+            <a href="/demographics.aspx">
+             DEMOGRAPHICS
+            </a>
+           </li>
+           <li id="PageHeader_liOtherDocs">
+            <a href="/DocumentList.aspx?TYPE=2">
+             DOCUMENTS
+            </a>
+           </li>
+           <li id="PageHeader_liRad">
+            <a href="/DocumentList.aspx?TYPE=1">
+             RADIOLOGY
+            </a>
+           </li>
+           <li id="PageHeader_liPath">
+            <a href="/DocumentList.aspx?TYPE=0">
+             PATHOLOGY
+            </a>
+           </li>
+           <li id="PageHeader_liLabs">
+            <a href="/Labs.aspx">
+             LABS
+            </a>
+           </li>
+           <li id="PageHeader_liSummary">
+            <a href="/Summary.aspx">
+             SUMMARY
+            </a>
+           </li>
+           <li id="PageHeader_liVitals">
+            <a href="/Vitals.aspx">
+             VITALS
+            </a>
+           </li>
+           <li id="PageHeader_liFamilyHistory">
+            <a href="/FamilyHistory/default.aspx">
+             FAMILY HISTORY
+            </a>
+           </li>
+           <li id="PageHeader_liBillingInfo">
+            <a href="/Statements.aspx">
+             BILLING INFORMATION
+            </a>
+           </li>
+           <li id="PageHeader_liIntakeForms">
+            <a href="/IntakeForms/default.aspx">
+             INTAKE FORMS
+            </a>
+           </li>
+           <li id="PageHeader_liProfile">
+            <a href="/UserProfile.aspx">
+             USER PROFILE
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li id="PageHeader_liConnect">
+          CONNECT
+          <ul id="Ul2">
+           <li id="PageHeader_liMessages">
+            <a href="/Messages.aspx">
+             MESSAGES
+             <span id="PageHeader_spanMsgCount">
+             </span>
+            </a>
+           </li>
+           <li id="PageHeader_liForum">
+            <a href="#" onclick="checkUserName();">
+             FORUMS
+            </a>
+           </li>
+           <li id="PageHeader_liOncologist">
+            <a href="/PracticeResources.aspx">
+             YOUR PHYSICIAN
+            </a>
+           </li>
+           <li id="PageHeader_liFriendsAndFamily">
+            <a href="/FriendsAndFamily.aspx">
+             FRIENDS AND FAMILY
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li id="PageHeader_liBeInformed">
+          BE INFORMED
+          <ul id="Ul3">
+           <li id="PageHeader_liYourDisease">
+            <a href="/Diseases_New.aspx">
+             YOUR DISEASE
+            </a>
+           </li>
+           <li id="PageHeader_liSideEffects">
+            <a href="/SideEffects.aspx">
+             SIDE EFFECTS
+            </a>
+           </li>
+           <li id="PageHeader_liResources">
+            <a href="/Resources.aspx">
+             RESOURCES
+            </a>
+           </li>
+           <li id="PageHeader_liVideos">
+            <a href="/Videos.aspx">
+             VIDEOS
+            </a>
+           </li>
+           <li id="PageHeader_liWriteForLife">
+            <a href="/WriteForLife/WriteForLife.aspx">
+             WRITE FOR LIFE
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <div style="float: none; clear: both;">
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="page_size" id="page_body_box">
+     <div class="divPatientRelationship hidden" id="PageHeader_divPatientRelationship">
+      <label class="spanPatientRelationship" for="PageHeader_cmbRelationships" id="PageHeader_spanPatientRelationship">
+       Relationship
+      </label>
+      <select id="PageHeader_cmbRelationships" name="PageHeader$cmbRelationships" onchange="cmbRelationships_changed();">
+       <option value="">
+       </option>
+      </select>
+     </div>
+     <div id="container">
+      <br/>
+      <table align="center" border="0" cellpadding="0px" cellspacing="0px" width="962px">
+       <tr>
+        <td>
+         <div id="ContentArea">
+          <br/>
+          <br/>
+          <div class="login_box">
+           <div class="login_box_left">
+            <table class="module" id="tblLockedOut" style="display:none;" width="90%">
+             <tr>
+              <td class="module" colspan="2" style="h3">
+               Your SeeYourChart account has been locked due to too many failed login attempts.  Please wait 30 minutes and try again.
+              </td>
+             </tr>
+            </table>
+            <table class="module" id="tblLogin" width="90%">
+             <tr>
+              <th class="module" colspan="2" style="padding-left:0px;">
+               Existing Users
+               <hr/>
+              </th>
+             </tr>
+             <tr style="display: none;">
+              <td>
+               <label for="txtPP" id="lblPin">
+                Pin:
+               </label>
+              </td>
+              <td>
+               <input id="txtPP" maxlength="20" name="txtPP" onkeypress="return check4Enter();" type="text"/>
+              </td>
+             </tr>
+             <tr>
+              <td colspan="2">
+               Where do I enter my PIN?
+               <span style="position: relative;">
+                <span class="tooltip" id="missingPinInfo" onclick="toggleTooltip(this);" onkeypress="toggleTooltip(this);">
+                 To make login easier, we will only ask for your PIN if needed once you enter your username and password.
+                </span>
+                <a href="javascript:" onclick="toggleTooltip(this);" onkeypress="toggleTooltip(this);">
+                 <img alt="More Info..." class="moreInfoIcon" id="pinInfoImg" src="Images/info.gif"/>
+                </a>
+               </span>
+              </td>
+             </tr>
+             <tr style="height:30px;">
+              <td>
+               <label for="txtUserName" id="Label1">
+                Username:
+               </label>
+              </td>
+              <td>
+               <input autocomplete="off" id="txtUserName" maxlength="50" name="txtUserName" onclick="this.select();" onfocus="this.select();" onkeypress="return check4Enter();" type="text"/>
+              </td>
+             </tr>
+             <tr style="height:30px;">
+              <td>
+               <label for="txtPWD" id="Label2">
+                Password:
+               </label>
+              </td>
+              <td>
+               <input autocomplete="off" id="txtPWD" maxlength="20" name="txtPWD" onclick="this.select();" onfocus="this.select();" onkeypress="return check4Enter();" type="password"/>
+              </td>
+             </tr>
+             <tr>
+              <td colspan="2">
+               <div class="smlinks">
+                <span class="smlinks" style="white-space:nowrap;">
+                 <input id="chkRememberPIN" name="chkRememberPIN" type="checkbox"/>
+                 <label for="chkRememberPIN">
+                  Remember me on this computer.
+                 </label>
+                </span>
+                <br/>
+                <div style="margin:10px 0px;text-align:left;">
+                 <a class="anchor_button" href="javascript:loginRS();" id="btnLogin">
+                  Login
+                 </a>
+                </div>
+               </div>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" colspan="2" style="font-size:11px;">
+               <a href="#" onclick="forgotPassword();" onkeypress="forgotPassword();">
+                Forgot your Username or Password?
+               </a>
+               <br/>
+               <br/>
+              </td>
+             </tr>
+             <tr>
+              <th class="module" colspan="2" style="padding-left:0px;padding-top:19px;">
+               New Users
+               <hr/>
+              </th>
+             </tr>
+             <tr>
+              <td colspan="2">
+               <a class="anchor_button" href="#" onclick="newUser();" onkeypress="newUser();">
+                Register here
+               </a>
+              </td>
+             </tr>
+            </table>
+            <br/>
+           </div>
+           <div class="login_box_right">
+            <img alt="SeeYourChart splash page image." id="imgSplash" src="images/loginphotogrid.jpg" style="border: solid 1px #555;" title="Welcome to SeeYourChart."/>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <script type="text/javascript">
+      function openSupport() {
+      var iWidth = 590; var iHeight = 435;
+      var iHt = getWindowHeight();
+      var iWt = getWindowWidth();
+      var iTop = (iHt - iHeight) / 2 + window.screenTop;
+      var iLeft = (iWt - iWidth) / 2 + window.screenLeft;
+//pdh 3/18/14: Put in application path to resolve
+      var w = window.open(sApplicationPath + "ContactUs.aspx","",
+          "left=" + iLeft + "px, top=" + iTop + "px,width=" + iWidth + "px,height=" + iHeight + 
+          "px;resizable=no,status=no,scrollbars=no,menubar=no,toolbar=no");
+	   if (w) w.focus();
+   }
+
+	function openAdmin() {
+	   window.location.href = sApplicationPath + "Admin_Utilities.aspx";
+	}
+     </script>
+     <div style="clear: both;">
+     </div>
+    </div>
+    <div id="page_footer_box">
+     <div class="page_size" id="spanfooter">
+      <span id="footerlinks">
+       <a class="whitelinks" href="https://flatiron.com/products/see_your_chart" target="_blank">
+        About Flatiron Health, Inc.
+       </a>
+       <a class="whitelinks" href="javascript:openSupport();" id="Footer_ancSupport" style="display:none;">
+        Contact Us
+       </a>
+       |
+       <a class="whitelinks" href="https://flatiron.com/legal/privacy" target="_blank">
+        Privacy Policy
+       </a>
+       |
+       <a class="whitelinks" href="https://flatiron.com/legal/terms" target="_blank">
+        Terms of Use
+       </a>
+       <span id="Footer_Admin" style="display:none">
+        |
+        <a class="whitelinks" href="javascript:openAdmin();">
+         Admin
+        </a>
+       </span>
+       <span class="whitelinks" id="Footer_spanSupport" style="display:inline;">
+        <br/>
+        Trouble logging in?  Contact your doctor's office during business hours
+       </span>
+      </span>
+      <span id="footerCopyright">
+       SeeYourChart
+       <span style="font-size:8pt;position:relative;top:-3px;">
+        ®
+       </span>
+       © 2010-2018, Flatiron Health, Inc.
+       <span class="screenOnly" style="color:#027fff;">
+        v3.7.3.18
+       </span>
+      </span>
+      <span id="footerPowered">
+       <img align="absmiddle" height="20" src="/Images/flatiron_logo.svg"/>
+      </span>
+     </div>
+    </div>
+   </div>
+  </form>
+  <script language="javascript" type="text/javascript">
+   //<![CDATA[
+   function check4Enter(e) {
+	   //do a Login if user hits Enter
+	   if (!e) e=window.event;    //get event details for IE
+	      if (e.keyCode==13) {
+	         if (document.getElementById("btnLogin").disabled==true) return false;
+	         loginRS();
+	         return false;
+	      }
+      return true;
+	}
+
+   function loginRS() {
+      
+      if (typeof(Page_ClientValidate) == 'function') {
+         if (!Page_ClientValidate()) return false;
+      }
+      
+  
+      var txt = trim(document.getElementById("txtUserName").value)+
+         "\u0001"+trim(document.getElementById("txtPWD").value) +
+         "\u0001"+trim(document.getElementById("txtPP").value) +
+         "\u0001"+document.getElementById("chkRememberPIN").checked;
+      RS.usePOST = true;
+
+
+      RS.Execute("/Index.aspx", "sLoginRS", txt, loginRS_Rtrn);
+
+   }
+   
+   function loginRS_Rtrn(sReturn) {
+      if (sReturn.substr(0,3)=="OK:") {
+         //no confirmation required -- change to the returned page
+         document.getElementById("btnLogin").disabled=true;
+         document.getElementById("chkRememberPIN").disabled=true;
+//cjg 12/19/13: Updated to allow non-url return values for things such as forum redirecting
+//         window.location.href = sReturn.substr(3);
+         var sUrl = sReturn.substr(3);
+			// check to see if the return url is in a format of a javascript function, ends with );
+         if (sUrl.length >= 2 && sUrl.toLowerCase().substr(sUrl.length - 2) == ");") {
+				// trigger the javascript function returned in the string variable
+         	eval(sUrl);
+         }
+         else {
+				// redirect to a normal url as usual
+         	window.location.href = sUrl;
+         }
+//cjg 12/19/13: End
+      } else {
+         //error
+      	document.getElementById("txtPP").value = "";
+//mch 7/2/12: If locked out, then remove the user / pw / pin fields
+         if (sReturn == "Your SeeYourChart account has been locked due to too many failed login attempts.  Please wait 30 minutes and try again.") {
+            document.getElementById("tblLogin").style.display = "none";
+            document.getElementById("tblLockedOut").style.display = "inline";
+         }
+//mch 7/2/12: End
+//cjg 6/4/13: New handler for PIN prompt
+//         alert(sReturn);
+//         document.getElementById("txtUserName").focus();
+         else if (sReturn.toString().toUpperCase() == "PIN_NEEDED_TO_CONTINUE") {
+         	promptForPinRS();
+         }
+/*cjg 1/14/15: New handler for forced password change*/
+         else if (sReturn.toString().toUpperCase() == "PASSWORD_CHANGE_COMPLEXITY") {
+            alert("Your password no longer meets the SeeYourChart password complexity requirements, click OK to change your password.");
+            var sUrl = '/UserProfile/PasswordChange.aspx';
+            var sTitle = "SeeYourChart - Password Change";
+            var iHeight = 550;
+            var iWidth = 800;
+            //.html() method of jquery will return a html encoded string, we do this to ensure the iframe url will be encoded for WCAG compliance
+            sUrl = $('<div>').text(sUrl).html();
+            openDialog(sUrl, sTitle, iHeight, iWidth, "yes");
+         }
+         else if (sReturn.toString().toUpperCase() == "PASSWORD_CHANGE_EXPIRED") {
+            alert("Your password has expired, click OK to change your password.");
+            var sUrl = '/UserProfile/PasswordChange.aspx';
+            var sTitle = "SeeYourChart - Password Change";
+            var iHeight = 550;
+            var iWidth = 800;
+            //.html() method of jquery will return a html encoded string, we do this to ensure the iframe url will be encoded for WCAG compliance
+            sUrl = $('<div>').text(sUrl).html();
+            openDialog(sUrl, sTitle, iHeight, iWidth, "yes");
+         }
+/*cjg 1/14/15: End*/
+         else {
+				alert(sReturn);
+         	document.getElementById("txtUserName").focus();
+         }
+//cjg 6/4/13: End
+      }
+   }
+
+//cjg 6/4/13: New methods to handle prompting user for PIN to proceed with login
+   function promptForPinRS() {
+   	var ck = $("#chkRememberPIN");
+   	$("#chkRememberPinPromptCheck").prop("checked", ck.is(":checked"));
+   	var d = $("#pinPromptWrapper");
+   	d.dialog({
+   		autoOpen: false,
+   		title: "Practice PIN",
+   		modal: true,
+   		height: 250,
+   		width: 500,
+   		draggable: true,
+   		resizable: true,
+   		open: function () {
+   			$(this).dialog("option", "position", "center");  //need to reposition after iframe is loaded.
+   		},
+   		close: function () {
+   			$(this).dialog("destroy");
+   		}
+   	});
+   	d.dialog("open");
+	}
+
+   function loginFromPinPrompt() {
+   	var pp = $("#txtPP");
+   	var ck = $("#chkRememberPIN");
+   	var sPin = $("#txtPinPromptInput").val();
+   	var bRememberMe = $("#chkRememberPinPromptCheck").is(":checked");
+   	pp.val(sPin);
+   	ck.prop("checked", bRememberMe);
+   	$("#txtPinPromptInput").val("");
+   	$("#chkRememberPinPromptCheck").prop("checked", false);
+   	$("#pinPromptWrapper").dialog("close");
+   	loginRS();
+   }
+
+   function cancelFromPinPrompt() {
+   	$("#txtPinPromptInput").val("");
+   	$("#chkRememberPinPromptCheck").prop("checked", false);
+   	$("#pinPromptWrapper").dialog("close");
+   }
+
+   function pinPromptCheckForEnter(e) {
+   	if (!e) e = window.event;    //get event details for IE
+   	if (e.keyCode == 13) {
+   		if ($("#pinPromptLoginLink").is(":disabled") == true) return false;
+   		loginFromPinPrompt();
+   		return false;
+   	}
+   	return true;
+   }
+
+   function toggleTooltip(obj) {
+   	var tt = $(obj).closest("td").find(".tooltip");
+   	if (tt.is(":visible")) {
+   		tt.css("display", "");
+   	}
+   	else {
+   		tt.css("display", "block");
+   	}
+   }
+
+//cjg 6/4/13: End
+
+//mch 2/2/12: Added
+   function forgotPassword() {
+//pdh 8/16/13: Adjusted size   
+    //var iHeight = 325; var iWidth = 400;
+      var iHeight = 525; var iWidth = 600;
+//pdh 8/16/13: End	  
+      var iHt = getWindowHeight();
+      var iWt = getWindowWidth();
+      var iTop = (iHt - iHeight) / 2 + window.screenTop;
+      var iLeft = (iWt - iWidth) / 2 + window.screenLeft;
+//tmf 12/31/2014: take into account the username, if any, that may be on the page.
+//      var w = window.open("ResetPassword.aspx", "", "left=" + iLeft + "px, top=" + iTop + "px,width=" + iWidth + "px,height=" + iHeight + "px" + ",resizable=no,status=no,scrollbars=no,menubar=no,toolbar=no");
+      var sURL = "ResetPassword.aspx";
+      if ($('#txtUserName').val()) { sURL += "?username=" + encodeURIComponent($('#txtUserName').val()); } 
+      var w = window.open(sURL, "", "left=" + iLeft + "px, top=" + iTop + "px,width=" + iWidth + "px,height=" + iHeight + "px" + ",resizable=no,status=no,scrollbars=no,menubar=no,toolbar=no");
+      if (w) w.focus();
+//tmf 12/31/2014: end
+
+        
+   }
+//mch 2/2/12: End
+   
+//mch 2/4/12: Adding call to add a new user
+   function newUser() {
+      window.location.href = "NewUser.aspx";
+   }
+//mch 2/4/12: End
+
+   function localStartUp() {
+
+      oPin = document.getElementById("txtPP");
+      oUN = document.getElementById("txtUserName");
+
+      if (oPin.value.length == 0) {
+         startUp('txtPP');
+      } else {
+         startUp('txtPWD');
+      }
+   } 
+   //]]>
+  </script>
+  <div id="pinPromptWrapper">
+   <h4 class="promptHeader">
+    Your PIN is required to complete login. If you are not a patient please leave blank.
+    <br/>
+    If you are a patient and don't know your PIN please contact your practice.
+   </h4>
+   <div class="promptRow">
+    <label for="txtPinPromptInput">
+     PIN:
+    </label>
+    <input id="txtPinPromptInput" onkeypress="return pinPromptCheckForEnter();" type="text"/>
+   </div>
+   <div class="promptRow">
+    <input id="chkRememberPinPromptCheck" onkeypress="return pinPromptCheckForEnter();" type="checkbox"/>
+    <label for="chkRememberPinPromptCheck">
+     Remember me on this computer
+    </label>
+   </div>
+   <div class="promptFooter">
+    <a href="javascript:" id="pinPromptLoginLink" onclick="loginFromPinPrompt();" onkeypress="loginFromPinPrompt();">
+     Login
+    </a>
+    <a href="javascript:" id="pinPromptCancelLink" onclick="cancelFromPinPrompt();" onkeypress="cancelFromPinPrompt();">
+     Cancel
+    </a>
+   </div>
+  </div>
+ </body>
+</html>

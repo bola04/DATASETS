@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="EcoCyc describes the genome, metabolic pathways, and regulatory network of &lt;i&gt;Escherichia coli&lt;/i&gt; and provides extensive bioinformatics tools." name="description"/>
+  <title>
+   EcoCyc: Encyclopedia of
+   <i>
+    E. coli
+   </i>
+   Genes and Metabolic Pathways
+  </title>
+  <!-- <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" type="text/css"> -->
+  <link href="pure/pure-min.css" rel="stylesheet" type="text/css"/>
+  <link href="css/layouts/marketing.css" rel="stylesheet" type="text/css"/>
+  <link href="css/BioCyc_Extra.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   var forceOrgID = "ECOLI";
+  </script>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <script src="https://code.jquery.com/jquery-1.11.3.min.js">
+  </script>
+  <script>
+   var $j = jQuery.noConflict();
+  </script>
+  <!-- 
+<link rel="stylesheet" type="text/css" href="/yui/build/assets/skins/sam/skin.css"> 
+<link rel="stylesheet" type="text/css" href="/yui/build/assets/skins/sam/treeview.css">
+<link rel="stylesheet" type="text/css" href="/style.css" >
+
+User web site style sheet customization should use the following file:
+<link rel="stylesheet" type="text/css" href="/userWebsiteCustomization.css">
+
+The previous 4 .css files are combined at web start up time by the Lisp fn publish-combined-static-files generating the following combined.css file. For some
+reason it doesn't work for the yui gallery file to be combined -- the yui loader
+still looks for it as a separate file.
+-->
+  <link href="/yui3/build/gallery-datatable-selection/assets/skins/sam/gallery-datatable-selection.css" rel="stylesheet" type="text/css"/>
+  <link href="/combined/combined.css" rel="stylesheet" type="text/css"/>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <!-- this has to go early -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/yui/3.17.2/yui/yui-min.js" type="text/javascript">
+  </script>
+  <script src="/combined/combined-early.js" type="text/javascript">
+  </script>
+  <!-- paley:Jun-15-2017 Comment these out, let them be autoloaded from the cdn:
+<script type="text/javascript" src="/yui3/build/yui-base/yui-base-min.js"></script> 
+<script type="text/javascript" src="/yui3/build/base-build/base-build-min.js"></script> 
+<script type="text/javascript" src="/yui3/build/datatable-base/datatable-base-min.js"></script> 
+<script type="text/javascript" src="/yui3/build/event-custom-base/event-custom-base-min.js"></script> 
+
+These 2 files are not in the cloudflare cdn, so we need to load them from our own site.  They're in the combined-early file
+<script type="text/javascript" src="/yui3/build/gallery-datatable-selection/gallery-datatable-selection.js"></script>
+<script type="text/javascript" src="/yui3/build/gallery-timer/gallery-timer-min.js"></script>  
+
+These are bundled into the combined-early.js file:
+<script type="text/javascript" src="/yui/build/utilities/utilities.js"></script>
+<script TYPE="text/javascript" SRC="/wupub/prototype.js"></script>
+<script TYPE="text/javascript" SRC="/image-map-resizer-master/js/imageMapResizer.min.js"></script>
+-->
+  <!-- next 3 css for webgraphics -->
+  <link href="/yui/build/fonts/fonts-min.css" rel="stylesheet" type="text/css"/>
+  <link href="/yui/build/button/assets/skins/sam/button.css" rel="stylesheet" type="text/css"/>
+  <link href="/yui/build/container/assets/skins/sam/container.css" rel="stylesheet" type="text/css"/>
+  <script src="/webgraphics.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var onMenuBarReady = new YAHOO.util.CustomEvent("onMenuBarReady");
+/* This event fires when we change the current organism using the organism
+ * selector, so that subscribers can update the page accordingly.
+ */
+var organismChangedEvent = new YAHOO.util.CustomEvent("organismChanged");
+
+/* If you update the version number here, make sure you also update it in
+   pathwayTools.js (and the minified file)!!!
+ */
+YAHOO.util.Event.onContentReady("body", function() {
+  if (typeof(ptoolsJsVersion) == 'undefined' || ptoolsJsVersion !== '22.0') {
+      console.log('reloading because of outdated javascript file');
+      window.location.reload(true);
+      }
+  });
+  </script>
+  <!-- Base Pathway Tools JavaScript code -->
+  <script src="/pathwayTools-min.js" type="text/javascript">
+  </script>
+ </head>
+ <body class="yui-skin-sam pure-skin-BioCyc" id="body" onload="initOnWindowLoad()">
+  <!-- ---------- OPEN OUTERMOST CONTAINER DIV ---------- -->
+  <!--next line is used for determining text size for sizing window, tooltips, buttons, etc billingt:Jul-7-2014 -->
+  <!-- display: none is necessary or space will be left on the screen for this invisible area -->
+  <span id="textSizeTestArea" style="visibility: hidden; display: none">
+  </span>
+  <!--Fixed Navigation Box-->
+  <div class="navBox" id="navBox" style="display:none">
+   <div class="navBoxExpansion" id="navBoxExpanded">
+    <a href="#" onclick="hideNavBox()">
+     <img height="9" src="/navbox-hide.png" width="9"/>
+     hide
+    </a>
+   </div>
+   <div class="navBoxExpansion" id="navBoxCollapsed" style="display:none">
+    <a href="#" onclick="showNavBox()">
+     <img height="9" src="/navbox-show.png" width="9"/>
+     show operations
+    </a>
+   </div>
+   <div id="navBoxBody">
+    <br/>
+    <div id="navBoxTitle">
+     <div class="navBoxItem">
+      <i>
+       <a class="dynDBName" href="organism-summary">
+       </a>
+      </i>
+     </div>
+     <div class="navBoxLabel" id="objtypeNavBox">
+     </div>
+     <div class="navBoxItem" id="objnameNavBox">
+     </div>
+    </div>
+    <span class="section1">
+     OPERATIONS
+    </span>
+    <div id="navBoxOps">
+    </div>
+   </div>
+  </div>
+  <!--End Fixed Navigation Box-->
+  <!-- The top banner, we are in a body -->
+  <!-- We need this div to have position:relative in order for the z-index of the menu stacking to work -->
+  <div id="topBannerMenu">
+   <table border="0" cellpadding="0" style="border-collapse:collapse" width="100%">
+    <tr>
+     <td>
+      <div id="ptbanner">
+       <a class="logo" href="/" id="logoLink">
+       </a>
+       <!-- Begininng temporary message. 
+     See file temporary-message-help.txt in this directory
+     for instructions on how to insert a temporary message -->
+       <!-- The set of BioCyc temporary messages must all be inside the following div  -->
+       <div id="biocycTmpMessages">
+        <div class="temporaryMsg" style="text-align:center;background-color:#e1e3e8">
+         <a href="https://biocyc.org/Announcement.html">
+          New BioCyc RNA-seq data analysis service
+         </a>
+         available
+        </div>
+       </div>
+       <!-- The set of EcoCyc temporary messages must all be inside the following div -->
+       <div id="ecocycTmpMessages">
+        <div class="temporaryMsg" style="text-align:center;background-color:#e1e3e8">
+         <a href="https://biocyc.org/Announcement.html">
+          New BioCyc RNA-seq data analysis service
+         </a>
+         available
+        </div>
+       </div>
+       <!-- The set of MetaCyc temporary messages must all be inside the following div -->
+       <div id="metacycTmpMessages">
+        <div class="temporaryMsg" style="text-align:center;background-color:#e1e3e8">
+         <a href="https://biocyc.org/Announcement.html">
+          New BioCyc RNA-seq data analysis service
+         </a>
+         available
+        </div>
+       </div>
+       <!-- The set of HumanCyc temporary messages must all be inside the following div -->
+       <div id="humancycTmpMessages">
+        <div class="temporaryMsg" style="text-align:center;background-color:#e1e3e8">
+         <a href="https://biocyc.org/Announcement.html">
+          New BioCyc RNA-seq data analysis service
+         </a>
+         available
+        </div>
+       </div>
+       <!-- The set of BsubCyc temporary messages must all be inside the following div -->
+       <div id="bsubcycTmpMessages">
+        <div class="temporaryMsg" style="text-align:center;background-color:#e1e3e8">
+         <a href="https://biocyc.org/Announcement.html">
+          New BioCyc RNA-seq data analysis service
+         </a>
+         available
+        </div>
+       </div>
+       <script>
+        YAHOO.util.Event.onContentReady("body", function() {
+  if (typeof(defaultTypeObjectPage) == 'undefined') {
+      console.log('reloading');
+      window.location.reload(true);
+      }     
+      });
+       </script>
+       <!-- Login line and overlays for login help, etc. is in the following file -->
+       <!-- requires prototype, now included in template-standard-head-content -->
+       <div id="ilogin">
+       </div>
+       <script type="text/javascript">
+        new Ajax.Updater('ilogin', '/login-area');
+       </script>
+       <div class="searchGroupingExternalBox">
+        <div class="searchGroupingInternalBox">
+         <!-- Quick Search -->
+         <form action="/" class="searchMenu" name="substring" onsubmit="if (this.elements[1].value != '') {this.action= '/'+orgID()+'/substring-search?type=NIL&amp;object='+this.elements[1].value} else return(false);">
+          <input id="QSType" name="type" type="hidden" value="NIL"/>
+          <input class="inputQuickSearch" id="QSTextBox" name="object" placeholder="Enter a gene, protein, metabolite or pathway..." size="47" title="Enter one of the following (all searches conducted only within the selected organism, unless otherwise indicated):
+
+A name or synonym for a compound, gene, protein or pathway.  Spaces, punctuation and case are ignored. E.g. pyruvate, trpA
+
+Any substring of one of the above names, length &gt;= 3. E.g. kinase, pyr
+
+A full or partial EC number. E.g. 1.2.1.4, 1.3.1
+
+A full or partial InChI-key. E.g. CKLJMWTZIZZHCS
+
+An internal id (case-sensitive) for any compound, gene, protein, pathway, reaction or transcription-unit. E.g. CPLX0-3661, HEMN-RXN
+
+An id (case-sensitive) from another database to which this database contains links, e.g. UniProt, KEGG, ChEBI. Note that our set of links is not complete; even if an external id search returns no result the object may still be in our database. E.g. P00561, NP_414543, C00047
+
+A locus id for any gene of any organism on the BioCyc website. E.g. FTU_0031, YPA_0017
+
+(MetaCyc only) An organism or taxon name, to find pathways curated to that taxon. E.g. Bacillus, Shigella flexneri"/>
+          <input class="searchButton" name="quickSearch" type="submit" value="Quick Search"/>
+          <input class="searchButton" name="geneSearch" onclick="document.substring.type.value='GENE';" type="submit" value="Gene Search"/>
+         </form>
+         <!-- End Quick Search -->
+         <!-- Database name and change link -->
+         <div class="searchMenuDatabaseName">
+          Searching
+          <i>
+           <span class="dynDBName banner" id="currentDatabaseName">
+           </span>
+          </i>
+          <a href="javascript:void(0);" id="changeField" onclick="showChooser(false)" title="All searches will be conducted against the currently selected organism database.  To search a different organism, click this link and select a new database before submitting your query.">
+           change organism database
+          </a>
+         </div>
+        </div>
+       </div>
+       <!-- End Database name and change link -->
+      </div>
+     </td>
+    </tr>
+    <!-- The top menu bar -->
+    <tr>
+     <td>
+      <title>
+      </title>
+      <!-- The standard top menubar for Pathway Tools -->
+      <div class="yuimenubarnav" id="pathwayToolsMenubar" style="visibility:hidden">
+       <div class="bd">
+        <ul class="toolbar">
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Sites
+          </a>
+          <div class="yuimenu" id="home">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://biocyc.org">
+               BioCyc
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://ecocyc.org">
+               EcoCyc
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://metacyc.org">
+               MetaCyc
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://humancyc.org">
+               HumanCyc
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://bsubcyc.org">
+               BsubCyc
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="http://bioinformatics.ai.sri.com/ptools/">
+               Pathway Tools
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Search
+          </a>
+          <div class="yuimenu" id="search">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/gene-search.shtml">
+               Search Genes, Proteins or RNAs
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/cpd-search.shtml">
+               Search Compounds
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/rxn-search.shtml">
+               Search Reactions
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/pwy-search.shtml">
+               Search Pathways
+              </a>
+             </li>
+             <li class="yuimenuitem" id="siteSearchItem">
+              <a class="yuimenuitemlabel" href="/site-search.shtml">
+               Search DNA or mRNA Sites
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/gm-search.shtml">
+               Search Growth Media
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/query.shtml">
+               Advanced Search
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem" id="crossOrgSearch">
+              <a class="yuimenuitemlabel" href="/cross-org-search">
+               Cross Organism Search
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem" id="blastMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/blast.html">
+               BLAST Search
+              </a>
+             </li>
+             <li class="yuimenuitem" id="blastAllMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/blast.html?refdb=ALL">
+               BLAST All BioCyc
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem" id="patMatchMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/patmatch.shtml?organism=[ORGID]">
+               Sequence Pattern Search
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/full-text-search.shtml">
+               Google Search of this Site
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Genome
+          </a>
+          <div class="yuimenu" id="genome">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem" id="genomeBrowserMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/select-gen-el">
+               Genome Browser
+              </a>
+             </li>
+             <li class="yuimenuitem" id="genOVMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/NEW-IMAGE?type=GENOME-OVERVIEW">
+               Genome Overview
+              </a>
+             </li>
+             <li class="yuimenuitem" id="regOVMenuItem">
+              <a class="yuimenuitemlabel" href="/overviewsWeb/regOv.shtml">
+               Regulatory Overview
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/class-tree?object=Gene-Ontology-Terms">
+               Browse Gene Ontology
+              </a>
+             </li>
+             <li class="yuimenuitem" id="mapSeqCoordMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/select-gen-el?type=MAP-SEQ-COORDS">
+               Map Sequence Coordinates
+              </a>
+             </li>
+             <li class="yuimenuitem" id="genomePosterMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/select-gen-el?type=POSTER">
+               Generate Genome Poster
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Metabolism
+          </a>
+          <div class="yuimenu" id="metabolism">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem" id="cellOVMenuItem">
+              <a class="yuimenuitemlabel" href="/overviewsWeb/celOv.shtml">
+               Cellular Overview
+              </a>
+             </li>
+             <li class="yuimenuitem" id="fbaMenu">
+              <a class="yuimenuitemlabel" href="/fba.shtml">
+               Run Metabolic Model
+               <img src="/new.gif"/>
+              </a>
+             </li>
+             <li class="yuimenuitem" id="deadEndsMenuItem">
+              <a class="yuimenuitemlabel" href="/dead-end-form.shtml">
+               Dead-end Metabolites
+              </a>
+             </li>
+             <li class="yuimenuitem" id="chokepointsMenuItem">
+              <a class="yuimenuitemlabel" href="/chokepoint-form.shtml">
+               Chokepoint Reactions
+              </a>
+             </li>
+             <li class="yuimenuitem" id="metEngMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/meteng?organism=[ORGID]">
+               Metabolic Route Search
+              </a>
+             </li>
+             <li class="yuimenuitem" id="MetaboliteMenuItem">
+              <a class="yuimenuitemlabel" href="/metabolite-translation-service.shtml">
+               Metabolite Translation Service
+              </a>
+             </li>
+             <li class="yuimenuitem" id="pwyCollageMenuItem">
+              <a class="yuimenuitemlabel" href="/pathway-collage-info">
+               Pathway Collages
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/class-tree?object=Pathways">
+               Browse Pathway Ontology
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/class-tree?object=EC-Reactions">
+               Browse Enzyme Commission Ontology
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/class-tree?object=Compounds">
+               Browse Compound Ontology
+              </a>
+             </li>
+             <li class="yuimenuitem" id="cellOVPosterMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/poster-cellov?orgid=[ORGID]">
+               Generate Metabolic Map Poster
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Analysis
+          </a>
+          <div class="yuimenu" id="analysis">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/comp-genomics">
+               Comparative Analysis
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/PToolsWebsiteHowto.shtml#omicsDataAnalysis">
+               Omics Data Analysis
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/dashboard/dashboard-intro.shtml">
+               Omics Dashboard
+               <img src="/new.gif"/>
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/organism-summary">
+               Summary Statistics
+              </a>
+             </li>
+             <li class="yuimenuitem" id="fungcMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/genome-context">
+               List Functional Gene Clusters
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/user-subscriptions.shtml">
+               Update Notifications
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a onclick="1">
+               Reports
+              </a>
+              <div class="yuimenu" id="reports">
+               <div class="bd">
+                <ul class="first-of-type">
+                 <li class="yuimenuitem">
+                  <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/release-notes">
+                   History of updates
+                  </a>
+                 </li>
+                 <li class="yuimenuitem" id="pwyEvMenuItem">
+                  <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/hierarchical.html">
+                   Pathway evidence
+                  </a>
+                 </li>
+                 <li class="yuimenuitem" id="pwyHolesMenuItem">
+                  <a class="yuimenuitemlabel orgspecific" href="/[ORGID]/missing-rxns.html">
+                   Pathway holes
+                  </a>
+                 </li>
+                </ul>
+               </div>
+              </div>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenuibartemlabel" onclick="1">
+           SmartTables
+          </a>
+          <div class="yuimenu" id="groups">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem" id="groupsMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/groups?tab=PUBLIC&amp;orgid=[ORGID]">
+               Public SmartTables
+              </a>
+             </li>
+             <li class="yuimenuitem" id="groupsMenuItem">
+              <a class="yuimenuitemlabel orgspecific" href="/groups?tab=SPECIAL&amp;orgid=[ORGID]">
+               Special SmartTables
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+         <li class="yuimenubaritem">
+          <a class="yuimenubaritemlabel" onclick="1">
+           Help
+          </a>
+          <div class="yuimenu" id="help">
+           <div class="bd">
+            <ul class="first-of-type">
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/PToolsWebsiteHowto.shtml#SearchHelp">
+               Searching
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/PToolsWebsiteHowto.shtml">
+               Website User Guide
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/webinar.shtml">
+               Webinars
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/glossary.shtml">
+               Glossary
+              </a>
+             </li>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/PGDBConceptsGuide.shtml">
+               PGDB Concepts Guide
+              </a>
+             </li>
+             <li class="yuimenuitem" id="BioCycGuide">
+              <a class="yuimenuitemlabel" href="/BioCycUserGuide.shtml">
+               Guide to BioCyc
+              </a>
+             </li>
+            </ul>
+            <ul>
+             <li class="yuimenuitem">
+              <a class="yuimenuitemlabel" href="/contact.shtml">
+               Contact Us/Licensing/Support
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </td>
+    </tr>
+   </table>
+  </div>
+  <!-- end topBannerMenu -->
+  <!-- Begin template-require-login-overlay.shtml -->
+  <!-- Placeholder for popup messages -->
+  <div id="msgPopup">
+  </div>
+  <div class="content">
+   <!-- ---------- BEGIN margin to set max width ---------- -->
+   <div class="whitespace-wide-margin-border">
+    <!-- ---------- BEGIN INTRO BLURB ---------- -->
+    <div class="pure-g-r">
+     <div class="pure-u-1-2">
+      <div class="l-box-home">
+       <h1 class="splash-head">
+        EcoCyc
+        <i>
+         E. coli
+        </i>
+        Database
+       </h1>
+       EcoCyc is a scientific database for the bacterium
+       <i>
+        Escherichia coli
+       </i>
+       K-12 MG1655.  The EcoCyc project performs 
+literature-based curation of the entire genome, and of transcriptional regulation, transporters, and metabolic pathways.
+       <br/>
+       <br/>
+       New to EcoCyc?  Take the
+       <a href="/samples.shtml">
+        guided tour
+       </a>
+       of the EcoCyc.org Web site, watch our
+       <a href="/webinar.shtml">
+        free online instructional videos
+       </a>
+       , or read our 2017 article:
+       <a href="https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkw1003">
+        "EcoCyc: reflecting new knowledge about
+        <i>
+         Escherichia coli
+        </i>
+        K-12"
+       </a>
+       <br/>
+       <br/>
+       <a class="pure-button primary-button" href="http://www.asmscience.org/content/journal/ecosalplus/10.1128/ecosalplus.ESP-0009-2013">
+        EcoCyc User Guide &gt;&gt;
+       </a>
+      </div>
+     </div>
+     <div class="pure-u-1-2">
+      <!-- ---------- BEGIN PROMO SLIDE SHOW ---------- -->
+      <!-- ---------- BEGIN slideshow widget ---------- -->
+      <div id="spiffySlides">
+       <ul class="slides">
+        <li class="active">
+         <div class="slidePic">
+          <img alt="Cascade" src="dispatchImages/Cascade.png"/>
+          <p class="caption">
+           Crystal structure of
+           <i>
+            E. coli
+           </i>
+           Cascade. Image from the RCSB PDB (www.rcsb.org) of PDB ID 1VY8 (R.N. Jackson et al. (2014) Science 345:1473-9).
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Cascade to the Rescue!
+          </h3>
+          <h3 class="subhead">
+           From protecting
+           <i>
+            E. coli
+           </i>
+           against phage infection to the promise of gene therapy: How does Cascade do it? Recent crystal structures of the enzyme are improving our understanding of this enzyme.
+          </h3>
+          <a class="pure-button primary-button" href="/ECOLI/NEW-IMAGE?type=ENZYME&amp;object=CPLX0-7725">
+           Learn More
+          </a>
+         </div>
+        </li>
+        <!--
+        <li>
+          <div class="slidePic"> <img src="dispatchImages/Bile_Beans_dispatch.jpg" alt="Bile Beans">
+          <p class="caption">Cropped image of signage by <a href="http://commons.wikimedia.org/wiki/File:Bile_Beans.jpg/">Ilovetigerplanes</a>. Used under creative commons <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.en">license</a>.</p> </div>
+          <div class="slideText">
+            <h3 class="whitespace-none">Hazards of the Gut Habitat: Bile</i></h3>
+            <h3 class="subhead">Bile acids are secreted into the intestine, where they promote digestion and absorption of dietary fats. Bile salts are able to diffuse across the inner membrane of <i>E. coli</i> and are cytotoxic. The <a href="/ECOLI/NEW-IMAGE?type=GENE&object=EG12576">MdtM</a> antiporter contributes significantly to <i>E. coli</i>'s resistance to bile salts, which may represent the natural substrate of this inner membrane transporter.</h3>
+         </div>
+        </li>
+-->
+        <!--
+        <li>
+          <div class="slidePic"> <img src="dispatchImages/routeSearch.png" alt="Route Search Diagram">
+           <p class="caption">.</p>  </div>
+          <div class="slideText">
+            <h3 class="whitespace-none">RouteSearch: Search for Paths through the Metabolic Network</h3>
+            <h3 class="subhead">Search for lowest-cost paths through the metabolic network of the selected organism.  Or, design lowest-cost pathways to novel compounds by adding reactions from MetaCyc.</h3>
+            <a href="/PToolsWebsiteHowto.shtml#route_search" class="pure-button primary-button">Learn More</a> </div>
+        </li>
+-->
+        <li>
+         <div class="slidePic">
+          <img alt="Card catalog" src="dispatchImages/card_catalog_instructions.png"/>
+          <p class="caption">
+           Image of Peabody Visual Aids poster by
+           <a href="https://www.flickr.com/photos/68103485@N05/">
+            char booth
+           </a>
+           . Used under creative commons
+           <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/">
+            license
+           </a>
+           .
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Search BioCyc by Locus ID
+          </h3>
+          <h3 class="subhead">
+           You can now enter locus IDs into the EcoCyc quick search box.  There is no need to first select the correct BioCyc organism database - if the organism is part of BioCyc, the unique locus ID will automatically find it.  Some example locus IDs look like this: MSM_0046, MXAN_1061.
+          </h3>
+         </div>
+        </li>
+        <li>
+         <div class="slidePic">
+          <img src="dispatchImages/EcoCyc-MetaModel.png"/>
+          <p class="caption">
+           Metabolic Model for
+           <i>
+            E. coli
+           </i>
+           K-12
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           A quantitative metabolic model for
+           <i>
+            E. coli
+           </i>
+           K-12 derived from EcoCyc is available.
+          </h3>
+          <a class="pure-button primary-button" href="http://www.biomedcentral.com/1752-0509/8/79">
+           Learn More
+          </a>
+         </div>
+        </li>
+        <li>
+         <div class="slidePic">
+          <img alt="Bam complex" src="dispatchImages/Bam_complex_dispatch.png"/>
+          <p class="caption">
+           Schematic diagram of the Bam complex, Fig. 1a in
+           <a href="http://www.jbc.org/content/286/45/39116.long">
+            Kim et al.
+           </a>
+           . Used under creative commons
+           <a href="http://creativecommons.org/licenses/by/3.0/">
+            license
+           </a>
+           .
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Maintaining the Outer Membrane
+          </h3>
+          <h3 class="subhead">
+           The 5-subunit
+           <a href="/ECOLI/NEW-IMAGE?type=ENZYME&amp;object=CPLX0-3933">
+            Bam complex
+           </a>
+           is responsible for the assembly and insertion of beta-barrel proteins into the OM of
+           <i>
+            E. coli
+           </i>
+           . Although a full understanding of its function in beta-barrel folding remains elusive, recent work has yielded many insights into subunit interaction and activity.
+          </h3>
+         </div>
+        </li>
+        <li>
+         <div class="slidePic">
+          <img src="dispatchImages/enrichmentDialog.png"/>
+          <p class="caption">
+           SmartTable display generated by Pathway Tools.
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Metabolomics Data Analysis
+          </h3>
+          <h3 class="subhead">
+           Multiple tools are available in this website for metabolomics data analysis.
+          </h3>
+          <a class="pure-button primary-button" href="/PToolsWebsiteHowto.shtml#omicsDataAnalysis">
+           Learn More
+          </a>
+         </div>
+        </li>
+        <!--
+        <li>
+          <div class="slidePic"> <img src="dispatchImages/patmatch.png">
+           <p class="caption"><a href="http://www.ncbi.nlm.nih.gov/pubmed/15980466">PatMatch</a> query and results by Pathway Tools.</p>  </div>
+          <div class="slideText">
+            <h3 class="whitespace-none">Sequence Pattern Searches</h3>
+            <h3 class="subhead">Search a selected organism for exact or degenerate short patterns of nucleotides or amino acids.</h3>
+            <a href="/PToolsWebsiteHowto.shtml" class="pure-button primary-button">Learn More</a> </div>
+        </li>
+-->
+        <li>
+         <div class="slidePic">
+          <img alt="E. coli, bacteria, cryo FIB-SEM, dotted with silver nanoparticles" src="dispatchImages/EcoCyc-App-Small.png"/>
+          <p class="caption">
+           BioCyc iOS App for iPhone/iPad
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           EcoCyc App is now BioCyc App
+          </h3>
+          <h3 class="subhead">
+           Have you ever wanted to quickly find out what is known about a gene, protein or pathway that was just mentioned in a talk or on a poster? Download the free BioCyc iPhone app to browse EcoCyc on the go!  The NEW BioCyc app comes preloaded w/ EcoCyc.
+          </h3>
+          <a class="pure-button primary-button" href="https://itunes.apple.com/sn/app/ecocyc/id414535548?mt=8">
+           Download Here
+          </a>
+         </div>
+        </li>
+        <li>
+         <div class="slidePic">
+          <img alt="Multi-Genome Browser" src="dispatchImages/multi-genome-browser.png"/>
+          <p class="caption">
+           Multi-organism Genome Browser image generated by Pathway Tools.
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Comparative Genome Analysis
+          </h3>
+          <h3 class="subhead">
+           Multiple comparative analysis tools are available in this website.
+          </h3>
+          <a class="pure-button primary-button" href="/PToolsWebsiteHowto.shtml#comparativeAnalysis">
+           Learn More
+          </a>
+         </div>
+        </li>
+        <li>
+         <div class="slidePic">
+          <img src="dispatchImages/webOmics.png"/>
+          <p class="caption">
+           Cellular Overview Omics Viewer image generated by Pathway Tools.
+          </p>
+         </div>
+         <div class="slideText">
+          <h3 class="whitespace-none">
+           Gene Expression Data Analysis
+          </h3>
+          <h3 class="subhead">
+           Multiple tools are available in this website for analysis of gene expression data.
+          </h3>
+          <a class="pure-button primary-button" href="/PToolsWebsiteHowto.shtml#omicsDataAnalysis">
+           Learn More
+          </a>
+         </div>
+        </li>
+       </ul>
+       <ul class="controls" style="z-index:10">
+        <span class="paused">
+         paused...
+        </span>
+        <li class="active slide-nav">
+         <a href="#slide-1">
+          1
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-2">
+          2
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-3">
+          3
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-4">
+          4
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-5">
+          5
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-6">
+          6
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-7">
+          7
+         </a>
+        </li>
+        <li class="slide-nav">
+         <a href="#slide-8">
+          8
+         </a>
+        </li>
+       </ul>
+      </div>
+      <!-- ---------- END slideshow widget ---------- -->
+      <!-- ---------- END PROMO SLIDE SHOW ---------- -->
+     </div>
+    </div>
+    <!-- ---------- END INTRO BLURB ---------- -->
+    <!-- ---------- BEGIN OVERVIEW RIBBON ---------- -->
+    <div class="pure-g-r">
+     <div class="pure-u-1-2">
+      <div class="l-box-home">
+       <h3>
+        EcoCyc Tools
+       </h3>
+       <p>
+        EcoCyc provides tools for navigating, visualizing, and analyzing the underlying databases, and for analyzing omics data:
+       </p>
+       <ul>
+        <li>
+         <a class="orgspecific" href="/[ORGID]/select-gen-el">
+          Genome browser
+         </a>
+        </li>
+        <li>
+         Display of individual
+         <a href="/pwy-search.shtml">
+          metabolic pathways
+         </a>
+         , and of
+         <a href="/overviewsWeb/celOv.shtml">
+          full metabolic maps
+         </a>
+        </li>
+        <li>
+         Multiple
+         <a href="/PToolsWebsiteHowto.shtml#omicsDataAnalysis">
+          omics data analysis methods
+         </a>
+         for user-supplied omics and multi-omics datasets including the
+         <a href="/dashboard/dashboard-help.html">
+          Omics Dashboard
+         </a>
+         , painting onto pathway diagrams and metabolic maps, and tables of perturbed pathways
+        </li>
+        <li>
+         Store groups of genes, metabolites, etc. in your account as
+         <a href="/PToolsWebsiteHowto.shtml#smarttables">
+          SmartTables
+         </a>
+         ; share, analyze, transform those groups
+        </li>
+        <li>
+         <a href="/PToolsWebsiteHowto.shtml#route_search">
+          Metabolic route search
+         </a>
+         tools
+        </li>
+        <li>
+         Run
+         <a href="/PToolsWebsiteHowto.shtml#metabolicmodels">
+          metabolic models
+         </a>
+        </li>
+        <li>
+         <a href="/PToolsWebsiteHowto.shtml#comparativeAnalysis">
+          Comparative analysis tools
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+     <div class="pure-u-1-2">
+      <div class="l-box-home">
+       <h3>
+        Sibling Sites
+       </h3>
+       <p>
+       </p>
+       <table>
+        <tr>
+         <td>
+          <a href="http://www.porteco.org">
+           <img src="PortEco-SQ-Logo-small.png"/>
+          </a>
+         </td>
+         <td>
+         </td>
+         <td valign="middle">
+          <a href="http://www.porteco.org">
+           PortEco
+          </a>
+          supports queries to multiple
+          <i>
+           E. coli
+          </i>
+          databases; the
+          <a href="http://ecolistudentportal.org">
+           <i>
+            E. coli
+           </i>
+           Student Portal
+          </a>
+          is a microbiology education site.
+         </td>
+        </tr>
+       </table>
+       <h3>
+        How to Cite EcoCyc
+       </h3>
+       <p>
+        Please cite EcoCyc as Keseler et al. (2017),
+        <a href="https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkw1003">
+         "EcoCyc: reflecting new knowledge about
+         <i>
+          Escherichia coli
+         </i>
+         K-12"
+        </a>
+        , Nucleic Acids Research 45:D543-50.
+       </p>
+       <h3>
+        Funding Sources
+       </h3>
+       <p>
+        The development of EcoCyc is funded by NIH grant GM077678 from the NIH National Institute of General Medical Sciences.
+       </p>
+      </div>
+     </div>
+    </div>
+    <!-- ---------- END OVERVIEW RIBBON ---------- -->
+    <div class="divider">
+    </div>
+    <!-- ---------- BEGIN VIDEO RIBBON ---------- -->
+    <div class="pure-g-r">
+     <div class="pure-u-1-2">
+      <div class="l-box-home pure-hidden-phone">
+       <iframe allowfullscreen="" class="right" frameborder="0" height="360" src="//www.youtube.com/embed/AMvuhfOMkJQ" width="480">
+       </iframe>
+      </div>
+     </div>
+     <div class="pure-u-1-2">
+      <div class="l-box">
+       <h2 class="splash-head">
+        Video Tutorials
+       </h2>
+       <p>
+        The BioCyc webinar series introduces users to the basic and advanced features of the BioCyc website and the
+        <a href="http://brg.ai.sri.com/ptools/">
+         Pathway Tools
+        </a>
+        software. A complete list of videos in additional download formats are available on the
+        <a href="http://biocyc.org/webinar.shtml">
+         Video and Podcast
+        </a>
+        page.
+       </p>
+       <p>
+        This video introduces the BioCyc.org site and the BioCyc collection of hundreds of Pathway/Genome Databases and covers:
+       </p>
+       <ul>
+        <li>
+         BioCyc site contents, including EcoCyc, MetaCyc, and our extensive database collection
+        </li>
+        <li>
+         How to search, browse, and find what you need in the BioCyc collection
+        </li>
+        <li>
+         How we represent metabolism, transcription, and all their parts
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <!-- this spacer needed -->
+    <!-- ---------- NOTE: still need to make responsive ---------- -->
+    <!-- ---------- END VIDEO RIBBON ---------- -->
+   </div>
+   <!-- ---------- END margin to set max width ---------- -->
+   <!-- ---------- BEGIN FOOTER ---------- -->
+   <div class="whitespace-wide-margin-border" id="footerNav">
+    <div class="pure-g-r">
+     <div class="pure-u-1-5">
+      <div class="l-box">
+       <h4 class="content-subhead">
+        General Information
+       </h4>
+       <p class="whitespace-none">
+        <a href="/publications.shtml">
+         Publications
+        </a>
+        <br/>
+        <a href="/release-notes.shtml">
+         Update History
+        </a>
+        <br/>
+        <a href="/links.shtml">
+         <i>
+          E. coli
+         </i>
+         Resources
+        </a>
+        <br/>
+        <a href="/conferences.shtml">
+         Conferences
+        </a>
+        <br/>
+        <a href="/contact.shtml">
+         Contact Us
+        </a>
+        <br/>
+       </p>
+      </div>
+     </div>
+     <div class="pure-u-1-5">
+      <div class="l-box">
+       <h4 class="content-subhead">
+        Data and Services
+       </h4>
+       <p class="whitespace-none">
+        <a href="http://itunes.apple.com/sn/app/ecocyc/id414535548?mt=8">
+         EcoCyc iPhone/iPad App
+        </a>
+        <br/>
+        <a href="/download.shtml">
+         Software/Data Downloads
+        </a>
+        <br/>
+        <a href="/web-services.shtml">
+         Web Services &amp; APIs
+        </a>
+        <br/>
+        <a href="opensearch.shtml">
+         Faster EcoCyc Search
+        </a>
+        <br/>
+        <a href="/gene-links.shtml">
+         Gene Cross-References
+        </a>
+        <br/>
+        <a href="/enzymes.shtml">
+         Unsequenced Enzymes
+        </a>
+        <br/>
+       </p>
+      </div>
+     </div>
+     <div class="pure-u-1-5">
+      <div class="l-box">
+       <h4 class="content-subhead">
+        Merchandise
+       </h4>
+       <p class="whitespace-none">
+        <a href="/posters.shtml">
+         Metabolic Posters
+        </a>
+        <br/>
+        <a href="t-shirt.shtml">
+         EcoCyc T-Shirt
+        </a>
+       </p>
+      </div>
+     </div>
+     <div class="pure-u-1-5">
+      <div class="l-box">
+       <h4 class="content-subhead">
+        Credits
+       </h4>
+       <p class="whitespace-none">
+        <a href="/credits.shtml">
+         Contributors
+        </a>
+        <br/>
+        <a href="/advisors.shtml">
+         Steering Committee
+        </a>
+        <br/>
+        <a href="/publications.shtml">
+         How to Cite
+        </a>
+       </p>
+      </div>
+     </div>
+     <div class="pure-u-1-5">
+      <div class="l-box">
+       <h4 class="content-subhead">
+        Follow Us
+       </h4>
+       <p class="whitespace-none">
+        <a href="https://www.facebook.com/BioCyc">
+         Facebook
+        </a>
+        <br/>
+        <a href="https://twitter.com/BioCyc">
+         Twitter
+        </a>
+        <br/>
+        <a href="http://pathwaytools.blogspot.com">
+         Pathway Tools Blog
+        </a>
+        <br/>
+        <a href="/subscribe.shtml">
+         Mailing List
+        </a>
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script src="promoSlideShow.js" type="text/javascript">
+   </script>
+   <!-- end pageContentDynamic -->
+   <!-- This is stuff that used to go in the head and now should go towards the end of pages for efficiency -->
+   <!-- <script type="text/javascript" src="/yui/build/container/container-min.js"></script>  -->
+   <!-- <script type="text/javascript" src="/yui/build/datasource/datasource-min.js"></script> -->
+   <!-- <script type="text/javascript" src="/yui/build/autocomplete/autocomplete-min.js"></script> -->
+   <!-- <script type="text/javascript" src="/yui/build/menu/menu-min.js"></script>  -->
+   <!-- <script type="text/javascript" src="/yui/build/tabview/tabview-min.js"></script>  -->
+   <!-- <script type="text/javascript" src="/yui/build/treeview/treeview-min.js"></script> -->
+   <!-- Tooltip libraries -->
+   <!-- <script type="text/javascript" src="/overLIB/Mini/overlib_mini.js"> -\-></script> -->
+   <!-- <script type="text/javascript" src="/overLIB/Mini/overlib_exclusive_mini.js"></script> -->
+   <!-- <script type="text/javascript" src="/overLIB/Mini/overlib_positioncap_mini.js"></script> -->
+   <!-- <script type="text/javascript" src="/overLIB/Mini/overlib_centerpopup_mini.js"></script> -->
+   <!-- <script TYPE="text/javascript" SRC="/wupub/wuwei.js"></script> -->
+   <script src="/combined/combined-1.js" type="text/javascript">
+   </script>
+   <!-- The style and JavaScript for Pathway Tools Server -->
+   <!-- The following file is generated on the fly by the server -->
+   <script src="/get-organisms-fast.js" type="text/javascript">
+   </script>
+   <script src="/get-user-data.js" type="text/javascript">
+   </script>
+   <!-- User web site JavaScript customization should use the following file -->
+   <script src="/userWebsiteCustomization.js" type="text/javascript">
+   </script>
+   <script src="/paywall-unhidelogin.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* This code needs to be here to avoid the menu and other Yahoo widgets to flicker
+   on the screen. */
+
+
+// Do this as early as possible to minimize flicker:
+YAHOO.util.Event.onAvailable("body", function () {
+    updateBannerClass();
+});
+
+YAHOO.util.Event.onContentReady("pathwayToolsMenubar", function () {
+    /*
+         Instantiate a MenuBar, passing in the id of the HTML element 
+         representing the MenuBar.
+    */
+
+    var oMenuBar = new YAHOO.widget.MenuBar("pathwayToolsMenubar", 
+                                            {autosubmenudisplay: true, 
+                                             shadow: false, 
+                                             hidedelay: 700
+                                             });
+
+    // Add dynamically all the menubar commands and menus here if need be.
+    addContextSpecificToolbarMenus();
+
+    // User sites can define this fn in userWebsiteCustomization.js in 
+    // order to programmatically alter the menus.
+    addSiteSpecificMenuItems();
+
+    onMenuBarReady.fire([]);
+
+    // Render the MenuBar instance
+    oMenuBar.render();
+    $$('.yuimenu').each(Element.show); <!-- re-show menus -->
+});
+   </script>
+  </div>
+  <!-- end closing tags from biocyc template-part2of3.shtml -->
+  <!-- Beginning of BioCyc userFooterCustomization.shtml -->
+  <table border="0" cellpadding="15" cellspacing="0" class="footer" width="100%">
+   <tr>
+    <td class="footer">
+     ©2018 SRI International, 333 Ravenswood Avenue, Menlo Park, CA 94025-3493
+     <br/>
+     SRI International is an independent, nonprofit corporation.
+     <a href="/sriprivacy.shtml">
+      Privacy policy
+     </a>
+     <a href="/disclaimer.shtml">
+      Disclaimer
+     </a>
+    </td>
+    <td class="footer">
+     <img height="20" src="/SRILogoW.png"/>
+    </td>
+   </tr>
+  </table>
+  <!-- Google Analytics -->
+  <script type="text/javascript">
+   try {
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-7250911-1', 'auto');
+ga('send', 'pageview');
+} catch(err) {}
+  </script>
+  <!-- End of BioCyc userFooterCustomization.shtml -->
+  <div id="orgSelectorDialogCC">
+  </div>
+  <!-- Multi Organism Chooser Template -->
+  <div class="resizableDialog" id="multiorgSelectorDialog" style="display:none">
+   <div class="hd">
+    <b>
+     Specify List of Organism Databases
+    </b>
+   </div>
+   <div class="bd" id="multiorgSelectorBody">
+    <form action="/" id="multiorgSelectorForm">
+     <div id="legend" style="max-width:900px">
+     </div>
+     <table>
+      <tr>
+       <td style="vertical-align:top">
+        <h3>
+         Select One or More Databases:
+        </h3>
+        <div class="yui-navset" id="multiorgSelectorTabs" style="min-width:504px">
+         <ul class="yui-nav">
+          <li class="selected">
+           <a href="#nameTab">
+            <em>
+             By Name
+            </em>
+           </a>
+          </li>
+          <li>
+           <a href="#taxTab">
+            <em>
+             By Taxonomy
+            </em>
+           </a>
+          </li>
+          <li>
+           <a href="#metadataTab">
+            <em>
+             By Organism Properties
+            </em>
+           </a>
+          </li>
+          <li>
+           <a href="#savedTab">
+            <em>
+             My Lists
+            </em>
+           </a>
+          </li>
+         </ul>
+         <div class="yui-content">
+          <div class="multiorgselectorTab" id="multiorgNameTab">
+           <table border="0">
+            <tr>
+             <td id="multiorgCentercontent" style="width: 15px; border-style:solid; border-width:1px; padding-left:3px" valign="top">
+              <a href="javascript:alphabetClick('a')">
+               A
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('b')">
+               B
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('c')">
+               C
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('d')">
+               D
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('e')">
+               E
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('f')">
+               F
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('g')">
+               G
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('h')">
+               H
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('i')">
+               I
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('j')">
+               J
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('k')">
+               K
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('l')">
+               L
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('m')">
+               M
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('n')">
+               N
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('o')">
+               O
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('p')">
+               P
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('q')">
+               Q
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('r')">
+               R
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('s')">
+               S
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('t')">
+               T
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('u')">
+               U
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('v')">
+               V
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('w')">
+               W
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('x')">
+               X
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('y')">
+               Y
+              </a>
+              <br/>
+              <a href="javascript:alphabetClick('z')">
+               Z
+              </a>
+              <br/>
+             </td>
+             <td style="width: 460px" valign="top">
+              <div id="multiorgRightcontent">
+               <div id="multiorgselectorAutoComplete">
+                <input id="multiorgInput" type="text"/>
+                <div id="multiorgContainer" style="font-style:italic">
+                </div>
+               </div>
+               <div id="multiorgnum">
+               </div>
+              </div>
+             </td>
+            </tr>
+           </table>
+          </div>
+          <div class="multiorgselectorTab" id="multiorgTaxTab" style="overflow-y:auto">
+           <div id="multiorgTaxAutoComplete">
+            <span style="padding-right:5px">
+             Find in tree:
+            </span>
+            <input id="multiorgTaxName" style="width:360px" type="text"/>
+            <div id="multiorgTaxContainer">
+            </div>
+           </div>
+           <div id="multiorgTaxTreeContainer" style="min-width:489px;overflow-y:auto;margin-top:12px">
+            <div class="ygtv-checkbox" id="multiorgSelectorTaxTree">
+            </div>
+           </div>
+          </div>
+          <div class="multiorgselectorTab" id="multiorgMetadataTab" style="min-width:489px;overflow-y:auto">
+           Find organisms whose property:
+           <div id="mclause0">
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot0" onchange='updateMetadataSlot(0, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint0" onchange='updateMetadataSlot(0, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput0" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp0" onchange="updateForOp(0, 'mmdKeywordOp0', 'mmdSubstringAC0', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC0">
+                    <input id="mmdKeyword0" type="text"/>
+                    <div id="mmdKWContainer0">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput0" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp0" onchange="updateForOp(0, 'mmdNumOp0', 'mmdNum0', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum0" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer0" style="display:none">
+               <select id="mmdEnum0" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="mclause1" style="display:none">
+            <select id="mconnector1">
+             <option selected="" value="AND">
+              AND
+             </option>
+             <option value="OR">
+              OR
+             </option>
+            </select>
+            <input id="mmdDelete1" onclick='mdRemoveClause(1, "m")' type="button" value="Remove Constraint"/>
+            <br/>
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot1" onchange='updateMetadataSlot(1, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint1" onchange='updateMetadataSlot(1, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput1" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp1" onchange="updateForOp(1, 'mmdKeywordOp1', 'mmdSubstringAC1', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC1">
+                    <input id="mmdKeyword1" type="text"/>
+                    <div id="mmdKWContainer1">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput1" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp1" onchange="updateForOp(1, 'mmdNumOp1', 'mmdNum1', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum1" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer1" style="display:none">
+               <select id="mmdEnum1" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="mclause2" style="display:none">
+            <select id="mconnector2">
+             <option selected="" value="and">
+              AND
+             </option>
+             <option value="or">
+              OR
+             </option>
+            </select>
+            <input id="mmdDelete2" onclick='mdRemoveClause(2, "m")' type="button" value="Remove Constraint"/>
+            <br/>
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot2" onchange='updateMetadataSlot(2, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint2" onchange='updateMetadataSlot(2, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput2" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp2" onchange="updateForOp(2, 'mmdKeywordOp2', 'mmdSubstringAC', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC2">
+                    <input id="mmdKeyword2" type="text"/>
+                    <div id="mmdKWContainer2">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput2" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp2" onchange="updateForOp(2, 'mmdNumOp2', 'mmdNum2', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum2" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer2" style="display:none">
+               <select id="mmdEnum2" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="mclause3" style="display:none">
+            <select id="mconnector3">
+             <option selected="" value="and">
+              AND
+             </option>
+             <option value="or">
+              OR
+             </option>
+            </select>
+            <input id="mmdDelete3" onclick='mdRemoveClause(3, "m")' type="button" value="Remove Constraint"/>
+            <br/>
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot3" onchange='updateMetadataSlot(3, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint3" onchange='updateMetadataSlot(3, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput3" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp3" onchange="updateForOp(3, 'mmdKeywordOp3', 'mmdSubstringAC3', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC3">
+                    <input id="mmdKeyword3" type="text"/>
+                    <div id="mmdKWContainer3">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput3" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp3" onchange="updateForOp(3, 'mmdNumOp3', 'mmdNum3', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum3" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer3" style="display:none">
+               <select id="mmdEnum3" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="mclause4" style="display:none">
+            <select id="mconnector4">
+             <option selected="" value="and">
+              AND
+             </option>
+             <option value="or">
+              OR
+             </option>
+            </select>
+            <input id="mmdDelete4" onclick='mdRemoveClause(4, "m")' type="button" value="Remove Constraint"/>
+            <br/>
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot4" onchange='updateMetadataSlot(4, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint4" onchange='updateMetadataSlot(4, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput4" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp4" onchange="updateForOp(4, 'mmdKeywordOp4', 'mmdSubstringAC4', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC4">
+                    <input id="mmdKeyword4" type="text"/>
+                    <div id="mmdKWContainer4">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput4" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp4" onchange="updateForOp(4, 'mmdNumOp4', 'mmdNum4', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum4" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer4" style="display:none">
+               <select id="mmdEnum4" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div id="mclause5" style="display:none">
+            <select id="mconnector5">
+             <option selected="" value="and">
+              AND
+             </option>
+             <option value="or">
+              OR
+             </option>
+            </select>
+            <input id="mmdDelete5" onclick='mdRemoveClause(5, "m")' type="button" value="Remove Constraint"/>
+            <br/>
+            <table>
+             <tr>
+              <td>
+               <select id="mmdSlot5" onchange='updateMetadataSlot(5, "m")'>
+                <option selected="" value="false">
+                 Select Property
+                </option>
+               </select>
+              </td>
+              <td>
+               <select id="mmdConstraint5" onchange='updateMetadataSlot(5, "m")'>
+                <option selected="" value="c">
+                 has values
+                </option>
+                <option value="nc">
+                 does not have values
+                </option>
+                <option value="a">
+                 has any value
+                </option>
+                <option value="n">
+                 has no value
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table>
+             <tr>
+              <td>
+               <span id="mkeywordInput5" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdKeywordOp5" onchange="updateForOp(5, 'mmdKeywordOp5', 'mmdSubstringAC5', 'm')">
+                    <option selected="" value="enum">
+                     Exact Match
+                    </option>
+                    <option value="substr">
+                     Substring Match
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <div class="mdSubstringInput" id="mmdSubstringAC5">
+                    <input id="mmdKeyword5" type="text"/>
+                    <div id="mmdKWContainer5">
+                    </div>
+                   </div>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+               <span id="mnumericInput5" style="display:none">
+                <table>
+                 <tr>
+                  <td>
+                   <select id="mmdNumOp5" onchange="updateForOp(5, 'mmdNumOp5', 'mmdNum5', 'm')">
+                    <option selected="" value="e">
+                     = (approx.)
+                    </option>
+                    <option value="lt">
+                     &lt;
+                    </option>
+                    <option value="lte">
+                     ≤
+                    </option>
+                    <option value="gt">
+                     &gt;
+                    </option>
+                    <option value="gte">
+                     ≥
+                    </option>
+                    <option value="enum">
+                     Select Values
+                    </option>
+                   </select>
+                  </td>
+                  <td>
+                   <input id="mmdNum5" type="text"/>
+                  </td>
+                 </tr>
+                </table>
+               </span>
+              </td>
+              <td id="mmdEnumContainer5" style="display:none">
+               <select id="mmdEnum5" multiple="">
+               </select>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <br/>
+           <table>
+            <tr>
+             <td>
+              <input id="maddClause" onclick='mdAddClause("m")' style="display:none" type="button" value="Add Constraint"/>
+             </td>
+             <td>
+              <input id="mmdSearch" onclick='processMdQuery(true, "m")' type="button" value="Find Organisms"/>
+             </td>
+             <td style="vertical-align:middle;padding-left: 16px">
+              <div id="mmdProgress">
+              </div>
+             </td>
+            </tr>
+           </table>
+           <br/>
+           <div class="yui3-skin-sam" id="mmdResults">
+           </div>
+          </div>
+          <div class="multiorgselectorTab" id="multiorgSavedTab" style="overflow-y:auto">
+           <div style="padding-bottom:20px">
+            <span>
+             Database lists are saved as SmartTables that you can edit from your
+             <a href="/smarttables" target="new.window">
+              My SmartTables
+             </a>
+             page.
+            </span>
+           </div>
+           <div class="ygtv-checkbox" id="multiorgSavedTree">
+           </div>
+           <div class="requiresNotLoggedIn" style="padding-top:50px">
+            Log in and reload this page to access your saved database lists.
+           </div>
+          </div>
+         </div>
+        </div>
+        <div id="tierKey">
+         <span class="tier1">
+          Tier 1
+         </span>
+         and
+         <span class="tier2">
+          Tier 2
+         </span>
+         databases are displayed with orange and gray backgrounds, respectively.
+        </div>
+       </td>
+       <td>
+        <table>
+         <tr>
+          <td style="text-align:center">
+           <input id="multiorgAddToList" onclick="addNewSelections()" type="button" value="Add →"/>
+          </td>
+         </tr>
+         <tr>
+          <td style="text-align:center">
+           <input id="multiorgDeleteFromList" onclick="deleteMultiorgOptions(false)" type="button" value="Remove ←"/>
+          </td>
+         </tr>
+         <tr>
+          <td style="text-align:center">
+           <input id="multiorgClearAll" onclick="deleteMultiorgOptions(true)" type="button" value="Clear All"/>
+          </td>
+         </tr>
+        </table>
+       </td>
+       <td style="vertical-align:top">
+        <h3>
+         Current Selection
+        </h3>
+        <span id="multiNumSelected">
+         0
+        </span>
+        databases or taxonomic groups currently selected.
+        <p>
+        </p>
+        <div id="multiorgSelectionDiv">
+         <select id="multiorgSelection" multiple="">
+         </select>
+        </div>
+       </td>
+      </tr>
+     </table>
+     <p>
+     </p>
+     <div class="requiresNotLoggedIn" style="max-width:500px;padding-left:300px">
+      Note: if you create a user account and log in, you can save your database lists for next time.
+     </div>
+    </form>
+   </div>
+  </div>
+  <!-- End Multi Organism Chooser Template -->
+  <script type="text/javascript">
+   if (forceOrgID) setOrganism(forceOrgID);
+  </script>
+  <!-- ---------- END FOOTER ---------- -->
+  <!-- ---------- CLOSE OUTERMOST CONTAINER DIV ---------- -->
+ </body>
+</html>

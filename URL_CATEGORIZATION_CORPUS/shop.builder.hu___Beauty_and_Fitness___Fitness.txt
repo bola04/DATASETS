@@ -1,0 +1,2716 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="hu" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#" xmlns:og="http://ogp.me/ns#">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="hu" http-equiv="content-language"/>
+  <meta content="NO-CACHE" http-equiv="CACHE-CONTROL"/>
+  <meta content="NO-STORE" http-equiv="CACHE-CONTROL"/>
+  <meta content="NO-CACHE" http-equiv="PRAGMA"/>
+  <meta content="-1" http-equiv="EXPIRES"/>
+  <!-- script type="text/javascript" src="/js/jquery-min.js"></script -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="/js/jquery.qtip.min.js" type="text/javascript">
+  </script>
+  <script src="/js/jquery.cookie.min.js" type="text/javascript">
+  </script>
+  <script src="/js/menu/jquery.hoverIntent.minified.js" type="text/javascript">
+  </script>
+  <script src="/js/menu/jquery.dcmegamenu.1.3.3.min.js" type="text/javascript">
+  </script>
+  <link href="/js/menu/dcmegamenu.min.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   function setQTip(item) {
+                $(item).qtip({
+                    style: {
+                        border: {
+                            width: 1,
+                            radius: 4,
+                            color: '#ECBD00'
+                        },
+                        name: 'cream',
+                        tip: true,
+                        width: {min: 320}
+                    },
+                    position: {
+                        target: 'mouse',
+                        adjust: {
+                            mouse: true
+                        },
+                        corner: {
+                            tooltip: 'bottomMiddle'
+                        }
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                setQTip('a[title], img[title], input[title], span[title]');
+
+                $(".termek_drag").draggable({
+                    appendTo: "body",
+                    revert: "invalid",
+                    helper: "clone",
+                    opacity: 0.75,
+                    start: function (event, ui) {
+                        $("#left_cart_div").css("min-height", "120px");
+                    },
+                    stop: function (event, ui) {
+                        $("#left_cart_div").css("min-height", "0px");
+                    }
+                });
+
+                $("#left_cart_div").droppable({
+                    activeClass: "ui-state-default",
+                    hoverClass: "ui-state-hover",
+                    accept: ":not(.ui-sortable-helper)",
+                    tolerance: "touch",
+                    drop: function (event, ui) {
+                        var t = ui.draggable[0].id;
+                        var t2 = t.split('_');
+                        if (t2[0] == "listatermek") {
+                            addtocart_listabol(t2[1]);
+                        } else if (t2[0] == "fixreklamtermek") {
+                            addtocart_fixreklam(t2[1]);
+                        } else {
+                            addtocart_termekek_reszletes();
+                        }
+                    }
+                });
+
+                //menu
+                $('#mega-menu-1').dcMegaMenu({
+                    rowItems: '5',
+                    speed: 'slow',
+                    effect: 'fade',
+                    event: 'click',
+                    fullWidth: true,
+                    onLoad: function () {
+
+                    }
+                });
+
+                var w = $(window).width();
+                var h = $(window).height();
+
+                $(".left-sidebanner").css("width", Math.round((w - 970) / 2) + 2);
+                $(".left-sidebanner").fadeIn("normal");
+                $(".right-sidebanner").css("width", Math.round((w - 970) / 2));
+                $(".right-sidebanner").fadeIn("normal");
+                $("#mainTable").animate({width: "100%"});
+            });
+
+            function windowResize() {
+                var w = $(window).width();
+                $(".left-sidebanner").css("width", Math.round((w - 970) / 2) - 1);
+                $(".right-sidebanner").css("width", Math.round((w - 970) / 2));
+            }
+
+            function isNumberKey(evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                if (charCode > 31 && (charCode < 48 || charCode > 57))
+                    return false;
+
+                return true;
+            }
+
+            function strip_tags(input, allowed) {
+                allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
+                var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+                return input.replace(commentsAndPhpTags, '').replace(tags, function ($0, $1) {
+                    return allowed.indexOf('<' + $1.toLowerCase() + '>') > -1 ? $0 : '';
+                });
+            }
+
+            /**
+             * delete from list of featured (bookmarked) products
+             */
+            function deleteFromFeatured(id, bid, type) {
+                if (confirm('Valóban törölni szeretnéd a tételt a kedvencek közül?')) {
+                    $.post("/_inc_shop/rendel_ajax.php", $.param({
+                        "action": "deleteFeatured",
+                        "product_id": id,
+                        "bid": bid,
+                        'type': type
+                    }), function (data) {
+                        $("div.bookmarkBox").html(data.return_favorite_block);
+                        if (type == 'shop_item') {
+                            var _id = $("#termek_reszletes #ID").val();
+                        } else {
+                            var _id = $("#article_id").val();
+                        }
+                        if (id == _id) {
+                            if (type == 'shop_item') {
+                                $(".addBookmark img").attr('src', $('.addBookmark img').attr('src').replace('_yellow', '_white'));
+                            } else {
+                                $(".addBookmark img").attr('src', '/images/star_boxhead.png');
+                            }
+                            $("a.bookmarkStar").attr('title', 'Kedvencek közé!');
+                            $("a.bookmarkStar.orangeButton").html('Kedvencek közé!');
+                            $("a.bookmarkStar").unbind('click').bind("click", function () {
+                                addBookmark(id, type);
+                            });
+                            setTimeout(function () {
+                                setQTip('a.bookmarkStar, .rightBookmarks img');
+                            }, 500);
+                        }
+                        if ((parseInt($("#rightFeaturedNum").text())) == 0) {
+                            $(".bookmarkBox").hide();
+                        }
+                    }, "json");
+                }
+            }
+
+            /**
+             * add to list of featured (bookmarked) products
+             */
+            function addBookmark(id, type) {
+                $.post("/_inc_shop/rendel_ajax.php", $.param({
+                    'action': 'addFeatured',
+                    'product_id': id,
+                    'type': type
+                }), function (data) {
+                    if ((parseInt($("#rightFeaturedNum").text())) == 0)
+                        $(".bookmarkBox").show();
+                    $("div.bookmarkBox").html(data.return_favorite_block);
+                    if (type == 'shop_item') {
+                        $(".addBookmark img").attr('src', $('.addBookmark img').attr('src').replace('_white', '_yellow'));
+                    } else {
+                        $(".addBookmark img").attr('src', '/images/star_boxhead_yellow.png');
+                    }
+                    $(".bookmarkStar").attr('title', 'Ki a kedvencekből');
+                    $("a.bookmarkStar.orangeButton").html('Ki a kedvencekből');
+                    $(".bookmarkStar").unbind('click').bind("click", function () {
+                        deleteFromFeatured(id, data.bid, type);
+                    });
+                    alert(data.msg);
+                    setTimeout(function () {
+                        setQTip('a.bookmarkStar, .rightBookmarks img');
+                    }, 500);
+                }, "json");
+                return true;
+            }
+
+            function change_cart_quantity(dir) {
+                // Mennyiség beállítása
+                var quantity = parseInt($('#quantity_in_cart').val());
+                if (dir == 'subtract') {
+                    quantity--;
+                } else {
+                    quantity++;
+                }
+                if ((quantity >= 1) && (quantity <= 100)) {
+                    $('#quantity_in_cart').val(quantity);
+                    $('#cartQuantity').html(quantity);
+                }
+            }
+
+            // nem tiltom a bal oldali kosar indikatort
+            var no_left_cart = 0;
+            // google analitika account
+            var setAcc = 'UA-3928354-1';
+  </script>
+  <link href="/js/jquery.superbox.css" media="all" rel="stylesheet" type="text/css"/>
+  <script src="/js/jquery.superbox-min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   $(function () {
+                    $.superbox.settings = {
+                        closeTxt: "Bezár",
+                        loadTxt: "Betöltés...",
+                        nextTxt: "Következő",
+                        prevTxt: "Előző"
+                    };
+                    $.superbox();
+                    $('iframe a').attr("target", "_parent");
+                });
+  </script>
+  <!-- DOUBLECLICK DFP BEGIN -->
+  <!-- Google-Adserver START -->
+  <script type="text/javascript">
+   var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') + 
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+  </script>
+  <script type="text/javascript">
+   googletag.cmd.push(function() {
+googletag.defineSlot('/46976109/Shop.Builder.hu_Allpages_Right_MediumRectangle-02_300x250', [300, 250], 'div-gpt-ad-1382864691458-1').addService(googletag.pubads());
+googletag.defineSlot('/46976109/Shop.Builder.hu_Index_600x314', [600, 314], 'div-gpt-ad-1407421091270-0').addService(googletag.pubads());
+googletag.defineSlot('/46976109/Shop.Builder.hu_Allpages_Top_LargeLeaderboard_970x90', [970, 90], 'div-gpt-ad-1382864691458-2').addService(googletag.pubads());
+googletag.pubads().collapseEmptyDivs();
+googletag.pubads().enableSingleRequest();
+googletag.enableServices();
+});
+  </script>
+  <!-- Google-Adserver END -->
+  <link href="/manifest.json" rel="manifest"/>
+  <script async="" src="https://cdn.onesignal.com/sdks/OneSignalSDK.js">
+  </script>
+  <script>
+   var OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "da5db9d6-7686-4553-a8d2-467e324f1530",
+    });
+  });
+  </script>
+  <!-- DOUBLECLICK DFP END -->
+  <!-- TAG -->
+  <link href="/inc/tag/tags.css" media="all" rel="stylesheet" type="text/css"/>
+  <link href="/inc/bootstrap.css" rel="stylesheet" type="text/css"/>
+  <meta content="Shop.Builder Testépítő Webáruház" property="og:title"/>
+  <meta content="article" property="og:type"/>
+  <meta content="https://shop.builder.hu/images/domain/no_og_hu.jpg" property="og:image"/>
+  <meta content="Shop.Builder Testépítő Webáruház" property="og:site_name"/>
+  <meta content="Shop.Builder Testépítő és Fitness Webáruház - Mi arra gyúrunk, hogy TE izmos legyél!" property="og:description"/>
+  <meta content="https://shop.builder.hu" property="og:url"/>
+  <meta content="272336413201923" property="fb:app_id"/>
+  <title>
+   Shop.Builder Testépítő Webáruház
+  </title>
+  <link href="https://shop.builder.hu" rel="canonical"/>
+  <link href="https://m.builder.hu" media="only screen and (max-width: 640px)" rel="alternate"/>
+  <link href="https://m.builder.hu" media="handheld" rel="alternate"/>
+  <meta content="Shop.Builder Testépítő és Fitness Webáruház - Mi arra gyúrunk, hogy TE izmos legyél!" name="description"/>
+  <meta content="Shop.Builder Testépítő Webáruház" name="author"/>
+  <link href="/inc/shop.min.css?v=001b05" rel="stylesheet"/>
+  <link href="/_inc_shop/shop.css?v=001b05" rel="stylesheet"/>
+  <script language="JavaScript" src="/inc/shop.min.js?v=001b05" type="text/javascript">
+  </script>
+  <link href="/inc/captcha/style.css?v=001b05" rel="stylesheet"/>
+  <!-- Termek kereso js + css -->
+  <script src="/js/search_autocomplete/jquery.autocomplete.min.js" type="text/javascript">
+  </script>
+  <link href="/js/search_autocomplete/jquery.autocomplete.css" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript">
+   function pr_object(m) {
+                var s = '';
+                if (typeof m != 'object') s += m; else {
+                    for (i in m) {
+                        s += i + ': ' + m[i] + "\n";
+                    }
+                }
+                return s;
+            }
+
+            $(document).ready(function () {
+                $(".signin").click(function (e) {
+                    e.preventDefault();
+                    $("fieldset#signin_menu").toggle();
+                    $(".signin").toggleClass("menu-open");
+                });
+
+                $("fieldset#signin_menu").mouseup(function () {
+                    return false
+                });
+                $(document).mouseup(function (e) {
+                    if ($(e.target).parent("a.signin").length == 0) {
+                        $(".signin").removeClass("menu-open");
+                        $("fieldset#signin_menu").hide();
+                    }
+                });
+
+                
+            });
+  </script>
+  <!-- ShopList JavaScript -->
+  <script src="/inc/shoplist.js" type="text/javascript">
+  </script>
+  <!-- VALIDALAS -->
+  <link href="/js/ui/themes/base/jquery.ui.all.css" rel="stylesheet"/>
+  <link href="/js/ui/themes/base/jquery.ui.datepicker.css" rel="stylesheet"/>
+  <script src="/js/ui/external/jquery.bgiframe-2.1.2.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.core.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.widget.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.mouse.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.datepicker.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/i18n/datepicker-hu.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.draggable.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.droppable.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.position.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.resizable.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.dialog.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.ui.tabs.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.effects.core.min.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.effects.fold.js" type="text/javascript">
+  </script>
+  <script src="/js/ui/ui/jquery.effects.highlight.js" type="text/javascript">
+  </script>
+  <meta content="QGaDuXiJ4QIg_06YVdprpd4v_mEU8yWK271EYiw4pKk" name="google-site-verification"/>
+  <script type="text/javascript">
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-3928354-1', 'auto');
+        ga('require', 'displayfeatures');
+
+        ga( 'set', 'dimension1', '' );
+		ga( 'set', 'dimension2', 'home' );
+		ga( 'set', 'dimension3', '' );
+		
+        ga('send', 'pageview');
+  </script>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <!-- Egyedi javascript-ek és CSS-ek behívása -->
+  <script src="/js/jrating/jRating.jquery.min.js" type="text/javascript">
+  </script>
+  <script>
+   $(document).ready(function () {
+                $(".product_box_rating .orRate").jRating({
+                    length: 5,
+                    isDisabled: true,
+                    smallStarsPath: '/js/jrating/icons/small_sb.png',
+                    type: 'small',
+                    decimalLength: 1,
+                    showRateInfo: false,
+                    rateMax: 5,
+                    sendRequest: false
+                });
+                $(".product_box_rating .orRate").fadeIn("normal");
+            });
+  </script>
+  <!-- FACEBOOK CODE START -->
+  <script>
+   !function (f, b, e, v, n, t, s) {
+                    if (f.fbq) return;
+                    n = f.fbq = function () {
+                        n.callMethod ?
+                            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    };
+                    if (!f._fbq) f._fbq = n;
+                    n.push = n;
+                    n.loaded = !0;
+                    n.version = '2.0';
+                    n.queue = [];
+                    t = b.createElement(e);
+                    t.async = !0;
+                    t.src = v;
+                    s = b.getElementsByTagName(e)[0];
+                    s.parentNode.insertBefore(t, s)
+                }(window,
+                    document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '817512224978129');
+                fbq('track', 'PageView');
+  </script>
+  <!-- FACEBOOK CODE END -->
+ </head>
+ <body onresize="windowResize()" style="background: #ffbb00 ">
+  <noscript>
+   <div style="background-color: #a70000; padding: 5px 0; text-align: center; width: 100%; border-bottom: 2px solid #efc200;">
+    <table align="center">
+     <tr>
+      <td>
+       <img src="/images/warning_nojs.png"/>
+      </td>
+      <td style=" color: #FFFFFF; font-family: sans-serif; font-size: 20px; font-weight: bold;">
+       A http://shop.builder.hu oldalon engedélyezd a JavaScriptet az összes funkció használatához
+      </td>
+      <td>
+       <img src="/images/warning_nojs.png"/>
+      </td>
+     </tr>
+    </table>
+   </div>
+  </noscript>
+  <div id="dialog_reglogin" style="display: none;" title="&lt;table cellspacing='0' cellpadding='0'&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='/images/rendeles/login_24.png' /&gt;&lt;/td&gt;&lt;td&gt; &lt;/td&gt;&lt;td&gt;&lt;strong&gt;Belépés a Shop.Builder rendszerbe&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;">
+  </div>
+  <div id="dialog_aszf" style="display: none;" title="&lt;table cellspacing='0' cellpadding='0'&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='/images/certification_24.png' /&gt;&lt;/td&gt;&lt;td&gt; &lt;/td&gt;&lt;td&gt;&lt;strong&gt;A Shop.Builder Webáruház (www.shop.builder.hu; www.shop.builder.eu, www.buildershop.de, www.buildershop.at, www.shopbuilder.ro) Üzletszabályzata&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;">
+  </div>
+  <div id="dialog_mm_subscribe" style="display: none;" title="">
+  </div>
+  <div id="dialog_login" style="display: none;" title="Belépés a Shop.Builder rendszerbe">
+   <div id="rendeles_oldal">
+    <form action="session.htm4" id="login_form_p" method="post" name="login">
+     <input name="sbmt" style="display: none;" type="submit" value="sbmt"/>
+     <table align="center" class="formtable">
+      <tr class="error_tr">
+       <td align="center" class="label" colspan="2" style="font-weight: bold; color: #ff0000;">
+       </td>
+      </tr>
+      <tr>
+       <td align="right" class="label">
+        E-mail:
+       </td>
+       <td align="left">
+        <input class="search" id="lp_email" name="shop_name" style="font-size: 14px; background-color: #ffcd4d;" type="text"/>
+       </td>
+      </tr>
+      <tr>
+       <td align="right" class="label">
+        Jelszó:
+       </td>
+       <td align="left">
+        <input class="search" id="lp_pass" name="shop_passwd" style="font-size: 14px; background-color: #ffcd4d;" type="password"/>
+       </td>
+      </tr>
+      <tr>
+       <td align="center" colspan="2" style="padding-left: 10px;">
+        <div class="Gomb button_brand" onclick="$('#login_form_p').submit();">
+         <table align="center">
+          <tr>
+           <td align="center" width="33">
+            <img src="/images/rendeles/login_24.png"/>
+           </td>
+           <td style="font-size: 15px;">
+            BELÉPÉS
+           </td>
+          </tr>
+         </table>
+        </div>
+       </td>
+      </tr>
+     </table>
+     <hr color="#800000" noshade="" size="1" width="100%"/>
+     <table align="center" border="0" cellpadding="1" cellspacing="0" class="formtable">
+      <tr>
+       <td align="left" nowrap="">
+        <b>
+         »
+        </b>
+        <a class="label" href="/reglogin.htm4?level=1">
+         <b>
+          Regisztráció
+         </b>
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td align="left" nowrap="">
+        <b>
+         »
+        </b>
+        <a class="label" href="/passwordrecovery.htm4">
+         jelszóemlékeztető
+        </a>
+       </td>
+      </tr>
+      <tr>
+       <td align="left" nowrap="">
+        <b>
+         »
+        </b>
+        <a class="label" href="/shop_faq.htm4#3" title="Regisztrációval kapcsolatos hasznos információk és a Shop.Builder Üzletszabályzata">
+         <b>
+          hogyan regisztrálhatok?
+         </b>
+        </a>
+       </td>
+      </tr>
+     </table>
+    </form>
+   </div>
+  </div>
+  <div id="dialog_cart" style="display: none;" title="&lt;table cellspacing='0' cellpadding='0'&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='/images/basket_2.png' /&gt;&lt;/td&gt;&lt;td&gt; &lt;/td&gt;&lt;td&gt;&lt;strong&gt;Kosarad&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;">
+   <div id="d_cart_table">
+    <!-- CONTENT: CURRENT CART, FILLED BY AJAX -->
+   </div>
+  </div>
+  <div id="dialog_addtocart" style="display: none;" title="&lt;table cellspacing='0' cellpadding='0'&gt;&lt;tr&gt;&lt;td&gt;&lt;img src='/images/basket_2.png' /&gt;&lt;/td&gt;&lt;td&gt; &lt;/td&gt;&lt;td&gt;&lt;strong&gt;A termék kosárba került&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;">
+   <div id="d_addtocart_table">
+    <!-- CONTENT: LAST ADDED PRODUCT, FILLED BY AJAX -->
+   </div>
+  </div>
+  <div id="dialog_error_popup" style="display: none;" title="">
+   <div id="d_error_content">
+    <!-- CONTENT: ERROR MSG, FILLED BY AJAX -->
+   </div>
+  </div>
+  <div id="fb-root">
+  </div>
+  <script>
+   window.fbAsyncInit = function () {
+            console.log('Facebook init for login v2.9');
+            FB.init({
+                appId: '472564342782333',
+                status: true,  // check login status
+                xfbml: true,  // parse social plugins on this page
+                version: 'v2.9'
+            });
+        };
+  </script>
+  <script src="//connect.facebook.net/hu_HU/sdk.js">
+  </script>
+  <table align="center" border="0" cellpadding="0" cellspacing="0" id="mainTable">
+   <tr>
+    <!-- SIDEBANNER LEFT -->
+    <!-- td valign="top" align="right" >
+    </td -->
+    <td style="width: 970px;" valign="top">
+     <table align="center" border="0" cellpadding="0" cellspacing="0" style="width: 970px; height: 80px;">
+      <tr>
+       <td colspan="3">
+        <!-- Shop.Builder.hu_Allpages_Top_LargeLeaderboard_970x90 -->
+        <div id="div-gpt-ad-1382864691458-2" style="width:970px; height:90px;">
+         <script type="text/javascript">
+          googletag.cmd.push(function() { googletag.display('div-gpt-ad-1382864691458-2'); });
+         </script>
+        </div>
+       </td>
+      </tr>
+     </table>
+     <!-- CENTER TABLE -->
+     <div style="width: 970px; margin: 0px auto; background: #ffffff; ">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 80px;">
+       <tr>
+        <td rowspan="2" width="240">
+         <a href="//shop.builder.hu" title="Shop.Builder Testépítő Webáruház">
+          <img src="/images/domain/header_1.png" title="Shop.Builder Testépítő Webáruház"/>
+         </a>
+        </td>
+        <!-- Kereső -->
+        <td align="left" style="text-align: center;" valign="top">
+         <script type="text/javascript">
+          $(document).ready(function() {
+    $(".quicksearch_top").autocomplete("/js/search_autocomplete/ac_engine.php", {
+        width: 409,
+        max: 18,
+        all_result_string: "Összes találat megtekintése",
+        minChars: 3,
+        highlight: false,
+        scroll: true,
+        scrollHeight: 500,
+        formatItem: function(data, i, n, value) {
+            if (data[0] == 'P') {
+                return "<table cellspacing='0' style='width:100%' cellpadding='0'>" +
+                       "<tr>" +
+                       "<td width='40' height='42' rowspan='2'><img src='//shop.builder.hu/images/product_images/" + data[1] + "_33x33." +data[3]+ "'/></td>" +
+                       "<td style='padding-left: 5px; height: 21px;' colspan='2' valign='bottom'><b><span style='color: #ce3910;'>" + data[2] + ((data[5] != "")?" / ":"") + "</span></b>" + data[5] + "</td>" +
+                       "</tr>" +
+                       "<tr>" +
+                       "<td valign='top' style='padding-left: 5px; font-style: italic;'>" + data[4] + "</td>" +
+                       "<td align='right' valign='top'>" +data[6]+ "</td>" +
+                       "</tr>" +
+                       "</table>";
+            } else if (data[0] == 'A') {
+                return "<table cellspacing='0' style='width:100%;padding:5px 0;table-layout:fixed' cellpadding='0'>" +
+                       "<tr>" +
+                       "<td width='90' height='47' rowspan='2'><img width='90' height='47' src='" + data[3] + "'/></td>" +
+                       "<td height='13' style='padding-left:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#ce3910;'><b>" + data[2] + "</b></td>" +
+                       "</tr>" +
+                       "<tr><td style='padding-left: 5px; font-style: italic;'>" + data[4] + "</td></tr>" +
+                       "</table>";
+            }
+        },
+        formatResult: function(data, value) {
+            return data[2];
+        }
+    }).result(function(event, item) {
+
+        console.log( this );
+
+        if (item[0] != "all") {
+            if (item[0] == 'P') {
+                location.href = "//shop.builder.hu/" + item[7];
+            } else if (item[0] == 'A') {
+                location.href = "//shop.builder.hu/" + item[5];
+            }
+        } else {
+            $("#topsearch_top").submit();
+        }
+    });
+});
+
+function checkCharacterInSearch() {
+    var a = [',',';',':','"','\'','_','*','[',']','(',')','{','}','<','>','@','&','#','$','¤','~','ˇ','^','˘','°','˛',
+             '`','˙','´','˝','¨','¸','×','÷','\\','|','%','/','=','?'];
+    if (a.indexOf( event.key ) >= 0) {
+        event.preventDefault();
+        return false;
+    }
+}
+         </script>
+         <form action="//shop.builder.hu/search.htm4" id="topsearch_top" method="post">
+          <input name="words" type="hidden" value="all"/>
+          <input name="name" type="hidden" value="on"/>
+          <input name="manufacture" type="hidden" value="on"/>
+          <input name="about" type="hidden" value="on"/>
+          <input name="article" type="hidden" value="on"/>
+          <input name="workout" type="hidden" value="off"/>
+          <input name="encyclopedia" type="hidden" value="off"/>
+          <input name="contents" type="hidden" value="off"/>
+          <input name="opinion" type="hidden" value="off"/>
+          <input name="tag" type="hidden" value="off"/>
+          <input name="sort" type="hidden" value="toplist"/>
+          <input name="result_number" type="hidden" value="10"/>
+          <input id="quicksearch_hid_top" name="skey" type="hidden" value=""/>
+          <div>
+           <table align="center" cellpadding="0" cellspacing="0" style="margin-top: 12px;">
+            <tr>
+             <td>
+              <input class="qs quicksearch_top" name="quicksearch" onclick="if (this.value==' írd be mit keresel…') this.value=''" onkeypress="checkCharacterInSearch()" onkeyup="this.value=strip_tags(this.value);$('#quicksearch_hid_top').val(this.value)" placeholder="Kérlek írd be azt a szót vagy kifejezést amit keresel!" style="padding:0 0 0 7px;font-size:12px;font-weight:bold;color:#323232;height:30px;width:402px;
+                                  border:0 none;background-color:white;box-shadow:gray 2px 3px 3px inset;" title="Kérlek írd be azt a szót vagy kifejezést amit keresel!" type="text" value=""/>
+             </td>
+             <td>
+              <input name="Go" style="height: 30px; width: 33px; background: url('/images/searchbar_btn.png') top left no-repeat; border: 0px none; font-size: 1px; line-height: 1px; cursor: pointer" title="Keresés" type="submit" value=" "/>
+             </td>
+            </tr>
+           </table>
+          </div>
+         </form>
+        </td>
+        <!-- Login és saját adatok -->
+        <td align="center" valign="top" width="240">
+         <div style="text-align: right;">
+          <div class="login-button-container">
+           <a class="fekete_gomb" onclick="reglogin_popup()">
+            Belépés/Regisztráció
+           </a>
+          </div>
+         </div>
+        </td>
+       </tr>
+       <!-- Page-title and lang-selection -->
+       <tr>
+        <td align="center" style="padding: 0px;">
+         <h1 class="top_h1">
+          <!-- CIM START-->
+          Shop.Builder Testépítő Webáruház
+          <!-- CIM END-->
+         </h1>
+        </td>
+        <td align="right" style="padding-right: 8px;" width="220">
+        </td>
+       </tr>
+      </table>
+     </div>
+     <div class="horizontal_menu" style="margin: 0px auto; width: 970px; height: 37px;">
+      <ul class="mega-menu" id="mega-menu-1">
+       <li>
+        <a href="//shop.builder.hu/gyartok.htm4" title="Gyártók listája">
+         Gyártók
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li style="border-right: 1px solid #544; padding-right: 5px;">
+          <a href="javascript:void(0)">
+           Kiemelt gyártók
+          </a>
+          <ul>
+           <li>
+            <a href="//shop.builder.hu/scitec-nutrition-b33" title="Scitec Nutrition">
+             Scitec Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/biotech-usa-b192" title="BioTech USA">
+             BioTech USA
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/protein-buzz-b465" title="Protein Buzz">
+             Protein Buzz
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/olimp-sport-nutrition-b347" title="Olimp Sport Nutrition">
+             Olimp Sport Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/brutal-nutrition-b310" title="Brutal Nutrition">
+             Brutal Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/optimum-nutrition-b194" title="Optimum Nutrition">
+             Optimum Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/nutrend-b43" title="Nutrend">
+             Nutrend
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/bsn-b178" title="BSN">
+             BSN
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/amix-b335" title="Amix">
+             Amix
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/vitaking-b214" title="VitaKing">
+             VitaKing
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/pharmekal-health-b381" title="Pharmekal Health">
+             Pharmekal Health
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/musclemeds-b326" title="MuscleMeds">
+             MuscleMeds
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/animal-pak-b191" title="Animal Pak">
+             Animal Pak
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/dymatize-b177" title="Dymatize">
+             Dymatize
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/pro-nutrition-b327" title="Pro Nutrition">
+             Pro Nutrition
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="javascript:void(0)">
+           További gyártók
+          </a>
+          <ul>
+           <li>
+            <a href="//shop.builder.hu/360-gears-b262" title="360 Gears">
+             360 Gears
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/absorice-b445" title="AbsoRice">
+             AbsoRice
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/allsports-labs-b461" title="AllSports Labs">
+             AllSports Labs
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/ans-proteins-b59" title="ANS Proteins">
+             ANS Proteins
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/bh-fitness-b299" title="BH Fitness">
+             BH Fitness
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/bioco-b184" title="BioCo">
+             BioCo
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/body-sculpture-b144" title="Body-Sculpture">
+             Body-Sculpture
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/body-builder-b111" title="Body.Builder">
+             Body.Builder
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/bodysolid-b180" title="BodySolid">
+             BodySolid
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/cellucor-b421" title="Cellucor">
+             Cellucor
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/egyeb-kondigep-b102" title="Egyéb kondigép">
+             Egyéb kondigép
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/egyeb-sportszer-b101" title="Egyéb sportszer">
+             Egyéb sportszer
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/egyeb-tapkieg-b8" title="Egyéb tápkieg.">
+             Egyéb tápkieg.
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/everlast-b309" title="Everlast">
+             Everlast
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/fitness-authority-b364" title="Fitness Authority">
+             Fitness Authority
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a class="empty_header">
+          </a>
+          <ul>
+           <li>
+            <a href="//shop.builder.hu/full-force-b372" title="Full Force">
+             Full Force
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/gaspari-nutrition-b208" title="Gaspari Nutrition">
+             Gaspari Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/grenade-b318" title="Grenade">
+             Grenade
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/highland-b35" title="Highland">
+             Highland
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/insportline-b296" title="Insportline">
+             Insportline
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/interherb-b420" title="Interherb">
+             Interherb
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/ironmaxx-b424" title="IronMaxx">
+             IronMaxx
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/isostar-b235" title="Isostar">
+             Isostar
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/kettler-b61" title="Kettler">
+             Kettler
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/labrada-nutrition-b93" title="Labrada Nutrition">
+             Labrada Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/mad-max-b141" title="Mad Max">
+             Mad Max
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/medi-fix-b225" title="Medi-Fix">
+             Medi-Fix
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/mentalfitol-b425" title="MentalFitol">
+             MentalFitol
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/mhn-sport-b315" title="MHN Sport">
+             MHN Sport
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/mhp-b205" title="MHP">
+             MHP
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a class="empty_header">
+          </a>
+          <ul>
+           <li>
+            <a href="//shop.builder.hu/musclepharm-b399" title="MusclePharm">
+             MusclePharm
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/muscletech-b40" title="MuscleTech">
+             MuscleTech
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/mutant-b388" title="Mutant">
+             Mutant
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/myprotein-b423" title="Myprotein">
+             Myprotein
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/netamin-b426" title="Netamin">
+             Netamin
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/nutrex-research-b210" title="NutreX Research">
+             NutreX Research
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/pharma-first-b368" title="Pharma First">
+             Pharma First
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/pharma-nord-b99" title="Pharma Nord">
+             Pharma Nord
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/planetbio-b457" title="PlanetBio">
+             PlanetBio
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/powerball-b319" title="PowerBall">
+             PowerBall
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/powertrack-b113" title="PowerTrack">
+             PowerTrack
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/qnt-sport-b354" title="QNT Sport">
+             QNT Sport
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/respect-b377" title="Respect">
+             Respect
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/robust-b186" title="Robust">
+             Robust
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/spartan-b305" title="Spartan">
+             Spartan
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a class="empty_header">
+          </a>
+          <ul>
+           <li>
+            <a href="//shop.builder.hu/steelflex-b181" title="Steelflex">
+             Steelflex
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/superior-14-b427" title="Superior 14">
+             Superior 14
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/superwell-b366" title="Superwell">
+             Superwell
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/swanson-b263" title="Swanson">
+             Swanson
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/szekely-budo-b378" title="Székely Budo">
+             Székely Budo
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/thera-band-b418" title="Thera Band">
+             Thera Band
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/trec-nutrition-b390" title="Trec Nutrition">
+             Trec Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/tunturi-b106" title="Tunturi">
+             Tunturi
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/ultimate-nutrition-b45" title="Ultimate Nutrition">
+             Ultimate Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/universal-nutrition-b55" title="Universal Nutrition">
+             Universal Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/vitamin-station-b42" title="Vitamin Station">
+             Vitamin Station
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/weider-nutrition-b58" title="Weider Nutrition">
+             Weider Nutrition
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/ws-teleshop-b376" title="WS-Teleshop">
+             WS-Teleshop
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/x-egyeb-termek-b92" title="X-Egyéb Termék">
+             X-Egyéb Termék
+            </a>
+           </li>
+           <li>
+            <a href="//shop.builder.hu/ye-nutrition-b447" title="Ye Nutrition">
+             Ye Nutrition
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a class="empty_header">
+          </a>
+          <ul>
+          </ul>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/etrendkiegeszitok-c1" title="A legnagyobb választék testépítő és egészséges életmóddal kapcsolatos kiegészítőkből!">
+         Étrendkiegészítők
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/feherje-keszitmenyek-c43" title="Whey Protein, Beef Protein, Casein, Designer fehérjék">
+           Fehérje készítmények
+          </a>
+         </li>
+         <li>
+          <a href="/zsiregetok-c37" title="Zsírégetők, L-carnitine, CLA termékek">
+           Zsírégetők
+          </a>
+         </li>
+         <li>
+          <a href="/tomegnovelo-c39" title="Tömegnövelők kezdőknek és haladóknak">
+           Tömegnövelők
+          </a>
+         </li>
+         <li>
+          <a href="/multivitaminok-c4" title="Multivitaminok, vitamincsomagok, speciális vitaminkészítmények">
+           Multivitaminok
+          </a>
+         </li>
+         <li>
+          <a href="/kreatin-keszitmenyek-c47" title="Kreatin monohidrát, kapszulás kreatinok, transzportrendszerek">
+           Kreatin
+          </a>
+         </li>
+         <li>
+          <a href="/komplex-edzes-elotti-bedurrantas-fokozok-c638" title="Edzés előtti bedurrantás fokozók">
+           Pre-Workout termékek
+          </a>
+         </li>
+         <li>
+          <a href="/aminosavak-c42" title="L-glutamine, BCAA, komplex aminosavak">
+           Aminosavak
+          </a>
+         </li>
+         <li>
+          <a href="/etrendkiegeszitok-c1" title="Összes étrendkiegészítő">
+           Összes étrendkiegészítő
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/kondigepek-c8" title="Kondigépek">
+         Kondigépek
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/sulyzos-gepek-c256" title="Lapsúlyos és szabadsúlyos gépek, kiegészítők">
+           Súlyzós gépek
+          </a>
+         </li>
+         <li>
+          <a href="/sulyzo-sulytarcsa-c13" title="Súlytárcsák, rudak, füles súlyzók">
+           Súlyzó, súlytárcsa
+          </a>
+         </li>
+         <li>
+          <a href="/kettlebell-c554" title="Kettlebell">
+           Kettlebell
+          </a>
+         </li>
+         <li>
+          <a href="/szobakerekpar-c15" title="Szobakerékpárok, Ergométerek, Spinbike">
+           Szobakerékpár
+          </a>
+         </li>
+         <li>
+          <a href="/fekvenyomo-pad-fekpad-c251" title="Fekvenyomópadok">
+           Fekvenyomó pad, fekpad
+          </a>
+         </li>
+         <li>
+          <a href="/haspad-c250" title="Haspadok">
+           Haspad
+          </a>
+         </li>
+         <li>
+          <a href="/futopad-c14" title="Motoros futópadok">
+           Futópad
+          </a>
+         </li>
+         <li>
+          <a href="/kondigepek-c8" title="Összes kondigép">
+           Összes kondigép
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/kuzdosport-c19" title="Küzdősport ruházat, kesztyűk, védőfelszerelések">
+         Küzdősport
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/kuzdosport-ruhazat-c178" title="Karate, Judo, Taekwondo, MMA ruhák">
+           Küzdősport ruházat
+          </a>
+         </li>
+         <li>
+          <a href="/kuzdosport-kesztyuk-c181" title="MMA kesztyúk, Boxkesztyúk, Seikenvédők">
+           Küzdősport kesztyűk
+          </a>
+         </li>
+         <li>
+          <a href="/vedofelszereles-c183" title="Fogvédők, bandázsok, lábfejvédők">
+           Védőfelszerelés
+          </a>
+         </li>
+         <li>
+          <a href="/kuzdosport-c19" title="Összes küzdősport felszerelés">
+           Összes küzdősport felszerelés
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/egyeb-termekek-c27" title="Övek, edzőkesztyűk, sportruházat, trikók, shakerek, kulacsok">
+         Egyéb termékek
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/edzokesztyuk-c28" title="Edzőkesztyűk, csuklószorítós kesztyűk, grip pad">
+           Edzőkesztyűk
+          </a>
+         </li>
+         <li>
+          <a href="/ovek-c29" title="Súlyemelő övek, Erőemelő övek, fogyasztó övek">
+           Övek
+          </a>
+         </li>
+         <li>
+          <a href="/shaker-keveropalack-es-kulacsok-c224" title="Shakerek, keverőpalackok, kulacsok ">
+           Shakerek és kulacsok
+          </a>
+         </li>
+         <li>
+          <a href="/t-shirt-polok-c276" title="Edzőpólók, utcai viselet">
+           T-Shirt, Pólók
+          </a>
+         </li>
+         <li>
+          <a href="/izuletvedo-termekek-c509" title="csuklószorítók, térdvédők, könyökvédők, vállrögzítők">
+           Izületvédelem
+          </a>
+         </li>
+         <li>
+          <a href="/egyeb-termekek-c27" title="Összes egyéb termék">
+           Összes egyéb termék
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/edzestervek-gyakorlatok-a2255" title="Gyakorlatok és edzéstervek">
+         Edzéstervek
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/edzestervek-a2257" title="Edzéstervek">
+           Edzéstervek
+          </a>
+         </li>
+         <li>
+          <a href="/gyakorlatok-a2256" title="Gyakorlatok">
+           Gyakorlatok
+          </a>
+         </li>
+         <li>
+          <a href="/edzes-regeneralodas-egyebek-a266" title="Edzés, regenerálódás, egyebek">
+           Edzés, regenerálódás, egyebek
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/etrendek-a3281" title="Étrendek">
+         Étrendek
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/kaloriatablazat-a3267" title="Kalóriatáblázat">
+           Kalóriatáblázat
+          </a>
+         </li>
+         <li>
+          <a href="/etrendek-a3281" title="Étrendek">
+           Étrendek
+          </a>
+         </li>
+         <li>
+          <a href="/dietak-vilaga-a247" title="Diéták világa">
+           Diéták világa
+          </a>
+         </li>
+         <li>
+          <a href="/etrendkiegeszito-enciklopedia-a2698" title="Étrendkiegészítő Enciklopédia">
+           Étrendkiegészítő Enciklopédia
+          </a>
+         </li>
+         <li>
+          <a href="/etrendkiegeszitokrol-a56" title="Étrendkiegészítőkről">
+           Étrendkiegészítőkről
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/akcios-termekek-a2141" title="Akciós termékek">
+         Akciók
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/akcios-termekek-a2141" rel="nofollow" title="Akciós termékek">
+           Akciós termékek
+          </a>
+         </li>
+         <li>
+          <a href="/aktualis-scitec-ajanlatok-a-shop-builder-en-06-2018-a3180" rel="nofollow" title="Aktuális Scitec ajánlatok a Shop.Builder-en!">
+           Scitec Nutrition ajánlatok
+          </a>
+         </li>
+         <li>
+          <a href="/aktualis-biotech-ajanlatok-a-shop-builder-en-06-2018-a2382" rel="nofollow" title="Aktuális BioTech ajánlatok a Shop.Builder-en!">
+           BioTech USA kiemelt ajánlatok
+          </a>
+         </li>
+         <li>
+          <a href="/uj-termekek-a2148" rel="nofollow" title="Új termékek a Shop.Builder kínálatában">
+           Új termékek a Shop.Builder kínálatában
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/builder-hu-cikkek-a0" title="Cikkeink">
+         Cikkeink
+        </a>
+        <ul class="mega-menu-1-sub">
+         <li>
+          <a href="/edzes-regeneralodas-egyebek-a266" title="Edzés, regenerálódás">
+           Edzés, regenerálódás, egyebek
+          </a>
+         </li>
+         <li>
+          <a href="/dietak-vilaga-a247" title="Diéták világa">
+           Diéták világa
+          </a>
+         </li>
+         <li>
+          <a href="/builder-gasztro-rovat-a1128" title="Builder Gasztro Rovat">
+           Builder Gasztro Rovat
+          </a>
+         </li>
+         <li>
+          <a href="/etrendkiegeszitokrol-a56" title="Étrendkiegészítőkről">
+           Étrendkiegészítőkről
+          </a>
+         </li>
+         <li>
+          <a href="/noi-rovat-a508" title="Női rovat">
+           Női rovat
+          </a>
+         </li>
+         <li>
+          <a href="/kuzdosport-harcmuveszet-a2217" title="Küzdősport, harcművészet">
+           Küzdősport, harcművészet
+          </a>
+         </li>
+         <li>
+          <a href="/gyakori-kerdesek-builder-es-valaszok-a327" title="Gyakori kérdések - Builder-es válaszok">
+           Gyakori kérdések - Builder-es válaszok
+          </a>
+         </li>
+         <li>
+          <a href="/builder-hu-cikkek-a0" title="Összes Cikk">
+           Tovább az összes cikkre
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/bbtv-a665" title="BB.Tv - Nem kislányoknak!">
+         BB.Tv
+        </a>
+       </li>
+       <li class="extraContent">
+        <div style="clear: both; float: none; text-align: right;">
+         <a href="/gyartok.htm4">
+          <strong>
+           Összes gyártó
+          </strong>
+         </a>
+        </div>
+       </li>
+      </ul>
+     </div>
+     <div style="width: 970px; margin: 0px auto;background-color:#FFE78C;">
+      <table align="center" cellpadding="0" cellspacing="0" style="border: 0px solid #BD3400;" width="970">
+       <tr>
+        <td align="center" style="padding-top: 19px;" valign="top" width="640">
+         <!-- MAIN START-->
+         <!--VILLAMKETERT-->
+         <!--VILLAMKETERT-->
+         <div class="yellowhead_box" style="width:600px; margin: 0 auto 19px; border: 0px none; padding: 0px;">
+          <!-- Shop.Builder.hu_Index_600x314 -->
+          <div id="div-gpt-ad-1407421091270-0">
+           <script type="text/javascript">
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1407421091270-0'); });
+           </script>
+          </div>
+         </div>
+         <div class="hidden" itemscope="" itemtype="http://schema.org/WebSite">
+          <meta content="https://shop.builder.hu" itemprop="url"/>
+          <form itemprop="potentialAction" itemscope="" itemtype="http://schema.org/SearchAction">
+           <meta content="https://shop.builder.hu/search.htm4?q={search_term_string}" itemprop="target"/>
+           <input itemprop="query-input" name="search_term_string" required="" type="text"/>
+           <input type="submit"/>
+          </form>
+         </div>
+         <div style="margin: 0 auto 19px;">
+          <div class="candyBar">
+           <div class="candyBarHeader">
+            Kiemelt ajánlataink
+           </div>
+           <div class="candyBarRow">
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_12796" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="12796"/>
+               <input id="DARAB_12796" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_12796" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="Fat-X"/>
+               <input name="IZ" type="hidden" value="-"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/egyeb-specialis-zsiregetok/biotech-usa-fat-x-60-tab-p12796" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="BioTech USA Fat-X (60 tab.)">
+                <img alt="BioTech USA Fat-X (60 tab.)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_12796" itemprop="url" src="/images/shop/th/s1441272179.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/egyeb-specialis-zsiregetok/biotech-usa-fat-x-60-tab-p12796" title="BioTech USA Fat-X (60 tab.)">
+                Fat-X
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               60 tab.
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/biotech-usa-b192">
+                BioTech USA
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                12%
+               </span>
+               <span class="priceOutdated">
+                4 740 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  4 190 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(12796);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_13468" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="13468"/>
+               <input id="DARAB_13468" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_13468" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="100% Whey"/>
+               <input name="IZ" type="hidden" value="csoki"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo ">
+               <a href="//shop.builder.hu/tejsavo-feherje-koncentratumok/protein-buzz-100-whey-3-kg-p13468" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="Protein Buzz 100% Whey (3 kg)">
+                <img alt="Protein Buzz 100% Whey (3 kg)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_13468" itemprop="url" src="/images/shop/th/s1526294544.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name ">
+               <a href="//shop.builder.hu/tejsavo-feherje-koncentratumok/protein-buzz-100-whey-3-kg-p13468" title="Protein Buzz 100% Whey (3 kg)">
+                100% Whey
+               </a>
+              </div>
+              <div class="product_box_packing ">
+               3 kg
+              </div>
+              <div class="product_box_manufacturer ">
+               <a href="//shop.builder.hu/protein-buzz-b465">
+                Protein Buzz
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="4.5270">
+               </div>
+               <div class="rateAvgNum">
+                / 4.5
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                13%
+               </span>
+               <span class="priceOutdated">
+                14 990 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button ">
+               <span class="priceContainer">
+                <span class="actualPrice">
+                 12 990 Ft
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(13468);">
+                <img height="34" src="/images/kosar_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_12314" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="12314"/>
+               <input id="DARAB_12314" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_12314" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="Beef Protein"/>
+               <input name="IZ" type="hidden" value="csoki-kókusz"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/marha-protein/biotech-usa-beef-protein-0-5-kg-p12314" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="BioTech USA Beef Protein (0,5 kg)">
+                <img alt="BioTech USA Beef Protein (0,5 kg)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_12314" itemprop="url" src="/images/shop/th/s1419940096.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/marha-protein/biotech-usa-beef-protein-0-5-kg-p12314" title="BioTech USA Beef Protein (0,5 kg)">
+                Beef Protein
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               0,5 kg
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/biotech-usa-b192">
+                BioTech USA
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="4.3889">
+               </div>
+               <div class="rateAvgNum">
+                / 4.4
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                13%
+               </span>
+               <span class="priceOutdated">
+                3 790 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  3 290 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(12314);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_782" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="782"/>
+               <input id="DARAB_782" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_782" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="Animal Pak"/>
+               <input name="IZ" type="hidden" value="-"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/vitamincsomagok-sportolok-reszere/animal-pak-animal-pak-44-pak-p782" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="Animal Pak Animal Pak (44 pak.)">
+                <img alt="Animal Pak Animal Pak (44 pak.)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_782" itemprop="url" src="/images/shop/th/s1463493903.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/vitamincsomagok-sportolok-reszere/animal-pak-animal-pak-44-pak-p782" title="Animal Pak Animal Pak (44 pak.)">
+                Animal Pak
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               44 pak.
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/animal-pak-b191">
+                Animal Pak
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="4.6909">
+               </div>
+               <div class="rateAvgNum">
+                / 4.7
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                19%
+               </span>
+               <span class="priceOutdated">
+                13 880 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  11 230 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(782);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="candyBarRow">
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_11056" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="11056"/>
+               <input id="DARAB_11056" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_11056" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="Muscle Factor + Electric Aminos + Advanced Multi Mineral"/>
+               <input name="IZ" type="hidden" value="-"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/allokepesseg-novelo-stack-ek/scitec-nutrition-muscle-factor-electric-aminos-advanced-multi-mineral-szett-p11056" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="Scitec Nutrition Muscle Factor + Electric Aminos + Advanced Multi Mineral (szett)">
+                <img alt="Scitec Nutrition Muscle Factor + Electric Aminos + Advanced Multi Mineral (szett)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_11056" itemprop="url" src="/images/shop/th/s1527584718.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/allokepesseg-novelo-stack-ek/scitec-nutrition-muscle-factor-electric-aminos-advanced-multi-mineral-szett-p11056" title="Scitec Nutrition Muscle Factor + Electric Aminos + Advanced Multi Mineral (szett)">
+                Muscle Factor + Electric Aminos + Advanced Multi Mineral
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               szett
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/scitec-nutrition-b33">
+                Scitec Nutrition
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                31%
+               </span>
+               <span class="priceOutdated">
+                17 270 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  11 990 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(11056);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_3683" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="3683"/>
+               <input id="DARAB_3683" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_3683" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="100% Whey Protein Gold Standard"/>
+               <input name="IZ" type="hidden" value="csoki"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/kombinalt-izolatum-koncentratum-tejsavok/optimum-nutrition-100-whey-protein-gold-standard-2-273-kg-p3683" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="Optimum Nutrition 100% Whey Protein Gold Standard (2,273 kg)">
+                <img alt="Optimum Nutrition 100% Whey Protein Gold Standard (2,273 kg)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_3683" itemprop="url" src="/images/shop/th/s1466842651.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/kombinalt-izolatum-koncentratum-tejsavok/optimum-nutrition-100-whey-protein-gold-standard-2-273-kg-p3683" title="Optimum Nutrition 100% Whey Protein Gold Standard (2,273 kg)">
+                100% Whey Protein Gold Standard
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               2,273 kg
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/optimum-nutrition-b194">
+                Optimum Nutrition
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="4.7447">
+               </div>
+               <div class="rateAvgNum">
+                / 4.7
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                14%
+               </span>
+               <span class="priceOutdated">
+                20 890 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  17 990 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(3683);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg uj">
+               Új!
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_14032" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="14032"/>
+               <input id="DARAB_14032" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_14032" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="100% Whey Protein Professional +ISO"/>
+               <input name="IZ" type="hidden" value="csoki"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo ">
+               <a href="//shop.builder.hu/kombinalt-izolatum-koncentratum-tejsavok/scitec-nutrition-100-whey-protein-professional-iso-0-87-kg-p14032" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="Scitec Nutrition 100% Whey Protein Professional +ISO (0,87 kg)">
+                <img alt="Scitec Nutrition 100% Whey Protein Professional +ISO (0,87 kg)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_14032" itemprop="url" src="/images/shop/th/s1522824287.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name ">
+               <a href="//shop.builder.hu/kombinalt-izolatum-koncentratum-tejsavok/scitec-nutrition-100-whey-protein-professional-iso-0-87-kg-p14032" title="Scitec Nutrition 100% Whey Protein Professional +ISO (0,87 kg)">
+                100% Whey Protein Professional +ISO
+               </a>
+              </div>
+              <div class="product_box_packing ">
+               0,87 kg
+              </div>
+              <div class="product_box_manufacturer ">
+               <a href="//shop.builder.hu/scitec-nutrition-b33">
+                Scitec Nutrition
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="5.0000">
+               </div>
+               <div class="rateAvgNum">
+                / 5.0
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                5%
+               </span>
+               <span class="priceOutdated">
+                7 950 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button ">
+               <span class="priceContainer">
+                <span class="actualPrice">
+                 7 550 Ft
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(14032);">
+                <img height="34" src="/images/kosar_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="candyBarProductCard">
+             <div class="product_box">
+              <div class="product_box_tagimg akcios">
+               %
+              </div>
+              <form action="//shop.builder.hu/rendel.htm4" id="fixreklamform_12415" method="post" target="_blank">
+               <input name="valuta" type="hidden" value="HUF"/>
+               <input name="ID" type="hidden" value="12415"/>
+               <input id="DARAB_12415" name="DARAB" type="hidden" value="1"/>
+               <input id="darab_12415" name="darab" type="hidden" value="1"/>
+               <input name="TERMEKNEV" type="hidden" value="Vitamin K2 90 µg"/>
+               <input name="IZ" type="hidden" value="-"/>
+               <input name="SZIN" type="hidden" value="-"/>
+               <input name="MERET" type="hidden" value="-"/>
+               <input name="EGYEB" type="hidden" value="-"/>
+              </form>
+              <div class="product_box_photo akcios">
+               <a href="//shop.builder.hu/k-vitamin/vitaking-vitamin-k2-90-g-30-kap-p12415" itemprop="image" itemscope="" itemtype="https://schema.org/ImageObject" title="VitaKing Vitamin K2 90 µg (30 kap.)">
+                <img alt="VitaKing Vitamin K2 90 µg (30 kap.)" border="0" class="productImageResource termek_drag" height="100" id="fixreklamtermek_12415" itemprop="url" src="/images/shop/th/s1424703207.jpg"/>
+                <meta content="100" itemprop="width"/>
+                <meta content="100" itemprop="height"/>
+               </a>
+              </div>
+              <div class="product_box_name akcios">
+               <a href="//shop.builder.hu/k-vitamin/vitaking-vitamin-k2-90-g-30-kap-p12415" title="VitaKing Vitamin K2 90 µg (30 kap.)">
+                Vitamin K2 90 µg
+               </a>
+              </div>
+              <div class="product_box_packing akcios">
+               30 kap.
+              </div>
+              <div class="product_box_manufacturer akcios">
+               <a href="//shop.builder.hu/vitaking-b214">
+                VitaKing
+               </a>
+              </div>
+              <div class="product_box_rating">
+               <div class="orRate" data-average="4.8889">
+               </div>
+               <div class="rateAvgNum">
+                / 4.9
+               </div>
+               <div class="clear">
+               </div>
+              </div>
+              <div class="clear">
+              </div>
+              <div class="product_box_tag">
+               <span class="tag akcios">
+                20%
+               </span>
+               <span class="priceOutdated">
+                1 890 Ft
+               </span>
+              </div>
+              <div class="product_box_cart_button akcios">
+               <span class="priceContainer">
+                <span class="redLabel">
+                 <span class="actualPrice redLabel">
+                  1 510 Ft
+                 </span>
+                </span>
+               </span>
+               <a href="javascript:void(0);" onclick="addtocart_fixreklam(12415);">
+                <img height="34" src="/images/kosar_piros_icon.png" width="34"/>
+               </a>
+              </div>
+             </div>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+          </div>
+         </div>
+         <table border="0" cellpadding="0" cellspacing="0">
+          <tr>
+           <td align="center" colspan="2">
+            <div class="yellowhead_box" style="margin: 0 auto; width: 600px;">
+             <div class="yh_title">
+              <span class="left">
+               Shop.Builder hírek, cikkek
+              </span>
+             </div>
+             <div class="yh_content" style="display: inline-block; padding: 0px;">
+              <div style="float: left; width: 280px; padding: 18px 9px 0px;">
+               <div class="rightnews">
+                <a class="indexnews_title" href="https://shop.builder.hu/elado-munkatarsat-keresunk-a-shop-builder-budapesti-boltjaba-a4768" target="_self" title="Eladó munkatársat keresünk a Shop.Builder budapesti boltjába">
+                 Eladó munkatársat keresünk a Shop.Builder budapesti boltjába
+                </a>
+                <div class="indexnews_date">
+                 2018-06-20
+                </div>
+                <div class="indexnews_img">
+                 <a href="https://shop.builder.hu/elado-munkatarsat-keresunk-a-shop-builder-budapesti-boltjaba-a4768" target="_self" title="Eladó munkatársat keresünk a Shop.Builder budapesti boltjába">
+                  <img src="/images/bbcomment/karrierlehetoseg_600_314_fb_og_C_280x147.jpg" title="Eladó munkatársat keresünk a Shop.Builder budapesti boltjába"/>
+                 </a>
+                </div>
+                <div>
+                 Álláskeresők, figyelem! Eladót keresünk a Forgách utcai Shop.Builder boltunkba Budapesten. Itt tudtok jelentkezni!
+                </div>
+                <div class="indexnews_read">
+                 <a href="https://shop.builder.hu/elado-munkatarsat-keresunk-a-shop-builder-budapesti-boltjaba-a4768" target="_self" title="Tovább">
+                  Tovább &gt;&gt;&gt;
+                 </a>
+                </div>
+               </div>
+              </div>
+              <div style="float: right; width: 280px; padding: 18px 9px;">
+               <div style="text-align: center;">
+                <a href="cikkek.htm4" style="font-weight: bold; font-size: 12px;" title="Korábbi híreink, cikkeink">
+                 Korábbi híreink, cikkeink
+                </a>
+               </div>
+               <ul class="indexbottomnews">
+                <li>
+                 <a class="rightnews_title" href="https://shop.builder.hu/elado-munkatarsat-keresunk-a-shop-builder-budapesti-boltjaba-a4768" target="_self" title="Eladó munkatársat keresünk a Shop.Builder budapesti boltjába">
+                  Eladó munkatársat keresünk a Shop.Builder budapesti boltjába
+                 </a>
+                </li>
+                <li>
+                 <a class="rightnews_title" href="https://shop.builder.hu/a-scitec-nutrition-juniusi-ajanlatai-a4806" target="_self" title="A Scitec Nutrition júniusi ajánlatai">
+                  A Scitec Nutrition júniusi ajánlatai
+                 </a>
+                </li>
+                <li>
+                 <a class="rightnews_title" href="https://shop.builder.hu/a-protein-buzz-juniusi-ajanlatai-a4804" target="_self" title="A Protein Buzz júniusi ajánlatai">
+                  A Protein Buzz júniusi ajánlatai
+                 </a>
+                </li>
+                <li>
+                 <a class="rightnews_title" href="https://shop.builder.hu/minden-izeben-bcaa-a4808" target="_self" title="Minden ízében BCAA">
+                  Minden ízében BCAA
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <div style="text-align: right; margin: 10px 10px 15px;">
+               <a href="cikkek.htm4" style="font-weight: bold; font-size: 12px;" title="Összes cikk &gt;&gt;&gt;">
+                Összes cikk &gt;&gt;&gt;
+               </a>
+              </div>
+             </div>
+            </div>
+           </td>
+          </tr>
+          <tr>
+           <td align="center" valign="top" width="313">
+            <div>
+            </div>
+           </td>
+           <td align="center" style="padding-left: 5px;" valign="top" width="313">
+            <!-- Akcios ajanlataink -->
+           </td>
+          </tr>
+         </table>
+         <div style="margin: 19px auto;">
+          <div style="height:8px">
+          </div>
+          <div class="articleBar " style="width:600px">
+           <div class="articleBarHeader">
+            Shop.Builder havi legolvasottabb cikkei
+           </div>
+           <div class="articleBarRow">
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/edzestervek-a2257" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/igy_keszits_edzestervet_magadnak_3_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/edzestervek-a2257" target="_self">
+               Edzéstervek
+              </a>
+              <div class="descr">
+               Testépítő és fitness edzéstervek kezdőktől haladókig mindenkinek! Kezdő átmozgató edzéstervek, haladó ossztott edzéstervek, sztáárok edzéstervei, speciális edzé...
+              </div>
+             </div>
+            </div>
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/akcios-termekek-a2141" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/akcios_termekek_og_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/akcios-termekek-a2141" target="_self">
+               Akciós termékek
+              </a>
+              <div class="descr">
+               Íme a Shop.Builder-en kapható akciós termékek összegyűjtve, egy helyen! Nem kell keresgélned az oldalon, itt megtalálsz mindent, ami érdekelhet, ha kedvezményes...
+              </div>
+             </div>
+            </div>
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/ot-teny-a-glutaminrol-ahogyan-meg-nem-olvashattad-a67" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/ot_teny_a_glutaminrol_600x314_fb_og_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/ot-teny-a-glutaminrol-ahogyan-meg-nem-olvashattad-a67" target="_self">
+               Öt tény a glutaminról, ahogyan még nem olvashattad!
+              </a>
+              <div class="descr">
+               A glutamin szedése számos előnnyel jár, és ezt már gyakorlati példák is bizonyították. Következzen öt tény a glutaminról, ahogyan még nem olvashattad! Katt!...
+              </div>
+             </div>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+           <div class="articleBarRow">
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/a-szalkasito-etrend-a1283" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/szalkasito_etrend_600x314_FB_OG_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/a-szalkasito-etrend-a1283" target="_self">
+               A szálkásító étrend
+              </a>
+              <div class="descr">
+               Miért olyan fontos a szálkásító étrend? Azért, mert SOHA nem fogsz leszálkásodni, ha nem táplálkozol a célodnak megfelelően. Megmutatjuk, hogyan fogj hozzá!...
+              </div>
+             </div>
+            </div>
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/tipp-igy-nyomd-a-kardiot-izomveszteseg-nelkul-a4819" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/kardioizom_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/tipp-igy-nyomd-a-kardiot-izomveszteseg-nelkul-a4819" target="_self">
+               Tipp: így nyomd a kardiót izomveszteség nélkül!
+              </a>
+              <div class="descr">
+               Zsírt veszíteni pofon egyszerű dolog. Annyi kell hozzá, hogy kevesebb kalóriát vigyünk be, mint amennyit elégetünk. Zsírt veszíteni izomveszteség nélkül? Na, az...
+              </div>
+             </div>
+            </div>
+            <div class="articleBarItemCard">
+             <div class="article_box display_vertical" style="width: 179px; height: 220px">
+              <a href="/kezdo-edzestervek-a2270" target="_self">
+               <img border="0" class="image" height="94" src="/images/bbcomment/kezdo_edzestervek_600x314_C_179x94.jpg" width="179"/>
+              </a>
+              <a class="title" href="/kezdo-edzestervek-a2270" target="_self">
+               Kezdő edzéstervek
+              </a>
+              <div class="descr">
+               Kezdő testépítőknél nagyon fontos, hogy fokozatosan, edzésről edzésre növeljék a terhelést. Ezt megtehetik az ismétlésszám, a súly, vagy párhuzamosan mindkettő ...
+              </div>
+             </div>
+            </div>
+            <div class="clear">
+            </div>
+           </div>
+          </div>
+         </div>
+         <!-- MAIN STOP-->
+        </td>
+        <td align="center" style="padding:19px 0 30px" valign="top" width="320">
+         <div class="blackhead_box cream" id="cart" style="margin-top: 0px;">
+          <div class="bh_title">
+           <span class="left" id="left_cart_title" onclick="cart_popup()">
+            Kosarad
+           </span>
+           <span class="right" id="foldCartContainer" onclick="foldCart()">
+            <img src="/images/fold_white_up.png" style="display: block;"/>
+           </span>
+           <span class="right" onclick="cart_popup()">
+            <img alt="cart" src="/images/cart.png"/>
+           </span>
+          </div>
+          <div class="bh_content cart_right" style="padding:0px;">
+           <div style="padding: 0px 0px 20px 0px;">
+            <div id="left_cart_div">
+             <script type="text/javascript">
+              function confirmation_left(id) {
+	    if (id == 'all') {
+		    var answer = confirm('Valóban törölni szeretnéd a kosár tartalmát?')
+	    } else {
+		    var answer = confirm('Valóban törölni szeretnéd a tételt a kosárból?')
+	    }
+	    if (answer) {
+		    deletefromcart_left(id)
+	    }
+	}
+             </script>
+             <table align="center" border="0" cellpadding="0" cellspacing="0" style="width: 90%; margin: 10px auto;">
+              <tr>
+               <td align="left" colspan="2" style="font-weight: bold; font-size: 12px;">
+                A kosarad jelenleg üres
+               </td>
+              </tr>
+             </table>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="yellowhead_box cream">
+          <div class="yh_title">
+           <span class="left">
+            Kapcsolat
+           </span>
+          </div>
+          <div class="yh_content" style="text-align: justify;">
+           <div style="text-align: center">
+            <a data-role="none" href="tel:+36202250425" title="Telefonszám: +36 20 225-0425">
+             <font size="+1">
+              <b>
+               Tel:+36 20 225-0425
+              </b>
+             </font>
+            </a>
+            <br/>
+            <a href="/helpdesk.htm4" title="Írj nekünk...">
+             HelpDesk
+            </a>
+            -
+            <a href="/uzleteink-a1219">
+             Üzleteink
+            </a>
+            -
+            <a href="/ird-meg-te-is-velemenyedet-beszamolodat-webaruhazunkrol-a3337" title="Írd meg te is véleményedet...">
+             Rólunk írtátok
+            </a>
+            -
+            <a href="/altalanos-szerzodesi-feltelek-a2301" title="Általános Szerződési Feltételek">
+             ÁSZF
+            </a>
+            <br/>
+            <a href="/szallitas-fizetes-a2149" title="Szállítási és fizetési feltételek">
+             Szállítás és fizetés
+            </a>
+            <br/>
+            (990.- Ft | akár már 7000.- Ft-tól ingyenes)
+           </div>
+          </div>
+         </div>
+         <!-- Google DoubleClick Right Ad A -->
+         <div class="yellowhead_box" style="border: 0px none; padding: 0px;">
+          <!-- Shop.Builder.hu_Allpages_Right_MediumRectangle-01_300x250 -->
+          <div id="div-gpt-ad-1382864691458-0">
+           <script type="text/javascript">
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1382864691458-0'); });
+           </script>
+          </div>
+         </div>
+         <div class="articleBar yellowhead_box" style="width:298px">
+          <div class="articleBarHeader">
+           Shop.Builder tartalom ajánló
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/whey-lepeny-a4309" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/gasztro192OG_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/whey-lepeny-a4309" target="_self">
+              Whey lepény
+             </a>
+             <div class="descr">
+              Az egyik legegyszerűbben elkészíthető testépítőtiszta alapanyagokból összeállított édesség, amit ha el is rontanál..Semm...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/bb-tv-episode-63-a3595" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/63_splash_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/bb-tv-episode-63-a3595" target="_self">
+              BB.Tv Episode #63
+             </a>
+             <div class="descr">
+              Rákosiné Szentgyörgyvári Zsuzsa, Balogh Anti, Drugs Bunny laboratóriumi protein vizsgálatokról 
+
+...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/az-edzes-nem-szenvedes-a3208" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/szenved_1_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/az-edzes-nem-szenvedes-a3208" target="_self">
+              Az edzés nem szenvedés
+             </a>
+             <div class="descr">
+              Spártai feladatnak, sőt, egy-egy lazulósabb nap vagy hét után büntetésfélének fogod fel az edzést? Az edzés nem szenvedé...
+             </div>
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+         </div>
+         <!-- Google DoubleClick Right Ad B -->
+         <div class="yellowhead_box" style="border: 0px none; padding: 0px;">
+          <!-- Shop.Builder.hu_Allpages_Right_MediumRectangle-02_300x250 -->
+          <div id="div-gpt-ad-1382864691458-1">
+           <script type="text/javascript">
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1382864691458-1'); });
+           </script>
+          </div>
+         </div>
+         <div class="articleBar yellowhead_box" style="width:298px">
+          <div class="articleBarHeader">
+           Legfrissebb cikkek
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/popsi-edzes-hanyszor-egy-heten-a4838" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/popsiedzes_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/popsi-edzes-hanyszor-egy-heten-a4838" target="_self">
+              Popsi edzés: hányszor egy héten?
+             </a>
+             <div class="descr">
+              A fenék formája és edzése mindig központi téma a nők körében. Mi a jó módszer a farizmok edzésére, és hányszor ajánlott ...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/bb-tv-episode-154-a4831" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/bbtv_154_600x314_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/bb-tv-episode-154-a4831" target="_self">
+              BB.Tv Episode #154
+             </a>
+             <div class="descr">
+              Emlékszel a Támadás 1.-re? Amit most látsz, a maga nemében majdnem akkora dolog, mint annak idején Vörös Zolival volt. K...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/erdemes-edzokesztyut-hasznalni-a4256" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/eroemelo-kezyu_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/erdemes-edzokesztyut-hasznalni-a4256" target="_self">
+              Érdemes edzőkesztyűt használni?
+             </a>
+             <div class="descr">
+              Vajon vannak olyan helyzetek a teremben, amikor érdemes kesztyűs kézzel bánni a súlyzókkal? Milyen edzőkesztyűt érdemes ...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/kell-a-vitamin-a4817" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/kelleavitamin_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/kell-a-vitamin-a4817" target="_self">
+              Kell a vitamin?
+             </a>
+             <div class="descr">
+              Pár napja szembejött egy cikk, ami szerint a vitaminok semmit sem érnek. Tovább böngészve nyilvánvalóvá vált, hogy ezt a...
+             </div>
+            </div>
+            <div class="horizontalSplitter">
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+          <div class="articleBarRow horizontalSplitted">
+           <div class="">
+            <div class="article_box display_block" style="width: 278px; ">
+             <a href="/tipp-igy-nyomd-a-kardiot-izomveszteseg-nelkul-a4819" target="_self">
+              <img border="0" class="image" height="60" src="/images/bbcomment/kardioizom_C_96x60.jpg" width="96"/>
+             </a>
+             <a class="title" href="/tipp-igy-nyomd-a-kardiot-izomveszteseg-nelkul-a4819" target="_self">
+              Tipp: így nyomd a kardiót izomveszteség nélkül!
+             </a>
+             <div class="descr">
+              Zsírt veszíteni pofon egyszerű dolog. Annyi kell hozzá, hogy kevesebb kalóriát vigyünk be, mint amennyit elégetünk. Zsír...
+             </div>
+            </div>
+           </div>
+           <div class="clear">
+           </div>
+          </div>
+         </div>
+         <!-- Social Media content BEGIN -->
+         <div class="shadowborder" style="margin-top: 19px; width: 300px; background-color: white">
+          <center>
+           <div class="fb-page" data-height="275" data-hide-cover="false" data-href="https://www.facebook.com/shopbuilder" data-show-facepile="true" data-show-posts="false" data-width="300">
+            <div class="fb-xfbml-parse-ignore">
+             <blockquote cite="https://www.facebook.com/shopbuilder">
+              <a href="https://www.facebook.com/shopbuilder">
+               Shop.Builder Testépít? Webáruház
+              </a>
+             </blockquote>
+            </div>
+           </div>
+           <iframe border:="" frameborder="0" height:="60" id="fr" scrolling="no" src="https://www.youtube.com/subscribe_widget?p=shop4builders" style="height:72px; border: none" width:="">
+           </iframe>
+          </center>
+         </div>
+         <!-- Social Media content END -->
+        </td>
+       </tr>
+      </table>
+      <!-- for background and dev background -->
+     </div>
+     <!-- FOOTER -->
+     <table align="center" border="0" cellpadding="0" cellspacing="0" style="background-color: #252525; color: #ffffff;" width="970">
+      <tr>
+       <td style="background-color: #ffffff;">
+        <table align="center" border="0">
+         <tr>
+          <!-- Lehetséges Fizetési-Módok (az adott domainen) Ikonjainak Listázása START -->
+          <td>
+           <a href="/shipping_and_payment.htm4#on-line-bankkartyas" title="Bankkártyás fizetés!">
+            <img border="0" src="/images/rendeles/logos/logo_cibcard.png" title="Bankkártyás fizetés!"/>
+           </a>
+          </td>
+          <td>
+           <a href="/shipping_and_payment.htm4#masterpass-fizetes" title="MasterPass fizetés">
+            <img border="0" src="/images/rendeles/logos/logo_mcm.png" title="MasterPass fizetés"/>
+           </a>
+          </td>
+          <td>
+           <a href="/shipping_and_payment.htm4#sofort-online-atutalas" title="SOFORT– online átutalás">
+            <img border="0" src="/images/rendeles/logos/logo_sofort.png" title="SOFORT– online átutalás"/>
+           </a>
+          </td>
+          <td>
+           <a href="/shipping_and_payment.htm4#gls-futar" title="GLS Futár">
+            <img border="0" src="/images/rendeles/logos/logo_gls.png" title="GLS Futár"/>
+           </a>
+          </td>
+          <td>
+           <a href="/shipping_and_payment.htm4#szemelyes-atvetel" title="Személyes átvétel">
+            <img border="0" src="/images/rendeles/logos/logo_szegedpest.png" title="Személyes átvétel"/>
+           </a>
+          </td>
+          <td>
+           <a href="/shipping_and_payment.htm4#shop-builder-kiszallitas" title="Shop.Builder Kiszállítás">
+            <img border="0" src="/images/rendeles/logos/logo_shopbuilder.png" title="Shop.Builder Kiszállítás"/>
+           </a>
+          </td>
+          <!-- Lehetséges Fizetési-Módok (az adott domainen) Ikonjainak Listázása END -->
+         </tr>
+        </table>
+       </td>
+      </tr>
+      <tr>
+       <td align="center" style="">
+        <div class="shop_bottom_text">
+         Shop.Builder Testépítő és Fitness Webáruház - Táplálékkiegészítők, kondigépek online vásárlása, rendelése. Kedvező árak, gyors házhozszállítás.
+         <br/>
+         Üzemeltető: Shopbuilder Kft. · 6722 Szeged, Mérey u. 17. · Telefon: 20/225-04-25 (9-17 óra között) · E-mail:
+         <a href="/helpdesk.htm4" rel="nofollow">
+          <b>
+           shop@builder.hu
+          </b>
+         </a>
+         <br/>
+         Adatnyilvántartási azonosító: 01098-0001 ·
+         <a href="/adatvedelmi-tajekoztato-a2302" rel="nofollow">
+          Adatvédelmi Szabályzat
+         </a>
+         · Hatósági nyilvántartási szám:
+         <b>
+          C/002 215/2003
+         </b>
+         · NAIH-113554/2017 ·
+         <a href="http://ec.europa.eu/odr/" rel="nofollow" target="_new">
+          Online vitarendezési fórum
+         </a>
+         <hr/>
+        </div>
+        <table cellpadding="5" style="margin: 20px 0 20px 14px; float: left;">
+         <tr>
+          <td>
+           <a href="http://www.facebook.com/shopbuilder" onclick='ga("send", "event", "Click", "Kikattintás", "facebook"); return true;' title="Csatlakozz a Shop.Builder Webáruház Facebook közösségéhez!">
+            <img class="social-logo" src="/images/sociallogo-facebook-24.png" title="Csatlakozz a Shop.Builder Webáruház Facebook közösségéhez!"/>
+           </a>
+          </td>
+          <td>
+           <a href="https://twitter.com/intent/follow?source=followbutton&amp;variant=1.0&amp;screen_name=shopbuilder" onclick='ga("send", "event", "Click", "Kikattintás", "twitter"); return true;' title="Kövesd a Shop.Builder-t Twitteren is!">
+            <img class="social-logo" src="/images/sociallogo-twitter-24.png" title="Kövesd a Shop.Builder-t Twitteren is!"/>
+           </a>
+          </td>
+          <td>
+           <a href="https://plus.google.com/u/0/114009186772909048694/posts" onclick='ga("send", "event", "Click", "Kikattintás", "googleplus"); return true;' title="Csatlakozz a Shop.Builder Webáruház Google+ közösségéhez!">
+            <img class="social-logo" src="/images/sociallogo-googleplus-24.png" title="Csatlakozz a Shop.Builder Webáruház Google+ közösségéhez!"/>
+           </a>
+          </td>
+          <td>
+           <a href="http://www.youtube.com/user/shop4builders" onclick='ga("send", "event", "Click", "Kikattintás", "youtube"); return true;' title="Youtube csatornánkon követheted a Builder Gastro és a BB.Tv Flash adásait!">
+            <img class="social-logo" src="/images/sociallogo-youtube-24.png" title="Youtube csatornánkon követheted a Builder Gastro és a BB.Tv Flash adásait!"/>
+           </a>
+          </td>
+          <td>
+           <a href="http://www.pinterest.com/shopbuilder/" onclick='ga("send", "event", "Click", "Kikattintás", "pinterest"); return true;' title="Képeket osztanál meg? Pinnelj bennünket!">
+            <img class="social-logo" src="/images/sociallogo-pinterest-24.png" title="Képeket osztanál meg? Pinnelj bennünket!"/>
+           </a>
+          </td>
+          <td>
+           <a href="https://www.instagram.com/shop.builder/" onclick='ga("send", "event", "Click", "Kikattintás", "instagram"); return true;' title="Kövesd a Shop.Builder képeit!">
+            <img class="social-logo" src="/images/sociallogo-instagram-24.png" title="Kövesd a Shop.Builder képeit!"/>
+           </a>
+          </td>
+          <td>
+           <a href="http://bbtv.hu" onclick='ga("send", "event", "Click", "Kikattintás", "bbtv"); return true;' title="Body.Builder Testépítő TV! - Nem kislányoknak!">
+            <img class="social-logo" src="/images/sociallogo-bbtv-24.png" title="Body.Builder Testépítő TV! - Nem kislányoknak!"/>
+           </a>
+          </td>
+         </tr>
+        </table>
+        <div class="language-selector">
+         <ul class="language-selector-ul">
+          <li>
+           <img src="/images/flags/Hungary-24.png" title="Magyar (HUF)"/>
+          </li>
+          <li>
+           <a href="//buildershop.at/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Austria-24.png" title="Österreichische (EUR)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//buildershop.de/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Germany-24.png" title="Deutsch (EUR)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shop.builder.eu/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/European-Union-24.png" title="All Countries (EUR)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shop4builders.co.uk/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Great-Britain-24.png" title="Great Britain (GBP)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.cz/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Czech-Republic-24.png" title="Český (CZK)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.hr/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Croatia-24.png" title="Hrvatska (HRK)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.ie/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Ireland-24.png" title="Ireland (EUR)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.ro/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Romania-24.png" title="Romana (RON)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.si/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Slovenia-24.png" title="Slovenija (EUR)"/>
+           </a>
+          </li>
+          <li>
+           <a href="//shopbuilder.sk/" onclick="ga('send', 'event', 'click', 'language-select'); return true;" rel="nofollow">
+            <img src="/images/flags/Slovakia-24.png" title="Slovencina (EUR)"/>
+           </a>
+          </li>
+         </ul>
+        </div>
+       </td>
+      </tr>
+      <tr>
+       <td align="center" style="color: #444;">
+        <small>
+         275 ms
+        </small>
+       </td>
+      </tr>
+      <tr>
+       <td style="height: 20px;">
+       </td>
+      </tr>
+     </table>
+    </td>
+    <!-- SIDEBANNER RIGHT -->
+    <!--td valign="top" align="left">xxxx</td -->
+   </tr>
+  </table>
+  <script src="https://apis.google.com/js/plusone.js" type="text/javascript">
+   {lang: 'hu'}
+  </script>
+  <script type="text/javascript">
+   $(document).ready(function() {
+        $('#cartSaveContainer').click(function() {
+        // Email bekérő mező kinyitása
+        $('#cartSaveFormContainer').css( 'display', 'block' );
+    });
+    $('#cartSaveForm').submit(function() {
+		// AJAX-al az elérhető címek lekérdezése
+		try {
+			var _email = $('#cart_save_email').val();
+			if (_email.trim() != '') {
+    			// AJAX kérés, adatok tárolása
+    			$.ajax({
+    			    url: "https://shop.builder.hu/ajax/ajax.php",
+    			    data: {
+    			    	"module": "Cart",
+    					"action": "saveEmail",
+    					"email": _email
+    			    },
+    			    type: "GET",
+    			    contentType: "application/j-son; charset=utf-8",
+    			    dataType: "json",
+    			    success: function(data) {
+    					// Sikeresen tárolva a kosárhoz az email cím
+    					console.log( data );
+    					if (data.success == '1') {
+    					    $('#cartSaveContainer').remove();
+    					    $('#cart').before( '<div id="cartSaveEmailContainer">' + data.text + '</div>' );
+    					}
+    				}
+    			});
+			}
+		} catch (err) {}
+        event.preventDefault();
+    });
+});
+  </script>
+  <script type="text/javascript">
+   (function(e,a){var t,r=e.getElementsByTagName("head")[0],c=e.location.protocol;t=e.createElement("script");t.type="text/javascript";t.charset="utf-8";t.async=!0;t.defer=!0;t.src=c+"//front.optimonk.com/public/"+a+"/js/preload.js";r.appendChild(t);})(document,"239");
+
+var OptiMonkOnReady = function () {
+  try {
+    var adapter = OptiMonk.Visitor.createAdapter();
+    adapter.attr( "loginstatus", "visitor" );
+    adapter.attr( "userstatus", "0" );
+    adapter.attr( "gstatus", "yes" );
+    adapter.attr( "firstname", "" );
+    adapter.attr( "city", "" );
+    adapter.attr( "mmsubscriber", "no" );
+    adapter.Cart.clear();
+  } catch (e) {
+    console.log( e );
+  }
+};
+  </script>
+  <div id="cookie_warn_text">
+   <p>
+    A cookie-k segítenek szolgáltatásaink biztosításában.
+    <a href="/adatvedelmi-tajekoztato-a2302">
+     További információ
+    </a>
+    . Szolgáltatásaink igénybe vételével Ön beleegyezik a cookie-k használatába.
+    <a class="ok_button" href="javascript:void(0)" onclick="cookie_warn_ok();">
+     OK
+    </a>
+   </p>
+  </div>
+  <script>
+   function cookie_warn_ok() {
+    var d = new Date();
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    document.cookie = "cookie_warn=1; expires=" + d.toUTCString();
+    $('#cookie_warn_text').slideUp( 300 );
+}
+  </script>
+ </body>
+</html>

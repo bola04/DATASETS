@@ -1,0 +1,3591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <title>
+   台股基金如何選、專業理財新聞論壇、智富理財、理財致富、供免費即時台股、期貨、選擇權、國際指數、外匯報價、基金、新聞、理財等資訊
+  </title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="text/css" http-equiv="Content-Style-Type"/>
+  <meta content="台股,基金,新聞,理財,論壇,期貨,選擇權,報告,投資,智富論壇,智富網,Smartnet" name="keywords"/>
+  <meta content="提供台股、基金等專業理財論壇分新，智富網給您最即時的財經理財資訊，新聞中心從國際趨勢,政治經濟情勢,產業動態到理財規劃及社會文化資訊。智富網提供免費即時台股、期貨、選擇權、國際指數、外匯報價、基金、新聞、理財等資訊。 最優質的理財網，提供台股 基金 美股 下單 新聞 理財 智富 論壇 商城 富利。" name="description"/>
+  <!-- 引用 jQuery 1.4 -->
+  <script src="jquery14.min.js" type="text/javascript">
+  </script>
+  <style type="text/css">
+   @import url("txt.css");
+  </style>
+  <script type="text/javascript">
+   $(function(){
+		//--控制起始出現的tab
+		var _clickTab = 0;
+// 預設顯示第一個 Tab
+		$('.tab_content').hide();//
+		var tabsize=$('.abgne_tab').length;
+		//顯示頁簽的第一個內容
+		for(var i=0;i<tabsize;i++){ 
+			//var j = $('.abgne_tab').eq(i).find('ul.tabs li a').eq(_clickTab).attr('id');
+			var j = $('.abgne_tab').eq(i).find('ul.tabs li a:first').attr('id');
+			$(j).show();
+			//$('.abgne_tab').eq(i).find('ul.tabs li').eq(_clickTab).addClass('active').siblings('.active').removeClass('active'); //將這一行猜城下列2行
+			$('.abgne_tab').eq(i).find('ul.tabs li:first').addClass('active');//將第一個(li)加上calss active
+			$('.abgne_tab').eq(i).find('ul.tabs li:first').siblings('.active').removeClass('active');////將第一個兄弟(其他li) calss.active移除
+		}
+// 當 li 頁籤被 over時event ...
+		// 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
+		$('ul.tabs li').mouseover(function() {
+			// 找出 li 中的超連結 href(#id)
+			var $this = $(this),
+				_clickTab = $this.find('a').attr('id');
+			// 把目前點擊到的 li 頁籤加上 .active
+			// 並把兄弟元素中有 .active 的都移除 class 
+			$this.addClass('active');//show 出 css active style 
+			$this.siblings('.active').removeClass('active');//remove   css active style 
+			//下面淡入相對應的內容並隱藏兄弟元素
+			$(_clickTab).stop(false, true).fadeIn().siblings().hide();//停止_clickTab所有動作 -> _clickTab淡入 ->隱藏 非_clickTab 者 
+			// $(_clickTab).stop(false, true).show().siblings().hide();
+			return false;
+		}).find('a').focus(function(){
+			this.blur();
+		});
+
+	});
+	
+
+var xmlHttp;
+function checkLogin(url,kind,divId){ 
+      if (divId.length==0){ 
+          document.getElementById(divId).innerHTML="";
+          return;
+        }
+
+      if (window.XMLHttpRequest) { // 如果可以取得XMLHttpRequest
+          xmlHttp = new XMLHttpRequest();  // Mozilla、Firefox、Safari 
+      }
+      else if (window.ActiveXObject) { // 如果可以取得ActiveXObject
+          xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); // Internet Explorer
+      }  
+      //xmlHttp=GetXmlHttpObject();
+      if (xmlHttp==null){
+          alert ("Your browser does not support AJAX!");
+          return;
+        }  
+      var url=url;   
+      if( kind=='doChkLogin'){
+            url=url+"?sortWHProSn="+divId;     
+      }
+      xmlHttp.onreadystatechange=function(){  stateChanged(kind,divId); };
+      xmlHttp.open("POST",url,true);
+      xmlHttp.send(null); 
+  }  
+    
+function GetXmlHttpObject(){
+  var xmlHttp=null;
+  try
+    { 
+    xmlHttp=new XMLHttpRequest();
+    }catch (e){ 
+    try
+      {
+      xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+      }catch (e){
+      xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    }
+  return xmlHttp;
+}
+  //setInterval("OnTimer()",3000); 
+
+  function OnTimer(){  
+  	 document.getElementById("tseChart").innerHTML="";
+  	 //document.getElementById("tseChart").innerHTML="<img  src='images/tseImg.png' width='400' height='200' />";  
+  	 document.getElementById("otcChart").innerHTML="";
+  	 //document.getElementById("otcChart").innerHTML="<img  src='images/otcImg.png' width='400' height='200' />";  
+  }
+function stateChanged(kind,divId){ 
+  if (xmlHttp.readyState==4){
+  	var responseStr=xmlHttp.responseText;
+  	divId=trim(divId);
+  	document.getElementById(divId).innerHTML=""; 
+  	if(kind=="doChkLogin"){
+  	    responseStr=xmlHttp.responseText; //CANNOTDEL DEL 
+  	    document.getElementById(divId).innerHTML=responseStr;  
+    }
+  }
+}  	
+function trim(str)
+{
+   var result = "";
+   for(var i=0 ; i<str.length ; i++) {
+     if(str.charCodeAt(i) != 9 && str.charCodeAt(i) != 10 && str.charCodeAt(i) != 13  && str.charCodeAt(i) != 26  && str.charCodeAt(i) != 32)
+     	result = result + str.charAt(i);
+   }
+   return result;
+} 
+function trimNonNumber(str)
+{
+  //if ((event.keyCode<48 || event.keyCode>57) && event.keyCode!=44) {
+	//	event.keyCode=0;
+	//}
+ var result = "";
+   for(var i=0 ; i<str.length ; i++) {
+     if(str.charCodeAt(i) >=48 && str.charCodeAt(i) <=57 )
+     	result = result + str.charAt(i);
+   }	
+  document.index1.stock.value = result;
+} 
+function spanColorChange()
+{
+document.getElementById('test123').style.color = '#FF5400';
+}
+function popUp(URL) {
+	day = new Date();
+	id = day.getTime();
+	eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=400,height=337,left = 0,top = 0');");
+}
+  </script>
+  <script language="javascript">
+   <!-- 
+if (top.location != location)
+{
+ top.location.href = location.href;
+}
+//-->
+  </script>
+  <link href="txt.css" rel="stylesheet" type="text/css"/>
+  <style type="text/css">
+   <!--
+.style29 {
+	font-size: 12px;
+	color: #338099;
+}
+.style33 {font-size: 13px}
+.style135 {font-size: 13px; color: #0099CC; }
+.style37 {color: #0099CC}
+-->
+  </style>
+ </head>
+ <!--onLoad="popUp('announce.htm');"
+
+	<body  oncontextmenu=window.event.returnValue=false oncut="return false;"  onpaste="alert('不可貼上複製資料!');return false;" oncopy="return false;" > -->
+ <body>
+  <!-- onload="alert('智富網公告  親愛的SmartNet會員 您好，本網站機房擬進行維修工程，預定於今晚22：00～明晨06：00期間，將有2～3小時連線中線現象，本網站服務將因此受到影響，若因此造成不便，敬請見諒！  智富網 啟');"  
+<body onload="checkLogin('/chk/checkIsLogin.jsp','doChkLogin','doChkLoginId');window.open('temp/smartnet2010.html','wu','width=520,height=240,left=500,top=200');" >-->
+  <!-- #BeginLibraryItem "/htm/lbi/header_top.lbi" -->
+  <form action="http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp" method="post" name="index1">
+   <noscript>
+    <iframe frameborder="0" height="0" marginheight="0" marginwidth="0" scrolling="No" src="tseImg.html" width="0">
+    </iframe>
+   </noscript>
+   <table align="center" border="0" cellpadding="0" cellspacing="0" width="955">
+    <tr>
+     <td>
+      <table border="0" cellpadding="0" cellspacing="0" width="955">
+       <tr>
+        <td>
+         <table border="0" cellpadding="0" cellspacing="0" width="955">
+          <tr>
+           <td width="336">
+            <table border="0" cellpadding="0" cellspacing="0" width="295">
+             <tr>
+              <td width="34">
+               <img height="43" src="images/header_top_01.gif" width="34"/>
+              </td>
+              <td width="215">
+               <span class="style35">
+                2018年06月24日.星期日
+               </span>
+              </td>
+             </tr>
+            </table>
+           </td>
+           <td width="319">
+           </td>
+           <td align="right" width="300">
+            <table border="0" cellpadding="0" cellspacing="0" width="300">
+             <tr>
+              <td align="right">
+               <span class="style35">
+                <span id="doChkLoginId">
+                </span>
+                <script type="text/javascript">
+                 checkLogin('/chk/checkIsLogin.jsp','doChkLogin','doChkLoginId');
+                </script>
+                <a href="http://member.smartnet.com.tw/mm_regStep1.asp">
+                 註冊
+                </a>
+                ｜
+                <a href="http://member.smartnet.com.tw/">
+                 會員中心
+                </a>
+               </span>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+       <tr>
+        <td>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <table border="0" cellpadding="0" cellspacing="0" width="955">
+          <tr>
+           <td height="103" width="218">
+            <a href="index.html">
+             <img alt="Smartnet智富網-台股、基金專業投資理財資訊網" border="0" height="103" src="images/header_top_05.gif" width="218"/>
+            </a>
+           </td>
+           <td width="737">
+            <table border="0" cellpadding="0" cellspacing="0" width="100">
+             <tr>
+              <td background="images/header_top_06.gif">
+               <img height="13" src="images/header_top_06.gif" width="254"/>
+              </td>
+              <td>
+               <img height="13" src="images/header_top_09.gif" width="9"/>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <!-- (AD-po1)code碼<img src="images/header_top_10.gif" width="728" height="90" />-->
+               <!--<iframe src="./include/ad1.html" width="728" height="90" scrolling="No" frameborder="0"></iframe>-->
+               <iframe frameborder="0" height="90" marginheight="0" marginwidth="0" scrolling="No" src="./IAN/google_728_90My0725.html" width="728">
+               </iframe>
+               <!--<div class="yanta728x90" id="yanta728x90" style=" height:90px;width:728px;"> <a href="http://promotion.smartnet.com.tw/2016_yanta/index.html" target="_blank">  <img src="images/ad_yanta_720x90.gif" alt="元大證金 股票變現鈔"  width="728" height="90" border="0" /></a></div>-->
+               <!-- END TAG -->
+               <!-- END TAG -->
+              </td>
+              <td>
+               <img height="90" src="images/header_top_11.gif" width="9"/>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+       <tr>
+        <td background="images/header_top_14.gif">
+         <table border="0" cellpadding="0" cellspacing="0" height="57" width="955">
+          <tr>
+           <td valign="top" width="51">
+            <img align="top" height="57" src="images/header_top_12.gif" width="51"/>
+           </td>
+           <td class="style22" height="57" nowrap="nowrap" valign="top" width="197">
+            輸入股票代碼
+            <br/>
+            <input class="style18" name="stock" onchange="trimNonNumber(this.value);" size="15" type="text" value="2885"/>
+            <label>
+             <input class="input02" name="Submit" type="submit" value="搜尋"/>
+            </label>
+           </td>
+           <td width="707">
+            <table border="0" cellpadding="10" cellspacing="0" width="100%">
+             <tr>
+              <td>
+               <div align="right" class="style10">
+                <span class="style11">
+                 <a class="m02" href="http://stocks.smartnet.com.tw/index.html" title="台灣股票市場">
+                  台股
+                 </a>
+                </span>
+                <span class="style12 style23 style29">
+                 ｜
+                </span>
+                <span class="style11">
+                 <a class="m02" href="http://fund.smartnet.com.tw" title="基金網站">
+                  基金
+                 </a>
+                </span>
+                <span class="style12 style23 style29">
+                 ｜
+                </span>
+                <!-- <span class="style11"><a href="http://www.smartnet.com.tw/yt.jsp" class="m02">元大下單</a></span> <span class="style12 style23 style29">｜-->
+                <span class="style11">
+                 <a class="m02" href="http://news.smartnet.com.tw/NewsChannel/index.html" title="即時財經新聞">
+                  Smart News
+                 </a>
+                </span>
+                <span class="style12 style23 style29">
+                 ｜
+                </span>
+                <span class="style11">
+                 <a class="m02" href="http://class.smartnet.com.tw/" title="理財文章">
+                  理財新知
+                 </a>
+                </span>
+                <span class="style12 style23 style29">
+                 ｜
+                </span>
+                <span class="style11">
+                 <a class="m02" href="http://newbbs.smartnet.com.tw/bbs/index.php" title="理財論壇">
+                  智富論壇
+                 </a>
+                </span>
+                <span class="style12 style23 style29">
+                 ｜
+                </span>
+                <span class="style11">
+                 <a class="m02" href="https://freenet.smartnet.com.tw/index.php" title="購物網站">
+                  富利商城
+                 </a>
+                </span>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <!-- <iframe src="http://www.smartnet.com.tw/IAN/topbarAD.html" width="955" height="30" scrolling="No" frameborder="0"  marginheight="0"   marginwidth="0"  ></iframe>-->
+     </td>
+    </tr>
+    <tr valign="middle">
+     <td>
+      <!--AD-po2-->
+      <iframe frameborder="0" height="28" marginheight="0" marginwidth="0" scrolling="No" src="./IAN/topAd30.jsp" width="955">
+      </iframe>
+     </td>
+    </tr>
+   </table>
+   <!-- #EndLibraryItem -->
+   <table align="center" border="0" cellpadding="0" cellspacing="10" width="955">
+    <tr>
+     <td align="left" valign="top">
+      <table border="0" cellpadding="0" cellspacing="0" height="150" width="470">
+       <tr>
+        <td>
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://stocks.smartnet.com.tw/" id="#tab1" target="_blank">
+             上市大盤
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://stocks.smartnet.com.tw/" id="#tab2" target="_blank">
+             上櫃大盤
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="tab1">
+            <div align="center" id="tseChart">
+             <iframe frameborder="0" height="200" marginheight="0" marginwidth="0" scrolling="NO" src="./tseImg.html" width="400">
+             </iframe>
+             <!--<img src="images/tseImg.png" width="400" height="200" alt="上市大盤" />-->
+            </div>
+           </div>
+           <div class="tab_content" id="tab2">
+            <div align="center" id="otcChart">
+             <!--<img src="images/otcImg.png" width="400" height="200" alt="上櫃大盤" />-->
+             <iframe frameborder="0" height="200" marginheight="0" marginwidth="0" scrolling="NO" src="./otcImg.html" width="400">
+             </iframe>
+            </div>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td>
+         <!--<div align="center" class="bannerAD"><iframe src="./IAN/google_468_60.html" width="468" height="60" scrolling="No" frameborder="0"  marginheight="0"   marginwidth="0"  ></iframe></div>
+          -->
+         <div align="center" class="bannerAD">
+          <iframe frameborder="0" height="60" marginheight="0" marginwidth="0" scrolling="No" src="./IAN/google_468_60150727.html" width="468">
+          </iframe>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <!-- <div align="center" class="bannerAD">
+        <iframe
+src="http://ads.doublemax.net/delivery/?iframe&amp;z=336"
+width="468" height="60"
+framespacing="0" frameborder="no" scrolling="No"> </iframe>
+      </div>-->
+      <table border="0" cellpadding="0" cellspacing="0" height="150" width="470">
+       <tr>
+        <td>
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=0" id="#new01" target="_blank">
+             即時新聞
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=7" id="#new02" target="_blank">
+             國際政經
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=1" id="#new03" target="_blank">
+             國內政經
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=3" id="#new04" target="_blank">
+             中國政經
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=8" id="#new05" target="_blank">
+             國際股市
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=4" id="#new06" target="_blank">
+             大陸股市
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=26" id="#new07" target="_blank">
+             其他新聞
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="new01">
+            <table border="0" cellpadding="2" cellspacing="0" height="160" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:26:12
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=483&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news05').style.color = '#666666'" onmouseover="document.getElementById('news05').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news05" target="_blank">
+                個股：聚鼎(6224)每股含息3元，訂107/7/9為除息交易日
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:25:58
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=482&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news04').style.color = '#666666'" onmouseover="document.getElementById('news04').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news04" target="_blank">
+                投信個股：週五(22日)投信買超／賣超個股一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:22:14
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=481&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news03').style.color = '#666666'" onmouseover="document.getElementById('news03').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news03" target="_blank">
+                個股：華票(2820)6/25召開107年法人說明會
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:56
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=480&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news02').style.color = '#666666'" onmouseover="document.getElementById('news02').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news02" target="_blank">
+                △股東會：臺鹽通過配息1.5元，將把旗下明星商品打造億元品牌，提升業績
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:28
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=479&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news01').style.color = '#666666'" onmouseover="document.getElementById('news01').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news01" target="_blank">
+                國際財經：馬國總理表示，馬幣公允價值與亞洲金融危機期間固定匯率水準相當
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:08
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=478&amp;newsType=0','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news00').style.color = '#666666'" onmouseover="document.getElementById('news00').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news00" target="_blank">
+                櫃買中心：本週(6月19日～6月22日)三大法人買賣上櫃股票一覽表(八)
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td valign="top">
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/index.jsp">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new02">
+            <table border="0" cellpadding="2" cellspacing="0" height="100%" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:28
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=479&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news75').style.color = '#666666'" onmouseover="document.getElementById('news75').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news75" target="_blank">
+                國際財經：馬國總理表示，馬幣公允價值與亞洲金融危機期間固定匯率水準相當
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:35:56
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=422&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news74').style.color = '#666666'" onmouseover="document.getElementById('news74').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news74" target="_blank">
+                國際財經：美國最高法院裁定各州可對線上零售商徵銷售稅，令其喪失優勢
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:19:10
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=411&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news73').style.color = '#666666'" onmouseover="document.getElementById('news73').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news73" target="_blank">
+                國際財經：日本金融廳要求銀行報告10家日朝合資企業可疑轉帳活動
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:03:05
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=399&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news72').style.color = '#666666'" onmouseover="document.getElementById('news72').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news72" target="_blank">
+                國際財經：英公布退歐後歐盟公民居留規定，將採「簡易」制度，有利續留者
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                13:58:21
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=398&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news71').style.color = '#666666'" onmouseover="document.getElementById('news71').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news71" target="_blank">
+                國際財經：反擊！土耳其宣布對美國產品加徵2.67億美元關稅
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                12:18:08
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=363&amp;newsType=7','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news70').style.color = '#666666'" onmouseover="document.getElementById('news70').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news70" target="_blank">
+                國際財經：馬來西亞任命前1MDB調查人Nor Shamsiah Yunu出任央行行長
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td valign="top">
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=7">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new03">
+            <table border="0" cellpadding="2" cellspacing="0" height="100%" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:20:28
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=413&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news15').style.color = '#666666'" onmouseover="document.getElementById('news15').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news15" target="_blank">
+                行庫動態：星展銀執行總裁赴台，承諾深耕台灣市場
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                12:01:30
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=352&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news14').style.color = '#666666'" onmouseover="document.getElementById('news14').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news14" target="_blank">
+                國內匯市：新台幣匯率中午以30.325元暫收，貶值2.3分
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                11:30:37
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=338&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news13').style.color = '#666666'" onmouseover="document.getElementById('news13').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news13" target="_blank">
+                國內匯市：新台幣11:30成交價位為30.322元，貶值2分
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                11:01:12
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=321&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news12').style.color = '#666666'" onmouseover="document.getElementById('news12').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news12" target="_blank">
+                國內匯市：新台幣11:00成交價位為30.345元，貶值4.3分
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                10:31:02
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=307&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news11').style.color = '#666666'" onmouseover="document.getElementById('news11').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news11" target="_blank">
+                國內匯市：新台幣10:30成交價位為30.345元，貶值4.3分
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:36:27
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=278&amp;newsType=1','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news10').style.color = '#666666'" onmouseover="document.getElementById('news10').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news10" target="_blank">
+                國內金融：9:35止，拆款市場隔夜拆款成交利率為0.189%，上漲0.001個百分點
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td valign="top">
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=1">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new04">
+            <table border="0" cellpadding="2" cellspacing="0" height="180" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:41:12
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=427&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news35').style.color = '#666666'" onmouseover="document.getElementById('news35').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news35" target="_blank">
+                大陸產經：網路旅遊平台同程藝龍申請香港IPO
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                12:54:47
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=376&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news34').style.color = '#666666'" onmouseover="document.getElementById('news34').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news34" target="_blank">
+                大陸金融：一個月期港幣Hibor升破2%關卡，為10年來首見
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                10:15:24
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=302&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news33').style.color = '#666666'" onmouseover="document.getElementById('news33').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news33" target="_blank">
+                大陸財經：香港財政司司長表示，中美貿易戰對香港經濟影響不大
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:19:15
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=266&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news32').style.color = '#666666'" onmouseover="document.getElementById('news32').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news32" target="_blank">
+                大陸產經：蘇寧攜手大潤發，將就消費電子等產品銷售展開合作
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:33:29
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=231&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news31').style.color = '#666666'" onmouseover="document.getElementById('news31').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news31" target="_blank">
+                大陸產經：港交所CEO稱小米放棄CDR上市或因風險太大，估值由市場決定
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:30:56
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=224&amp;newsType=3','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news30').style.color = '#666666'" onmouseover="document.getElementById('news30').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news30" target="_blank">
+                大陸財經：習近平稱須警惕經濟增長乏力之際，貿易保護主義與民粹主義抬頭
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=3">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new05">
+            <table border="0" cellpadding="2" cellspacing="0" height="100%" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:13:29
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=467&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news85').style.color = '#666666'" onmouseover="document.getElementById('news85').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news85" target="_blank">
+                美股電子盤：今(22)日美股期指電子盤最新報價
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:13:26
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=466&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news84').style.color = '#666666'" onmouseover="document.getElementById('news84').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news84" target="_blank">
+                國際匯市：今(22)日主要貨幣目前報價
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:13:23
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=465&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news83').style.color = '#666666'" onmouseover="document.getElementById('news83').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news83" target="_blank">
+                亞洲股市：今(22)日亞洲股市目前指數
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:10:49
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=464&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news82').style.color = '#666666'" onmouseover="document.getElementById('news82').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news82" target="_blank">
+                韓股：KOSPI破底後翻紅收漲0.83%，電力天然氣和製藥類股領漲
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:38:45
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=424&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news81').style.color = '#666666'" onmouseover="document.getElementById('news81').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news81" target="_blank">
+                日股：國際貿易持續緊繃，日經週五收跌0.78%，金融、汽車類股表現欠佳
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:35:56
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=422&amp;newsType=8','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news80').style.color = '#666666'" onmouseover="document.getElementById('news80').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news80" target="_blank">
+                國際財經：美國最高法院裁定各州可對線上零售商徵銷售稅，令其喪失優勢
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=2">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new06">
+            <table border="0" cellpadding="2" cellspacing="0" height="180" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                12:54:15
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=375&amp;newsType=4','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news44').style.color = '#666666'" onmouseover="document.getElementById('news44').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news44" target="_blank">
+                陸股：滬深股市破底翻，滬指早盤漲0.35%、創業板急彈1.9%，工業富聯為A50最旺
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                10:42:22
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=314&amp;newsType=4','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news43').style.color = '#666666'" onmouseover="document.getElementById('news43').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news43" target="_blank">
+                陸股：寧德時代連八根漲停後漲勢止步，早盤一度觸及跌停
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                10:42:18
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=313&amp;newsType=4','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news42').style.color = '#666666'" onmouseover="document.getElementById('news42').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news42" target="_blank">
+                陸股：鴻海(2317)股東會登場，工業富聯股價出現六個交易日首紅
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                10:22:33
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=306&amp;newsType=4','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news41').style.color = '#666666'" onmouseover="document.getElementById('news41').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news41" target="_blank">
+                陸股：中興通訊A股現第七根跌停，H股回穩小漲1.5%
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                07:00:41
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=10&amp;newsType=4','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news40').style.color = '#666666'" onmouseover="document.getElementById('news40').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news40" target="_blank">
+                陸股：恐慌情緒難以消散，滬指週四收盤下跌39.92點或1.37%，創近兩年新低
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=4">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="new07">
+            <table border="0" cellpadding="2" cellspacing="0" height="100%" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:10:35
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=255&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news265').style.color = '#666666'" onmouseover="document.getElementById('news265').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news265" target="_blank">
+                美股：英特爾Q2財測指引優於預期，惟CEO下台消息衝擊，週四股價挫跌2.38%
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:07:49
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=254&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news264').style.color = '#666666'" onmouseover="document.getElementById('news264').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news264" target="_blank">
+                國際財經：日本5月份CPI年增0.7%，升幅略高於預期
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:07:43
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=253&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news263').style.color = '#666666'" onmouseover="document.getElementById('news263').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news263" target="_blank">
+                焦點股：世德(2066)併購MMG，明年營收倍增，股價開盤跳空漲停
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:06:44
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=252&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news262').style.color = '#666666'" onmouseover="document.getElementById('news262').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news262" target="_blank">
+                國內財經：央行升息兩大關鍵，楊金龍稱產出缺口與CPI互有連動性
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:06:34
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=251&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news261').style.color = '#666666'" onmouseover="document.getElementById('news261').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news261" target="_blank">
+                美股：中美市場成長前景疑慮，星巴克股價兩天內暴跌逾12%
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                09:06:23
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=250&amp;newsType=26','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news260').style.color = '#666666'" onmouseover="document.getElementById('news260').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news260" target="_blank">
+                [技業資訊](南區)「一致性的交易系統，不用預測的機械式操盤法」免費課程
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=26">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td>
+         <a href="http://www.myfund888.com/fund/search123.aspx">
+          <!--<img src="images/20140729-02.gif" width="468" height="60" border="0" class="bannerAD" />-->
+         </a>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <img height="8" src="images/header_top_02.gif" width="460"/>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" height="150" width="470">
+       <tr>
+        <td>
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://fund.smartnet.com.tw/fundRoi/e01-AllRODom.jsp" id="#taba" target="_blank">
+             國內基金排行
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://fund.smartnet.com.tw/fundRoi/e01-AllROIn.jsp" id="#tabb" target="_blank">
+             國外基金排行
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://fund.smartnet.com.tw/fundNews/F011_All.jsp" id="#tabc" target="_blank">
+             基金新聞
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="taba">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td>
+               <div align="right" class="style48">
+                資料日期：2018/06/24
+                <!-- 目前取今日 -->
+               </div>
+              </td>
+             </tr>
+            </table>
+            <table bgcolor="#999999" border="0" cellpadding="0" cellspacing="0" height="200" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="135" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="200" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" rowspan="2" width="5%">
+                  <div align="center" class="style13">
+                   排行
+                  </div>
+                 </td>
+                 <td bgcolor="#E7E7E7" rowspan="2" width="73%">
+                  <div align="center" class="style13">
+                   基金名稱
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" colspan="2" height="22">
+                  <span class="style13">
+                   報酬率(%)
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#E7E7E7" width="11%">
+                  <span class="style13">
+                   近1月
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" width="11%">
+                  <span class="style13">
+                   近3月
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style26" valign="middle">
+                  <strong>
+                   1
+                  </strong>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style26">
+                   <strong>
+                    華南永昌Shiller US REITs基金(累積新台幣)
+                   </strong>
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style26">
+                   <strong>
+                    9.79%
+                   </strong>
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style26">
+                   <strong>
+                    20.56%
+                   </strong>
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style30" valign="middle">
+                  2
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" valign="middle">
+                  <span class="style30">
+                   華南永昌Shiller US REITs基金(月配新台幣)
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   9.74%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   20.63%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                  3
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style30">
+                   元大標普油金傘型期貨信託基金之元大標普高盛原油ER單日反向1倍指數股票型期貨信託基金
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   9.52%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   -2.03%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style30" valign="middle">
+                  4
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" valign="middle">
+                  <span class="style30">
+                   富邦NASDAQ-100 ETF傘型基金之富邦NASDAQ-100單日正向兩倍基金
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   8.93%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   8.89%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                  5
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style30">
+                   華南永昌Shiller US REITs基金(月配美元)
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   8.58%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   15.99%
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="tabb">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td>
+               <div align="right" class="style48">
+                資料日期：2018/06/24
+                <!-- 目前取今日 -->
+               </div>
+              </td>
+             </tr>
+            </table>
+            <table bgcolor="#999999" border="0" cellpadding="0" cellspacing="0" height="200" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="135" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="200" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" rowspan="2" width="5%">
+                  <div align="center" class="style13">
+                   排行
+                  </div>
+                 </td>
+                 <td bgcolor="#E7E7E7" rowspan="2" width="73%">
+                  <div align="center" class="style13">
+                   基金名稱
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" colspan="2" height="22">
+                  <span class="style13">
+                   報酬率(%)
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#E7E7E7" width="11%">
+                  <span class="style13">
+                   近1月
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" width="11%">
+                  <span class="style13">
+                   近3月
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style26" valign="middle">
+                  <strong>
+                   1
+                  </strong>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style26">
+                   <strong>
+                    貝萊德世界科技基金A2英鎊
+                   </strong>
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style26">
+                   <strong>
+                    8.20%
+                   </strong>
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style26">
+                   <strong>
+                    12.14%
+                   </strong>
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style30" valign="middle">
+                  2
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" valign="middle">
+                  <span class="style30">
+                   貝萊德世界科技基金A2歐元
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   8.00%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   11.95%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                  3
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style30">
+                   瑞銀(盧森堡)生化股票基金(美元)
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   7.49%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   3.43%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style30" valign="middle">
+                  4
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" valign="middle">
+                  <span class="style30">
+                   貝萊德美國增長型基金A2歐元
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   7.15%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#F2F2F2">
+                  <span class="style30">
+                   12.36%
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                  5
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" valign="middle">
+                  <span class="style30">
+                   摩根士丹利美國增長基金A
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   7.11%
+                  </span>
+                 </td>
+                 <td align="left" bgcolor="#FFFFFF">
+                  <span class="style30">
+                   7.30%
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="tabc">
+            <table border="0" cellpadding="2" cellspacing="0" height="216" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:34:09
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=420&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news255').style.color = '#666666'" onmouseover="document.getElementById('news255').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news255" target="_blank">
+                基金：證交所今日審議通過中國信託投信ETF標的指數資格認可
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                14:32:16
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=419&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news254').style.color = '#666666'" onmouseover="document.getElementById('news254').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news254" target="_blank">
+                基金：元大美債7-10正2 ETF(00698L)7月30日起終止上市
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:07:09
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=193&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news253').style.color = '#666666'" onmouseover="document.getElementById('news253').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news253" target="_blank">
+                基金：大華銀投信旗下各基金6/21淨值漲跌一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:07:06
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=192&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news252').style.color = '#666666'" onmouseover="document.getElementById('news252').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news252" target="_blank">
+                基金：中國信託投信旗下各基金6/21淨值漲跌一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:07:03
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=191&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news251').style.color = '#666666'" onmouseover="document.getElementById('news251').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news251" target="_blank">
+                基金：元大投信旗下各基金6/21淨值漲跌一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                08:07:00
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=190&amp;newsType=25','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news250').style.color = '#666666'" onmouseover="document.getElementById('news250').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news250" target="_blank">
+                基金：日盛投信旗下各基金6/21淨值漲跌一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+              </td>
+              <td>
+               <div align="right">
+                <a class="style30" href="http://fund.smartnet.com.tw/fundNews/F011_All.jsp">
+                 more...
+                </a>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!--(AD-po7)-->
+         <!--<iframe src="./include/ad7.html" width="468" height="60" scrolling="No" frameborder="0"></iframe> -->
+         <!-- (AD-7)code碼<img src="images/2010-07-09-867958.gif" width="468" height="60" />-->
+         <!--<div align="center" class="bannerAD"><iframe src="./IAN/google_468_60150727.html" width="468" height="60" scrolling="No" frameborder="0"  marginheight="0"   marginwidth="0"  ></iframe></div>-->
+         <div align="center" class="bannerAD">
+          <script type="text/javascript">
+           tosAdspaceInfo = {
+		'aid':10012967,
+		'serverbaseurl':'tad.doublemax.net/',
+		'staticbaseurl':'static.doublemax.net/js/'
+	}
+          </script>
+          <script src="http://static.doublemax.net/js/tr.js" type="text/javascript">
+          </script>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" height="150" width="470">
+       <tr>
+        <td>
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://class.smartnet.com.tw/reportList.jsp?reportKind=8&amp;pageStart=1" id="#tab01" target="_blank">
+             研究報告
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://class.smartnet.com.tw/reportList.jsp?reportKind=7&amp;pageStart=1" id="#tab02" target="_blank">
+             盤勢分析
+            </a>
+           </li>
+           <!-- <li><a id="#tab03" href="http://stocks.smartnet.com.tw/smartnet/official/Report/sc_repstDetail.jsp" class="style13" target="_blank">券商推薦</a></li> -->
+           <li>
+            <a class="style13" href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=2" id="#tab04" target="_blank">
+             台灣股市
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="tab01">
+            <table border="0" cellpadding="2" cellspacing="0" height="151" width="100%">
+             <link href="txt.css" rel="stylesheet" type="text/css"/>
+             <tr bgcolor="#FFFFFF">
+              <td class="style30" width="16%">
+               2018-06-07
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12632','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report00').style.color = '#666666'" onmouseover="document.getElementById('report00').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report00">
+                半導體族群 再吹衝鋒號
+               </a>
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12632','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report000').style.color = '#666666'" onmouseover="document.getElementById('report000').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report000">
+                理財週刊
+               </a>
+              </td>
+             </tr>
+             <tr bgcolor="#E7E7E7">
+              <td class="style30" width="16%">
+               2018-04-09
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12630','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report01').style.color = '#666666'" onmouseover="document.getElementById('report01').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report01">
+                高股息行情大追蹤
+               </a>
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12630','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report001').style.color = '#666666'" onmouseover="document.getElementById('report001').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report001">
+                理財周刊
+               </a>
+              </td>
+             </tr>
+             <tr bgcolor="#FFFFFF">
+              <td class="style30" width="16%">
+               2018-03-15
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12629','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report02').style.color = '#666666'" onmouseover="document.getElementById('report02').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report02">
+                營收亮麗股 有財報行情
+               </a>
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12629','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report002').style.color = '#666666'" onmouseover="document.getElementById('report002').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report002">
+                理財周刊
+               </a>
+              </td>
+             </tr>
+             <tr bgcolor="#E7E7E7">
+              <td class="style30" width="16%">
+               2018-01-12
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12628','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report03').style.color = '#666666'" onmouseover="document.getElementById('report03').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report03">
+                MCU引爆2018漲價新行情
+               </a>
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12628','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report003').style.color = '#666666'" onmouseover="document.getElementById('report003').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report003">
+                理財周刊
+               </a>
+              </td>
+             </tr>
+             <tr bgcolor="#FFFFFF">
+              <td class="style30" width="16%">
+               2018-01-12
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12627','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report04').style.color = '#666666'" onmouseover="document.getElementById('report04').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report04">
+                低薪更要理財
+               </a>
+              </td>
+              <td onclick="window.open('http://www.smartnet.com.tw/pop/reporContent.jsp?sn=12627','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report004').style.color = '#666666'" onmouseover="document.getElementById('report004').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report004">
+                理財周刊
+               </a>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="tab02">
+            <table border="0" cellpadding="2" cellspacing="0" height="151" width="100%">
+             <link href="txt.css" rel="stylesheet" type="text/css"/>
+             <tr>
+              <td class="style30" width="16%">
+               2017-10-16
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12618','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report10').style.color = '#666666'" onmouseover="document.getElementById('report10').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report10">
+                電動車新瘋潮
+               </a>
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12618','','width=550,height=720,directories=0,toolbar=no,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report110').style.color = '#666666'" onmouseover="document.getElementById('report110').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report110">
+                理財週刊
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td class="style30" width="16%">
+               2017-08-18
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12605','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report11').style.color = '#666666'" onmouseover="document.getElementById('report11').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report11">
+                巨債埋下不安因子 ETF加劇波動風險
+               </a>
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12605','','width=550,height=720,directories=0,toolbar=no,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report111').style.color = '#666666'" onmouseover="document.getElementById('report111').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report111">
+                理財周刊
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td class="style30" width="16%">
+               2017-08-07
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12590','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report12').style.color = '#666666'" onmouseover="document.getElementById('report12').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report12">
+                台股要靠蘋果過高 操作仍以個股為主
+               </a>
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12590','','width=550,height=720,directories=0,toolbar=no,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report112').style.color = '#666666'" onmouseover="document.getElementById('report112').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report112">
+                理財週刊
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td class="style30" width="16%">
+               2017-08-04
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12579','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report13').style.color = '#666666'" onmouseover="document.getElementById('report13').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report13">
+                期貨單純錯帳？還是未來價格發現？
+               </a>
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12579','','width=550,height=720,directories=0,toolbar=no,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report113').style.color = '#666666'" onmouseover="document.getElementById('report113').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report113">
+                倫元投顧
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td class="style30" width="16%">
+               2017-07-27
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12570','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report14').style.color = '#666666'" onmouseover="document.getElementById('report14').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report14">
+                週選結算壓指數，整理格局不變
+               </a>
+              </td>
+              <td onclick="window.open('./pop/reporContent.jsp?sn=12570','','width=550,height=720,directories=0,toolbar=no,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('report114').style.color = '#666666'" onmouseover="document.getElementById('report114').style.color = '#FF9900'" width="68%">
+               <a class="style30" id="report114">
+                華信投顧
+               </a>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <!--<div id="tab03" class="tab_content">
+              <table width="100%" height="140%" border="0" cellpadding="0" cellspacing="0" bgcolor="#999999">
+                <tr>
+                  <td height="135" align="left" valign="top" bgcolor="#CDCDCD"><table width="100%" height="120" border="0" cellpadding="2" cellspacing="1">
+                    <tr>
+                      <td width="25%" align="center" bgcolor="#E7E7E7" class="style33">日期</td>
+                      <td width="49%" align="center" bgcolor="#E7E7E7"><a href="#" class="style33">推薦股票</a></td>
+                      <td width="26%" align="center" bgcolor="#E7E7E7"><a href="#" class="style33">推薦券商</a></td>
+                    </tr> 
+                ﻿
+
+
+
+ 
+
+
+ 
+<tr><td align='center' bgcolor='#FFFFFF' class='style30'>2012-11-09</td> <td align='center' bgcolor='#FFFFFF'><a href='http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp?stock=2454' class='style30'>2454  聯發科</a></td><td align='center' bgcolor='#FFFFFF'  class='style30'> 太平洋證券</td></tr><tr><td align='center' bgcolor='#FFFFFF' class='style30'>2012-11-08</td> <td align='center' bgcolor='#FFFFFF'><a href='http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp?stock=3035' class='style30'>3035  智　原</a></td><td align='center' bgcolor='#FFFFFF'  class='style30'> 太平洋證券</td></tr><tr><td align='center' bgcolor='#FFFFFF' class='style30'>2012-11-08</td> <td align='center' bgcolor='#FFFFFF'><a href='http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp?stock=3658' class='style30'>3658  漢微科</a></td><td align='center' bgcolor='#FFFFFF'  class='style30'> 太平洋證券</td></tr><tr><td align='center' bgcolor='#FFFFFF' class='style30'>2012-11-07</td> <td align='center' bgcolor='#FFFFFF'><a href='http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp?stock=8406' class='style30'>8406  F-金可</a></td><td align='center' bgcolor='#FFFFFF'  class='style30'> 太平洋證券</td></tr><tr><td align='center' bgcolor='#FFFFFF' class='style30'>2012-11-07</td> <td align='center' bgcolor='#FFFFFF'><a href='http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp?stock=5530' class='style30'>5530  龍　巖</a></td><td align='center' bgcolor='#FFFFFF'  class='style30'> 太平洋證券</td></tr> 
+
+
+
+
+
+                  </table></td>
+                </tr>
+              </table>
+            </div>-->
+           <div class="tab_content" id="tab04">
+            <table border="0" cellpadding="2" cellspacing="0" height="151" width="100%">
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:26:12
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=483&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news25').style.color = '#666666'" onmouseover="document.getElementById('news25').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news25" target="_blank">
+                個股：聚鼎(6224)每股含息3元，訂107/7/9為除息交易日
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:25:58
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=482&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news24').style.color = '#666666'" onmouseover="document.getElementById('news24').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news24" target="_blank">
+                投信個股：週五(22日)投信買超／賣超個股一覽表
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:22:14
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=481&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news23').style.color = '#666666'" onmouseover="document.getElementById('news23').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news23" target="_blank">
+                個股：華票(2820)6/25召開107年法人說明會
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:56
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=480&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news22').style.color = '#666666'" onmouseover="document.getElementById('news22').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news22" target="_blank">
+                △股東會：臺鹽通過配息1.5元，將把旗下明星商品打造億元品牌，提升業績
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:08
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=478&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news21').style.color = '#666666'" onmouseover="document.getElementById('news21').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news21" target="_blank">
+                櫃買中心：本週(6月19日～6月22日)三大法人買賣上櫃股票一覽表(八)
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" width="10%">
+               <a class="style30" id="#">
+                15:18:04
+               </a>
+              </td>
+              <td onclick="window.open('http://news.smartnet.com.tw/NewsChannel/pop/IndexContentNew.jsp?seqNo=477&amp;newsType=2','','width=550,height=720,toolbar=no,directories=0,scrollbars=yes,resizable=yes');" onmouseout="document.getElementById('news20').style.color = '#666666'" onmouseover="document.getElementById('news20').style.color = '#FF9900'" width="90%">
+               <a class="style30" id="news20" target="_blank">
+                櫃買中心：本週(6月19日～6月22日)三大法人買賣上櫃股票一覽表(七)
+               </a>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <img height="8" src="images/header_top_02.gif" width="460"/>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" height="150" width="470">
+       <tr>
+        <td>
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="" id="#ba11" onclick="return false">
+             講座訊息
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://class.smartnet.com.tw/" id="#ba12" target="_blank">
+             理財文章
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="ba11">
+            <table border="0" cellpadding="2" cellspacing="0" height="120" width="100%">
+             <tr>
+              <td>
+               <a class="style30" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155&amp;category_sn=596" target="_blank">
+                抓住飆股 逆風高飛
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="https://freenet.smartnet.com.tw/product-item.php?sn=10888" target="_blank">
+                九陽Joyoung-不鏽鋼全自動豆漿機
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="https://freenet.smartnet.com.tw/product-item.php?sn=10883" target="_blank">
+                獨家!網路火紅部落客獨家授權商品
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="https://freenet.smartnet.com.tw/product-item.php?sn=1271" target="_blank">
+                『e-smart股市總覽』精準完整讓你賺到!
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=43" target="_blank">
+                智慧投資熱門排行
+               </a>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="ba12">
+            <table border="0" cellpadding="2" cellspacing="0" height="120" width="100%">
+             <link href="txt.css" rel="stylesheet" type="text/css"/>
+             <tr>
+              <td>
+               <a class="style30" href="http://class.smartnet.com.tw/innerPage.jsp?sn=12589">
+                房價落底了沒？
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="http://class.smartnet.com.tw/innerPage.jsp?sn=12588">
+                要怎麼花錢 先那麼賺錢
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="http://class.smartnet.com.tw/innerPage.jsp?sn=12574">
+                泛蘋概股七月營收挑戰今年高
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="http://class.smartnet.com.tw/innerPage.jsp?sn=12573">
+                本益比下修見機而作 稀缺原料仍炙手可熱
+               </a>
+              </td>
+             </tr>
+             <tr>
+              <td>
+               <a class="style30" href="http://class.smartnet.com.tw/innerPage.jsp?sn=12560">
+                張雲量：黃金具不可取代地位
+               </a>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!--(AD-9 A)酷比code碼
+                  	<iframe src="./include/ad9.html" width="468" height="150" scrolling="No" frameborder="0"></iframe> -->
+         <!--(AD-9 A)酷比code碼 <script type="text/javascript" src="http://adsense.scupio.com/adpinline/ADmediaJS/smartnet_1006_2668_3334_1.js"></script>-->
+        </td>
+       </tr>
+      </table>
+     </td>
+     <td align="left" valign="top" width="650">
+      <table border="0" cellpadding="0" cellspacing="0" width="467">
+       <tr>
+        <td align="left" valign="top" width="234">
+         <table border="0" cellpadding="0" cellspacing="0" width="230">
+          <tr>
+           <td>
+            <table border="0" cellpadding="0" cellspacing="0" height="150" width="223">
+             <tr>
+              <td>
+               <div class="abgne_tab">
+                <ul class="tabs">
+                 <li>
+                  <a class="style13" href="http://fund.smartnet.com.tw/fundGlobalInfo/globalStock.jsp" id="#ta1">
+                   指數
+                  </a>
+                 </li>
+                 <li>
+                  <a class="style13" href="http://fund.smartnet.com.tw/fundGlobalInfo/foreignExchangeRates.jsp" id="#ta2">
+                   匯市
+                  </a>
+                 </li>
+                 <li>
+                  <a class="style13" href="http://fund.smartnet.com.tw/fundGlobalInfo/rawMaterial.jsp" id="#ta3">
+                   原物料
+                  </a>
+                 </li>
+                 <!--po
+                      <li><a id="#ta4" href="#" class="style13"    >基金快手</a></li>-->
+                 <!--po-->
+                </ul>
+                <div class="tab_container">
+                 <div class="tab_content" id="ta1">
+                  <table border="0" cellpadding="0" cellspacing="0" width="215">
+                   <tr>
+                    <td class="style30">
+                     <div align="right" class="style48">
+                      資料日期：2018/06/24
+                     </div>
+                    </td>
+                   </tr>
+                  </table>
+                  <table bgcolor="#CDCDCD" border="0" cellpadding="0" cellspacing="0" height="120" width="215">
+                   <tr>
+                    <td align="left" valign="top">
+                     <table border="0" cellpadding="0" cellspacing="1" class="style30" height="135" width="100%">
+                      <tr>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         名稱
+                        </div>
+                       </td>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         指數
+                        </div>
+                       </td>
+                       <td align="center" bgcolor="#E7E7E7" height="22">
+                        <span class="style31">
+                         漲跌
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" height="18" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" height="18" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" height="18" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" height="18" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" height="18" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                 </div>
+                 <div class="tab_content" id="ta2">
+                  <table border="0" cellpadding="0" cellspacing="0" width="215">
+                   <tr>
+                    <td class="style30">
+                     <div align="right" class="style48">
+                      資料日期：2018/06/24
+                     </div>
+                    </td>
+                   </tr>
+                  </table>
+                  <table bgcolor="#CDCDCD" border="0" cellpadding="0" cellspacing="0" height="120" width="215">
+                   <tr>
+                    <td align="left" valign="top">
+                     <table border="0" cellpadding="0" cellspacing="1" class="style30" height="135" width="100%">
+                      <tr>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         名稱
+                        </div>
+                       </td>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         買價
+                        </div>
+                       </td>
+                       <td align="center" bgcolor="#E7E7E7" height="22">
+                        <span class="style31">
+                         賣價
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                 </div>
+                 <div class="tab_content" id="ta3">
+                  <table border="0" cellpadding="0" cellspacing="0" width="215">
+                   <tr>
+                    <td class="style30">
+                     <div align="right" class="style48">
+                      資料日期：2018/06/24
+                     </div>
+                    </td>
+                   </tr>
+                  </table>
+                  <table bgcolor="#CDCDCD" border="0" cellpadding="0" cellspacing="0" height="120" width="215">
+                   <tr>
+                    <td align="left" valign="top">
+                     <table border="0" cellpadding="0" cellspacing="1" class="style30" height="120" width="100%">
+                      <tr>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         名稱
+                        </div>
+                       </td>
+                       <td bgcolor="#E7E7E7" width="33%">
+                        <div align="center" class="style31">
+                         指數
+                        </div>
+                       </td>
+                       <td align="center" bgcolor="#E7E7E7" height="22">
+                        <span class="style31">
+                         漲跌
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                      <tr>
+                       <td align="center" bgcolor="#FFFFFF" class="style30" valign="middle">
+                        <span class="style45">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" valign="middle">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                       <td align="right" bgcolor="#FFFFFF" width="34%">
+                        <span class="style44">
+                         --
+                        </span>
+                       </td>
+                      </tr>
+                     </table>
+                    </td>
+                   </tr>
+                  </table>
+                 </div>
+                 <!--                                                <div id="ta4" class="tab_content">
+                      <table width="215" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td class="style30"></td>
+                        </tr>
+                      </table>
+                        <table width="215" height="100" border="0" cellpadding="0" cellspacing="0" bgcolor="#CDCDCD">
+                        <tr>
+                          <td align="left" valign="top"><table width="100%" height="135" border="0" cellpadding="5" cellspacing="1" class="style30">
+                            <tr>
+                              <td height="285" valign="top" bgcolor="#FFFFFF"><a href="http://www.myfund888.com/Fund/fundquick.aspx?index=0" target="_blank">▪ 我退休了，每月領5萬的秘密！</a><br />
+                                <a href="http://www.myfund888.com/Fund/fundquick.aspx?index=1" target="_blank">▪ 小三的大學夢，就從現在開始！</a><br />
+                                <a href="http://www.myfund888.com/Fund/fundquick.aspx?index=2" target="_blank">▪ 擁有一輛休旅車，我可以的！</a><br />
+                                <a href="http://www.myfund888.com/Fund/fundquick.aspx?index=3" target="_blank">▪ 1克拉鑽戒的承諾，我願意！</a><br />
+                                <a href="http://www.myfund888.com/Fund/fundquick.aspx?index=4" target="_blank">▪ 億萬富翁不是夢！</a></td>
+                            </tr> 
+                          </table></td>
+                        </tr>
+                      </table>                   
+                       </div>
+      -->
+                </div>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+        <td valign="top" width="218">
+         <table border="0" cellpadding="0" cellspacing="5" height="340" width="218">
+          <!--(AD-po4)-->
+          <tr>
+           <td>
+            <a href="http://www.yuanta.com.tw/post/yeswin_fastedm/yeswin_edm_2.html" target="_blank">
+             <img border="0" height="20" src="images/8020-01.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="http://www.yuanta.com.tw/post/yeswin_fastedm/yeswin_edm_2.html" target="_blank">
+             yeswin讓您e手掌握全世界
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://freenet.smartnet.com.tw/index1.php" target="_blank">
+             <img border="0" height="20" src="images/8020-05.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://freenet.smartnet.com.tw/index1.php" target="_blank">
+             元大證券紅利兌換專區
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155" target="_blank">
+             <img border="0" height="20" src="images/8020-03.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155" target="_blank">
+             理財課程
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="http://www.nncf.org/gotoschool" target="_blank">
+             <img border="0" height="20" src="images/8020-02.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="http://www.nncf.org/gotoschool" target="_blank">
+             捐300元資助貧困顱顏患童安心上學
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=35" target="_blank">
+             <img border="0" height="20" src="images/8020-82.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=35" target="_blank">
+             狂銷熱賣
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="http://yuanta.smartnet.com.tw/index.php" target="_blank">
+             <img border="0" height="20" src="images/8020-06.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="http://yuanta.smartnet.com.tw/index.php" target="_blank">
+             元大銀行集利町
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://goo.gl/jgSKdS" target="_blank">
+             <img border="0" height="20" src="images/m-link80X20-5.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://goo.gl/jgSKdS" target="_blank">
+             肯德基漢堡立刻領取
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=185" target="_blank">
+             <img border="0" height="20" src="images/8020-08.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=185" target="_blank">
+             秋冬商品必BUY
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155&amp;category_sn=596" target="_blank">
+             <img border="0" height="20" src="images/8020-09.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155&amp;category_sn=596" target="_blank">
+             投資自己 獲利終生
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="http://www.facebook.com/stocks.smartnet" target="_blank">
+             <img border="0" height="20" src="images/8020-10.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="http://www.facebook.com/stocks.smartnet" target="_blank">
+             智富網粉絲頁!!讚讚讚
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            <a href="http://promotion.smartnet.com.tw/091215/web.htm" target="_blank">
+             <img border="0" height="20" src="images/8020-11.gif" width="80"/>
+            </a>
+           </td>
+           <td>
+            <a class="style15" href="http://promotion.smartnet.com.tw/091215/web.htm" target="_blank">
+             紅利送愛 公益不打烊
+            </a>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!--<a href=" http://www.myfund888.com/Fund/fundquick.aspx?index=2" target="_blank"><img src="images/20140729-01.gif" width="468" height="60" border="0" class="bannerAD" longdesc="http://www.myfund888.com/Fund/fundquick.aspx?index=2" />-->
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" height="65" width="468">
+       <tr bgcolor="#E1E1E1">
+        <td align="left" bgcolor="#a6bfdb" height="59" valign="top">
+         <table border="0" cellpadding="3" cellspacing="1" height="65" width="100%">
+          <tr>
+           <td background="images/bg01.gif" class="style12 style13" height="17">
+            熱門選單
+           </td>
+          </tr>
+          <tr>
+           <td align="left" bgcolor="#FFFFFF" valign="middle">
+            <table border="0" cellpadding="0" cellspacing="0" height="20" width="98%">
+             <tr>
+              <td width="22%">
+               <span class="style13">
+                【 股  市  投  資
+               </span>
+               <span class="style13">
+                】
+               </span>
+              </td>
+              <td width="14%">
+               <span class="style13">
+                <a class="style15" href="http://stocks.smartnet.com.tw/smartnet/official/DailyQuotes/sc_RealtimeRank.jsp">
+                 排行報價
+                </a>
+               </span>
+              </td>
+              <td width="14%">
+               <span class="style13">
+                <a class="style15" href="http://stocks.smartnet.com.tw/smartnet/official/MyStocks/sc_CustomerStock.jsp">
+                 自選股
+                </a>
+               </span>
+              </td>
+              <td width="16%">
+               <span class="style15">
+                <a class="style15" href="http://stocks.smartnet.com.tw/smartnet/official/Classification/sc_CStocks.jsp">
+                 產業類股
+                </a>
+               </span>
+              </td>
+              <td width="14%">
+               <a class="style15" href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourMarket/sc_Corpinv_Base.jsp">
+                盤後分析
+               </a>
+              </td>
+              <td width="26%">
+               <span class="style13">
+                <a class="style15" href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourIndividual/sc_StockQuote.jsp">
+                 個股查詢
+                </a>
+               </span>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+          <!-- <tr>
+                <td align="left" valign="middle" bgcolor="#FFFFFF"><table width="98%" height="20" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="22%"><span class="style13">【元大寶來證券】</span></td>
+                    <td width="14%"><a href="http://www.smartnet.com.tw/yt.jsp" class="style15">元大下單</a></td>
+                    <td width="14%"><span class="style15"><a href="https://alliance.yuanta.com.tw/preopens/pre_open.asp" class="style15">預約開戶</a></span></td>
+                    <td width="16%"><span class="style15"><a href="http://www.smartnet.com.tw/OrderDoc/s01.jsp" class="style15">下單說明</a></span></td>
+                    <td width="19%"><a href="http://asp.yuanta.com.tw/center/ie_setup.hta" class="style15">下單環境檢測</a></td>
+                    <td width="21%">&nbsp;</td>
+                  </tr>
+                </table>                  </td>
+              </tr>-->
+          <tr>
+           <td align="left" bgcolor="#FFFFFF" valign="middle">
+            <table border="0" cellpadding="0" cellspacing="0" height="20" width="98%">
+             <tr>
+              <td width="22%">
+               <span class="style13">
+                【 理  財  工  具 】
+               </span>
+              </td>
+              <td width="15%">
+               <span class="style13">
+                <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=39" target="_blank">
+                 五金百貨
+                </a>
+               </span>
+              </td>
+              <td width="15%">
+               <a class="style15" href="http://freenet.smartnet.com.tw/product-page.php?store_type_sn=43" target="_blank">
+                財經書籍
+               </a>
+              </td>
+              <td width="16%">
+               <span class="style15">
+                <a class="style15" href="http://www.facebook.com/stocks.smartnet" target="_blank">
+                 FB粉絲團
+                </a>
+               </span>
+              </td>
+              <td class="style15" width="15%">
+               <a class="style15" href="https://freenet.smartnet.com.tw/product-page.php?store_type_sn=155&amp;category_sn=596" target="_blank">
+                投資課程
+               </a>
+              </td>
+              <td width="15%">
+               <span class="style13">
+                <a class="style15" href="http://promotion.smartnet.com.tw/smartnet_paper/20120109/edm.html" target="_blank">
+                 會員快訊
+                </a>
+               </span>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <img height="8" src="images/header_top_02.gif" width="460"/>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!--(AD-po5)-->
+         <!--(AD-5)酷比code碼-->
+         <iframe frameborder="0" height="110" scrolling="No" src="./include/ad5b.html" width="468">
+         </iframe>
+         <!--(AD-5)酷比code碼
+                  	<iframe src="./include/ad9.html" width="468" height="150" scrolling="No" frameborder="0"></iframe> -->
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="468">
+       <tr>
+        <td height="2">
+         <!--(AD-po5)-->
+         <!--(AD-5)酷比code碼-->
+         <!--(AD-5)酷比code碼
+                  	<iframe src="./include/ad9.html" width="468" height="150" scrolling="No" frameborder="0"></iframe> -->
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourMarket/sc_Corpinv_Base.jsp" id="#bb01" target="_blank">
+             上市法人買賣超
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourMarket/sc_Corpinv_Base.jsp" id="#bb02" target="_blank">
+             上櫃法人買賣超
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="bb01">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td class="style30">
+               <div align="right" class="style48">
+                資料日期：2018/06/24 單位：億元
+               </div>
+              </td>
+             </tr>
+            </table>
+            <table bgcolor="#CDCDCD" border="0" cellpadding="0" cellspacing="0" height="93" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="93" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="116" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" class="style4" height="22">
+                  <div align="center" class="style13">
+                   法  人
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="29%">
+                  買  進
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="27%">
+                  賣  出
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="28%">
+                  買賣超
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style47" height="20" valign="middle" width="16%">
+                  外  資
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   339.76
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   438.09
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   -98.33
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style47" height="22" valign="middle">
+                  投  信
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  11.06
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  13.00
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  -1.94
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style47" height="22" valign="middle">
+                  自營商
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  80.82
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  89.74
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  -8.92
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style13" height="24" valign="middle">
+                  總計
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4" colspan="3">
+                  <span class="style13">
+                   -109.19
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="bb02">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td class="style30">
+               <div align="right" class="style48">
+                資料日期：2018/06/24 單位：億元
+               </div>
+              </td>
+             </tr>
+            </table>
+            <table bgcolor="#CDCDCD" border="0" cellpadding="0" cellspacing="0" height="93" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="93" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="116" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" class="style4" height="22" width="16%">
+                  <div align="center" class="style13">
+                   法  人
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="28%">
+                  買  進
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="28%">
+                  賣  出
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="28%">
+                  買賣超
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style47" height="20" valign="middle" width="16%">
+                  外  資
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   44.42
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   48.20
+                  </span>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4">
+                  <span class="style47">
+                   -3.78
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style47" height="22" valign="middle">
+                  投  信
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  3.10
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  3.56
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style47">
+                  -0.46
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#FFFFFF" class="style47" height="22" valign="middle">
+                  自營商
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  15.95
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  38.50
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style47">
+                  -22.56
+                 </td>
+                </tr>
+                <tr>
+                 <td align="center" bgcolor="#F2F2F2" class="style13" height="24" valign="middle">
+                  總計
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style4" colspan="3">
+                  <span class="style13">
+                   -26.79
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <img height="5" src="images/header_top_02.gif" width="18"/>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!--<a href="http://goo.gl/cT2B43" target="_blank"><img src="images/ad20140108-480x60.jpg" width="480" height="60" border="0" /></a>-->
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <img height="5" src="images/header_top_02.gif" width="18"/>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="468">
+       <tr>
+        <td height="2">
+         <div class="abgne_tab">
+          <ul class="tabs">
+           <li>
+            <a class="style13" href="http://newbbs.smartnet.com.tw/bbs/index.php" id="#tt1" target="_blank">
+             論壇最新文章
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://newbbs.smartnet.com.tw/bbs/index.php" id="#tt2" target="_blank">
+             最多觀看
+            </a>
+           </li>
+           <li>
+            <a class="style13" href="http://newbbs.smartnet.com.tw/bbs/index.php" id="#tt" target="_blank">
+             最多回覆
+            </a>
+           </li>
+          </ul>
+          <div class="tab_container">
+           <div class="tab_content" id="tt1">
+            <table bgcolor="#E1E1E1" border="0" cellpadding="0" cellspacing="0" height="135" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="135" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="200" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" height="22">
+                  <div align="center" class="style13">
+                   主題
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="15%">
+                  發表人
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="20%">
+                  時間
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=31546" target="_blank">
+                   選擇元富期貨讓你期貨手續費選擇權手續費  口口省
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  元富期貨小靜
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2018-06-24 15:47:14
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=31545" target="_blank">
+                   還在尋找期貨手續費的優惠嗎?找元富期貨郭靜宜就對啦
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  元富期貨小靜
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2018-06-24 15:46:40
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=31544" target="_blank">
+                   (元富期貨~郭靜宜) 不限口數 元富期貨手續費多低?
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  元富期貨小靜
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2018-06-24 15:45:36
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=31543" target="_blank">
+                   錨點直接撥打0963-088-657會找到你要的手續費
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  元富期貨小靜
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2018-06-24 15:43:51
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=31542" target="_blank">
+                   元富期貨秉持著追求好要更好的理念
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  元富期貨小靜
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2018-06-24 15:42:22
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="tt2">
+            <table bgcolor="#E1E1E1" border="0" cellpadding="0" cellspacing="0" height="135" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="135" valign="top">
+               <table border="0" cellpadding="1" cellspacing="1" height="200" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" height="22">
+                  <div align="center" class="style13">
+                   主題
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="16%">
+                  發表人
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="19%">
+                  時間
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=94" target="_blank">
+                   請大家進來簽到!讓彼此多多認識一下~
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  定風愁^.^
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2008-04-24 10:45:33
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=6916" target="_blank">
+                   明確時間點＝事實俱在&amp;以圖為証勿打嘴砲...ok！?
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  a9595959595
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2011-07-02 8:53:39
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=6477" target="_blank">
+                   IOGEAR
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  樂逍遙
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2011-03-03 16:57:43
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=903" target="_blank">
+                   穩賺之轉折操作(股票 期指 外匯 基金)
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  霧
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2008-06-14 15:43:42
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=2990" target="_blank">
+                   盤中 無聊日記 ...
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  蒼天笑
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2009-01-15 13:56:45
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+           <div class="tab_content" id="tt3">
+            <table bgcolor="#E1E1E1" border="0" cellpadding="0" cellspacing="0" height="135" width="100%">
+             <tr>
+              <td align="left" bgcolor="#CDCDCD" height="135" valign="top">
+               <table border="0" cellpadding="2" cellspacing="1" height="200" width="100%">
+                <tr>
+                 <td bgcolor="#E7E7E7" height="20">
+                  <div align="center" class="style13">
+                   主題
+                  </div>
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="16%">
+                  發表人
+                 </td>
+                 <td align="center" bgcolor="#E7E7E7" class="style13" width="19%">
+                  時間
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=94" target="_blank">
+                   請大家進來簽到!讓彼此多多認識一下~
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  定風愁^.^
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2008-04-24 10:45:33
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=903" target="_blank">
+                   穩賺之轉折操作(股票 期指 外匯 基金)
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  霧
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2008-06-14 15:43:42
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=2990" target="_blank">
+                   盤中 無聊日記 ...
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  蒼天笑
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2009-01-15 13:56:45
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#F2F2F2" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=6477" target="_blank">
+                   IOGEAR
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2" class="style45">
+                  樂逍遙
+                 </td>
+                 <td align="center" bgcolor="#F2F2F2">
+                  <span class="style34">
+                   2011-03-03 16:57:43
+                  </span>
+                 </td>
+                </tr>
+                <tr>
+                 <td bgcolor="#FFFFFF" width="65%">
+                  <a class="style47" href="http://newbbs.smartnet.com.tw/bbs/viewtopic.php?t=6916" target="_blank">
+                   明確時間點＝事實俱在&amp;以圖為証勿打嘴砲...ok！?
+                  </a>
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF" class="style45">
+                  a9595959595
+                 </td>
+                 <td align="center" bgcolor="#FFFFFF">
+                  <span class="style34">
+                   2011-07-02 8:53:39
+                  </span>
+                 </td>
+                </tr>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </div>
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" class="bannerAD" width="468">
+       <tr>
+        <td height="2">
+         <div align="center" class="bannerAD">
+          <iframe frameborder="0" height="60" marginheight="0" marginwidth="0" scrolling="No" src="./IAN/google_468_60150727.html" width="468">
+          </iframe>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="468">
+       <tr bgcolor="#E1E1E1">
+        <td align="left" bgcolor="#a6bfdb" height="59" valign="top">
+         <table border="0" cellpadding="3" cellspacing="1" width="100%">
+          <tr>
+           <td background="images/bg01.gif" class="style22">
+            <a class="style12" href="https://freenet.smartnet.com.tw/index1.php" id="#tt3" target="_blank">
+             商城熱賣商品
+            </a>
+           </td>
+          </tr>
+          <tr>
+           <td align="left" bgcolor="#FFFFFF" valign="middle">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <!-- <iframe src="/test_hotSale.html" width="170" height="260" scrolling="No" frameborder="0"> </iframe> 	-->
+             </tr>
+             <tr>
+              <td colspan="5">
+               <table align="center" border="0" cellpadding="0" cellspacing="0" height="30" width="100%">
+                <tbody>
+                 <tr>
+                  <td align="right" valign="middle" width="33%">
+                   <a class="txt04" href="https://freenet.smartnet.com.tw">
+                    更多特價商品...
+                   </a>
+                  </td>
+                 </tr>
+                </tbody>
+               </table>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="460">
+       <tr>
+        <td height="2">
+         <!-- (AD-9B)酷比code碼 
+        		 <iframe src="./include/ad10.html" width="468" height="110" scrolling="No" frameborder="0"></iframe> -->
+         <!-- (AD-9B)酷比code碼 <script type="text/javascript" src="http://adsense.scupio.com/adpinline/ADmediaJS/smartnet_1006_2671_3337_1.js"></script> -->
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>
+   <table align="center" border="0" cellpadding="0" cellspacing="0" width="955">
+    <tr>
+     <td>
+      <!-- #BeginLibraryItem "/htm/lbi/bottom.lbi" -->
+      <style type="text/css">
+       <!-- 
+.style10 {
+	font-size: 13px;
+	line-height: 14pt;
+}
+.style11 {color: #006699}
+-->
+      </style>
+      <meta content="text/html;" http-equiv="Content-Type"/>
+      <title>
+       無標題文件
+      </title>
+      <style type="text/css">
+       <!--
+-->
+      </style>
+      <table border="0" cellpadding="0" cellspacing="0" width="955">
+       <tr>
+        <td>
+         <table background="../images/bottom_01.gif" border="0" cellpadding="0" cellspacing="0" width="955">
+          <tr>
+           <td align="right" width="388">
+            <img height="125" src="../images/bottom_01.gif" width="29"/>
+            <img height="125" src="../images/bottom_02.gif" width="245"/>
+           </td>
+           <td width="567">
+            <table border="0" cellpadding="0" cellspacing="0" width="500">
+             <tr>
+              <td>
+               <a class="style11" href="mailto:ian_chen@smartnet.com.tw">
+                廣告託播
+               </a>
+               ｜
+               <a class="style11" href="privacy.jsp">
+                隱私權說明
+               </a>
+               ｜
+               <a class="style11" href="faq.jsp">
+                FAQ
+               </a>
+               ｜
+               <a class="style11" href="regs.jsp">
+                服務條款
+               </a>
+               ｜
+               <a class="style11" href="mailto:ian_chen@smartnet.com.tw">
+                廠商合作
+               </a>
+               <span class="style10">
+                <br/>
+                <strong>
+                 奇唯科技股份有限公司
+                </strong>
+                <br/>
+                <a href="http://www.smartnet.com.tw/map/map.html">
+                 104台北市中山區民生東路二段149號8樓
+                </a>
+                <br/>
+               </span>
+               <span class="style22">
+                客服信箱：
+                <a href="mailto:service@smartnet.com.tw">
+                 service@smartnet.com.tw
+                </a>
+                <br/>
+                版權所有Copyright 2014
+                <a href="http://www.syspower.com.tw">
+                 奇唯科技
+                </a>
+                版權所有 轉載必究
+               </span>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </td>
+       </tr>
+      </table>
+      <!-- Start Alexa Certify Javascript -->
+      <script type="text/javascript">
+       _atrk_opts = { atrk_acct:"TS76j1a8Dy000u", domain:"smartnet.com.tw",dynamic: true};
+(function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+      </script>
+      <noscript>
+       <img alt="" height="1" src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=TS76j1a8Dy000u" style="display:none" width="1"/>
+      </noscript>
+      <!-- End Alexa Certify Javascript -->
+      <!-- #EndLibraryItem -->
+     </td>
+    </tr>
+   </table>
+   <div id="itemT" style="width:0px;height:0px;border:0px;overflow:hidden;">
+    <span id="item1">
+     <a href="http://stocks.smartnet.com.tw/">
+      <h3>
+       上市大盤
+      </h3>
+     </a>
+    </span>
+    <span id="item2">
+     <a href="http://stocks.smartnet.com.tw/">
+      <h3>
+       上櫃大盤
+      </h3>
+     </a>
+    </span>
+    <span id="item3">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=0">
+      <h3>
+       即時新聞
+      </h3>
+     </a>
+    </span>
+    <span id="item4">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=7">
+      <h3>
+       國際政經
+      </h3>
+     </a>
+    </span>
+    <span id="item5">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=1">
+      <h3>
+       國內政經
+      </h3>
+     </a>
+    </span>
+    <span id="item6">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=3">
+      <h3>
+       中國政經
+      </h3>
+     </a>
+    </span>
+    <span id="item7">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=8">
+      <h3>
+       國際股市
+      </h3>
+     </a>
+    </span>
+    <span id="item8">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=4">
+      <h3>
+       大陸股市
+      </h3>
+     </a>
+    </span>
+    <span id="item9">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=26">
+      <h3>
+       其他新聞
+      </h3>
+     </a>
+    </span>
+    <span id="item10">
+     <a href="http://fund.smartnet.com.tw/fundRoi/e01-AllRODom.jsp">
+      <h3>
+       國內基金排行
+      </h3>
+     </a>
+    </span>
+    <span id="item11">
+     <a href="http://fund.smartnet.com.tw/fundRoi/e01-AllROIn.jsp">
+      <h3>
+       國外基金排行
+      </h3>
+     </a>
+    </span>
+    <span id="item12">
+     <a href="http://fund.smartnet.com.tw/fundNews/F011_All.jsp">
+      <h3>
+       基金新聞
+      </h3>
+     </a>
+    </span>
+    <span id="item13">
+     <a href="http://class.smartnet.com.tw/reportList.jsp?reportKind=8&amp;pageStart=1">
+      <h3>
+       研究報告
+      </h3>
+     </a>
+    </span>
+    <span id="item14">
+     <a href="http://class.smartnet.com.tw/reportList.jsp?reportKind=7&amp;pageStart=1">
+      <h3>
+       盤勢分析
+      </h3>
+     </a>
+    </span>
+    <span id="item15">
+     <a href="http://stocks.smartnet.com.tw/smartnet/official/Report/sc_repstDetail.jsp">
+      <h3>
+       券商推薦
+      </h3>
+     </a>
+    </span>
+    <span id="item16">
+     <a href="http://news.smartnet.com.tw/NewsChannel/news-list.jsp?newsType=2">
+      <h3>
+       台灣股市
+      </h3>
+     </a>
+    </span>
+    <span id="item17">
+     <a href="#">
+      <h3>
+       講座訊息
+      </h3>
+     </a>
+    </span>
+    <span id="item18">
+     <a href="http://class.smartnet.com.tw/">
+      <h3>
+       理財文章
+      </h3>
+     </a>
+    </span>
+    <span id="item19">
+     <a href="http://fund.smartnet.com.tw/fundGlobalInfo/globalStock.jsp">
+      <h3>
+       國際股市
+      </h3>
+     </a>
+    </span>
+    <span id="item20">
+     <a href="http://fund.smartnet.com.tw/fundGlobalInfo/foreignExchangeRates.jsp">
+      <h3>
+       國際匯市
+      </h3>
+     </a>
+    </span>
+    <span id="item21">
+     <a href="http://fund.smartnet.com.tw/fundGlobalInfo/rawMaterial.jsp">
+      <h3>
+       國際原物料
+      </h3>
+     </a>
+    </span>
+    <span id="item22">
+     <a href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourMarket/sc_Corpinv_Base.jsp">
+      <h3>
+       上市法人買賣超
+      </h3>
+     </a>
+    </span>
+    <span id="item23">
+     <a href="http://stocks.smartnet.com.tw/smartnet/official/Off_hourMarket/sc_Corpinv_Base.jsp">
+      <h3>
+       上櫃法人買賣超
+      </h3>
+     </a>
+    </span>
+    <span id="item24">
+     <a href="http://newbbs.smartnet.com.tw/bbs/index.php">
+      <h3>
+       論壇最新文章
+      </h3>
+     </a>
+    </span>
+    <span id="item25">
+     <a href="http://newbbs.smartnet.com.tw/bbs/index.php">
+      <h3>
+       最多觀看
+      </h3>
+     </a>
+    </span>
+    <span id="item26">
+     <a href="http://newbbs.smartnet.com.tw/bbs/index.php">
+      <h3>
+       最多回覆
+      </h3>
+     </a>
+    </span>
+    <span id="item27">
+     <a href="https://freenet.smartnet.com.tw/index1.php">
+      <h3>
+       商城熱賣商品
+      </h3>
+     </a>
+    </span>
+    <span id="item28">
+     <a href="http://www.smartnet.com.tw/Sitemap.html">
+      <h3>
+       siteMap
+      </h3>
+     </a>
+    </span>
+   </div>
+   <script type="text/JavaScript">
+    <!-- //body init 太慢了所以百在這邊 none block
+ //document.getElementById('itemT').style.display='none'; //document.getElementById('itemT').style.color='#FF8040'; 
+ document.getElementById('itemT').style.textIndent='-9999px'; document.getElementById('itemT').style.overflow='hidden';  
+ document.getElementById('itemT').style.height="0px"
+        //-->
+   </script>
+   <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    _uacct = "UA-748737-1";
+urchinTracker();
+   </script>
+   <script type="text/javascript">
+    var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+  (function() {
+    var gads = document.createElement('script');
+    gads.async = true;
+    gads.type = 'text/javascript';
+    var useSSL = 'https:' == document.location.protocol;
+    gads.src = (useSSL ? 'https:' : 'http:') +
+      '//www.googletagservices.com/tag/js/gpt.js';
+    var node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(gads, node);
+  })();
+   </script>
+   <script type="text/javascript">
+    googletag.cmd.push(function() {
+    googletag.defineSlot('/88840052/FP_728x90', [728, 90], 'div-gpt-ad-1444724401747-0').addService(googletag.pubads());
+    googletag.pubads().enableSingleRequest();
+    googletag.pubads().collapseEmptyDivs();
+    googletag.enableServices();
+  });
+   </script>
+  </form>
+ </body>
+</html>

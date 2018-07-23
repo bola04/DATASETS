@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="{{ html.lang }}" ng-app="sreality" ng-controller="MainCtrl">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width,initial-scale=1,minimal-ui" name="viewport"/>
+  <!--- Nastaveni meta pres JS a ne pres Angular, aby byla nastavena default hodnota pro agenty co nezvladaji PhantomJS --->
+  <title ng:bind-template="{{metaSeo.title}}">
+   Sreality.cz • reality a nemovitosti z celé ČR
+  </title>
+  <meta content="Největší nabídka nemovitostí v ČR. Nabízíme byty, domy, novostavby, nebytové prostory, pozemky a další reality k prodeji i pronájmu. Sreality.cz" name="description"/>
+  <meta content="Sreality.cz • reality a nemovitosti z celé ČR" property="og:title"/>
+  <meta content="website" property="og:type"/>
+  <meta content="https://www.sreality.cz/img/sreality-logo-og.png" property="og:image"/>
+  <meta content="Největší nabídka nemovitostí v ČR. Nabízíme byty, domy, novostavby, nebytové prostory, pozemky a další reality k prodeji i pronájmu. Sreality.cz" property="og:description"/>
+  <meta content="https://www.sreality.cz/" property="og:url"/>
+  <meta content="{{metaStatus.value}}" name="szn:status" ng-if="metaStatus.value"/>
+  <meta content="no" http-equiv="imagetoolbar"/>
+  <link href="/img/icons/favicon.ico" rel="icon" sizes="16x16 32x32 48x48 64x64"/>
+  <link href="/img/icons/apple-touch-icon-57x57.png?3" rel="apple-touch-icon" sizes="57x57"/>
+  <link href="/img/icons/apple-touch-icon-60x60.png?3" rel="apple-touch-icon" sizes="60x60"/>
+  <link href="/img/icons/apple-touch-icon-72x72.png?3" rel="apple-touch-icon" sizes="72x72"/>
+  <link href="/img/icons/apple-touch-icon-76x76.png?3" rel="apple-touch-icon" sizes="76x76"/>
+  <link href="/img/icons/apple-touch-icon-114x114.png?3" rel="apple-touch-icon" sizes="114x114"/>
+  <link href="/img/icons/apple-touch-icon-120x120.png?3" rel="apple-touch-icon" sizes="120x120"/>
+  <link href="/img/icons/apple-touch-icon-144x144.png?3" rel="apple-touch-icon" sizes="144x144"/>
+  <link href="/img/icons/apple-touch-icon-152x152.png?3" rel="apple-touch-icon" sizes="152x152"/>
+  <link href="/img/icons/apple-touch-icon-180x180.png?3" rel="apple-touch-icon" sizes="180x180"/>
+  <link href="/img/icons/android-chrome-192x192.png" rel="icon" sizes="192x192" type="image/png"/>
+  <link href="/img/icons/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="/img/icons/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
+  <link href="/img/icons/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="/img/icons/android-chrome-manifest.json" rel="manifest"/>
+  <meta content="#2b5797" name="msapplication-TileColor"/>
+  <meta content="/img/icons/ms-icon-144x144.png" name="msapplication-TileImage"/>
+  <meta content="/img/icons/browserconfig.xml" name="msapplication-config"/>
+  <link ng-href="{{ rss.url }}" ng-if="rss.url" rel="alternate" type="application/rss+xml"/>
+  <link hreflang="{{lang.code}}" ng-href="{{lang.url}}" ng-repeat="lang in metaSeo.languages" rel="alternate"/>
+  <link href="/css/all.css?639ab99" rel="stylesheet"/>
+  <!-- Begin Inspectlet Embed Code -->
+  <script id="inspectletjs" type="text/javascript">
+   window.__insp = window.__insp || [];
+	__insp.push(['wid', 821249485]);
+	__insp.push(["virtualPage"]);
+	(function() {
+	function ldinsp(){if(typeof window.__inspld != "undefined") return; window.__inspld = 1; var insp = document.createElement('script'); insp.type = 'text/javascript'; insp.async = true; insp.id = "inspsync"; insp.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://cdn.inspectlet.com/inspectlet.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(insp, x); };
+	setTimeout(ldinsp, 500); document.readyState != "complete" ? (window.attachEvent ? window.attachEvent('onload', ldinsp) : window.addEventListener('load', ldinsp, false)) : ldinsp();
+	})();
+  </script>
+  <!-- End Inspectlet Embed Code -->
+  <!--[if lte IE 8]>
+		<script>
+			document.createElement('popover');
+			document.createElement('mortgage');
+			document.createElement('vendor');
+			document.createElement('hp-signpost');
+			document.createElement('category-switcher');
+			document.createElement('feedback');
+			document.createElement('bottom');
+			document.createElement('panorama');
+			document.createElement('panorama-prev');
+			document.createElement('sphere-viewer');
+			document.createElement('sphere-viewer-prev');
+			document.createElement('save-filter');
+		</script>
+    <![endif]-->
+  <!-- Statistiky -->
+  <script src="https://h.imedia.cz/js/dot-small.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   (function() {
+			try {
+				// Při přesměrování na hashbang URL (IE8-9) ztrácíme referrer,
+				// který je potřeba pro správné počítání statistik.
+				if (window.sessionStorage) { // někdo může mít DOM storage zakázaný
+					var l = document.createElement('a');
+					l.href = document.referrer;
+					var referrerHostname = l.hostname;
+
+					if (window.location.hostname != referrerHostname) {
+						window.sessionStorage.setItem('referrer', l.href);
+					}
+				}
+
+				// Starý android (< 4.0) v kombinaci s angularem špatně pracuje s hashem v URL.
+				// Považuje ho za součást query případně path.
+				// Na takových zařízech se budeme tvářit, že žádný hash nebyl.
+				if (parseInt((/android (\d+)/.exec(window.navigator.userAgent.toLowerCase()) || [])[1], 10) < 4) {
+					var hrefWithoutHashbang = window.location.href.replace('/#!', '');
+					var hashIndex = hrefWithoutHashbang.indexOf('#');
+					if (hashIndex != -1) {
+						window.location.replace(hrefWithoutHashbang.substring(0, hashIndex));
+					}
+				}
+			} catch (e) {}
+		})();
+  </script>
+  <!-- API mapy.cz -->
+  <script src="https://api4.mapy.cz/loader.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   Loader.load(null, {poi: true, pano: true})
+  </script>
+  <!-- Login reklama -->
+  <script src="https://i.imedia.cz/js/im3.js" type="text/javascript">
+  </script>
+  <script src="https://1.im.cz/software/promo/promo-sbrowser.js">
+  </script>
+  <!-- Rozkopírování SID cookie -->
+  <script src="https://h.imedia.cz/js/sid.js">
+  </script>
+  <!-- Login -->
+  <script src="https://login.szn.cz/js/api/login.js">
+  </script>
+  <script>
+   login.cfg({
+			serviceId: "sreality"
+		});
+  </script>
+  <!-- KONFIGURACE -->
+  <script src="/js/conf/config.js?639ab99">
+  </script>
+  <script src="/js/advert.js">
+  </script>
+  <script src="/js/all.js?639ab99">
+  </script>
+  <script type="text/javascript">
+   if (window.DOT) {
+			var dotCfg = {
+				service: 'sreality'
+			};
+			if (window.SrealityABTest && window.SrealityABTest.getVariant()) {
+				dotCfg.abtest = window.SrealityABTest.getVariant();
+			}
+			DOT.cfg(dotCfg);
+		}
+  </script>
+  <noscript>
+   <meta content="0;url=?_escaped_fragment_=" http-equiv="refresh"/>
+  </noscript>
+  <meta content="!" name="fragment" ng-if="metaSeo.showMetaFragment"/>
+ </head>
+ <!--[if IE 8]>    <body class="ie8"> <![endif]-->
+ <!--[if IE 9]>    <body class="notie8 ie9"> <![endif]-->
+ <!--[if gt IE 9]><!-->
+ <body class="notie8 notie9 lang-{{html.lang}}">
+  <!--<![endif]-->
+  <div loading-line="">
+  </div>
+  <div page-layout="">
+   <div ng-view="">
+   </div>
+  </div>
+ </body>
+</html>

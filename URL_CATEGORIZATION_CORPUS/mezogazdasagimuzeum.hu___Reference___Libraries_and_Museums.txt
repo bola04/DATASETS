@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="hu" ng-app="app" ng-controller="HeadController">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <base href="/"/>
+  <!-- metadata -->
+  <title ng-bind="meta.title">
+   Magyar Mezőgazdasági Múzeum és Könyvtár
+  </title>
+  <meta content="" name="description" ng-if="false"/>
+  <meta content="{{ meta.description | stripHtmlTags }}" name="description"/>
+  <!-- open graph metadata. One day this might be crawled... -->
+  <meta content="{{ meta.title }}" property="og:title"/>
+  <meta content="Magyar Mezőgazdasági Múzeum és Könyvtár" property="og:site_name "/>
+  <meta content="{{ meta.url }}" property="og:url "/>
+  <meta content="{{ meta.description | stripHtmlTags }}" property="og:description"/>
+  <meta content="{{ meta.image }}" property="og:image"/>
+  <meta content="!" name="fragment"/>
+  <!-- inject:css -->
+  <link href="styles/style.min.css" rel="stylesheet"/>
+  <!-- endinject -->
+  <link href="{{accessibleStylePath}}" rel="stylesheet"/>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+  <script id="dynamic_content_block_default.html" type="text/ng-template">
+   <div class="bg-light section featured">
+		    <div class="container">
+				<h1 ng-if="tempblock.title">{{tempblock.title}}</h1>
+				<div class="row-sm section">
+					<div class="col" ng-class="{'col-md-4 featured-sm': article.type == 'featured-article', 'col-md-8 featured-lg': article.type == 'featured-article-xl', 'col-md-4 featured-lg': article.type == 'featured-article-lg'}" ng-repeat="article in tempblock.data.articles track by $index">
+						<a class="featured-article hover-effect" ng-href="{{article.alternative_link ? article.alternative_link : article.uri+'/'+article.slug}}">
+							<div ng-repeat="(block_type, block_id) in article.blocks_for_list">
+								<div ng-switch on="block_type">
+									<div ng-switch-when="image" ng-switch on="article.type">
+										<img image-reveal ng-switch-when="featured-article" class="img-responsive" ng-src="assets/{{article.blocks[block_id].data.filedata.folder}}/{{article.blocks[block_id].data.filedata.filename}}_1440x960.{{article.blocks[block_id].data.filedata.ext}}" alt="{{article.title}}">
+										<img image-reveal ng-switch-when="featured-article-xl" class="img-responsive" ng-src="assets/{{article.blocks[block_id].data.filedata.folder}}/{{article.blocks[block_id].data.filedata.filename}}_1440x960.{{article.blocks[block_id].data.filedata.ext}}" alt="{{article.title}}" style="margin-bottom: -1px;">
+										<img image-reveal ng-switch-when="featured-article-lg" class="img-responsive" ng-src="assets/{{article.blocks[block_id].data.filedata.folder}}/{{article.blocks[block_id].data.filedata.filename}}_720x960.{{article.blocks[block_id].data.filedata.ext}}" alt="{{article.title}}">
+									</div>
+									<div class="caption" ng-switch-when="lead">
+							            <div>
+							                <h3>{{article.title}}</h3>
+							                <p markdown markdown-sanitize="false" class="fs-large" markdown-model="article.blocks[block_id].title | myTruncate: tempblock.data.leadlimit: '...'"></p>
+							            </div>
+									</div>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+  </script>
+  <script id="dynamic_content_block_sidebar.html" type="text/ng-template">
+   <h3 ng-if="tempblock.title">{{tempblock.title}}</h3>
+    	<a ng-href="{{article.alternative_link ? article.alternative_link : article.uri+'/'+article.slug}}" ng-repeat="article in tempblock.data.articles track by $index" class="sidebar-blokk">
+    		<div ng-switch on="block_type" ng-repeat="(block_type, block_id) in article.blocks_for_list">
+    			<div ng-switch-when="image">
+    				<img class="img-responsive" ng-src="{{article.blocks[block_id].src}}" alt="">
+    			</div>
+    		</div>
+    		<h4>{{article.title}}</h4>
+    		<p ng-if="article.tags.length>0">{{article.tags[article.tags.length-1].title}}</p>
+    		<hr ng-if="!$last">
+    	</a>
+  </script>
+  <script id="title_block.html" type="text/ng-template">
+   <h1 ng-class="tempblock.class"><span ng-bind-html="tempblock.title | highlight:vm.search_q"></span> <small ng-if="tempblock.description" ng-bind-html="tempblock.description | highlight:vm.search_q"></small><a name="{{tempblock.title | mySlugify}}"></a></h1>
+  </script>
+  <script id="subtitle_block.html" type="text/ng-template">
+   <a name="{{tempblock.title | mySlugify}}"></a>
+    	<h2 ng-class="tempblock.class" ng-bind-html="tempblock.title | highlight:vm.search_q">{{tempblock.title}}</h2>
+  </script>
+  <script id="subsubtitle_block.html" type="text/ng-template">
+   <h2 class="h4"><a href="/cikk/{{tempblock.slug}}" ng-bind-html="tempblock.title | highlight : vm.search_q"></a></h2>
+  </script>
+  <script id="list_group_block.html" type="text/ng-template">
+   <div class="list-group" ng-class="tempblock.class" ng-if="tempblock.class != 'filebox'">
+    		<h2 ng-if="tempblock.title">{{tempblock.title}}</h2>
+    		<a href="{{listitem.url}}" target="{{tempblock.class == 'outside_link_list-group' ? '_blank' : '_self'}}" class="list-group-item" ng-class="{'with-logo': listitem.src != ''}" ng-repeat="listitem in tempblock.data.list">
+    				<img ng-src="{{listitem.src}}" alt="" ng-if="listitem.src != ''" >
+    				<span>{{listitem.title}}</span>
+    		</a>
+    	</div>
+    	<div class="filebox" ng-class="tempblock.class" ng-if="tempblock.class == 'filebox'">
+    		<h2 ng-if="tempblock.title">{{tempblock.title}}</h2>
+    	    <ul>
+    	        <li ng-repeat="listitem in tempblock.data.list" ng-if="listitem.src != ''">
+    	            <a href="{{listitem.src}}" target="_blank" ng-class="listitem.filedata.ext">{{listitem.title}}</a>
+    	        </li>
+    	    </ul>
+    	</div>
+  </script>
+  <script id="lead_block.html" type="text/ng-template">
+   <div ng-class="tempblock.class">
+    		<div markdown markdown-sanitize="false" class="lead" ng-class="{'lead-responsive': tempblock.template == 'responsive'}" markdown-model="tempblock.title | highlight:vm.search_q"></div>
+    	</div>
+  </script>
+  <script id="blockquote_block.html" type="text/ng-template">
+   <blockquote ng-class="tempblock.class">
+    		<div markdown markdown-sanitize="false" markdown-model="tempblock.content | highlight:vm.search_q"></div>
+    		<footer ng-bind-html="tempblock.title | highlight:vm.search_q"></footer>
+    	</blockquote>
+  </script>
+  <script id="text_block.html" type="text/ng-template">
+   <div ng-class="tempblock.class">
+    		<a ng-if="tempblock.title" name="{{tempblock.title | mySlugify}}"></a>
+    		<h2 class="h4" ng-if="tempblock.title" ng-bind-html="tempblock.title | highlight:vm.search_q"></h2>
+    		<div markdown markdown-sanitize="false" dynamic class="entry-text" markdown-model="tempblock.content | highlight : vm.search_q"></div>
+    	</div>
+  </script>
+  <script id="image_block.html" type="text/ng-template">
+   <div ng-class="tempblock.class">
+    		<div ng-if="!tempblock.data.url && !tempblock.data.list.length">
+    			<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+    		</div>
+    		<div ng-if="tempblock.data.list.length">
+    			<a ng-click="lightbox(0, tempblock.data.list, $event)" ng-href="{{tempblock.src}}" class="hover-effect img-gallery">
+    				<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+    			</a>
+    		</div>
+    		<div ng-if="tempblock.data.url && tempblock.data.url != ''">
+    			<a href="{{tempblock.data.url}}">
+    				<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+    			</a>
+    		</div>
+    		<div ng-if="tempblock.template == 'Leírással'" class="caption" markdown markdown-sanitize="false" markdown-model="tempblock.description"></div>
+    	</div>
+  </script>
+  <script id="image_text_block.html" type="text/ng-template">
+   <div ng-class="tempblock.class">
+			<div class="max-width">
+				<div class="row flexbox-container">
+					<div class="col-lg-4 col-md-6 col-sm-12" ng-if="!tempblock.data.url && !tempblock.data.list.length">
+						<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+					</div>
+					<div class="col-lg-4 col-md-6 col-sm-12" ng-if="tempblock.data.list.length">
+						<a ng-click="lightbox(0, tempblock.data.list, $event)" ng-href="{{tempblock.src}}" class="hover-effect img-gallery">
+		    				<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+		    			</a>
+					</div>
+					<div class="col-lg-4 col-md-6 col-sm-12" ng-if="tempblock.data.url && tempblock.data.url != ''">
+						<a href="{{tempblock.data.url}}" class="hover-effect">
+							<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+						</a>
+					</div>
+					<div class="col-lg-8 col-md-6 col-sm-12">
+						<div ng-class="tempblock.template" markdown markdown-sanitize="false" markdown-model="tempblock.description"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </script>
+  <script id="blob_block.html" type="text/ng-template">
+   <div class="article_list">
+    		<div ng-switch on="tempblock.template" class="block">
+	    		<div ng-switch-when="article_preview">
+	    			<div class="row">
+	    			    <div class="col-sm-4" ng-if="tempblock.data.list.length">
+	    			    	<a ng-href="{{article.uri}}/{{article.slug}}" ng-click="lightbox(0, tempblock.data.list, $event)">
+	    			    		<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+	    			    	</a>
+	    			    </div>
+	    			    <div class="col-sm-4" ng-if="!tempblock.data.list.length && tempblock.src">
+	    			    	<a ng-href="{{article.uri}}/{{article.slug}}">
+	    			    		<img ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+	    			    	</a>
+	    			    </div>
+	    			    <div ng-class="{'col-sm-12': !tempblock.data.list.length, 'col-sm-8': tempblock.data.list.length}">
+	    			        <h3 class="media-heading link-heading"><a ng-href="{{article.uri}}/{{article.slug}}">{{tempblock.title || article.title}}</a></h3>
+	    			        <div markdown markdown-sanitize="false" markdown-model="tempblock.content"></div>
+	    			        <p ng-if="tempblock.content"><a ng-href="{{article.uri}}/{{article.slug}}" class="btn btn-primary btn-sm">Részletek</a></p>
+	    			    </div>
+	    			</div>
+	    		</div>
+    			<div ng-switch-default>
+    				<div class="row">
+    				    <div class="col-sm-4" ng-if="tempblock.data.list.length">
+    				    	<a ng-click="lightbox(0, tempblock.data.list, $event)">
+    				    		<img image-reveal ng-src="{{tempblock.src}}" alt="{{tempblock.title}}" class="img-responsive">
+    				    		<p class="text-center"><i class="fa fa-eye"></i> OLVASS BELE!</p>
+    				    	</a>
+    				    </div>
+    				    <div ng-class="{'col-sm-8': tempblock.data.list.length, 'col-sm-12': !tempblock.data.list.length}">
+    				        <h3 class="media-heading link-heading">
+    				        	<a ng-if="tempblock.data.list.length" ng-click="lightbox(0, tempblock.data.list, $event)">{{tempblock.title}}</a>
+    				        	<span ng-if="!tempblock.data.list.length">{{tempblock.title}}</span>
+    				        </h3>
+    				        <div markdown markdown-sanitize="false" markdown-model="tempblock.content"></div>
+    				    </div>
+    				</div>
+    				<hr>
+    			</div>
+    		</div>
+    	</div>
+  </script>
+  <script id="youtube_block.html" type="text/ng-template">
+   <div class="embed-responsive embed-responsive-16by9 block">
+    	    <youtube-video class="embed-responsive-item" video-id="tempblock.src"></youtube-video>
+    	</div>
+  </script>
+  <script id="author_block.html" type="text/ng-template">
+   <p>
+    		<strong><em>{{tempblock.title}}</em></strong> <br>
+    		<span ng-if="tempblock.description" markdown markdown-sanitize="false" markdown-model="tempblock.description"></span>
+    	</p>
+  </script>
+  <script id="map_block.html" type="text/ng-template">
+   <div map-lazy-load="http://maps.google.com/maps/api/js?key=AIzaSyCWkxRNgMMTwGfhuXA3Ue-dognPMyuMWnM" class="{{tempblock.class}}">
+    		<div ng-class="{'row flexbox-container': tempblock.template == 'hasábos'}">
+	    		<div ng-if="tempblock.template == 'hasábos'" class="col-lg-4 col-md-6 col-sm-12">
+	    			<div class="box" markdown markdown-sanitize="false" markdown-model="tempblock.description">
+	    			</div>
+	    		</div>
+	    		<div ng-class="{'col-lg-8 col-md-6 col-sm-12': tempblock.template == 'hasábos'}">
+	    			<map style="height: 480px;" center="{{tempblock.content}}" scrollwheel="false" zoom="{{tempblock.data.zoom}}" styles="[{stylers:[{hue:'#6EB32D'},{'saturation':'-70'}]}]">
+	    				<info-window position="{{tempblock.content}}" visible="true"> 
+	    					<div ng-non-bindable=""> 
+	    						<h3>{{tempblock.title}}</h3>
+	    						<p ng-if="tempblock.template == 'default'" class="text-dark">{{tempblock.description}}</p>
+	    					</div> 
+	    				</info-window>
+	    			</map>
+	    		</div>
+    		</div>
+    	</div>
+  </script>
+  <script id="table_block.html" type="text/ng-template">
+   <h2 ng-if="tempblock.title">{{tempblock.title}}</h2>
+    	<div ng-if="tempblock.description" markdown markdown-sanitize="false" markdown-model="tempblock.description"></div>
+    	<table ng-class="tempblock.class">
+    		<thead>
+    			<tr ng-repeat="table_row in tempblock.data.rows | limitTo : 1 track by $index">
+    				<th ng-repeat="col in table_row track by $index">
+    					{{col}}&nbsp;
+    				</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr ng-repeat="table_row in tempblock.data.rows | limitTo : tempblock.data.rows.length-1 : 1 track by $index">
+    				<td ng-repeat="col in table_row track by $index">
+    					{{col}}&nbsp;
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+  </script>
+  <script id="inpage_link_block.html" type="text/ng-template">
+   <p style="margin-bottom: 0;">
+    		<a du-smooth-scroll="{{tempblock.src | mySlugify}}">{{tempblock.title}}</a>
+    	</p>
+  </script>
+  <script id="link_block.html" type="text/ng-template">
+   <p>
+    		<a ng-class="tempblock.class" ng-attr-target="{{(tempblock.template == '_blank') ? '_blank' : undefined}}" ng-href="{{tempblock.src}}">{{tempblock.title}}</a>
+    	</p>
+  </script>
+ </head>
+ <body ng-controller="AppController as vm">
+  <div id="pageWrapper">
+   <div class="topbar" id="topbar">
+    <div class="container">
+     <a class="navbar-brand" href="/" ng-if="!meta.lang || meta.lang == 'hu'" ui-sref="home">
+      <img alt="Magyar Mezőgazdasági Múzeum és Könyvtár" class="img-responsive" src="assets/img/logo.png"/>
+     </a>
+     <a class="navbar-brand" href="/home-en" ng-cloak="" ng-if="meta.lang == 'en'" ui-sref="home-en">
+      <img alt="Magyar Mezőgazdasági Múzeum és Könyvtár" class="img-responsive" src="assets/img/logo.png"/>
+     </a>
+     <div class="pull-right search">
+      <form class="form-inline" ng-cloak="" ng-submit="vm.search_q.length &gt; 2 ? vm.search() : null">
+       <div class="form-group has-feedback" ng-class="{'active':vm.collapse_search}">
+        <input autocomplete="off" class="form-control" id="search_field" name="s" ng-model="vm.search_q" placeholder="Keresés" type="text" typeahead-editable="true" typeahead-focus-first="false" typeahead-loading="loadingArticles" typeahead-min-length="3" typeahead-no-results="noResults" typeahead-template-url="customTemplate.html" uib-typeahead="article as article.title for article in vm.getSearchresults($viewValue) | limitTo:5"/>
+        <span class="fa fa-refresh form-control-feedback" ng-show="loadingArticles">
+        </span>
+        <div ng-show="noResults">
+         <i class="fa fa-remove">
+         </i>
+         Nincs találat
+        </div>
+        <div class="text-warning" ng-if="vm.search_q.length &gt; 0 &amp;&amp; vm.search_q.length &lt; 3">
+         Minimum 3 karakter
+        </div>
+       </div>
+       <button class="btn btn-transparent" ng-click="vm.show_search();" type="button">
+        <i class="fa fa-search">
+        </i>
+       </button>
+      </form>
+      <script id="customTemplate.html" type="text/ng-template">
+       <a href="{{match.model.uri}}/{{match.model.slug}}">
+                    		<div class="fs-lg" ng-if="match.model.title" ng-bind-html="match.model.title | highlight:query"></div>
+                    		<div ng-if="match.model.blocks_for_list.lead">
+                    			<div markdown markdown-sanitize="false" markdown-model="match.model.blocks[match.model.blocks_for_list.lead].title | highlight:query"></div>
+                    		</div>
+                    	</a>
+      </script>
+     </div>
+     <ul class="list-inline list-unstlyed socials pull-right">
+      <li>
+       <a href="https://www.facebook.com/mezogazdasagimuzeum" target="blank" tooltip-placement="bottom" uib-tooltip="Csatlakozz Facebook oldalunkhoz">
+        <i class="fa fa-facebook-square">
+        </i>
+       </a>
+      </li>
+      <li>
+       <a href="https://www.instagram.com/magyarmezogazdasagimuzeum/" target="_blank">
+        <i class="fa fa-instagram">
+        </i>
+       </a>
+      </li>
+      <li>
+       <a href="https://www.youtube.com/user/mezogazdasagimuzeum" target="blank">
+        <i class="fa fa-youtube-square">
+        </i>
+       </a>
+      </li>
+     </ul>
+     <h1 ng-if="!meta.lang || meta.lang == 'hu'">
+      <a ui-sref="home">
+       Magyar Mezőgazdasági Múzeum és Könyvtár
+       <br/>
+       <small>
+        Budapest | Vajdahunyadvár
+       </small>
+      </a>
+     </h1>
+     <h1 ng-cloak="" ng-if="meta.lang == 'en'">
+      <a ui-sref="home">
+       The Museum and Library of Hungarian Agriculture
+       <br/>
+       <small>
+        Budapest | Vajdahunyadvár
+       </small>
+      </a>
+     </h1>
+     <div class="hidden" itemscope="" itemtype="http://schema.org/Museum">
+      <h1 itemprop="name">
+       Magyar Mezőgazdasági Múzeum és Könyvtár
+      </h1>
+      <p itemprop="description">
+       A Vajdahunyadvár hosszú évek óta a Városligetbe látogatók egyik legkedveltebb célpontja. Nemcsak Magyarország, Európa legnagyobb mezőgazdasági gyűjteményét rejti az Alpár Ignác által tervezett lenyűgöző épületegyüttes.
+      </p>
+      <p>
+       Nyitvatartás: Kedd-Péntek: 10.00-16.00 óráig
+       <br/>
+       Szombat-Vasárnap: 10.00-17.00 óráig
+       <meta content="Tu-Fri 10:00-16:00" itemprop="openingHours"/>
+       <meta content="Sa,Su 10:00-17:00" itemprop="openingHours"/>
+      </p>
+      <p>
+       Telefon:
+       <span content="+361422-0765" itemprop="telephone">
+        (1)422-0765
+       </span>
+      </p>
+     </div>
+    </div>
+   </div>
+   <header class="header-bar" id="header">
+    <div class="container">
+     <nav class="navbar navbar-default">
+      <div class="navbar-header">
+       <button class="navbar-toggle collapsed" ng-click="navCollapsed = !navCollapsed" ng-init="navCollapsed = true" type="button">
+        <span class="sr-only">
+         Menü
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+       </button>
+      </div>
+      <div class="navbar-collapse" ng-class="{'collapse': navCollapsed}">
+       <ul class="nav navbar-nav pull-right navbar-sm visible-md visible-lg">
+        <li ng-if="vm.currentMenu == 'fooldal'" ui-sref-active="active">
+         <a ui-sref="home-en">
+          English
+         </a>
+        </li>
+        <li ng-if="vm.currentMenu == 'angol'" ui-sref-active="active">
+         <a ui-sref="home">
+          Hungarian
+         </a>
+        </li>
+        <li ng-class="{'active': accessible}">
+         <a aria-label="Akadálymentes változat" ng-click="accessibleStyle()" tooltip-placement="bottom" uib-tooltip="Akadálymentes változat">
+          <i class="fa fa-wheelchair fa-15x">
+          </i>
+         </a>
+        </li>
+       </ul>
+       <script id="navnodes_renderer_article_list.html" type="text/ng-template">
+        <a ui-sref="{{node.slug}}.article_list">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_article.html" type="text/ng-template">
+        <a ui-sref="{{node.slug}}">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_article_content_list.html" type="text/ng-template">
+        <a ui-sref="{{node.slug}}.article_content_list">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_article_content_list.article.html" type="text/ng-template">
+        <a ui-sref="{{parent_node}}.article_content_list.article({slug: node.slug})">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_article_content_list.article_list.html" type="text/ng-template">
+        <a ui-sref="{{root_node}}.article_content_list.{{node.slug}}">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_article_content_list.article_list.article.html" type="text/ng-template">
+        <a ui-sref="{{root_node}}.article_content_list.{{parent_node}}.article({slug: node.slug})">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_group.html" type="text/ng-template">
+        <a class="navlink-special" ui-sref="{{root_node}}.article_list({scroll: node.slug})">
+	                       		<div du-smooth-scroll="{{node.slug}}">
+	                        	    {{node.title}}
+	                        	</div>
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_url.html" type="text/ng-template">
+        <a target="_blank" ng-href="{{node.slug}}">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_renderer_state.html" type="text/ng-template">
+        <a ui-sref="{{node.slug}}">
+	                            {{node.title}}
+	                        </a>
+	                        <div ng-include="'navnodes_dropdown.html'"></div>
+       </script>
+       <script id="navnodes_dropdown.html" type="text/ng-template">
+        <ul ng-init="parent_node = node.slug" class="dropdown-menu" role="menu" ng-if="node.nodes && node.nodes.length > 0 && node.level < 1">
+	                            <li ui-sref-active-eq="active" ng-repeat="node in node.nodes" ng-if="node.status == 'public'" ng-class="{'dropdown dropdown-onhover': node.nodes && node.nodes.length > 0 && node.level < 1}" ng-include="'navnodes_renderer_'+node.type+'.html'"></li>
+	                        </ul>
+       </script>
+       <ul class="nav navbar-nav">
+        <li ng-class="{'active': collapsed_menu_lg}">
+         <a ng-click="collapsed_menu_lg = !collapsed_menu_lg; navCollapsed = true;" ng-show="!meta.lang || meta.lang == 'hu'">
+          Információ
+         </a>
+         <a ng-click="collapsed_menu_lg = !collapsed_menu_lg; navCollapsed = true;" ng-cloak="" ng-show="meta.lang == 'en'">
+          Information
+         </a>
+        </li>
+        <li ng-class="{'dropdown dropdown-onhover': node.nodes &amp;&amp; node.nodes.length &gt; 0}" ng-if="node.status == 'public'" ng-include="'navnodes_renderer_'+node.type+'.html'" ng-init="root_node = node.slug" ng-repeat="node in vm.navbar" ui-sref-active="active">
+        </li>
+       </ul>
+       <ul class="nav navbar-nav navbar-sm visible-sm visible-xs">
+        <li ng-if="vm.currentMenu == 'fooldal'" ui-sref-active="active">
+         <a ui-sref="home-en">
+          English
+         </a>
+        </li>
+        <li ng-if="vm.currentMenu == 'angol'" ui-sref-active="active">
+         <a ui-sref="home">
+          Hungarian
+         </a>
+        </li>
+        <li ng-class="{'active': accessible}">
+         <a aria-label="Akadálymentes változat" ng-click="accessibleStyle()" tooltip-placement="bottom" uib-tooltip="Akadálymentes változat">
+          <i class="fa fa-wheelchair fa-15x">
+          </i>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </nav>
+     <div class="menu-lg" uib-collapse="!collapsed_menu_lg">
+      <div ng-cloak="" ng-if="!meta.lang || meta.lang == 'hu'" ng-include="'http://www.mezogazdasagimuzeum.hu/adminapi/blocks/782'">
+      </div>
+      <div ng-cloak="" ng-if="meta.lang == 'en'" ng-include="'http://www.mezogazdasagimuzeum.hu/adminapi/blocks/1163'">
+      </div>
+     </div>
+    </div>
+    <div class="relative">
+     <div class="view-animate" ui-view="header">
+     </div>
+    </div>
+   </header>
+   <div class="view-animate" ui-view="info-bar">
+   </div>
+   <div class="relative" id="main_view">
+    <div class="view-animate" ui-view="main">
+    </div>
+   </div>
+   <div class="bg-light" style="padding-bottom: 30px;">
+    <div class="container">
+     <div class="row" id="content_view">
+      <div class="col-sm-12">
+       <div style="position: relative">
+        <div class="view-animate" ui-view="subcontent_fullwidth">
+        </div>
+       </div>
+      </div>
+      <div class="col-sm-9">
+       <div style="position: relative">
+        <div class="view-animate" ui-view="subcontent">
+        </div>
+       </div>
+      </div>
+      <div class="col-sm-3">
+       <div class="view-animate sidebar" ui-view="sidebar">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div ng-if="!meta.lang || meta.lang == 'hu'" ng-include="'http://www.mezogazdasagimuzeum.hu/adminapi/blocks/796'">
+   </div>
+   <div ng-cloak="" ng-if="meta.lang == 'en'" ng-include="'http://www.mezogazdasagimuzeum.hu/adminapi/blocks/1165'">
+   </div>
+  </div>
+  <a du-scrollspy="topbar" du-smooth-scroll="topbar" id="scrollUp">
+   <i class="fa fa-caret-up">
+   </i>
+  </a>
+  <script src="https://www.youtube.com/iframe_api">
+  </script>
+  <!-- inject:js -->
+  <script src="scripts/vendor.min.js">
+  </script>
+  <script src="scripts/main.min.js">
+  </script>
+  <script src="scripts/templates.min.js">
+  </script>
+  <!-- endinject -->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-8421869-1', 'auto');
+      ga('send', 'pageview');
+  </script>
+ </body>
+</html>

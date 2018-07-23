@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Yakima County Crime Stoppers
+  </title>
+  <meta content="Crime Stoppers utilizes modern technology to acquire anonymous online crime tips. You do not have to identify yourself, and may be eligible for a cash reward." name="description"/>
+  <meta content="Crime Stoppers, CrimeStoppers, Anonymous Crime Tips, Crime Tip App, Submit crime information anonymously, Rewards for crime information, Anonymous community crime reporting, Wanted fugitives and unsolved crimes, Anonymous crime reporting, Text a tip, Submit crime tips online" name="keywords"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" name="viewport"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="Dynasites" name="apple-mobile-web-app-title"/>
+  <link href="images/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152"/>
+  <link href="images/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76"/>
+  <link href="images/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed"/>
+  <meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR"/>
+  <meta content="Visual Basic 7.0" name="CODE_LANGUAGE"/>
+  <meta content="JavaScript" name="vs_defaultClientScript"/>
+  <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema"/>
+  <meta http-equiv="Page-Enter"/>
+  <link href="favicon.png" rel="shortcut icon"/>
+  <link href="images/apple-touch-icon.png" rel="apple-touch-icon"/>
+  <link href="favicon.png" rel="icon" type="image/png"/>
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Custom CSS -->
+  <link href="css/sitemenu.css?TxM=18-06-21-13" rel="stylesheet"/>
+  <!-- Custom Fonts -->
+  <link href="font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <script>
+   var widgetId1;
+    var frameH=100;
+    window.onload = function () {
+         $(function () {
+             $("[data-toggle='popover']").popover({ html: true });
+         });
+
+         $('body').on('click', function (e) {
+             if ($(e.target).data('toggle') !== 'popover'
+                 && $(e.target).parents('.popover.in').length === 0) {
+                 $('[data-toggle="popover"]').popover('hide');
+             }
+         });
+
+         $("#hdlFind").keypress(function (event) {
+             if (event.which == 13) {
+                 location.href = 'Wanteds.aspx?ID=700&F=' + $("#hdlFind").val();
+                 return false;
+             }
+         });
+
+         $("#txtAccessCode").keypress(function (event) {
+             if (event.which == 13) {
+                 private();
+                 return false;
+             }
+         });
+
+        $(document).ready(function () {
+            $('[data-toggle=offcanvas]').click(function () {
+                $('.row-offcanvas').toggleClass('active');
+            });
+        });
+
+        window.addEventListener("message",
+          function (e) {
+              //if (e.origin !== 'https://www.p3tips.com') { return; }
+              console.log(e.origin);
+              console.log(e.data);
+              var t = JSON.parse(e.data);
+              if (t.hasOwnProperty('height')) {
+                  //console.log(t['height'])
+                  var h = eval(t['height']);
+                  if (h < 1000) {
+                      h = 1000; //optional
+                  }
+                  document.getElementById('AFrame').style.height = h + 'px';
+                  h = eval(eval(h)+10);
+                  document.getElementById('tipdiv').style.height = h + 'px';
+              }
+              if (t.hasOwnProperty('command')) {
+                  //console.log(t['command'])
+                  if (t['command'] == 'scroll2top') {
+                      document.getElementById("tipdiv").scrollIntoView();
+                  }
+              }
+              if (t.hasOwnProperty('sump')) {
+                  var stuff = t['sump'];
+                  var data = {};
+                  data["sUmp"] = stuff;
+                  data["sAgencyID"] = $('#hdlAgencyID').val();
+                  $.ajax({
+                      type: "POST",
+                      url: "sitemenu.aspx/CheckStats",
+                      data: JSON.stringify(data, null, " "),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (response) {
+                          console.log('DS: ' + response.d);
+                      },
+                      failure: function (response) {
+                          //alert(response.d);
+                      },
+                      error: function (jqXHR, exception) {
+                          //alert(response.d);
+                      }
+                  });
+              }
+          },
+          false);
+        
+    }
+
+    function googletranslate() {
+        $('#myModalLanguage').modal('show');
+    }
+
+    function alertme(title, body) {
+        $('#myModal').modal('show');
+        $('#myModalTitle').html(title);
+        $('#myModalBody').html(body);
+    }
+    
+    var numWindows = 10000;
+    function wincustom(fileName, h, w, id) {
+        var winl = (screen.width - w) / 2;
+        var wint = (screen.height - h) / 2;
+        if (winl < 0) { winl = 0; }
+        if (wint < 0) { wint = 0; }
+        //wint = 0;
+        var ctrl7 = document.getElementById('txtAutoID');
+        var autoid = '1';
+        if (ctrl7 != null) { autoid = ctrl7.value; }
+        windowprops = "height=" + h + ",width=" + w + ",top=" + wint + ",left=" + winl + ",status=yes,toolbar=no,menubar=no,resizable=yes,scrollbars=yes,location=yes";
+        numWindows += 1;
+        winnum = "Manager" + numWindows + Math.floor((Math.random() * 10000) + 1);
+        window.open(fileName, winnum, windowprops);
+    }
+
+
+    function lightbox(sfilename) {
+        var title = 'Image';
+        var body = '<div class="row no-gutter"><div class=" col-sm-12"><img style="margin: 0 auto;min-width:600px;max-height:' + eval(frameH - 200) + 'px;" class="img-responsive" src="' + sfilename + '"></div></div>';
+        var footer = '<button type="button" class="btn btn-default" data-dismiss="modal" style="font-size:16px">Ok</button>';
+        $('#myModalMapTitle').html(title);
+        $('#myModalMapBody').html(body);
+        $('#myModalMapFooter').html(footer);
+        $('#myModalMap').modal('show');
+
+        //setTimeout("initp3map()", 1000);
+    }
+
+    function stripHTML(dirtyString) {
+        var container = document.createElement('div');
+        container.innerHTML = dirtyString;
+        var tmp = container.textContent || container.innerText;
+        if (tmp == null || tmp == undefined) { tmp = ''; }
+        return tmp;
+    }
+    
+
+    function searchit() {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&ID=700&Sort=' + $('#txtSortItBy').val() + '&F=' + stripHTML($('#txtName').val()) + '&W=' + stripHTML($('#txtWantedInfo').val());
+    }
+
+    function showall() {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&ID=700&Sort=' + $('#txtSortItBy').val();
+    }
+
+    function showmore(spage) {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&Top=' + spage + '&ID=700&Sort=' + $('#txtSortItBy').val() + '&F=' + stripHTML($('#txtName').val()) + '&W=' + stripHTML($('#txtWantedInfo').val());
+    }
+
+    function goto(spage) {
+        location.href = 'sitemenu.aspx?P=' + spage + '&ID=700';
+    }
+
+
+    function private(sagencyid,accesscode) {
+        var data = {};
+        data["sAgencyID"] = $('#hdlAgencyID').val();
+        data["sAccessCode"] = $('#txtAccessCode').val();
+        $.ajax({
+            type: "POST",
+            url: "sitemenu.aspx/GetAccess",
+            data: JSON.stringify(data, null, " "),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                location.href = 'sitemenu.aspx?p=privatearea&ID=' + $('#hdlAgencyID').val() + '&S=' + response.d;
+            },
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (jqXHR, exception) {
+                alert(jqXHR.responseText)
+            }
+        });
+
+    }
+
+    function toggle_password(target) {
+        var d = document;
+        var tag = d.getElementById('txt' + target);
+        if ($('#txt' + target).length == 0) {
+            tag = d.getElementById('con' + target);
+        }
+        var tag2 = d.getElementById('tgl' + target);
+
+        if (tag2.value == 'Show') {
+            tag.setAttribute('type', 'text');
+            tag2.value = 'Hide';
+        } else {
+            tag.setAttribute('type', 'password');
+            tag2.value = 'Show';
+        }
+    }
+  </script>
+  <style>
+   a {    color:	#EA1045;}#divMainBody a {    text-decoration:underline;}a:hover {    color:	#EA1045;    text-decoration:underline;    opacity:0.7;}.navbar-custom {    background-color:	#EA1045;    color:#ffffff;    border-radius:0;}.navbar-custom .navbar-nav > li > a {    color:#fff;}.navbar-custom .navbar-nav > .active > a {    color: #ffffff;    background-color:transparent;}.navbar-custom .navbar-nav > li > a:hover,.navbar-custom .navbar-nav > li > a:focus,.navbar-custom .navbar-nav > .active > a:hover,.navbar-custom .navbar-nav > .active > a:focus,.navbar-custom .navbar-nav > .open >a {    text-decoration: none;    background-color: 
+#FB2156;}.navbar-custom .navbar-brand {    color:#eeeeee;}.navbar-custom .navbar-toggle {    background-color:#eeeeee;}.navbar-custom .icon-bar {    background-color:	#EA1045;}/* for dropdowns only */.navbar-custom .navbar-nav .dropdown-menu  {   background-color: 	#EA1045;}.navbar-custom .navbar-nav .dropdown-menu>li>a  {   color: #fff;}.navbar-custom .navbar-nav .dropdown-menu>li>a:hover,.navbar-custom .navbar-nav .dropdown-menu>li>a:focus  {   color: 	#EA1045;}.moreactive{    background-color:
+#FB2156;}
+
+
+.bella {
+    position: fixed;
+    width: 1px;
+    left: -50px;
+}
+.bella input {
+    width: 1%;
+}
+  </style>
+ </head>
+ <body onunload="" style="background:none !important">
+  <div class="page-container" style="xborder:2px solid green;">
+   <div class="container-custom hidden-xs" onclick="wincustom('TipForm.aspx?ID=P3-700&amp;C=	EA1045',800,800,1)" style="cursor:pointer;background-color:#ffffff;border-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;padding:0px !important;">
+    <img class="img-responsive hidden-xs ximg-zoom" id="imgHeaderFile" src="http://www.crimestoppersweb.com/Logos/700-Accounts20170929031832-700d.png?t=20180423" style="xzoom:2 ;xmax-height:320px !important;xwidth:100% !important;margin: auto;"/>
+   </div>
+   <div class="container-custom" style="padding-right: 0px !important;padding-left: 0px !important; ">
+    <nav class="navbar navbar-custom nav-sfa" role="navigation">
+     <div class="container-customnav">
+      <div class="navbar-header xnavbar-sfa">
+       <button class="navbar-toggle" data-target="#myNavbar" data-toggle="collapse" type="button">
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+       </button>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+       <ul class="nav navbar-nav navbar-sfa">
+        <li class="visible-xs">
+         <a href="sitemenu.aspx?ID=700">
+          <center>
+           <b>
+            Yakima County Crime Stoppers
+           </b>
+          </center>
+         </a>
+        </li>
+        <li class="xactive moreactive">
+         <a href="sitemenu.aspx?P=index&amp;ID=700">
+          Welcome
+         </a>
+        </li>
+        <li>
+         <a href="sitemenu.aspx?P=wanteds&amp;ID=700">
+          Wanted Suspects
+         </a>
+        </li>
+        <li>
+         <a href="sitemenu.aspx?P=custom&amp;D=2&amp;ID=700">
+          Your Canyon For A Day
+         </a>
+        </li>
+        <li>
+         <a href="sitemenu.aspx?P=unsolved&amp;ID=700">
+          Unsolved Crimes
+         </a>
+        </li>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          About
+          <span class="caret">
+          </span>
+         </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a href="sitemenu.aspx?P=localnews&amp;ID=700">
+            News &amp; Media
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=howitworks&amp;ID=700">
+            How it Works
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=about&amp;ID=700">
+            About Us
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=statistics&amp;ID=700">
+            Statistics
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=supportus&amp;ID=700">
+            Support Us
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=school&amp;ID=700">
+            School Program
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=aware&amp;ID=700">
+            Crime Awareness
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=history&amp;ID=700">
+            History
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=custom&amp;D=7&amp;ID=700">
+            Links
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=contactus&amp;ID=700">
+            Contact Us
+           </a>
+          </li>
+          <li>
+           <a href="https://www.crimeinfo.net/access.aspx?P=login&amp;ID=700">
+            Admin
+           </a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </nav>
+   </div>
+   <input id="hdlPage" type="hidden" value="index"/>
+   <input id="hdlAgencyID" type="hidden" value="700"/>
+   <div class="container-custom visible-xs" style="background-color:white;border-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+    <div class="row">
+     <div class="col-sm-12" style="xpadding:0px;xmargin:0px;text-align:center;background-color:white;border:1px solid #ffffff">
+      <img class="img-responsive" src="http://www.crimestoppersweb.com/Logos/700-Accounts20170929031801-700L.png?t=20180621" style="max-height:220px !important;xwidth:100% !important;margin: 0 auto;"/>
+     </div>
+    </div>
+   </div>
+   <div class="container-custom xhidden-xs" style="cursor:pointer;background-color:white;xborder-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+    <div class="row">
+     <div class="col-xs-12 col-sm-4 col-md-offset-3 col-md-2 xhidden-xs" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="TipForm.aspx?ID=P3-700&amp;C=	EA1045" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045" xtarget="_blank">
+       <i aria-hidden="true" class="fa fa-share">
+       </i>
+       Submit a Tip
+      </a>
+     </div>
+     <div class="col-xs-12 col-sm-4 col-md-2 xhidden-xs" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="TwoWay.aspx?ID=P3-700&amp;C=	EA1045" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045" xtarget="_blank">
+       <i aria-hidden="true" class="fa fa-commenting">
+       </i>
+       Tip Follow-Up
+      </a>
+     </div>
+     <div class="col-xs-12 col-sm-4 col-md-2" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="sitemenu.aspx?P=P3App&amp;ID=700" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045">
+       <i aria-hidden="true" class="fa fa-download">
+       </i>
+       Download the Mobile App
+      </a>
+     </div>
+    </div>
+   </div>
+   <div class="container-custom" id="divMainBody" style="xfont-size: 1.1em;background-color:white;border-bottom:1px solid #dddddd;border-right:1px solid #dddddd;border-left:1px solid #dddddd;">
+    <div class="row" style="background-color:white">
+     <!-- main area -->
+     <div class="col-xs-12 col-sm-12" xstyle="padding-top:10px">
+      <div class="row" style="border:1px solid #eeeeee;background:#f5f5f5;margin-bottom:5px;">
+       <div class="col-md-6 col-sm-12 col-xs-12" style="padding:5px;">
+        <h3 style="font-weight:bold;margin:0px 0px 0px 0px;padding:4px 0px 4px 10px;color:	#EA1045">
+         Welcome
+        </h3>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="TipForm.aspx?ID=P3-700&amp;C=	EA1045" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045" target="_blank">
+         <i aria-hidden="true" class="fa fa-share">
+         </i>
+         Submit a Tip
+        </a>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="TwoWay.aspx?ID=P3-700&amp;C=	EA1045" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045" target="_blank">
+         <i aria-hidden="true" class="fa fa-commenting">
+         </i>
+         Tip Follow-Up
+        </a>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="sitemenu.aspx?P=P3App&amp;ID=700" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:	#EA1045;border-color:	#EA1045">
+         <i aria-hidden="true" class="fa fa-download">
+         </i>
+         Mobile App
+        </a>
+       </div>
+      </div>
+      <div style="padding:5px;">
+       <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7" style="margin-bottom:20px;">
+         <div class="page-container" style="xborder:2px solid green">
+          <div class="container-custom" id="divMainBody" style="border-bottom-color:#dddddd; border-bottom-style:solid; border-bottom-width:1px; border-left-color:#dddddd; border-left-style:solid; border-left-width:1px; border-right-color:#dddddd; border-right-style:solid; border-right-width:1px">
+           <div class="row">
+            <div class="col-sm-12 col-xs-12" xstyle="padding-top:10px">
+             <div style="padding:5px">
+              <div class="row">
+               <div class="col-md-7 col-sm-12 col-xs-12" style="margin-bottom:20px">
+                <p align="justify">
+                 <span style="background-color:white">
+                  <span style="xfont-size:1.1em">
+                   <span style="background-color:white">
+                    <span style="font-family:arial,helvetica,sans-serif">
+                     Yakima County Crime Stoppers encourages members of the community to assist local law enforcement agencies in the fight against crime by overcoming the two key elements that inhibit community involvement: fear and apathy.
+                    </span>
+                   </span>
+                  </span>
+                 </span>
+                </p>
+                <p align="justify">
+                 <span style="background-color:white">
+                  <span style="xfont-size:1.1em">
+                   <span style="background-color:white">
+                    <span style="font-family:arial,helvetica,sans-serif">
+                     Yakima County Crime Stoppers provides the public a way to get involved and remain anonymous.  We provide a phone number, Web site and Mobile Application where you can give vital information helpful to law enforcement agencies in order to help solve crimes and apprehend wanted persons, all without revealing your identity.
+                    </span>
+                   </span>
+                  </span>
+                 </span>
+                </p>
+                <p align="left">
+                 <span style="background-color:white">
+                  <span style="xfont-size:1.1em">
+                   <span style="background-color:white">
+                    <span style="font-family:arial,helvetica,sans-serif">
+                     <strong>
+                      <span style="font-size:13.5pt">
+                       <span style="color:red">
+                       </span>
+                      </span>
+                     </strong>
+                    </span>
+                   </span>
+                  </span>
+                 </span>
+                </p>
+                <div style="text-align:center">
+                 <span style="font-size:16px">
+                  <strong>
+                   <u>
+                    Reward Information and Conditions
+                   </u>
+                  </strong>
+                 </span>
+                </div>
+                <div>
+                 <br/>
+                 Any person, except as restricted below, who directly contacts Yakima County Crime
+                 <br/>
+                 Stoppers and gives information which leads to the arrest of a fugitive wanted in a
+                 <br/>
+                 felony case, will be eligible for a reward of up to $1,000.00.
+                </div>
+                <div>
+                 <br/>
+                 Yakima County Crime Stoppers will not pay rewards for information provided through any source other than calls to its program.
+                </div>
+                <div style="text-align:center">
+                 <br/>
+                 <span style="font-size:16px">
+                  <u>
+                   <strong>
+                    The following individuals are not eligible for rewards:
+                   </strong>
+                  </u>
+                 </span>
+                </div>
+                <div>
+                 <br/>
+                 *A commissioned law enforcement officer or other employees of law
+                 <br/>
+                 enforcement agencies and members of their immediate family.
+                </div>
+                <div>
+                 <br/>
+                 *Perpetrator or co-perpetrator of the crime if known.
+                </div>
+                <div>
+                 <br/>
+                 *Victim of the crime and members of their immediate family.
+                </div>
+                <div>
+                </div>
+                <div>
+                 *The fugitive.
+                </div>
+                <div>
+                 <br/>
+                 *Bail Bonds Agents or their Associates.
+                </div>
+                <div>
+                 <br/>
+                 Crime Stoppers accepts tips and information about crimes in order to solve or prevent such crimes. Users who communicate their own criminal threats by making them through Crime Stoppers are not considered to be Crime Stoppers tipsters, are not eligible for rewards, are not immune from prosecution and are exempted from the promise of anonymity.
+                </div>
+                <div style="text-align:center">
+                 <br/>
+                 <span style="font-size:16px">
+                  <u>
+                   <strong>
+                    What We Mean by Anonymous
+                   </strong>
+                  </u>
+                 </span>
+                </div>
+                <div>
+                 <br/>
+                 Callers can remain anonymous and are eligible to receive cash rewards if the
+                 <br/>
+                 information given leads to an arrest of a felony offender. It is vital to us that our
+                 <br/>
+                 programs guarantee anonymity.
+                </div>
+                <div>
+                 <br/>
+                 *You will never be asked for your name.
+                </div>
+                <div>
+                 <br/>
+                 *Your call will not be recorded.
+                </div>
+                <div>
+                 <br/>
+                 *Numbers and online numbers are not traced.
+                </div>
+                <div>
+                 <br/>
+                 *You do not have to make any statements to police.
+                </div>
+                <div>
+                 <br/>
+                 *You will not appear in court.
+                </div>
+                <div>
+                 <br/>
+                 *You will never be asked your immigration status.
+                </div>
+                <div>
+                </div>
+                <div>
+                 Yakima County Crime Stoppers relies on volunteer Directors and tax deductible
+                 <br/>
+                 contributions from the public in order to operate the administration of the program.
+                </div>
+                <div>
+                 <br/>
+                 Yakima County Crime Stoppers is a 501 (C)3 corporation registered in the State of
+                 <br/>
+                 Washington and a member of Crime Stoppers USA.
+                </div>
+               </div>
+              </div>
+              <div class="row">
+               <div class="col-md-7 col-sm-12 col-xs-12" style="margin-bottom:20px">
+                <p>
+                </p>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <p align="justify">
+         </p>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5" style="margin-bottom:20px;text-align:center">
+         <img class="img-responsive" id="Image1" src="http://www.crimestoppersweb.com/700/Pictures/201201161717550.jpg                                                                             " style="xzoom:2;xmax-height:400px;xwidth:100% !important;margin: 0 auto;"/>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12" style="margin-bottom:20px;">
+         <p align="center">
+          <span style="font-family:Arial; font-size:x-large">
+           <strong>
+            Follow us for the latest updates
+           </strong>
+          </span>
+         </p>
+         <p align="center">
+          <a href="http://twitter.com/CrimestoppersYC">
+           <img alt="Follow us on Twitter" src="http://crimestoppersweb.com/700/Pictures/Web_twitter(3).png" title="Follow us on Twitter"/>
+          </a>
+          <span style="font-family:Arial">
+           <a href="http://www.facebook.com/pages/Crime-Stoppers-Yakima-County/110836885657070">
+            <img alt="Find us on Facebook" src="http://crimestoppersweb.com/700/Pictures/Web_facebook(3).png" title="Find us on Facebook"/>
+           </a>
+          </span>
+         </p>
+         <p align="center">
+          <span style="font-family:Arial">
+           .
+           <strong>
+            <span style="color:#990000; font-size:48px">
+             WANTED
+            </span>
+           </strong>
+          </span>
+         </p>
+         <center>
+          <iframe border="0" height="400" src="http://yakima.crimestoppersweb.com/kiosk.aspx?K=1&amp;AgencyID=700&amp;T=7&amp;Width=300&amp;Height=350" width="350">
+          </iframe>
+         </center>
+         <p>
+         </p>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- /.col-xs-12 main -->
+    </div>
+    <!--/.row-->
+    <div class="row" style="border-top:1px solid 	#EA1045;border-bottom:10px solid 	#EA1045;background-color:white">
+     <div class="col-xs-12" style="padding:10px;">
+      <div style="margin:5px auto;text-align:center">
+       <a href="https://www.facebook.com/crime-stoppers-yakima-county-110836885657070" style="margin-left:5px;margin-right:5px;" target="_blank">
+        <i class="fa fa-facebook fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:	#EA1045;xwidth:48px;color:#fff ">
+        </i>
+       </a>
+       <a href="https://www.twitter.com/crimestoppersyc" style="margin-left:5px;margin-right:5px;" target="_blank">
+        <i class="gbor fa fa-twitter fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:	#EA1045;xwidth:48px;color:#fff ">
+        </i>
+       </a>
+       <a href="sitemenu.aspx?P=P3App&amp;ID=700" style="margin-left:5px;margin-right:5px;" xtarget="_blank">
+        <i class="fa fa-mobile fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:	#EA1045;xwidth:48px;color:#fff " title="Our Mobile App">
+        </i>
+       </a>
+       <br/>
+       <a class="footer-link" href="#">
+        Yakima County Crime Stoppers
+       </a>
+       <br/>
+       <a class="footer-link" href="http://www.crimestoppersweb.com">
+        Anderson Software © 2018 All Rights Reserved
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--/.container-->
+  </div>
+  <!--/.page-container-->
+  <!-- Modal -->
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+       ×
+      </button>
+      <h4 class="modal-title" id="myModalTitle">
+       Loading...
+      </h4>
+     </div>
+     <div class="modal-body" id="myModalBody">
+      Loading...
+     </div>
+     <div class="modal-footer" id="myModalFooter">
+      <button class="btn btn-default" data-dismiss="modal" onclick="focusonit()" type="button">
+       Ok
+      </button>
+     </div>
+    </div>
+    <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <!-- Modal Map -->
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModalMap" role="dialog" style="z-index:9000000;" tabindex="-1">
+   <div class="modal-dialog" style="width:95%;height:90%;">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+       ×
+      </button>
+      <h4 class="modal-title" id="myModalMapTitle">
+       Loading...
+      </h4>
+     </div>
+     <div class="modal-body" id="myModalMapBody">
+      Loading...
+     </div>
+     <div class="modal-footer" id="myModalMapFooter">
+      <button class="btn btn-default" data-dismiss="modal" type="button">
+       Close
+      </button>
+     </div>
+    </div>
+    <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <!-- jQuery Version 1.11.0 -->
+  <script src="js/jquery-1.11.0.js">
+  </script>
+  <script src="jquery-ui-1.11.2.custom/jquery-ui.js">
+  </script>
+  <!-- Bootstrap Core JavaScript -->
+  <script src="js/bootstrap.min.js">
+  </script>
+ </body>
+</html>

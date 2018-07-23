@@ -1,0 +1,723 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Подбор кредита
+  </title>
+  <style type="text/css">
+   .button {display: inline-block;margin-bottom: 0;font-weight: 400;text-align: center;vertical-align: middle;cursor: pointer;background-image: none;border: 1px solid transparent; white-space: nowrap;padding: 6px 12px; font-size: 20px;line-height: 1.42857143;border-radius: 4px; -webkit-user-select: none; color: #fff;background-color: #428bca;border-color: #357ebd;text-decoration: none;}
+.button:hover,.button:focus,.button:active {color:#fff;background-color:#3276b1;border-color:#285e8e;}
+a:hover{padding-right: 1px;}
+.ws6 {font-size: 8px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws7 {font-size: 9.3px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws8 {font-size: 11px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws9 {font-size: 12px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws10 {font-size: 13px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws11 {font-size: 15px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws12 {font-size: 16px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws14 {font-size: 19px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws16 {font-size: 21px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws18 {font-size: 24px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws20 {font-size: 27px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws22 {font-size: 29px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws24 {font-size: 32px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws26 {font-size: 35px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws28 {font-size: 37px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws36 {font-size: 48px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws48 {font-size: 64px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.ws72 {font-size: 96px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.wpmd {font-size: 13px;font-family: 'Arial';font-style: normal;font-weight: normal;}
+.wpmd1 {font-size: 13px;font-family: 'arial';font-size: small;font-style: normal;font-weight: normal;}
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js">
+  </script>
+  <script type="text/javascript">
+   var page_category = 'micro,kredit,poisk';
+  </script>
+  <script src="cities.js" type="text/javascript">
+  </script>
+  <script src="banks.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var u;
+var yandex_region = '';
+var yandex_city = '';
+function gotinfo(obj)
+{
+	u = obj;
+}
+  </script>
+  <script src="http://api.sypexgeo.net/8txh2/jsonp/?callback=gotinfo">
+  </script>
+  <script src="http://api-maps.yandex.ru/2.0/?load=package.standard&amp;lang=ru-RU" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   function check_category(bank_category)
+{
+	var page_array = page_category.split(',');
+	var bank_array = bank_category.split(',');
+	for(var pkey in page_array)
+	{
+		for(var bkey in bank_array)
+		{
+			if(page_array[pkey] == bank_array[bkey]) return true;
+		}
+	}
+	return false;
+}
+function onRegionChange()
+{
+	var s = document.getElementById('region');
+	if(!s) return;
+	var c = document.getElementById('city');
+	c.innerHTML = "";
+	for(var ckey in cities[s.value]) c.innerHTML += "<option value='"+cities[s.value][ckey]+"'>"+cities[s.value][ckey]+"</option>";
+	user_region = s.value;
+	user_city = c.value;
+	drawBanksByCity(c.value);
+	//c.innerHTML = "<option value='"+cities[s.value][0]+"'>"+cities[s.value][0]+"</option><option value='"+cities[s.value][1]+"'>"+cities[s.value][1]+"</option>";
+}
+function onCityChange()
+{
+	var c = document.getElementById('city');
+	user_city = c.value;
+	drawBanksByCity(c.value);
+}
+function changeCity(c)
+{
+	document.getElementById('city').value=c;
+}
+function retCity(key, ca)
+{
+	if(ca[key]==user_city) return true;
+}
+function drawRegions(regs)
+{
+	var sstring = "";
+	for(var rkey in regs) sstring += "<option value='"+rkey+"'>"+rkey+"</option>";
+	return sstring;
+}
+ymaps.ready(checkCity);
+function checkCity()
+{
+	var geolocation = ymaps.geolocation;
+	var region = '';
+	var city = '';
+	if (typeof geolocation !== "undefined") {
+		region = geolocation.region;
+		city = geolocation.city;
+		if(geolocation.city == 'Москва')
+		{
+			geolocation.region = 'Москва';
+		}
+		else
+		{
+			if(geolocation.region == 'Москва и Московская область')
+			{
+				geolocation.region = 'Московская область';
+			}
+		}
+		if(geolocation.city == 'Санкт-Петербург')
+		{
+			geolocation.region = 'Санкт-Петербург';
+		}
+		else
+		{
+			if(geolocation.region == 'Санкт-Петербург и Ленинградская область')
+			{
+				geolocation.region = 'Ленинградская область';
+			}
+		}
+		if(geolocation.country != "Россия")
+		{
+			geolocation.region = "Другой регион";
+			geolocation.city = "Другой город";
+		}
+		yandex_city = geolocation.city;
+		yandex_region = geolocation.region;
+	} else {
+		yandex_region = u.region.name_ru;
+		yandex_city = u.city.name_ru;
+	}
+	user_city = yandex_city;
+	user_region = yandex_region;
+	var sstring = drawRegions(cities);
+	var found2 = false;
+	for(var c2key in cities)
+	{
+		if(c2key == user_region) found2 = true;
+	}
+	if(found2 == false)
+	{
+		user_region = "Другой регион";
+		user_city = "Другой город";
+	}
+	document.getElementById('region').innerHTML = sstring;
+	document.getElementById('region').value=user_region;
+	var temp_city = user_city;
+	onRegionChange();
+	user_city = temp_city;
+	citiesOfRegion = cities[user_region];
+	var found=false;
+	for(var key in citiesOfRegion) if(!found && retCity(key,citiesOfRegion)) 
+									{
+										user_city=citiesOfRegion[key];
+										found=true;
+									}
+	if(!found)
+	{
+		user_city = "Другой город";
+		user_region = "Другой регион";
+	}
+	changeCity(user_city);
+	drawBanksByCity(user_city);
+}
+function drawBankLine(logo,creditsum,creditstavka,credittype,link)
+{
+	return "<tr><td align=center><a onclick='return !window.open(this.href)' href='"+link+"'><img src='"+logo+"'></a></td><td align=center>"+creditsum+"</td><td align=center>"+creditstavka+"</td><td align='justify'>"+credittype+"</td><td align=center><a onclick='return !window.open(this.href)' href='"+link+"'><img src='images/button.png'></a></td></tr>";
+	}
+function drawBanks()
+{
+	document.getElementById('banktable').innerHTML = "";
+	var tablestring = "";
+	tablestring = "<table><tr><td>Банк</td><td>Сумма кредита, руб.</td><td>Ставка</td><td>Условия кредитования</td><td>Заявка</td></tr>";
+	for(var bkey in banks) tablestring += '\n'+ drawBankLine(banks[bkey]['logo'],banks[bkey]['creditsum'],banks[bkey]['creditstavka'],banks[bkey]['credittype'],banks[bkey]['link']);
+	document.getElementById('banktable').innerHTML = tablestring+ "</table>";
+}
+function drawBanksByCity(city)
+{
+	document.getElementById('banktable').innerHTML = "";
+	var tablestring = "";
+	tablestring = "<table width='1140px' border='1' CELLSPACING='0' CELLPADDING='5' BORDERCOLOR='#D3D3D3'><tr><td width=234 valign=middle><div class='wpmd' align=center><font color='#4682B4' class='ws10'><b>Банк</b></font></div></td><td width=200 valign=middle><div class='wpmd' align=center><font color='#4682B4' class='ws10'><B>Сумма&nbsp;кредита,&nbsp;руб.</B></font></div></td><td width=170 valign=middle><div class='wpmd' align=center><font color='#4682B4' class='ws10'><B>Ставка</B></font></div></td><td width=300 valign=middle><div class='wpmd' align=center><font color='#4682B4' class='ws10'><B>Условия кредитования</B></font></div></td><td width=200 valign=middle><div class='wpmd' align=center><font color='#4682B4' class='ws10'><B>Заявка</B></font></div></td></tr>";
+	if(page_category == "all")
+	{
+		for(var bkey in banks) if((banks[bkey]['cities'].indexOf(city)+1) || banks[bkey]['cities'] == "all" ||(banks[bkey]['cities'].indexOf(user_region)+1)) tablestring += '\n'+ drawBankLine(banks[bkey]['logo'],banks[bkey]['creditsum'],banks[bkey]['creditstavka'],banks[bkey]['credittype'],banks[bkey]['link']);
+	}
+	else
+	{
+		for(var bkey in banks)
+		{
+			if(check_category(banks[bkey]['category']) || page_category == "all")
+			{
+				if(banks[bkey]['cities'].indexOf(city)>=0 || banks[bkey]['cities'] == "all" || banks[bkey]['cities'].indexOf(user_region)>=0)
+				{
+					tablestring += '\n'+ drawBankLine(banks[bkey]['logo'],banks[bkey]['creditsum'],banks[bkey]['creditstavka'],banks[bkey]['credittype'],banks[bkey]['link']);
+				}
+			}
+		}
+	}
+	document.getElementById('banktable').innerHTML = tablestring+ "</table>";
+}
+  </script>
+ </head>
+ <body background="images/2.jpg" bgcolor="#FFFFFF" bgproperties="fixed" style="background-attachment:fixed;" text="#333333">
+  <div id="image1" style="text-align: center; height:237px;">
+   <img alt="" border="0" height="100%" src="images/1.jpg" title="" width="1180"/>
+  </div>
+  <div style="width:1140px; margin: auto; background:#ffffff;padding: 20px;">
+   <div class="wpmd">
+    <div align="center" style="width:1140px;">
+     <table>
+      <tr>
+       <td>
+        <a href="http://домашние-кредиты.рф/micro.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/micro.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/zaimnakartu.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/zaimnakartu.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/qiwi.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/qiwi.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/contact.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/contact.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/index.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/microzaim.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/nal.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/nal.jpg"/>
+        </a>
+       </td>
+       <td>
+        <a href="http://домашние-кредиты.рф/cards.html">
+         <img border="0" src="http://домашние-кредиты.рф/images/cards.jpg"/>
+        </a>
+       </td>
+      </tr>
+     </table>
+    </div>
+   </div>
+   <br/>
+   <div align="center">
+    <img alt="Акция" src="images/akcija.jpg"/>
+   </div>
+   <div align="center">
+    <font class="ws18" color="#FF6600" face="Tahoma">
+     Отправив три и более заявок, повышается кредитный лимит и гарантия одобрения до
+    </font>
+    <font class="ws18" color="#FF6600" face="Tahoma">
+     <b>
+      100
+     </b>
+    </font>
+    <font class="ws18" color="#FF6600" face="Tahoma" style="background-color:#FFFFFF;">
+     <b>
+      %
+     </b>
+    </font>
+   </div>
+   <br/>
+   <form id="city-form">
+    <font class="ws14" color="#000000">
+     <b>
+      Выберите регион:
+     </b>
+    </font>
+    <select id="region" name="region" onchange="onRegionChange()">
+    </select>
+    <font class="ws14" color="#000000">
+     <b>
+      Выберите город:
+     </b>
+    </font>
+    <select id="city" name="city" onchange="onCityChange()">
+    </select>
+   </form>
+   <br/>
+   <div align="center" id="banktable" style="width:1140px;">
+   </div>
+   <div align="center">
+    <table cellpadding="10">
+     <tr>
+      <td>
+       <a href="https://pxl.leads.su/click/e7d66b5e5ff4b454dbd921ebe3cb4fe8" target="_blank">
+        <img border="0" src="images/zaymer_banner.gif"/>
+       </a>
+      </td>
+      <td>
+       <a href="https://pxl.leads.su/click/36956c26aa75f6230bf8e23937115bae" target="_blank">
+        <img border="0" src="images/Kredito24_banner.gif"/>
+       </a>
+      </td>
+      <td>
+       <a href="https://pxl.leads.su/click/350d4b0641a70f0e0eaadf36573f406f" target="_blank">
+        <img border="0" src="images/moneyman_banner.gif"/>
+       </a>
+      </td>
+      <td>
+       <a href="https://pxl.leads.su/click/ca2e19f040fe3ad02c6983c181a4dd08" target="_blank">
+        <img border="0" src="images/mongomoney_banner.jpg"/>
+       </a>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <br/>
+   <div align="center">
+    <table>
+     <tr>
+      <td>
+       <script type="text/javascript">
+        <!--
+google_ad_client = "ca-pub-0733575849594368";
+/* 123423 */
+google_ad_slot = "6965302922";
+google_ad_width = 336;
+google_ad_height = 280;
+//-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </td>
+      <td>
+       <script type="text/javascript">
+        <!--
+google_ad_client = "ca-pub-0733575849594368";
+/* 123423 */
+google_ad_slot = "6965302922";
+google_ad_width = 336;
+google_ad_height = 280;
+//-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </td>
+      <td>
+       <script type="text/javascript">
+        <!--
+google_ad_client = "ca-pub-0733575849594368";
+/* 123423 */
+google_ad_slot = "6965302922";
+google_ad_width = 336;
+google_ad_height = 280;
+//-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <br/>
+   <h2>
+    Информация для заемщиков
+   </h2>
+   <p>
+    <strong>
+     Требования к заёмщикам:
+    </strong>
+   </p>
+   <ul style=" padding-left:20px; margin-bottom:15px;">
+    <li>
+     Гражданство РФ
+    </li>
+    <li>
+     Возраст от 18 лет
+    </li>
+    <li>
+     Любая кредитная история
+    </li>
+   </ul>
+   <p>
+    <strong>
+     Условия получения:
+    </strong>
+   </p>
+   <ul style=" padding-left:20px; margin-bottom:15px;">
+    <li>
+     Первый заём до 10 000 рублей выдается по ставке 0% в случае своевременного погашения;
+    </li>
+    <li>
+     Процентная ставка по займам от 30 до 360% годовых, по потребительским кредитам и кредитным картам - от 17 до 31% годовых.
+    </li>
+    <li>
+     В случае нарушения сроков, размер неустойки составляет 0,10% от суммы просрочки в день, но не более 10% от суммы кредита;
+    </li>
+    <li>
+     В случае длительной задержки выплаты информация будет передана в БКИ.
+    </li>
+    <li>
+     Продление займа возможно при своевременном информировании кредитора (до наступления даты возврата займа) и уплаты процентов за первичный срок займа. Дополнительных комиссий за продление займа не предусмотрено.
+    </li>
+   </ul>
+   <br/>
+   <div align="center" style="width:1140px;">
+    <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+    </script>
+    <!-- Доски объявлений -->
+    <ins class="adsbygoogle" data-ad-client="ca-pub-0733575849594368" data-ad-slot="7985931031" style="display:inline-block;width:970px;height:250px">
+    </ins>
+    <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+   </div>
+   <br/>
+   <p>
+    <strong>
+     Последствия невыплаты заёмных средств
+    </strong>
+    :
+   </p>
+   <p>
+    В случае невозвращения в условленный срок суммы кредита или суммы процентов за пользование заёмными средствами кредитор вынуждено начислит штраф за просрочку платежа. Большинство кредиторов идут на уступки и дают 3 дополнительных рабочих дня для оплаты. Они предусмотрены на случай, к примеру, если банковский перевод занял больше времени, чем обычно. Однако, в случае неполучения от Вас какой-либо реакции в течение продолжительного времени, будет начислен штраф за просрочку срока погашения размером в среднем 0,10% от первоначальной суммы для займов, 0,03% от суммы задолженности в среднем для потребительских кредитов и кредитных карт. При несоблюдении Вами условий по погашению кредитов и займов, данные о Вас могут быть переданы в реестр должников или БКИ, что негативно может сказаться на Вашей кредитной истории и рейтинге кредитоспособности. Задолженность может быть передана коллекторскому агентству для взыскания долга. При допуске просрочки продление займа невозможно.
+   </p>
+   <p>
+    О всех приближающихся сроках платежа кредитор своевременно информирует Вас по СМС или электронной почте. Рекомендуем Вам вносить платеж в день получения данных напоминаний. Погашая задолженность в срок, Вы формируете хорошую кредитную историю, что повышает Ваш рейтинг кредитоспособности и шансы в дальнейшем получить кредит на более выгодных условиях.
+   </p>
+   <p>
+    <strong>
+     Предложение не является оффертой. Конечные условия уточняйте при прямом общении с кредиторами.
+    </strong>
+   </p>
+   <h2>
+    Информация о кредиторах, представленных на сайте
+   </h2>
+   <table class="offers_info">
+    <thead>
+     <tr>
+      <th>
+       Название
+      </th>
+      <th>
+       № лицензии
+      </th>
+      <th>
+       Процентная ставка
+      </th>
+      <th>
+       Адреса и контактная информация
+      </th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td>
+       Kredito24
+      </td>
+      <td>
+       651303552003006
+      </td>
+      <td>
+       365% годовых
+      </td>
+      <td>
+       г.Москва, ул.Новослободская, дом 14/19, стр.1, офис 29, к. 5; тел. 8 (495) 225-90-63
+      </td>
+     </tr>
+     <tr>
+      <td>
+       MoneyMan
+      </td>
+      <td>
+       2110177000478
+      </td>
+      <td>
+       273,75% годовых
+      </td>
+      <td>
+       г.Москва, ул. Барклая, д. 6, стр. 9, офис 1; тел 8 (800) 77-555-76
+      </td>
+     </tr>
+     <tr>
+      <td>
+       E-Zaem
+      </td>
+      <td>
+       651303045003161
+      </td>
+      <td>
+       700,8% годовых
+      </td>
+      <td>
+       г. Москва, ул. Земляной Вал, д. 33, этаж 4, помещение XVI, антресоль 1, комната 1; тел 8 (800) 775-77-75
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Займер
+      </td>
+      <td>
+       651303532004088
+      </td>
+      <td>
+       248,2% годовых
+      </td>
+      <td>
+       г. Кемерово, пр-т Советский, д. 2/7.; тел 8 (800) 7070-24-7
+      </td>
+     </tr>
+     <tr>
+     </tr>
+     <tr>
+      <td>
+       Мигкредит
+      </td>
+      <td>
+       2110177000037
+      </td>
+      <td>
+       211,7% годовых
+      </td>
+      <td>
+       г. Москва, ул. Сущевский Вал, д. 5, стр. 3; тел 8 (800) 100-06-09
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Екапуста
+      </td>
+      <td>
+       2120754001243
+      </td>
+      <td>
+       620,5% годовых
+      </td>
+      <td>
+       г. Новосибирск, ул. Гнесиных 10/1; тел 8 (495) 215-55-67
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Mili
+      </td>
+      <td>
+       2120177001299
+      </td>
+      <td>
+       365% годовых
+      </td>
+      <td>
+       г.  Москва,   ул. Тверская, д. 9, стр. 7; тел 8 (800) 700-55-44
+      </td>
+     </tr>
+     <tr>
+      <td>
+       SmartCredit
+      </td>
+      <td>
+       651503045006429
+      </td>
+      <td>
+       584% годовых
+      </td>
+      <td>
+       г. Москва, Саввинская наб. ул. 15; тел 8 (495) 646-10-35
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Честное слово
+      </td>
+      <td>
+       651303045002916
+      </td>
+      <td>
+       730% годовых
+      </td>
+      <td>
+       г. Москва, ул. Полковая, д.3, стр.4; email info@4slovo.ru
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Вкармане
+      </td>
+      <td>
+       651403550005450
+      </td>
+      <td>
+       365% годовых
+      </td>
+      <td>
+       г. Новосибирск, ул. Дмитрия Шамшурина д. 1, офис 1; тел 8 (800) 500-35-85
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Pay P.S.
+      </td>
+      <td>
+       2120177001838
+      </td>
+      <td>
+       730% годовых
+      </td>
+      <td>
+       г. Москва, 123001, ул. Спиридоновка д.27/24; тел 8 (499) 703-38-52
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Центрзаймов
+      </td>
+      <td>
+       2110177000192
+      </td>
+      <td>
+       365% годовых
+      </td>
+      <td>
+       г. Москва, Хорошевское шоссе 35 корпус 1; тел 8 (800) 775-25-45
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Займы Просто
+      </td>
+      <td>
+       651303045003776
+      </td>
+      <td>
+       730% годовых
+      </td>
+      <td>
+       г.  Москва, Старокаширское ш., 2, к. 2; тел 8 (499) 709-80-94
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Lime
+      </td>
+      <td>
+       651503045006452
+      </td>
+      <td>
+       730% годовых
+      </td>
+      <td>
+       г. Новосибирск, ул. Крылова, д.36, офис 219; тел 8 (800) 700-01-97
+      </td>
+     </tr>
+     <tr>
+      <td>
+       CreditPlus
+      </td>
+      <td>
+       651503045006452
+      </td>
+      <td>
+       584% годовых
+      </td>
+      <td>
+       г. Москва, Алтуфьевское шоссе, д. 44; 8 (800) 500-49-00
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <!-- Yandex.Metrika counter -->
+   <script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter38354460 = new Ya.Metrika({
+                    id:38354460,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+   </script>
+   <noscript>
+    <div>
+     <img alt="" src="https://mc.yandex.ru/watch/38354460" style="position:absolute; left:-9999px;"/>
+    </div>
+   </noscript>
+   <!-- /Yandex.Metrika counter -->
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-83265944-1', 'auto');
+  ga('send', 'pageview');
+   </script>
+  </div>
+ </body>
+</html>

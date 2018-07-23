@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   SpotCrime
+  </title>
+  <script src="https://maps.google.com/maps/api/js?key=AIzaSyAQdTLF19XtEWQZzDZ4DasKboR2k73q5dw" type="text/javascript">
+  </script>
+  <script src="/javascripts/jquery-1.4.2.min.js">
+  </script>
+  <script src="/javascripts/spotcrime_info.js">
+  </script>
+  <script src="/javascripts/spotcrime_info_small.js">
+  </script>
+  <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" name="viewport"/>
+  <meta content="SpotCrime" name="title"/>
+  <meta content="City and county crime maps showing crime incident data down to neighborhood crime activity - crime alerts and reports." name="description"/>
+  <!-- Make the document body take up the full screen -->
+  <style type="text/css">
+   v\:* {behavior:url(#default#VML);}
+html, body {width: 100%; height: 100%}
+body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
+  </style>
+  <link href="/stylesheets/spotcrime_info_fullscreen.css" media="screen, projection" rel="stylesheet"/>
+  <link href="/stylesheets/spotcrime_info_fullscreen_small.css" media="screen and (max-width: 670px)" rel="stylesheet"/>
+  <link href="/stylesheets/spotcrime_info_fullscreen_large.css" media="screen and (min-width: 671px)" rel="stylesheet"/>
+  <script>
+   // mobile friendly
+  window.navigator.standalone = true;
+  
+  var asset_host = "";
+  
+  var additionalMapOptions = {
+    mapTypeControlOptions: {
+        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        position: google.maps.ControlPosition.RIGHT_BOTTOM
+    },
+    panControl: false,
+    // panControlOptions: {
+    //     position: google.maps.ControlPosition.LEFT_BOTTOM
+    // },
+    zoomControl: true,
+    zoomControlOptions: {
+        style: google.maps.ZoomControlStyle.SMALL,
+        position: google.maps.ControlPosition.LEFT_BOTTOM
+    },
+    scaleControl: true,
+    scaleControlOptions: {
+        position: google.maps.ControlPosition.BOTTOM_LEFT
+    },
+    streetViewControl: false,
+    // streetViewControlOptions: {
+    //     position: google.maps.ControlPosition.LEFT_BOTTOM
+    // }
+  };
+  
+  $(function () {
+    $("#show_legend_link").click(function () {
+      if ($("#legend ul").is(":visible")) {
+        $("#legend ul").hide();
+        $('#show_legend_link').addClass('hidden');
+        $('#show_legend_link span').html('&laquo;');
+        $('#menu').hide();
+      } else {
+        $("#legend ul").show();
+        $('#show_legend_link').removeClass('hidden');
+        $('#show_legend_link span').html('&raquo;');
+        $('#menu').show();
+      }
+    });
+    if(window.innerWidth <= 800 || window.innerHeight <= 600) {
+      $('#show_legend_link').click();
+    }
+  });
+  </script>
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  
+  ga('create', 'UA-3370515-7', 'auto');
+  ga('send', 'pageview');
+  </script>
+ </head>
+ <body>
+  <div id="logo-wrapper">
+   <div id="logo">
+    <h1 class="logo">
+     <a href="https://www.spotcrime.com/">
+      <img alt="My Local Crime" src="/images/spotcrime-logo.jpg"/>
+     </a>
+    </h1>
+    <h1 class="logo-small">
+     <a href="https://www.spotcrime.com/">
+      <img alt="My Local Crime" src="/images/spotcrime-logo-small.png"/>
+     </a>
+    </h1>
+   </div>
+   <a class="view-toggle">
+    Show Crime List
+   </a>
+  </div>
+  <div id="top-item-wrapper">
+   <div id="form">
+    <form action="javascript:codeAddress()">
+     <span id="current-location">
+      <span>
+      </span>
+     </span>
+     <span id="address-wrapper">
+      <input id="address" onblur="codeAddress()" onclick="clearWatermark()" type="text" value="Enter an address"/>
+     </span>
+     <a href="#" id="update_address_button" onclick="codeAddress()">
+      <span>
+      </span>
+      <p>
+       Update address
+      </p>
+     </a>
+    </form>
+   </div>
+   <a id="tab-toggle">
+    <span>
+    </span>
+   </a>
+   <div id="signup-alert">
+    <strong>
+     Sign up for alerts for this location
+    </strong>
+    <a alt="Don't Remind Me" href="#" onlick="setCookie(&amp;quot;subscribed&amp;quot;, &amp;quot;true&amp;quot;); $(&amp;quot;#signup-alert&amp;quot;).hide(); return false;">
+     (No Thanks)
+    </a>
+    <br/>
+    <form action="javascript:signupAlerts()">
+     <label for="email">
+      Email
+     </label>
+     <input class="email" name="email"/>
+     <input type="submit" value="Submit"/>
+    </form>
+    <div class="errors">
+    </div>
+   </div>
+   <div id="alert">
+    <strong>
+    </strong>
+   </div>
+  </div>
+  <div id="map">
+  </div>
+  <div id="legend">
+   <a href="#" id="show_legend_link">
+    <span>
+     »
+    </span>
+   </a>
+   <ul>
+    <li class="first">
+     <span class="Arrest">
+     </span>
+     Arrest
+    </li>
+    <li class="">
+     <span class="Arson">
+     </span>
+     Arson
+    </li>
+    <li class="">
+     <span class="Assault">
+     </span>
+     Assault
+    </li>
+    <li class="first">
+     <span class="Burglary">
+     </span>
+     Burglary
+    </li>
+    <li class="">
+     <span class="Other">
+     </span>
+     Other
+    </li>
+    <li class="">
+     <span class="Robbery">
+     </span>
+     Robbery
+    </li>
+    <li class="first">
+     <span class="Shooting">
+     </span>
+     Shooting
+    </li>
+    <li class="">
+     <span class="Theft">
+     </span>
+     Theft
+    </li>
+    <li class="">
+     <span class="Vandalism">
+     </span>
+     Vandalism
+    </li>
+   </ul>
+  </div>
+  <div id="menu">
+   <a href="#" onclick="$('#disclaimer').toggle(); return false;">
+    Disclaimer
+   </a>
+   <a href="privacy">
+    Privacy
+   </a>
+   <a href="about">
+    About
+   </a>
+   <div id="disclaimer">
+    <strong>
+     Disclaimer:
+    </strong>
+    The data made available here has been
+modified for use from its original source. Neither MyLocalCrime.com
+nor our data sources make any claims as to the completeness, accuracy
+or content of any data contained in this application; makes any
+representation of any kind, including, but not limited to, warranty
+of the accuracy or fitness for a particular use; nor are any such
+warranties to be implied or inferred with respect to the information
+or data furnished herein. The data is subject to change as
+modifications and updates are complete. It is understood that the
+information contained in the web feed is being used at one's own
+risk. The sources for the "crime" reports on our maps and website
+are police incident reports and other news sources. The alleged
+perpetrators have not necessarily been tried or found guilty of
+any crime.
+   </div>
+  </div>
+  <div id="table_container">
+  </div>
+ </body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Sacramento Valley Crime Stoppers
+  </title>
+  <meta content="Crime Stoppers utilizes modern technology to acquire anonymous online crime tips. You do not have to identify yourself, and may be eligible for a cash reward." name="description"/>
+  <meta content="Crime Stoppers, CrimeStoppers, Anonymous Crime Tips, Crime Tip App, Submit crime information anonymously, Rewards for crime information, Anonymous community crime reporting, Wanted fugitives and unsolved crimes, Anonymous crime reporting, Text a tip, Submit crime tips online" name="keywords"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" name="viewport"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="Dynasites" name="apple-mobile-web-app-title"/>
+  <link href="images/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed" sizes="152x152"/>
+  <link href="images/apple-touch-icon-76x76.png" rel="apple-touch-icon-precomposed" sizes="76x76"/>
+  <link href="images/apple-touch-icon-152x152.png" rel="apple-touch-icon-precomposed"/>
+  <meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR"/>
+  <meta content="Visual Basic 7.0" name="CODE_LANGUAGE"/>
+  <meta content="JavaScript" name="vs_defaultClientScript"/>
+  <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema"/>
+  <meta http-equiv="Page-Enter"/>
+  <link href="favicon.png" rel="shortcut icon"/>
+  <link href="images/apple-touch-icon.png" rel="apple-touch-icon"/>
+  <link href="favicon.png" rel="icon" type="image/png"/>
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Custom CSS -->
+  <link href="css/sitemenu.css?TxM=18-06-21-13" rel="stylesheet"/>
+  <!-- Custom Fonts -->
+  <link href="font-awesome-4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <script>
+   var widgetId1;
+    var frameH=100;
+    window.onload = function () {
+         $(function () {
+             $("[data-toggle='popover']").popover({ html: true });
+         });
+
+         $('body').on('click', function (e) {
+             if ($(e.target).data('toggle') !== 'popover'
+                 && $(e.target).parents('.popover.in').length === 0) {
+                 $('[data-toggle="popover"]').popover('hide');
+             }
+         });
+
+         $("#hdlFind").keypress(function (event) {
+             if (event.which == 13) {
+                 location.href = 'Wanteds.aspx?ID=609&F=' + $("#hdlFind").val();
+                 return false;
+             }
+         });
+
+         $("#txtAccessCode").keypress(function (event) {
+             if (event.which == 13) {
+                 private();
+                 return false;
+             }
+         });
+
+        $(document).ready(function () {
+            $('[data-toggle=offcanvas]').click(function () {
+                $('.row-offcanvas').toggleClass('active');
+            });
+        });
+
+        window.addEventListener("message",
+          function (e) {
+              //if (e.origin !== 'https://www.p3tips.com') { return; }
+              console.log(e.origin);
+              console.log(e.data);
+              var t = JSON.parse(e.data);
+              if (t.hasOwnProperty('height')) {
+                  //console.log(t['height'])
+                  var h = eval(t['height']);
+                  if (h < 1000) {
+                      h = 1000; //optional
+                  }
+                  document.getElementById('AFrame').style.height = h + 'px';
+                  h = eval(eval(h)+10);
+                  document.getElementById('tipdiv').style.height = h + 'px';
+              }
+              if (t.hasOwnProperty('command')) {
+                  //console.log(t['command'])
+                  if (t['command'] == 'scroll2top') {
+                      document.getElementById("tipdiv").scrollIntoView();
+                  }
+              }
+              if (t.hasOwnProperty('sump')) {
+                  var stuff = t['sump'];
+                  var data = {};
+                  data["sUmp"] = stuff;
+                  data["sAgencyID"] = $('#hdlAgencyID').val();
+                  $.ajax({
+                      type: "POST",
+                      url: "sitemenu.aspx/CheckStats",
+                      data: JSON.stringify(data, null, " "),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (response) {
+                          console.log('DS: ' + response.d);
+                      },
+                      failure: function (response) {
+                          //alert(response.d);
+                      },
+                      error: function (jqXHR, exception) {
+                          //alert(response.d);
+                      }
+                  });
+              }
+          },
+          false);
+        
+    }
+
+    function googletranslate() {
+        $('#myModalLanguage').modal('show');
+    }
+
+    function alertme(title, body) {
+        $('#myModal').modal('show');
+        $('#myModalTitle').html(title);
+        $('#myModalBody').html(body);
+    }
+    
+    var numWindows = 10000;
+    function wincustom(fileName, h, w, id) {
+        var winl = (screen.width - w) / 2;
+        var wint = (screen.height - h) / 2;
+        if (winl < 0) { winl = 0; }
+        if (wint < 0) { wint = 0; }
+        //wint = 0;
+        var ctrl7 = document.getElementById('txtAutoID');
+        var autoid = '1';
+        if (ctrl7 != null) { autoid = ctrl7.value; }
+        windowprops = "height=" + h + ",width=" + w + ",top=" + wint + ",left=" + winl + ",status=yes,toolbar=no,menubar=no,resizable=yes,scrollbars=yes,location=yes";
+        numWindows += 1;
+        winnum = "Manager" + numWindows + Math.floor((Math.random() * 10000) + 1);
+        window.open(fileName, winnum, windowprops);
+    }
+
+
+    function lightbox(sfilename) {
+        var title = 'Image';
+        var body = '<div class="row no-gutter"><div class=" col-sm-12"><img style="margin: 0 auto;min-width:600px;max-height:' + eval(frameH - 200) + 'px;" class="img-responsive" src="' + sfilename + '"></div></div>';
+        var footer = '<button type="button" class="btn btn-default" data-dismiss="modal" style="font-size:16px">Ok</button>';
+        $('#myModalMapTitle').html(title);
+        $('#myModalMapBody').html(body);
+        $('#myModalMapFooter').html(footer);
+        $('#myModalMap').modal('show');
+
+        //setTimeout("initp3map()", 1000);
+    }
+
+    function stripHTML(dirtyString) {
+        var container = document.createElement('div');
+        container.innerHTML = dirtyString;
+        var tmp = container.textContent || container.innerText;
+        if (tmp == null || tmp == undefined) { tmp = ''; }
+        return tmp;
+    }
+    
+
+    function searchit() {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&ID=609&Sort=' + $('#txtSortItBy').val() + '&F=' + stripHTML($('#txtName').val()) + '&W=' + stripHTML($('#txtWantedInfo').val());
+    }
+
+    function showall() {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&ID=609&Sort=' + $('#txtSortItBy').val();
+    }
+
+    function showmore(spage) {
+        location.href = 'sitemenu.aspx?P=' + stripHTML($('#hdlPage').val()) + '&Top=' + spage + '&ID=609&Sort=' + $('#txtSortItBy').val() + '&F=' + stripHTML($('#txtName').val()) + '&W=' + stripHTML($('#txtWantedInfo').val());
+    }
+
+    function goto(spage) {
+        location.href = 'sitemenu.aspx?P=' + spage + '&ID=609';
+    }
+
+
+    function private(sagencyid,accesscode) {
+        var data = {};
+        data["sAgencyID"] = $('#hdlAgencyID').val();
+        data["sAccessCode"] = $('#txtAccessCode').val();
+        $.ajax({
+            type: "POST",
+            url: "sitemenu.aspx/GetAccess",
+            data: JSON.stringify(data, null, " "),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                location.href = 'sitemenu.aspx?p=privatearea&ID=' + $('#hdlAgencyID').val() + '&S=' + response.d;
+            },
+            failure: function (response) {
+                alert(response.d);
+            },
+            error: function (jqXHR, exception) {
+                alert(jqXHR.responseText)
+            }
+        });
+
+    }
+
+    function toggle_password(target) {
+        var d = document;
+        var tag = d.getElementById('txt' + target);
+        if ($('#txt' + target).length == 0) {
+            tag = d.getElementById('con' + target);
+        }
+        var tag2 = d.getElementById('tgl' + target);
+
+        if (tag2.value == 'Show') {
+            tag.setAttribute('type', 'text');
+            tag2.value = 'Hide';
+        } else {
+            tag.setAttribute('type', 'password');
+            tag2.value = 'Show';
+        }
+    }
+  </script>
+  <style>
+   a {    color:#C9302C;}#divMainBody a {    text-decoration:underline;}a:hover {    color:#C9302C;    text-decoration:underline;    opacity:0.7;}.navbar-custom {    background-color:#C9302C;    color:#ffffff;    border-radius:0;}.navbar-custom .navbar-nav > li > a {    color:#fff;}.navbar-custom .navbar-nav > .active > a {    color: #ffffff;    background-color:transparent;}.navbar-custom .navbar-nav > li > a:hover,.navbar-custom .navbar-nav > li > a:focus,.navbar-custom .navbar-nav > .active > a:hover,.navbar-custom .navbar-nav > .active > a:focus,.navbar-custom .navbar-nav > .open >a {    text-decoration: none;    background-color: #DA413D;}.navbar-custom .navbar-brand {    color:#eeeeee;}.navbar-custom .navbar-toggle {    background-color:#eeeeee;}.navbar-custom .icon-bar {    background-color:#C9302C;}/* for dropdowns only */.navbar-custom .navbar-nav .dropdown-menu  {   background-color: #C9302C;}.navbar-custom .navbar-nav .dropdown-menu>li>a  {   color: #fff;}.navbar-custom .navbar-nav .dropdown-menu>li>a:hover,.navbar-custom .navbar-nav .dropdown-menu>li>a:focus  {   color: #C9302C;}.moreactive{    background-color:#DA413D;}
+
+
+.bella {
+    position: fixed;
+    width: 1px;
+    left: -50px;
+}
+.bella input {
+    width: 1%;
+}
+  </style>
+ </head>
+ <body onunload="" style="background:none !important">
+  <div class="page-container" style="xborder:2px solid green;">
+   <div class="container-custom hidden-xs" onclick="wincustom('TipForm.aspx?ID=P3-609&amp;C=C9302C',800,800,1)" style="cursor:pointer;background-color:#ffffff;border-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;padding:0px !important;">
+    <img class="img-responsive hidden-xs ximg-zoom" id="imgHeaderFile" src="http://www.crimestoppersweb.com/Logos/609-Accounts20180320210638-609-Accounts20170926233215-sacvalleybanner2.jpg?t=20180529" style="margin: auto; xzoom: 2; xmax-height: 320px; xwidth: 100%;"/>
+   </div>
+   <div class="container-custom" style="padding-right: 0px !important;padding-left: 0px !important; ">
+    <nav class="navbar navbar-custom nav-sfa" role="navigation">
+     <div class="container-customnav">
+      <div class="navbar-header xnavbar-sfa">
+       <button class="navbar-toggle" data-target="#myNavbar" data-toggle="collapse" type="button">
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+       </button>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+       <ul class="nav navbar-nav navbar-sfa">
+        <li class="visible-xs">
+         <a href="sitemenu.aspx?ID=609">
+          <center>
+           <b>
+            Sacramento Valley Crime Stoppers
+           </b>
+          </center>
+         </a>
+        </li>
+        <li class="xactive moreactive">
+         <a href="sitemenu.aspx?P=index&amp;ID=609">
+          Welcome
+         </a>
+        </li>
+        <li>
+         <a href="sitemenu.aspx?P=custom&amp;D=1&amp;ID=609">
+          Success Stories
+         </a>
+        </li>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Cases
+          <span class="caret">
+          </span>
+         </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a href="sitemenu.aspx?P=wanteds&amp;ID=609">
+            Wanted Suspects
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=unsolved&amp;ID=609">
+            Unsolved Crimes
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=misc&amp;D=1&amp;ID=609">
+            Cold Case Homicides
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Sponsors
+          <span class="caret">
+          </span>
+         </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a href="sitemenu.aspx?P=supportus&amp;ID=609">
+            Support Us
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=sponsors&amp;ID=609">
+            Sponsors
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=custom&amp;D=3&amp;ID=609">
+            Friends of Crime Stoppers
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          About
+          <span class="caret">
+          </span>
+         </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a href="sitemenu.aspx?P=howitworks&amp;ID=609">
+            How it Works
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=about&amp;ID=609">
+            About Us
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=history&amp;ID=609">
+            History
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=localnews&amp;ID=609">
+            News &amp; Events
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=aware&amp;ID=609">
+            Crime Awareness
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=statistics&amp;ID=609">
+            Statistics
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=links&amp;ID=609">
+            External Links
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=contactus&amp;ID=609">
+            Contact Us
+           </a>
+          </li>
+          <li>
+           <a href="sitemenu.aspx?P=privatearea&amp;ID=609">
+            Private Area
+           </a>
+          </li>
+          <li>
+           <a href="https://www.crimeinfo.net/access.aspx?P=login&amp;ID=609">
+            Admin
+           </a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </nav>
+   </div>
+   <input id="hdlPage" type="hidden" value="index"/>
+   <input id="hdlAgencyID" type="hidden" value="609"/>
+   <div class="container-custom visible-xs" style="background-color:white;border-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+    <div class="row">
+     <div class="col-sm-12" style="xpadding:0px;xmargin:0px;text-align:center;background-color:white;border:1px solid #ffffff">
+      <img class="img-responsive" src="http://www.crimestoppersweb.com/Logos/609-Accounts20170713163650-SVCS9-14-16.PNG?t=20180621" style="max-height:220px !important;xwidth:100% !important;margin: 0 auto;"/>
+     </div>
+    </div>
+   </div>
+   <div class="container-custom xhidden-xs" style="cursor:pointer;background-color:white;xborder-top:1px solid #dddddd;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+    <div class="row">
+     <div class="col-xs-12 col-sm-4 col-md-offset-3 col-md-2 xhidden-xs" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="TipForm.aspx?ID=P3-609&amp;C=C9302C" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C" xtarget="_blank">
+       <i aria-hidden="true" class="fa fa-share">
+       </i>
+       Submit a Tip
+      </a>
+     </div>
+     <div class="col-xs-12 col-sm-4 col-md-2 xhidden-xs" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="TwoWay.aspx?ID=P3-609&amp;C=C9302C" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C" xtarget="_blank">
+       <i aria-hidden="true" class="fa fa-commenting">
+       </i>
+       Tip Follow-Up
+      </a>
+     </div>
+     <div class="col-xs-12 col-sm-4 col-md-2" style="padding:5px;xmargin:0px;text-align:center;background-color:white;xborder:1px solid #dddddd">
+      <a class="btn btn-danger btn-block btn-submitatip visible-xs" href="sitemenu.aspx?P=P3App&amp;ID=609" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C">
+       <i aria-hidden="true" class="fa fa-download">
+       </i>
+       Download the Mobile App
+      </a>
+     </div>
+    </div>
+   </div>
+   <div class="container-custom" id="divMainBody" style="xfont-size: 1.1em;background-color:white;border-bottom:1px solid #dddddd;border-right:1px solid #dddddd;border-left:1px solid #dddddd;">
+    <div class="row" style="background-color:white">
+     <!-- main area -->
+     <div class="col-xs-12 col-sm-12" xstyle="padding-top:10px">
+      <div class="row" style="border:1px solid #eeeeee;background:#f5f5f5;margin-bottom:5px;">
+       <div class="col-md-6 col-sm-12 col-xs-12" style="padding:5px;">
+        <h3 style="font-weight:bold;margin:0px 0px 0px 0px;padding:4px 0px 4px 10px;color:#C9302C">
+         Welcome
+        </h3>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="TipForm.aspx?ID=P3-609&amp;C=C9302C" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C" target="_blank">
+         <i aria-hidden="true" class="fa fa-share">
+         </i>
+         Submit a Tip
+        </a>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="TwoWay.aspx?ID=P3-609&amp;C=C9302C" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C" target="_blank">
+         <i aria-hidden="true" class="fa fa-commenting">
+         </i>
+         Tip Follow-Up
+        </a>
+       </div>
+       <div class="col-md-2 col-sm-4 hidden-xs" style="padding:5px;text-align:center;">
+        <a class="btn btn-danger btn-block btn-submitatip" href="sitemenu.aspx?P=P3App&amp;ID=609" style="text-decoration:none !important;xmargin:0px 10px 0px 10px;xwidth: 150px !important;background-color:#C9302C;border-color:#C9302C">
+         <i aria-hidden="true" class="fa fa-download">
+         </i>
+         Mobile App
+        </a>
+       </div>
+      </div>
+      <div style="padding:5px;">
+       <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7" style="margin-bottom:20px;">
+         <p style="text-align:center">
+         </p>
+         <p>
+          <strong>
+           YOUR DONATION COULD HELP GET A DANGEROUS CRIMINAL OFF THE STREETS
+          </strong>
+         </p>
+         <p align="left">
+          Sacramento Valley Crime Stoppers in a
+          <strong>
+           non-profit organization, 501 (c) (3)
+          </strong>
+          registered with the Secretary of State of California. Sacramento Valley Crime Stoppers is
+          <strong>
+           <u>
+            affliated with Crime Stoppers USA
+           </u>
+          </strong>
+          .
+         </p>
+         <p align="justify">
+          Sacramento Valley Crime Stoppers encourages members of the community to assist local law enforcement agencies in the fight against crime by overcoming the two key elements that inhibit community involvement: fear and apathy.
+         </p>
+         <p align="justify">
+          Sacramento Valley Crime Stoppers provides a telephone number and Web Tips to encourage citizens in the community to volunteer vital information helpful to law enforcement agencies to fight against crime.
+         </p>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5" style="margin-bottom:20px;text-align:center">
+         <img class="img-responsive" id="Image1" src="http://www.crimestoppersweb.com/609/Pictures/200706042036041.jpg                                                                                 " style="xzoom:2;xmax-height:400px;xwidth:100% !important;margin: 0 auto;"/>
+         <div style="margin-top:10px;">
+          <div class="panel panel-default " onclick="goto('Sponsors')" style="cursor:pointer;">
+           <div class="panel-heading" style="padding:2px 5px !important;color:#ffffff;background-color:#C9302C;border-color:#C9302C;">
+            Sponsor
+           </div>
+           <div class="panel-body" style="padding:5px 5px !important;">
+            <center>
+             <img class="img-responsive" src="http://www.crimestoppersweb.com/609/Pictures/Sponsors-550-20171119055553-Untitled.png" style="max-height:200px;"/>
+            </center>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-7" style="margin-bottom:20px;">
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5" style="margin-bottom:20px;text-align:center">
+         <img class="img-responsive" id="Image2" src="http://www.crimestoppersweb.com/609/Pictures/Welcome-44-20171004145713-PowerByP3.png                                                             " style="xzoom:2;xmax-height:400px;xwidth:100% !important;margin: 0 auto;"/>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- /.col-xs-12 main -->
+    </div>
+    <!--/.row-->
+    <div class="row" style="border-top:1px solid #C9302C;border-bottom:10px solid #C9302C;background-color:white">
+     <div class="col-xs-12" style="padding:10px;">
+      <div style="margin:5px auto;text-align:center">
+       <a href="https://www.facebook.com/sacramentocrimealert" style="margin-left:5px;margin-right:5px;" target="_blank">
+        <i class="fa fa-facebook fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:#C9302C;xwidth:48px;color:#fff ">
+        </i>
+       </a>
+       <a href="https://www.twitter.com/saccrime" style="margin-left:5px;margin-right:5px;" target="_blank">
+        <i class="gbor fa fa-twitter fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:#C9302C;xwidth:48px;color:#fff ">
+        </i>
+       </a>
+       <a href="https://www.instagram.com/sacvalleycrimestoppers" style="margin-left:5px;margin-right:5px;" target="_blank">
+        <i class="gbor fa fa-instagram fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:#C9302C;xwidth:48px;color:#fff ">
+        </i>
+       </a>
+       <a href="sitemenu.aspx?P=P3App&amp;ID=609" style="margin-left:5px;margin-right:5px;" xtarget="_blank">
+        <i class="fa fa-mobile fa-fw" style="padding:3px 0px;xborder:1px solid blue;text-align:center;border-radius:10px;font-size:30px;background-color:#C9302C;xwidth:48px;color:#fff " title="Our Mobile App">
+        </i>
+       </a>
+       <br/>
+       <a class="footer-link" href="#">
+        Sacramento Valley Crime Stoppers
+       </a>
+       <br/>
+       <a class="footer-link" href="http://www.crimestoppersweb.com">
+        Anderson Software © 2018 All Rights Reserved
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--/.container-->
+  </div>
+  <!--/.page-container-->
+  <!-- Modal -->
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+       ×
+      </button>
+      <h4 class="modal-title" id="myModalTitle">
+       Loading...
+      </h4>
+     </div>
+     <div class="modal-body" id="myModalBody">
+      Loading...
+     </div>
+     <div class="modal-footer" id="myModalFooter">
+      <button class="btn btn-default" data-dismiss="modal" onclick="focusonit()" type="button">
+       Ok
+      </button>
+     </div>
+    </div>
+    <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <!-- Modal Map -->
+  <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="myModalMap" role="dialog" style="z-index:9000000;" tabindex="-1">
+   <div class="modal-dialog" style="width:95%;height:90%;">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+       ×
+      </button>
+      <h4 class="modal-title" id="myModalMapTitle">
+       Loading...
+      </h4>
+     </div>
+     <div class="modal-body" id="myModalMapBody">
+      Loading...
+     </div>
+     <div class="modal-footer" id="myModalMapFooter">
+      <button class="btn btn-default" data-dismiss="modal" type="button">
+       Close
+      </button>
+     </div>
+    </div>
+    <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <!-- jQuery Version 1.11.0 -->
+  <script src="js/jquery-1.11.0.js">
+  </script>
+  <script src="jquery-ui-1.11.2.custom/jquery-ui.js">
+  </script>
+  <!-- Bootstrap Core JavaScript -->
+  <script src="js/bootstrap.min.js">
+  </script>
+ </body>
+</html>

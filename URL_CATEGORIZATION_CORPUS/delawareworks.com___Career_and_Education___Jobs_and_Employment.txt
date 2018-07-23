@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <!-- Mark of the Web -->
+  <!-- saved from url=(0014)about:internet -->
+  <!-- Backward-compatability scripts -->
+  <!-- Detects available browser features for HTML5 and CSS3 in the browser -->
+  <!--[if IE 8]> <html class="ie8"> <![endif]-->
+  <script src="/CLF/private/CLF30/js/modernizr-2.5.3.js">
+  </script>
+  <!-- jQuery library calls -->
+  <script src="/CLF/usr/js/jquery-1.12.1.min.js" type="text/javascript">
+  </script>
+  <script src="/CLF/usr/js/jquery.easing.1.3.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   $(document).ready(function() {
+
+// News and Events
+var quotes = $(".quotes");
+var quoteIndex = -1;
+
+function showNextQuote() {
+    ++quoteIndex;
+    quotes.eq(quoteIndex % quotes.length)
+        .fadeIn(2000)
+        .delay(6000)
+        .fadeOut(2000, showNextQuote);
+}
+
+showNextQuote();
+
+});
+  </script>
+  <!-- Page scripts -->
+  <script>
+   $(document).ready(function () {
+
+    // Header Bar Items
+
+    $(".txtKeyword").click(function() {
+      $("#portalTopBar_shelfSearch").slideDown("slow");
+          return false;
+  });
+
+  $(".searchButton").click(function() {
+      var portalTopBarSearchFieldText = document.getElementById("txtKeyword").value;
+      if(portalTopBarSearchFieldText == '') {
+          $("#portalTopBar_shelfSearch").slideDown("slow");
+      } else {
+          var searchOption = $('input:radio[name=portalTopBarSearchOption]:checked').val();
+          if(searchOption == 1) { 
+              window.location.href = "http://search3.delaware.gov/texis/search/?sq=apex.delawareworks.com&query="+portalTopBarSearchFieldText;
+          } else if(searchOption == 2) {
+              window.location.href = "http://search3.delaware.gov/texis/search/?query="+portalTopBarSearchFieldText;
+          } else if(searchOption == 3) {
+              window.location.href = "http://www.delaware.gov/phonedirectory/index.php?searchname="+portalTopBarSearchFieldText;
+          }        
+      }
+    return false;    
+  });  
+
+
+    $(".servicesButton").click(function(){
+        if ($('#portalTopBar_shelfServices').is(":hidden")) {
+                if ($('#portalTopBar_shelfSearch').is(":visible")) {
+                    $('#portalTopBar_shelfSearch').slideUp("slow");
+                    $('#portalTopBar_shelfServices').delay(600).slideDown("slow");
+                } else {
+                    $("#portalTopBar_shelfServices").slideDown("slow");
+                }
+            } else {
+                $("#portalTopBar_shelfServices").slideUp("slow");
+            }
+        return false;
+    });
+
+
+
+    /* P2010 LIVEPERSON POPUP WINDOW SCRIPT */
+    function openPopup(url,w,h,winname){var winl=(screen.width - w) / 2;var wint=(screen.height - h) / 2;popupWin=window.open(url,winname,'toolbar=1,location=1,directories=0,status=1,menubar=1,resizable=1,scrollbars=1,top='+wint+',screenY='+wint+',left='+winl+',screenX='+winl+',width='+w+',innerWidth='+w+',height='+h+',innerHeight='+h);}
+
+
+    // Navigation nav bar state set
+    var navBarState = "closed";
+    var navstr = navBarState;
+    $("#closed").text(navstr);
+
+    $("#forceDOMredraw").hide();
+
+    });
+
+
+
+    // Force DOM Redraw for mobile orientation load and also change and on screen resize
+     function forceDOMredraw(){
+        $("#forceDOMredraw").show();
+        setTimeout(function () {
+            $("#forceDOMredraw").hide();
+        }, 50);
+        //alert("FPS!");
+    }
+
+    // Listener for DOM redraw
+
+    if (window.addEventListener) //DOM method for binding an event
+    window.addEventListener('load', function(){ if(!window.pageYOffset){ forceDOMredraw(); } } );
+    else if (window.attachEvent) //IE 7 support
+    window.attachEvent('load', function(){ if(!window.pageYOffset){ forceDOMredraw(); } } );
+
+    if (window.addEventListener) //DOM method for binding an event
+    window.addEventListener('orientationchange', forceDOMredraw);
+    else if (window.attachEvent) //IE 7 support
+    window.attachEvent('orientationchange', forceDOMredraw );
+
+
+
+    // Navigation
+    var navBarState = "closed";
+
+    function collapsing_nav() {
+        $("body").addClass("enhanced");
+        $("#collapsing-nav > li:first").addClass("selected");
+        $("#collapsing-nav > li").not(":first").find("ul").hide();
+        $("#collapsing-nav > li span").click(function() {
+            if ($(this).parent().find("ul").is(":visible")) {
+                $(this).parent().removeClass("selected");
+                $(this).parent().find("ul").slideUp("fast");
+            }
+            else {
+                $(this).parent().addClass("selected");
+                $(this).parent().find("ul").slideDown("fast");
+            }
+        });
+    }
+
+    $(collapsing_nav);
+
+    function showNavBar() {
+        $("#nav_bar").fadeIn();
+        $("#nav_close_button1").show();
+        $("#nav_open_button1").hide();
+        $("#nav_close_button2").show();
+        $("#nav_open_button2").hide();
+        navBarState = "open";
+        var navstr = navBarState;
+        $("#closed").text(navstr);
+        }
+
+    function hideNavBar() {
+        $("#nav_bar").fadeOut();
+        $("#nav_close_button1").hide();
+        $("#nav_open_button1").show();
+        $("#nav_close_button2").hide();
+        $("#nav_open_button2").hide();
+        navBarState = "closed";
+        var navstr = navBarState;
+        $("#closed").text(navstr);
+        }
+
+
+    // Listener for window resizing. On move, reports window size after 100ms delay.
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+            //alert("update");
+        }, 100);
+    });
+
+    // Receives report for window resize. Performs action.
+    $(window).bind('resizeEnd', function() {
+
+        // display elements, for testing only
+        $("#width").text($(this).width());
+        $("#height").text($(this).height());
+
+
+        if (   (($(window).width()) < 800 )  &&  (navBarState == "open")  ) {
+            setTimeout(function() {
+            $("#nav_close_button1").fadeIn();
+            $("#nav_open_button1").hide();
+            $("#nav_close_button2").fadeIn();
+            $("#nav_open_button2").hide();
+            },50);
+        }
+
+        if (   (($(window).width()) > 799 )  &&  (navBarState == "open")  ) {
+            setTimeout(function() {
+            $("#nav_close_button1").hide();
+            $("#nav_open_button1").hide();
+            $("#nav_close_button2").hide();
+            $("#nav_open_button2").hide();
+            },50);
+        }
+
+
+        if (   (($(window).width()) < 800 )  &&  (navBarState == "closed")  ) {
+            setTimeout(function() {
+            $("#nav_bar").hide();
+            $("#nav_open_button1").fadeIn();
+            $("#nav_close_button1").hide();
+            $("#nav_open_button2").hide();
+            $("#nav_close_button2").hide();
+            },50);
+        }
+
+        if (   (($(window).width()) > 799 )  &&  (navBarState == "closed")  ) {
+            setTimeout(function() {
+            $("#nav_close_button1").hide();
+            $("#nav_open_button2").hide();
+            $("#nav_close_button1").hide();
+            $("#nav_open_button1").hide();
+            //$("#nav_bar").fadeIn();
+            },50);
+        }
+
+
+        if (   (($(window).width()) < 800 )  ) {
+            if ($('#portalTopBar_shelfServices').is(":visible")) {
+                    $('#portalTopBar_shelfServices').slideUp("fast");
+                }
+        }
+
+
+        if (   (($(window).width()) > 799 )  ) {
+            setTimeout(function() {
+            $("#nav_bar").fadeIn();
+            },50);
+        }
+
+    });
+  </script>
+  <!-- Favorite Icon -->
+  <link href="/CLF/private/CLF30/img/favicon.ico" rel="shortcut icon"/>
+  <!-- Bookmarklets Icon -->
+  <link href="/CLF/usr/img/apple-icon57.png" rel="apple-touch-icon" sizes="57x57"/>
+  <link href="/CLF/usr/img/apple-icon72.png" rel="apple-touch-icon" sizes="72x72"/>
+  <link href="/CLF/usr/img/apple-icon114.png" rel="apple-touch-icon" sizes="114x114"/>
+  <link href="/CLF/usr/img/apple-icon144.png" rel="apple-touch-icon" sizes="144x144"/>
+  <!-- Bootstrap JS -->
+  <script src="/CLF/private/CLF30/js/bootstrap.js">
+  </script>
+  <!-- Core Stylesheets CLF for Header Bar, Global Images, Forms, and State Footer  -->
+  <link href="/CLF/private/CLF30/css/CLF_core.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/CLF_core_layout.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/CLF_core_images.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/CLF_core_forms.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/CLF_core_support_retro.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/CLF_core_exceptions.css" rel="stylesheet"/>
+  <!-- Agency Customizable Stylesheet / Includes some images and Customization -->
+  <link href="/CLF/usr/css/CLF_agency_styles.css" rel="stylesheet"/>
+  <!-- Font Awesome Icons -->
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+  <!-- Retina LESS CSS -->
+  <link href="/CLF/usr/css/retina.less" rel="stylesheet/less" type="text/css"/>
+  <!-- stable, iOS/Android viewport command -->
+  <meta content="width=device-width,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" name="viewport"/>
+  <!-- IE Edge -->
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible"/>
+  <link href="//fonts.googleapis.com/css?family=Roboto:400,300" rel="stylesheet" type="text/css"/>
+  <!-- LESS JS -->
+  <script src="/CLF/usr/js/less.js">
+  </script>
+  <!-- Bootstrap Styles -->
+  <link href="/CLF/private/CLF30/css/bootstrap-responsive.css" rel="stylesheet"/>
+  <link href="/CLF/private/CLF30/css/bootstrap.css" rel="stylesheet"/>
+  <!-- CSS Media Query retro support IE7, IE8, etc. -->
+  <script src="/CLF/private/CLF30/js/respond.min.js">
+  </script>
+  <!-- optional: script/style overrides -->
+  <script>
+  </script>
+  <style>
+  </style>
+  <!-- keywords, description, and page title -->
+  <meta content="Delaware, Deparment of Labor, labor, jobs, work, working, employment, unemployment, resume, find a job, business, joblink, job seekers, state of delaware, veterans, disabled, careers, career planning, wages, benefits, wage claim, people with disabilities" name="Keywords"/>
+  <meta content="Welcome to Delaware Works from the State of Delaware's Department of Labor. Delaware Works is committed to helping job seekers find employment and services they need to succeed." name="Description"/>
+  <title>
+   State of Delaware - Delaware Works
+  </title>
+ </head>
+ <body>
+  <!--framework-->
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-4159014-2', 'auto');
+  ga('send', 'pageview');
+  </script>
+  <div id="forceDOMredraw">
+  </div>
+  <div id="pw1">
+   <div id="pw2">
+    <div id="pw3">
+     <div id="pw4">
+      <div id="eas1">
+       <div id="eas2">
+        <div id="eas3">
+         <div id="eas4">
+          <div id="eas5">
+           <div id="eas6">
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <header role="banner">
+       <div id="hg1">
+        <div id="hg2">
+         <div id="hg3">
+          <div id="hg4">
+           <div id="hg5">
+            <div id="hg6">
+             <h1 class="semanticHide">
+              State of Delaware - Search and Services/Information
+             </h1>
+             <div id="hg1_l">
+              <div id="sl1">
+               <div id="sl2">
+                <div id="sl3">
+                 <div id="sl4">
+                  <a href="http://www.delaware.gov">
+                   <img alt="State of Delaware - The Official Website of the First State" class="hdr_StateOfDelaware" src="/CLF/private/CLF30/img/CLF_hdr_StateOfDelaware_big2.png" title="State of Delaware Web - The Official Website of the First State"/>
+                  </a>
+                  <a href="http://www.delaware.gov">
+                   <img alt="State of Delaware - The Official Website of the First State" class="hdr_StateOfDelawareD" src="/CLF/private/CLF30/img/CLF_btn_delaware_d2.png" title="State of Delaware Web - The Official Website of the First State"/>
+                  </a>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+             <div id="hg1_r">
+              <div id="searchGroup" role="search">
+               <form id="portalTopBarSearchForm">
+                <div id="searchGroupLeft">
+                 <label for="txtKeyword" id="search-label">
+                  Search:
+                 </label>
+                 <div id="searchAreaLeft">
+                 </div>
+                 <div id="searchAreaMiddle">
+                  <input class="txtKeyword" id="txtKeyword" type="text"/>
+                  <!--[if IE]><input type="text" style="display: none;" disabled="disabled" size="1" /><![endif]-->
+                 </div>
+                 <div id="searchAreaRight">
+                 </div>
+                </div>
+                <div id="searchGroupRight">
+                 <input alt="search" class="searchButton" onclick="" src="/CLF/private/CLF30/img/CLF_1px.gif" type="image"/>
+                </div>
+               </form>
+              </div>
+              <div id="servicesGroup">
+               <div id="servicesGroupLeft">
+                <a href="#" onclick="">
+                 <img alt="Services and Information" class="hdr_servicesLabel" src="/CLF/private/CLF30/img/CLF_1px.gif" title="Services and Information"/>
+                </a>
+               </div>
+               <div id="servicesGroupRight">
+                <input alt="services" class="servicesButton" onclick="" src="/CLF/private/CLF30/img/CLF_1px.gif" type="image"/>
+               </div>
+              </div>
+              <div id="sGsG_c">
+              </div>
+             </div>
+             <div id="hg1_c">
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- TOP BAR SHELVES -->
+       <div class="hidden" id="portalTopBar_shelfSearch">
+        <div id="portalTopBar_shelfSearchWrap">
+         <div id="portalTopBar_shelfSearchSelectors">
+          <div class="portalTopBarSearchOptionItemLabel" id="portalTopBarSearchOptionLabel1Wrap">
+           <input checked="" id="portalTopBarSearchOption1" name="portalTopBarSearchOption" type="radio" value="1"/>
+          </div>
+          <div class="portalTopBarSearchOptionItemButton" id="portalTopBarSearchOption1Wrap">
+           <label for="portalTopBarSearchOption1" id="portalTopBarSearchOptionLabel1">
+            This Site
+           </label>
+          </div>
+          <div class="portalTopBarSearchOptionItemLabel" id="portalTopBarSearchOptionLabel2Wrap">
+           <input id="portalTopBarSearchOption2" name="portalTopBarSearchOption" type="radio" value="2"/>
+          </div>
+          <div class="portalTopBarSearchOptionItemButton" id="portalTopBarSearchOption2Wrap">
+           <label for="portalTopBarSearchOption2" id="portalTopBarSearchOptionLabel2">
+            Statewide
+           </label>
+          </div>
+          <div class="portalTopBarSearchOptionItemLabel" id="portalTopBarSearchOptionLabel3Wrap">
+           <input id="portalTopBarSearchOption3" name="portalTopBarSearchOption" type="radio" value="3"/>
+          </div>
+          <div class="portalTopBarSearchOptionItemButton" id="portalTopBarSearchOption3Wrap">
+           <label for="portalTopBarSearchOption3" id="portalTopBarSearchOptionLabel3">
+            Phone Directory
+           </label>
+          </div>
+         </div>
+         <div id="portalTopBar_shelfSearchAdvancedLink">
+          <a href="http://search.delaware.gov/search?output=xml_no_dtd&amp;client=default_frontend&amp;proxystylesheet=default_frontend&amp;proxycustom=%3CADVANCED/%3E">
+           Use Advanced Search
+          </a>
+         </div>
+        </div>
+       </div>
+       <div class="hidden" id="portalTopBar_shelfServices">
+        <div class="portalTopBar_shelfInner">
+         <div class="portalTopBar_shelfInnerInner">
+          <div class="portalShelfLinkColumn LinkColumnQuickLinks">
+           <strong>
+            Citizen Services
+           </strong>
+           <br/>
+           <a href="https://egov.dnrec.delaware.gov/egovpublic/dnrec/disp?doc=LoginScreen&amp;deptPath=public&amp;op=showDefault&amp;dept=5">
+            Get Park Passes
+           </a>
+           <br/>
+           <a href="http://www.deldot.gov/information/travel_advisory/">
+            Check Traffic
+           </a>
+           <br/>
+           <a href="https://egov.dnrec.delaware.gov/egovpublic/dnrec/disp?doc=LoginScreen&amp;deptPath=public&amp;op=showDefault&amp;dept=5">
+            Get Fishing License
+           </a>
+           <br/>
+           <a href="https://uics.delawareworks.com/Forms/Form_WL1.aspx">
+            Unemployment Claim
+           </a>
+           <br/>
+           <a href="http://courts.delaware.gov/Help/Traffic/index.stm">
+            Pay Traffic Ticket
+           </a>
+           <br/>
+           <a href="https://assist.dhss.delaware.gov/">
+            Apply for Services
+           </a>
+           <br/>
+           <a href="http://delawarestatejobs.com/">
+            Apply for State Job
+           </a>
+           <br/>
+           <div class="LinkColumnRightMore">
+            +
+            <a class="btn-functionBarCitizen" href="http://www.delaware.gov">
+             More
+            </a>
+           </div>
+          </div>
+          <div class="portalShelfLinkColumn LinkColumnQuickLinks">
+           <strong>
+            Business Services
+           </strong>
+           <br/>
+           <a href="http://www.delaware.gov/topics/incorporateindelaware">
+            Incorporate
+           </a>
+           <br/>
+           <a href="http://onestop.delaware.gov/">
+            Register a Business
+           </a>
+           <br/>
+           <a href="https://delecorp.delaware.gov/tin/EntitySearch.jsp">
+            Name Availability
+           </a>
+           <br/>
+           <a href="https://delecorp.delaware.gov/tin/GINameSearch.jsp">
+            Search Entity Names
+           </a>
+           <br/>
+           <a href="http://www.courts.delaware.gov/tradenames/">
+            Search Trade Names
+           </a>
+           <br/>
+           <a href="https://dorweb.revenue.delaware.gov/scripts/licrenew/licrenew.dll">
+            Renew License
+           </a>
+           <br/>
+           <a href="https://dorweb.revenue.delaware.gov/bussrch/">
+            Search Licenses
+           </a>
+           <br/>
+           <div class="LinkColumnRightMore">
+            +
+            <a class="btn-functionBarBusiness" href="http://www.delaware.gov">
+             More
+            </a>
+           </div>
+          </div>
+          <div class="portalShelfLinkColumn LinkColumnQuickLinks" id="portalShelfLinkColumnTopics">
+           <strong>
+            Topics
+           </strong>
+           <br/>
+           <a href="http://www.delaware.gov/topics/certificates">
+            Certificates
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/complaintsreports">
+            Complaints/Reporting
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/k12ed">
+            Education (K-12)
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/humanservices">
+            Human Services
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/legal">
+            Courts &amp; Law
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/vehicles">
+            Motor Vehicles
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/recreation">
+            Sports &amp; Recreation
+           </a>
+           <br/>
+           <div class="LinkColumnRightMore">
+            +
+            <a class="btn-functionBarTopics" href="http://www.delaware.gov">
+             More
+            </a>
+           </div>
+          </div>
+          <div class="portalShelfLinkColumn LinkColumnQuickLinks" id="portalShelfLinkColumnNewsSocialMedia">
+           <strong>
+            News
+           </strong>
+           <br/>
+           <a class="http://news.delaware.gov" href="#">
+            Latest State News
+           </a>
+           <br/>
+           <br/>
+           <strong>
+            Social Media
+           </strong>
+           <br/>
+           <a class="btn-functionBarFacebook" href="http://www.delaware.gov/">
+            Facebook
+           </a>
+           <br/>
+           <a class="btn-functionBarTwitter" href="http://www.delaware.gov/">
+            Twitter
+           </a>
+           <br/>
+           <a class="btn-functionBarBlogs" href="http://www.delaware.gov/">
+            Blogs
+           </a>
+           <br/>
+           <a class="btn-functionBarYouTube" href="http://www.delaware.gov/">
+            YouTube
+           </a>
+           <br/>
+           <a class="btn-functionBarFlickr" href="http://www.delaware.gov/">
+            Flickr
+           </a>
+           <br/>
+          </div>
+          <div class="portalShelfLinkColumn">
+           <strong>
+            Help
+           </strong>
+           <br/>
+           <a href="http://portal.delaware.gov/help/">
+            24x7 Help Center
+           </a>
+           <br/>
+           <a href="http://www.delaware211.org/">
+            Delaware 211
+           </a>
+           <br/>
+           <br/>
+           <strong>
+            Live Chat
+           </strong>
+           <br/>
+           <a href="http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;byhref=1&amp;SESSIONVAR!skill=Corp_Info&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/corp/info/" onclick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;SESSIONVAR!skill=Corp_Info&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/corp/info/&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); openPopup(lpButtonCTTUrl,475,400,'chat33511087');return false;">
+            Corporations
+           </a>
+           <br/>
+           <a href="http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;byhref=1&amp;SESSIONVAR!skill=Rev_BIT&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/revenue/taxbus/" onclick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;SESSIONVAR!skill=Rev_BIT&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/revenue/taxbus/&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); openPopup(lpButtonCTTUrl,475,400,'chat33511087');return false;">
+            Revenue
+           </a>
+           <br/>
+           <a href="http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;byhref=1&amp;SESSIONVAR!skill=Portal_Help&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/portal/" onclick="lpButtonCTTUrl = 'http://server.iad.liveperson.net/hc/33511087/?cmd=file&amp;file=visitorWantsToChat&amp;site=33511087&amp;SESSIONVAR!skill=Portal_Help&amp;imageUrl=http://portal.delaware.gov/help/images/liveperson/icons/portal/&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); openPopup(lpButtonCTTUrl,475,400,'chat33511087');return false;">
+            General Questions
+           </a>
+           <br/>
+          </div>
+          <div class="portalShelfLinkColumn">
+           <strong>
+            Contacts
+           </strong>
+           <br/>
+           <a href="http://phonedirectory.delaware.gov/">
+            Phone Directory
+           </a>
+           <br/>
+           <a href="http://legis.delaware.gov/Legislature.nsf/Lookup/Know_Your_Legislators?open&amp;nav=leginfo">
+            Find Your Legislator
+           </a>
+           <br/>
+           <br/>
+           <strong class="secondHeaderShelf">
+            Subscribe
+           </strong>
+           <br/>
+           <a href="http://subscribe.delaware.gov">
+            E-mail / Text Alerts
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/socialmedia">
+            Social Media
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/rss/portal.xml">
+            RSS
+           </a>
+          </div>
+          <div class="portalShelfLinkColumn">
+           <strong>
+            Government
+           </strong>
+           <br/>
+           <a href="http://governor.delaware.gov">
+            Governor
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/egov/portal.nsf/portal/yourgovernment">
+            Elected Officials
+           </a>
+           <br/>
+           <a href="http://legis.delaware.gov/">
+            General Assembly
+           </a>
+           <br/>
+           <a href="http://courts.delaware.gov/">
+            Courts
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/topics/agencylist_alpha">
+            State Agencies
+           </a>
+           <br/>
+           <a href="http://www.delaware.gov/locations/">
+            Cities &amp; Towns
+           </a>
+           <br/>
+           <div class="LinkColumnRightMore">
+            +
+            <a href="http://www.delaware.gov/topics/yourgovernment">
+             More
+            </a>
+           </div>
+          </div>
+          <div class="portalShelfLinkColumn LinkLastColumn">
+           <strong>
+            State Agencies
+           </strong>
+           <br/>
+           <a href="http://corp.delaware.gov/">
+            Corporations
+           </a>
+           <br/>
+           <a href="http://www.dmv.de.gov/">
+            DMV
+           </a>
+           <br/>
+           <a href="http://www.destateparks.com/">
+            Parks &amp; Recreation
+           </a>
+           <br/>
+           <a href="http://revenue.delaware.gov/">
+            Revenue
+           </a>
+           <br/>
+           <a href="http://www.doe.k12.de.us/">
+            Education
+           </a>
+           <br/>
+           <a href="http://www.visitdelaware.com/">
+            Tourism
+           </a>
+           <br/>
+           <div class="LinkColumnRightMore">
+            +
+            <a href="http://www.delaware.gov/topics/agencylist_alpha">
+             More
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="portalTopBar_shelfInnerMore" id="portalShelfLinkColumn_SeeMore">
+          <a href="http://www.delaware.gov">
+           See More at Delaware.gov
+          </a>
+         </div>
+        </div>
+       </div>
+      </header>
+      <div>
+       <a href="/index.php">
+        <img alt="Delaware Works" class="delawareworks_title" src="/CLF/usr/img/delawareworks_header.jpg" title="Delaware Works"/>
+       </a>
+       <a href="/index.php">
+        <img alt="Delaware Works" class="delawareworks_titlemobile" src="/CLF/usr/img/delawareworks_header639.jpg" title="Delaware Works"/>
+       </a>
+      </div>
+      <!-- BEGIN main content area (mca) -->
+      <div id="mcaw1_full">
+       <div id="mcaw2_full">
+        <div id="mcaw3_full">
+         <div id="mcaw4_full">
+          <div id="mcaw5">
+           <div id="mcaw6">
+            <!-- set ID="CLF_OFF" to disable CLF page styling -->
+            <div id="CLF_ON">
+             <!-- start main content area user content (mcauser) -->
+             <div id="mcauser1_full">
+              <div id="mcauser2">
+               <div id="mcauser3">
+                <section>
+                 <div id="mcauser_hdr1_full">
+                  <div id="mcauser_hdr2">
+                   <div id="mcauser_hdr3">
+                    <div id="mcauser_hdr4">
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                 <!-- start main content area user content sub area (mcauser_cont) -->
+                 <div id="mcauser_cont1_full">
+                  <div id="mcauser_cont2">
+                   <div id="mcauser_cont3">
+                    <div id="mcauser_cont4" role="main">
+                     <!-- C O N T E N T   B E L O W   T H I S   L I N E -->
+                     <!--  B E G I N    M A I N    I M A G E    A N D    J O B L I N K  -->
+                     <div class="fake_hr">
+                      <p class="centered" style="font-size:0.8em">
+                       The
+                       <a href="http://dol.delaware.gov/">
+                        Delaware Department of Labor
+                       </a>
+                       website can be found at
+                       <a href="http://dol.delaware.gov/">
+                        dol.delaware.gov
+                       </a>
+                      </p>
+                     </div>
+                     <div class="table-wrap">
+                      <div class="row-wrap">
+                       <div class="left-td-upper">
+                        <img alt="Delaware is Open for Business!" class="main_image" src="/CLF/usr/img/delawareworks_main.jpg" title="Delaware is Open for Business!"/>
+                        <img alt="Delaware is Open for Business!" class="main_image2" src="/CLF/usr/img/delawareworks_main_green.jpg" title="Delaware is Open for Business!"/>
+                       </div>
+                       <a href="https://joblink.delaware.gov/ada/">
+                        <img alt="Delaware JobLink" class="joblink_header" src="/CLF/usr/img/delawareworks_joblink.png" title="Delaware JobLink"/>
+                       </a>
+                       <div class="right-td-upper">
+                        <div class="delawarejoblink">
+                         <br/>
+                         <form action="https://joblink.delaware.gov/ada/mn_login_fnc.cfm" method="post">
+                          <p>
+                           <label for="v_username">
+                            Username
+                           </label>
+                           <br/>
+                           <input class="textinput" id="v_username" name="v_username" size="15" type="text"/>
+                           <br/>
+                           <label for="v_password">
+                            Password
+                           </label>
+                           <br/>
+                           <input autocomplete="off" class="textinput" id="v_password" name="v_password" size="15" type="password"/>
+                           <br/>
+                           <input id="button" name="button" type="submit" value="Log in"/>
+                          </p>
+                          <p>
+                           <a href="https://joblink.delaware.gov/ada/mn_forgotpass.cfm">
+                            Forgot your password?
+                           </a>
+                           <br/>
+                           <a href="https://joblink.delaware.gov/ada/mn_forgotusername.cfm">
+                            Forgot your username?
+                           </a>
+                          </p>
+                          <!--//
+ 					<p><a href="https://joblink.delaware.gov/ada/skillmatch/jobseeker_sm/jbs_JobOverview_dsp.cfm">Create new job seeker account</a><br />
+ 					<a href="https://joblink.delaware.gov/ada/mn_registration_dsp.cfm?reg_type=em">Create new employer account</a></p>
+ 					//-->
+                          <input class="blTransparent" name="v_password_req" type="hidden" value="Please fill out the password field."/>
+                          <input class="blTransparent" name="v_username_req" type="hidden" value="Please fill out the username field."/>
+                          <input class="blTransparent" name="v_username_ADAdefault" type="hidden" value="Username"/>
+                          <input name="fromlogin" type="hidden" value="1"/>
+                         </form>
+                         <img alt="Quick Job Search" class="quick_icon" src="/CLF/usr/img/quick_search.png" title="Quick Job Search"/>
+                         <p>
+                          <strong>
+                           Quick Job Search
+                          </strong>
+                         </p>
+                         <hr style="background: #bfc0c0; height: 1px; border:0px;"/>
+                         <form accept-charset="UTF-8" action="https://joblink.delaware.gov/ada/r/search" method="get">
+                          <p>
+                           <label for="keywords">
+                            Enter one or more keywords
+                           </label>
+                           <br/>
+                           <input class="blInputTextbox" id="keywords" maxlength="50" name="all" onfocus="select();" size="15"/>
+                           <br/>
+                           <label for="location">
+                            City, State or Zip Code
+                           </label>
+                           <br/>
+                           <input class="blInputTextbox" id="location" maxlength="30" name="location" size="15" value=""/>
+                           <br/>
+                           <label for="radius">
+                            Search radius
+                           </label>
+                           <br/>
+                           <select class="blInputTextbox" id="radius" name="radius">
+                            <option value="5">
+                             5 miles
+                            </option>
+                            <option value="10">
+                             10 miles
+                            </option>
+                            <option value="25">
+                             25 miles
+                            </option>
+                            <option selected="selected" value="50">
+                             50 miles
+                            </option>
+                            <option value="100">
+                             100 miles
+                            </option>
+                           </select>
+                          </p>
+                          <p>
+                           <input type="submit" value="Search"/>
+                          </p>
+                         </form>
+                        </div>
+                       </div>
+                      </div>
+                     </div>
+                     <div class="clear">
+                     </div>
+                     <br/>
+                     <!--  E N D    M A I N    I M A G E    A N D    J O B L I N K  -->
+                     <!--  B E G I N    J O B    S E E K E R S    A N D    B U S I N E S S E S  -->
+                     <div class="table-wrap">
+                      <div class="row-wrap">
+                       <div class="left-td-home">
+                        <h1>
+                         Job Seekers
+                        </h1>
+                        <img alt="Job Seekers" src="/CLF/usr/img/delawareworks_jobseekers.png" title="Job Seekers"/>
+                        <div class="clear">
+                        </div>
+                        <p>
+                         Delaware Works is committed to helping job seekers find employment, services and the information they need to succeed.
+                        </p>
+                        <h2>
+                         <a class="interior" href="https://joblink.delaware.gov/ada/r/job_seeker">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Job Search
+                         </a>
+                        </h2>
+                        <h2>
+                         <a class="interior" href="/jobseekers.php">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Job Seeker Resources
+                         </a>
+                        </h2>
+                        <!-- 
+<h2><a href="https://joblink.delaware.gov/ada/skillmatch/jobseeker_sm/jbs_joboverview_dsp.cfm" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Find a Job</a></h2>
+  				<h2><a href="http://jobsearch.about.com/od/resumes/qt/profresume.htm" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Create a Resume</a></h2>
+  				<h2><a href="https://uics.delawareworks.com/Forms/Form_WL1.aspx" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>File For Unemployment</a></h2>
+  				<h2><a href="/jobseekers.php" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Career Information</a></h2>
+  				<h2><a href="https://uics.delawareworks.com/Forms/Form_WL1.aspx" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>File a Wage Claim</a></h2>
+ -->
+                       </div>
+                       <div class="right-td-home">
+                        <h1>
+                         Businesses
+                        </h1>
+                        <img alt="Businesses" src="/CLF/usr/img/delawareworks_businesses.png" title="Businesses"/>
+                        <div class="clear">
+                        </div>
+                        <p>
+                         Delaware works is committed to being a preferred destination for business, capital, talent, and more.
+                        </p>
+                        <h2>
+                         <a class="interior" href="https://joblink.delaware.gov/ada/r/employer">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Employee Search
+                         </a>
+                        </h2>
+                        <h2>
+                         <a class="interior" href="/businesses.php">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Resources For Your Business
+                         </a>
+                        </h2>
+                        <!-- 
+<h2><a href="#" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Find Employees</a></h2>
+				<h2><a href="#" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Post a Job</a></h2>
+  				<h2><a href="#" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Unemployment Insurance</a></h2>
+  				<h2><a href="#" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Form a New Business</a></h2>
+  				<h2><a href="#" class="interior"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>Delaware Job Benefits</a></h2>
+ -->
+                       </div>
+                      </div>
+                     </div>
+                     <div class="clear">
+                     </div>
+                     <br/>
+                     <!--  E N D    J O B    S E E K E R S    A N D    B U S I N E S S E S  -->
+                     <!--  B E G I N    N E W S    A N D    E V E N T S  -->
+                     <!-- 
+<div class="news_events">
+	<a href="/newsroom.php"><img src="/CLF/usr/img/delawareworks_smallgear.png" alt="Delaware Works" title="Delaware Works" class="align_left" /></a>
+	<h2>News/Events:</h2>
+	    <div class="quotes">
+		<blockquote>
+		<p><a href="http://dol.delaware.gov/newsroom.php#euc5">Emergency Unemployment Compensation (EUC) Program Scheduled to End</a></p>
+		</blockquote>
+    </div>
+		
+    <div class="quotes">
+		<blockquote>
+		<p><a href="http://dol.delaware.gov/newsroom.php#mha">Making Home Affordable Program (MHA)</a></p>
+		</blockquote>
+    </div>
+		
+    <div class="quotes">
+		<blockquote>
+		<p><a href="http://dol.delaware.gov/newsroom.php#phish">Phishing Scam</a></p>
+		</blockquote>
+    </div>	<h2 style="text-align:right"><a href="/newsroom.php"><i class="fa fa-chevron-circle-right fa-lg fa-fw"></i>View All</a></h2>
+</div>
+ -->
+                     <div class="no_news_events">
+                     </div>
+                     <!--  E N D    N E W S    A N D    E V E N T S  -->
+                     <!--  B E G I N    V E T E R A N S    A N D    D I S A B L E D  -->
+                     <div class="table-wrap">
+                      <div class="row-wrap">
+                       <div class="left-td-lower">
+                        <h1 class="secondary">
+                         Veterans
+                        </h1>
+                        <div class="clear">
+                        </div>
+                        <p>
+                         Delaware Works is committed to assisting veterans in leveraging their skills and training to be competitive in today's economy.
+                        </p>
+                        <!--<p>Delaware veterans possess the skills and training needed by businesses to be competitive in today's economy.</p>-->
+                        <h2>
+                         <a class="interior" href="https://joblink.delaware.gov/ada/r/job_seeker">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Job Search
+                         </a>
+                        </h2>
+                        <h2>
+                         <a class="interior" href="/veterans.php">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Resources
+                         </a>
+                        </h2>
+                        <a href="/veterans.php">
+                         <img alt="Jobs for Veterans" class="dw_vet" src="/CLF/usr/img/delawareworks_vet.png" title="Jobs for Veterans"/>
+                        </a>
+                       </div>
+                       <div class="right-td-lower">
+                        <h1 class="secondary">
+                         Job Seekers with Disabilities
+                        </h1>
+                        <div class="clear">
+                        </div>
+                        <p>
+                         Delaware Works is committed to providing people with disabilities the resources they need to find not just a job, but the
+                         <em>
+                          right
+                         </em>
+                         job
+                        </p>
+                        <h2>
+                         <a class="interior" href="https://joblink.delaware.gov/ada/r/job_seeker">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Job Search
+                         </a>
+                        </h2>
+                        <h2>
+                         <a class="interior" href="/disabled.php">
+                          <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                          </i>
+                          Resources
+                         </a>
+                        </h2>
+                        <a href="/disabled.php">
+                         <img alt="Jobs for Disabled Persons" class="dw_disabled" src="/CLF/usr/img/delawareworks_disabled.png" title="Jobs for Disabled Persons"/>
+                        </a>
+                       </div>
+                      </div>
+                     </div>
+                     <div class="clear">
+                     </div>
+                     <br/>
+                     <!--  E N D    V E T E R A N S    A N D    D I S A B L E D  -->
+                     <br/>
+                     <div class="career_ex">
+                      <br/>
+                      <h1>
+                       Career Exploration
+                      </h1>
+                      <div class="clear">
+                      </div>
+                      <img alt="Career Exploration" class="dw_careers" src="/CLF/usr/img/delawareworks_careers.jpg" title="Career Exploration"/>
+                      <p>
+                       Delaware Works online services is the first place to look for jobs. And it features links to other search sites and information on job fairs.
+                      </p>
+                      <p>
+                       Delaware Works is committed to assisting veterans to leverage their skills and training to be competitive in today's economy.
+                      </p>
+                      <h2>
+                       <a class="interior" href="/career_plan.php">
+                        <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                        </i>
+                        Career Planning Resources
+                       </a>
+                      </h2>
+                      <h2>
+                       <a class="interior" href="/career_education.php">
+                        <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                        </i>
+                        Education &amp; Training
+                       </a>
+                      </h2>
+                      <h2>
+                       <a class="interior" href="/career_information.php">
+                        <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                        </i>
+                        Information, Data &amp; Statistics
+                       </a>
+                      </h2>
+                      <h2>
+                       <a class="interior" href="/career_start.php">
+                        <i class="fa fa-chevron-circle-right fa-lg fa-fw">
+                        </i>
+                        Tips for Starting your own Business
+                       </a>
+                      </h2>
+                      <br/>
+                      <div class="clear">
+                      </div>
+                      <br/>
+                     </div>
+                     <br/>
+                     <!-- C O N T E N T   A B O V E   T H I S   L I N E -->
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                 <!-- end main content area user content sub area (mcauser_cont) -->
+                </section>
+               </div>
+              </div>
+             </div>
+             <!-- end main content area user content (mcauser) -->
+            </div>
+            <!-- mcaw area -->
+            <div id="mcanav_mcauser_bottom">
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <!-- end divs for mcaw -->
+      <footer>
+       <section>
+        <h1 class="semanticHide">
+         Site Footer
+        </h1>
+        <div id="ftr1">
+         <div id="ftr2">
+          <div id="ftr3">
+           <div id="ftr4">
+            <div id="ftra1">
+             <div id="ftra2">
+              <div id="ftra3">
+               <div id="ftra4">
+                <div id="ftra1_l">
+                 <a href="/index.php">
+                  <img alt="Logo" class="logo_agency" src="/CLF/usr/img/CLF_ftr_logo_dol_large.png" style="width:42px;height:42px;max-width:42px;max-height:42px;" title="Logo"/>
+                 </a>
+                </div>
+                <div id="ftra1_r">
+                 <div id="ftra2_l">
+                  <a href="/index.php">
+                   Delaware Works
+                  </a>
+                 </div>
+                 <div id="ftra2_r">
+                  A product of the
+                  <a href="http://dol.delaware.gov/">
+                   Delaware Department of Labor
+                  </a>
+                 </div>
+                 <div id="ftra3_r">
+                  <div class="bar_sm_rss_share1">
+                   <div class="bar_sm_rss_share2">
+                    <div class="bar_sm_rss_share3">
+                     <div class="bar_sm_rss_share4">
+                      <div class="bar_sm_rss_share5">
+                       <div class="bar_sm_rss_share6">
+                        <!-- When no agency-level RSS is available, comment out the span below that contains the rss button -->
+                        <!-- <span class="bar_sm_rss_btn"><a href="http://linkToRSS"><img src="/CLF/private/CLF30/img/CLF_1px.gif" alt="RSS" title="RSS" class="btn_rss"></a></span> -->
+                        <!-- <div class="bar_sm_share_btn"><a href="//www.addthis.com/bookmark.php?v=250&amp;pub=stateofdelaware" onMouseOver="return addthis_open(this, '', '[URL]', '[TITLE]')" onMouseOut="addthis_close();" onClick="return addthis_sendto()"><img src="/CLF/private/CLF30/img/CLF_1px.gif" alt="Bookmark and Share" title="Bookmark and Share" class="btn_share" border="0"></a></div> -->
+                        <div class="addthis_share_btn at_royalblue" style="float:right;">
+                         <a class="addthis_button_compact" href="//www.addthis.com/bookmark.php?v=250&amp;pub=stateofdelaware" onclick="return addthis_sendto()" onmouseout="addthis_close();" onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')">
+                          <span>
+                           Share
+                          </span>
+                         </a>
+                        </div>
+                        <div class="rss_share_btn at_royalblue" style="float:right; margin-right:10px;">
+                         <a class="rss_button_compact" href="http://news.delaware.gov/feed/">
+                          <span>
+                           RSS
+                          </span>
+                         </a>
+                        </div>
+                        <script type="text/javascript">
+                         var addthis_options = 'twitter, facebook, wordpress, blogger, stumbleupon, newsvine, digg, delicious, email, more';
+        var addthis_exclude = 'print';
+        var addthis_brand = "Agency Name";
+                        </script>
+                        <script src="//s7.addthis.com/js/250/addthis_widget.js?pub=stateofdelaware" type="text/javascript">
+                        </script>
+                       </div>
+                      </div>
+                     </div>
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                 <div id="ftra2_c">
+                 </div>
+                </div>
+                <div id="ftra1_c">
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+            <div id="ftrs1">
+             <div id="ftrs2">
+              <div id="ftrs3">
+               <div id="ftrs4" role="contentinfo">
+                <div id="ftrs1_r">
+                 <div id="ftrs2_l">
+                  <a href="http://www.delaware.gov">
+                   Delaware.gov
+                  </a>
+                  <span class="ftr_bar">
+                   |
+                  </span>
+                  <a href="http://www.delaware.gov/help/privacy.shtml">
+                   Privacy
+                  </a>
+                  <span class="ftr_bar">
+                   |
+                  </span>
+                  <a href="http://www.delaware.gov/help/translate.shtml">
+                   Translate
+                  </a>
+                  <span class="ftr_bar">
+                   |
+                  </span>
+                  <a href="http://smu.portal.delaware.gov/cgi-bin/mail.php?contact_us">
+                   Contact
+                  </a>
+                  <span class="ftr_bar">
+                   |
+                  </span>
+                  <a href="http://www.delaware.gov/phonedirectory/">
+                   Phone Directory
+                  </a>
+                 </div>
+                 <div id="ftrs2_c">
+                 </div>
+                </div>
+                <div id="ftrs1_c">
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </section>
+      </footer>
+      <!-- end divs for pw -->
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- bottom curve -->
+  <div id="btm1">
+   <div id="btm2">
+    <div id="btm3">
+     <div id="btm4">
+      <div id="btm_bc1">
+       <div id="btm_bc2">
+        <div id="btm_bc3">
+         <div id="btm_bc4">
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,1234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <link href="http://www.fluidwire.com/ico/fire.gif" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- meta name="viewport" content="width=device-width, initial-scale=1" -->
+  <title>
+   CI
+  </title>
+  <script src="/ci/jquery-latest.min.js">
+  </script>
+  <link href="css/amazon.css" rel="stylesheet" type="text/css"/>
+  <link href="css/jquery.toastmessage-min.css" rel="stylesheet" type="text/css"/>
+  <script src="jquery.toastmessage-min.js" type="text/javascript">
+  </script>
+  <script src="jquery.textcomplete.js" type="text/javascript">
+  </script>
+  <script>
+   var sStart = '', sEnd = ''; sPrompt = '';
+navextra=null;
+typingtimer_send=null;
+typingtimer_recv=null;
+
+function showPrompt()
+{
+	document.getElementById('fakePrompt').style.top=document.getElementsByTagName('body')[0].scrollTop + 'px';
+        document.getElementById('fakePrompt').style.display = 'block';
+        document.getElementById('spPrompt').innerHTML = sPrompt;
+        document.getElementById('inPrompt').value = '';
+        document.getElementById('inPrompt2').value = sStart + sEnd;
+        document.getElementById('inPrompt').focus();
+}
+
+function yrah()
+{
+                o = document.getElementById('req_message');
+                o.value += sStart +  'You really are hilarious.  For the life of me, I will never understand why so many people consider you to be a humorless aspie cunt' + sEnd;
+                o.focus();
+}
+
+function insertImg()
+{
+        document.getElementById('fakePrompt').style.display = 'none';
+        s = document.getElementById('inPrompt').value;
+
+        if (s != null && s != '')
+        {
+                o = document.getElementById('req_message');
+                o.value += sStart +  s + sEnd;
+                o.focus();
+        }
+}
+
+function jerkImage() {
+ sStart = '[image]';
+ sEnd = '[/image]';
+ sPrompt = 'Enter the filename of the image you would like to insert...';
+ showPrompt();
+}
+function jerkYoutube() {
+ sStart = '[youtube]';
+ sEnd = '[/youtube]';
+ sPrompt = 'Enter the YouTube code (ex: IBmyWWH3xy0) for the video you would like to insert...';
+ showPrompt();
+}
+function jerkAmazon()
+{
+ sStart = '[amazon]';
+ sEnd = '[/amazon]';
+ sPrompt = 'Enter the Amazon code (ex: B000NWBKIQ) for the product you would like to insert..';
+ showPrompt();
+}
+
+function shlomos_bs(){
+ if (/off/.exec(navextra.html())) {
+  document.cookie='nobs=true;expires='+(new Date(0).toUTCString());
+  on=navextra.html().replace('off','on');
+  navextra.html(on);
+ } else {
+  document.cookie='nobs=true;expires=Thu, 02 Jan 2020 00:00:00 GMT';
+  off=navextra.html().replace('n<','ff<');
+  navextra.html(off);
+ }
+}
+notifs= new Array();
+
+function urldecode(str) {
+   //return decodeURIComponent((str+''));
+   return unescape((str+''));
+}
+function decodeHtml(html) {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+
+(window.ws) || (ws=null) ;
+if (true && !ws) {
+WebSocket = window.WebSocket ? WebSocket : (window.MozWebSocket ? MozWebSocket : null);
+WebSocket && (ws = new WebSocket('ws://'+location.host+'/echo'));
+ws && (ws.onmessage=function(e){
+ (function(data) {
+ msg_tmp=data.split('&');
+ if (/nobs=true/.exec(document.cookie)) {
+  return 0;
+ }
+if (msg_tmp[0]=='istyping') {
+	var mytypingid="070af";
+	var typists=msg_tmp[1].split("|");
+	var num_people=0, other=" ", person_or_people="person";
+	for (i=0;i<typists.length;i++) {
+		if (typists[i]==mytypingid) {
+			other=" other ";
+		} else {
+			num_people++;
+		}
+	}
+	if (num_people==0) {
+		return;
+	}
+	if (num_people>1) {
+		person_or_people=" people are";
+	} else {
+		person_or_people=" person is";
+	}
+	var kckitty='<img width="25" src="/ci/images/kckitty.gif" > ';
+	var typingmsg= kckitty + num_people + other + person_or_people + " typing"; 
+	$('#istyping').html(typingmsg).fadeIn("slow");	
+	if(typingtimer_recv!=null) {
+		clearTimeout(typingtimer_recv);
+	}
+	typingtimer_recv=setTimeout(function(){
+		$('#istyping').fadeOut("slow",function(){
+			//$(this).empty();
+		});
+		typingtimer_recv=null;
+	},15000);
+ }
+ if (msg_tmp[0]=='chat') {
+  return;
+  msg_tmp=data.split('&');
+  msg=urldecode(msg_tmp[1]);
+  msg=msg.replace('<p>','').replace('</p>','');
+  if (/safe/i.exec(location.href)){
+   msg=msg.replace(/<img/g,'<span').replace(/<\/img/g,'</span')
+  }
+ } else if (/^[0-9]+$/.exec(msg_tmp[0])) {
+  var newloc='/ci/viewtopic.php?pid='+msg_tmp[0]+'#p'+msg_tmp[0];
+  fid=msg_tmp[2];
+  n=null;
+  msg= urldecode(msg_tmp[1]);
+  if(window.Notification && Notification.permission==='granted') {
+   n=new Notification('CI Alert',
+    {icon:(fid==21 ?
+         'http://'+location.host+'/ci/images/warning.png' :
+         'http://'+location.host+'/ci/fire.gif'),
+   body:decodeHtml(msg)});
+   n.onclick=function(e){
+    e.target.close();location=newloc;
+   };
+   notifs && notifs.push(n);
+  }
+  $().toastmessage('showToast',{
+   'text':msg,
+   'close' : (function(x){
+     if (!x) return null;
+     return function(){x.close()};
+    })(n),
+   'type':(fid==21 ? 'warning' : 'success'),
+   'stayTime':5000}).click(function(){location=newloc;});
+  } else {
+   return;
+  }
+ })(e.data);
+});
+}
+  </script>
+  <script>
+   $(window).unload(function () {
+ if (notifs) {
+  for (i in notifs){notifs[i].close();}
+ }
+});
+
+
+$(function() { //ready
+var emojies=null;
+
+ function stillTyping() {
+	  $.ajax({
+		   url: "stilltyping.php", 
+		   dataType: "json",
+		   success: function(data){
+		   }
+	  });
+ }
+
+
+ if (! /nobs=true/.exec(document.cookie)) {
+	   $('#req_message').keydown ( function () {
+        if (!typingtimer_send) {
+			//console.log("still typing");
+			stillTyping();
+			typingtimer_send=setTimeout(function(){ 
+				typingtimer_send=null;
+			}, 10000);
+		}
+    });
+	
+  $.ajax({
+   url: "emotes.txt",
+   success: function(data){
+    emojies=data.split(/[\r\n]+/);
+    $('#req_message').textcomplete(
+     [{
+        id: 'emoji',
+        match: /\B:(\w{1,})$/,
+        search: function (term, callback) {
+            callback($.map(emojies, function (emoji) {
+                return emoji.indexOf(term) === 0 ? emoji : null;
+            }));
+        },
+        template: function (value) {
+            return '<div class="textcomplete-left"><img src="http://fluidwire.com/ico/' + value + '.gif" style="max-width: 24px; max-height: 24px;"></img></div><div class="textcomplete-right">'+':'+value+':</div>';
+        },
+        replace: function (value) {
+            return ':' + value + ': ';
+        },
+        index: 1
+      }
+     ] , {
+         onKeydown: function (e, commands) {
+        if (e.ctrlKey && e.keyCode === 74) { // CTRL-J
+            return commands.KEY_ENTER;
+        }
+     }
+    });
+   }
+  });
+
+  navextra=$('<li class="navextra">');
+  $('.navextra').last().after(navextra);
+  navextra.prop('id','navextra'+$('.navextra').length);
+  navextra.append('<a onclick="shlomos_bs();return false;" href="#">Shlomo\'s&nbsp;bullshit&nbsp;is&nbsp;on</a>');
+
+/***/
+ } else {
+  navextra=$('<li class="navextra">');
+  $('.navextra').last().after(navextra);
+  navextra.prop('id','navextra'+$('.navextra').length);  
+  navextra.append('<a onclick="shlomos_bs();return false;" href="#">Shlomo\'s bullshit is off</a>');
+ }
+});
+  </script>
+  <style>
+   #tail {
+    position: absolute;
+    display:none;
+}
+.isvu {
+ background-color:blue;
+}
+
+#istyping {
+  display: none; 
+  position: absolute; 
+  top: 50px; 
+  right: 50px;
+  color:black;
+  padding: 10px;
+/* css3 */
+  background:-webkit-gradient(linear, 0 0, 0 100%, from(#f9d835), to(#f3961c));
+  background:-moz-linear-gradient(#f9d835, #f3961c);
+  background:-o-linear-gradient(#f9d835, #f3961c);
+  background:linear-gradient(#f9d835, #f3961c);
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+}
+
+.pun .moniker {
+ font-weight: bold;
+ margin: 0;
+ padding: 0;
+ font-size: smaller;
+}
+.textcomplete-item { display: block; padding: 5px; background: #333333; border: 1px solid #444444; font-size: 12px; vertical-align: middle; margin: 0; }
+.textcomplete-left { display: inline-block; width: 32px; vertical-align: middle; text-align: center; }
+.textcomplete-right { display: inline-block; width: auto; vertical-align: middle; text-align: left; }
+.textcomplete-item a {color: white;}
+  </style>
+  <link href="style/BLACK.css" rel="stylesheet" type="text/css"/>
+ </head>
+ <body>
+  <div id="punwrap">
+   <div class="pun" id="punindex">
+    <div class="block" id="brdheader">
+     <div class="box">
+      <div class="inbox" id="brdtitle">
+       <a href="http://www.campidiot.com/ci/viewforum.php?id=1">
+        <!--<img src="http://www.campidiot.com/ci/ricebuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/michellebuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/chrisbuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/obamabuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/holderbuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/hillarybuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/feinsteinbuckseedz.png" border="0"><img src="http://www.campidiot.com/ci/rahmbuckseedz.png" border="0"> -->
+        <img src="http://www.campidiot.com/redcilogo.png" style="float:left;" width="175"/>
+       </a>
+       <br/>
+       <p>
+        <span>
+        </span>
+       </p>
+      </div>
+      <div style="clear:both;">
+      </div>
+      <div class="inbox" id="brdmenu">
+       <ul>
+        <li id="navindex">
+         <a href="index.php">
+          Index
+         </a>
+        </li>
+        <li id="navsearch">
+         <a href="search.php">
+          Search
+         </a>
+        </li>
+        <li id="navregister">
+         <a href="register_ci.php">
+          Register
+         </a>
+        </li>
+        <li id="navlogin">
+         <a href="login.php">
+          Login
+         </a>
+        </li>
+        <li class="navextra" id="navextra1">
+         <a href="http://www.campidiot.com/ci/misc.php?action=markread">
+          Mark Read
+         </a>
+        </li>
+        <li class="navextra" id="navextra2">
+         <a href="https://www.amazon.com/gp/search?tag=campidiot-20&amp;ie=UTF8&amp;index=blended&amp;keywords=ladyboy">
+          Store
+         </a>
+        </li>
+        <li class="navextra" id="navextra3">
+         <a href="http://www.fluidwire.com/ico">
+          Icons
+         </a>
+        </li>
+        <li class="navextra" id="navextra4">
+         <a href="http://www.campidiot.net/dump" target="_blank">
+          Foto Dump
+         </a>
+        </li>
+        <li class="navextra" id="navextra5">
+         <a href="http://safe.campidiot.com/ci/viewforum.php?id=1">
+          Safe Mode
+         </a>
+        </li>
+        <li class="navextra" id="navextra6">
+         <a href="http://www.campidiot.com/ci/donate.php">
+          Brownbacks
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="inbox" id="brdwelcome">
+       <ul class="conl">
+        <p>
+         You are not logged in.
+        </p>
+        Lottery Pot: $0
+        <p>
+         <img class="isvu" data-thumbnail-src="http://www.campidiot.net/dump/photo/weightgraph.png" src="587.png"/>
+        </p>
+       </ul>
+       <ul class="conr">
+        <script language="javascript" src="//c.amazon-adsystem.com/aax2/getads.js" type="text/javascript">
+        </script>
+        <script language="javascript" type="text/javascript">
+         //<![CDATA[
+    aax_getad_mpb({
+      "slot_uuid":"dcade157-8933-450a-9f91-48a2fd3d260b"
+    });
+  //]]>
+        </script>
+       </ul>
+       <form action="http://www.amazon.com/gp/search" method="get">
+        <input name="tag" type="hidden" value="campidiot-20"/>
+        <input name="ie" type="hidden" value="UTF8"/>
+        <input name="index" type="hidden" value="blended"/>
+        Buy Stuff
+        <input name="keywords" size="32" type="text" value=""/>
+        <input type="submit" value="Search"/>
+       </form>
+       <div class="clearer">
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="blocktable" id="idx1">
+     <h2>
+      <span>
+       Camp Idiot
+      </span>
+     </h2>
+     <div class="box">
+      <div class="inbox">
+       <table cellspacing="0">
+        <thead>
+         <tr>
+          <th class="tcl" scope="col">
+           Forum
+          </th>
+          <th class="tc2" scope="col">
+           Topics
+          </th>
+          <th class="tc3" scope="col">
+           Posts
+          </th>
+          <th class="tcr" scope="col">
+           Last post
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=1">
+               ~oOo~
+              </a>
+             </h3>
+             News Discussion
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=267600">
+               MonotremeMinister
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           476256
+          </td>
+          <td class="tc3">
+           3223124
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=4680145#p4680145">
+            Today 12:17:04
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=23">
+               Jesus.Institute
+              </a>
+             </h3>
+             Practical Bible Guidance for Leading a Meaningful Life
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=267600">
+               MonotremeMinister
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           19
+          </td>
+          <td class="tc3">
+           63
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=5941235#p5941235">
+            2018-06-11 03:34:04
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=25">
+               Sausage.Guru
+              </a>
+             </h3>
+             Holistic Health, Colon Cleansing and Sausage Enthusiast Resources
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           42
+          </td>
+          <td class="tc3">
+           54
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=5971734#p5971734">
+            2018-05-14 08:57:42
+           </a>
+           <span class="byuser">
+            by KofiAnon
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=26">
+               Anus.Guru
+              </a>
+             </h3>
+             Ultra-Luxe Bespoke Asia
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=267655">
+               Flagrant Paddler
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           1211
+          </td>
+          <td class="tc3">
+           2484
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=6129978#p6129978">
+            2018-06-19 07:22:26
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=21">
+               StudSupreme.com
+              </a>
+             </h3>
+             Serious Discussions Only
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=3172">
+               StudSupreme
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           23
+          </td>
+          <td class="tc3">
+           133
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=6166845#p6166845">
+            Today 04:56:30
+           </a>
+           <span class="byuser">
+            by StudSupreme
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=9">
+               Privitz.com
+              </a>
+             </h3>
+             A Forum Dedicated To Discussing The Fat Man and Connecting Connoisseurs of Cock.  Bring A Dish To Pass.
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=3137">
+               Spanky
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           98
+          </td>
+          <td class="tc3">
+           214
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=2895705#p2895705">
+            2018-05-14 09:03:51
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=5">
+               Heekee.com
+              </a>
+             </h3>
+             Friendly Discussion, A place to carry the gospel, the sacraments, and God's love and fellowship to the internet frothers, the alienated, and the excommunicated.
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           380
+          </td>
+          <td class="tc3">
+           3663
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=5608812#p5608812">
+            2018-06-13 00:24:29
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=4">
+               eCuck.com Agile Development Forum
+              </a>
+             </h3>
+             A Raw and Wild Daily Standup Meeting where Pigs and Chickens Swarm with their Cox out
+             <p>
+              <em>
+               (Moderated by
+              </em>
+              <a href="profile.php?id=267597">
+               anon user #2.1
+              </a>
+              )
+             </p>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           520
+          </td>
+          <td class="tc3">
+           1783
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=5930815#p5930815">
+            Today 10:43:16
+           </a>
+           <span class="byuser">
+            by Eater
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=17">
+               AssPiston.com
+              </a>
+             </h3>
+             911 Files
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           2370
+          </td>
+          <td class="tc3">
+           48
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=4121101#p4121101">
+            2013-02-01 05:43:31
+           </a>
+           <span class="byuser">
+            by Original_Lonely_Guy
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=19">
+               BuckParty.com
+              </a>
+             </h3>
+             The Compleat Booke of FC
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           26692
+          </td>
+          <td class="tc3">
+           233328
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=72#p72">
+            2006-06-02 06:59:00
+           </a>
+           <span class="byuser">
+            by Ass_3
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=27">
+               White House Black Market
+              </a>
+             </h3>
+             Blaq dix in whyte hoalz.
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           2
+          </td>
+          <td class="tc3">
+           2
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=6113574#p6113574">
+            2018-05-02 07:25:40
+           </a>
+           <span class="byuser">
+            by Diarrhetrius Brown
+           </span>
+          </td>
+         </tr>
+         <tr>
+          <td class="tcl">
+           <div class="intd">
+            <div class="icon">
+             <div class="nosize">
+              <!-- -->
+             </div>
+            </div>
+            <div class="tclcon">
+             <h3>
+              <a href="viewforum.php?id=28">
+               Libertarian Paradise
+              </a>
+             </h3>
+            </div>
+           </div>
+          </td>
+          <td class="tc2">
+           768
+          </td>
+          <td class="tc3">
+           1082
+          </td>
+          <td class="tcr">
+           <a href="viewtopic.php?pid=6137480#p6137480">
+            Today 03:30:29
+           </a>
+           <span class="byuser">
+            by
+           </span>
+          </td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+    <div class="block" id="brdstats">
+     <h2>
+      <span>
+       Board information
+      </span>
+     </h2>
+     <div class="box">
+      <div class="inbox">
+       <dl class="conr">
+        <dt>
+         <strong>
+          Board statistics
+         </strong>
+        </dt>
+        <dd>
+         Total number of registered users:
+         <strong>
+          5175
+         </strong>
+        </dd>
+        <dd>
+         Total number of topics:
+         <strong>
+          517718
+         </strong>
+        </dd>
+        <dd>
+         Total number of posts:
+         <strong>
+          3511809
+         </strong>
+        </dd>
+       </dl>
+       <dl class="conl">
+        <dt>
+         <strong>
+          User information
+         </strong>
+        </dt>
+        <dd>
+         Newest registered user:
+         <a href="profile.php?id=267845">
+          PLOOITISNIS
+         </a>
+        </dd>
+        <dd>
+         Registered users online:
+         <strong>
+          4
+         </strong>
+        </dd>
+        <dd>
+         Cucks online:
+         <strong>
+          11
+         </strong>
+        </dd>
+       </dl>
+       <dl class="clearb" id="onlinelist">
+        <dt>
+         <strong>
+          Owned by the Bald Man:
+         </strong>
+        </dt>
+        <dd>
+         <a href="profile.php?id=267843">
+          FUTURE PROVES PAST
+         </a>
+         ,
+        </dd>
+        <dd>
+         <a href="profile.php?id=267474">
+          LordBelmont
+         </a>
+         ,
+        </dd>
+        <dd>
+         <a href="profile.php?id=224172">
+          shlomo
+         </a>
+         ,
+        </dd>
+        <dd>
+         <a href="profile.php?id=245402">
+          WithoutFroth
+         </a>
+        </dd>
+       </dl>
+      </div>
+     </div>
+    </div>
+    <div class="block" id="brdfooter">
+     <h2>
+      <span>
+       Board footer
+      </span>
+     </h2>
+     <div class="box">
+      <div style="float:left">
+      </div>
+      <div class="inbox">
+       <dl class="conl" id="searchlinks">
+        <dt>
+         <strong>
+          Search links
+         </strong>
+        </dt>
+        <dd>
+         <a href="search.php?action=show_24h">
+          Show recent posts
+         </a>
+        </dd>
+        <dd>
+         <a href="search.php?action=show_unanswered">
+          Show unanswered posts
+         </a>
+        </dd>
+       </dl>
+       <br/>
+       <br/>
+       <br/>
+       <center>
+        <br/>
+        <iframe frameborder="0" height="90" name="FluidWireZone2" scrolling="no" src="http://www.vapid.us/cirotation.php" width="728">
+        </iframe>
+       </center>
+       <br/>
+       <br/>
+       <br/>
+       <br/>
+       All postings, messages, text, files, images, photos, video, sounds, or other materials ("Content") posted on, transmitted through, or linked from the Service, are the sole responsibility of the person from whom such Content originated. More specifically, you are entirely responsible for each individual item ("Item") of Content that you post, email or otherwise make available via the Service. You understand that Camp Idiot does not control, and is not responsible for Content made available through the Service, and that by using the Service, you may be exposed to Content that is illegal, offensive, indecent, inaccurate, misleading, or otherwise objectionable. Furthermore, the Camp Idiot site and Content available through the Service may contain links to other websites, which are completely independent of Camp Idiot. Camp Idiot makes no representation or warranty as to the accuracy, completeness or authenticity of the information contained in any such site. Your linking to any other webites is at your own risk. You agree that you must evaluate, and bear all risks associated with, the use of any Content, that you may not rely on said Content, and that under no circumstances will Camp Idiot be liable in any way for any Content or for any loss or damage of any kind incurred as a result of the use of any Content posted, emailed or otherwise made available via the Service. You acknowledge that Camp Idiot does not pre-screen or approve Content.
+       <div class="clearer">
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="fakePrompt" style="display: none; z-index: 1; width: 450px; position: absolute; top: 100px; left: 40px; background-color: gray; border: 3px solid red; padding: 8px;">
+     <span id="spPrompt" style="font-weight: bold;">
+     </span>
+     <br/>
+     <br/>
+     <input id="inPrompt" onkeyup="document.getElementById('inPrompt2').value=sStart + this.value + sEnd;" size="70" type="text"/>
+     <br/>
+     <br/>
+     <span style="font-weight: bold;">
+      Copy from below and click Cancel to paste yourself...
+     </span>
+     <br/>
+     <br/>
+     <input id="inPrompt2" size="70" type="text"/>
+     <br/>
+     <br/>
+     <span style="font-weight: bold;">
+      Or click OK to paste at the end of your post...
+     </span>
+     <br/>
+     <br/>
+     <input onclick="insertImg();" type="button" value="OK"/>
+     <input onclick="document.getElementById('fakePrompt').style.display='none';" type="button" value="Cancel"/>
+    </div>
+    <div id="istyping">
+    </div>
+    <div class="chatbox minimized" style="display: none;">
+     <div class="chatboxheader">
+      <p style="padding: 3px;">
+       Live CI/F169 Chat
+      </p>
+     </div>
+     <div class="chatcontainer">
+      <div class="conversationarea">
+       <div class="chatbody">
+        <div class="chatbubble">
+         <div class="moniker">
+          Crack Bong (f169):
+         </div>
+         <a href="https://youtu.be/s4Gg844qqGU" target="_blank">
+          https://youtu.be/s4Gg844qqGU
+         </a>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          Crack Bong (f169):
+         </div>
+         Your boys
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          Crack Bong (f169):
+         </div>
+         I like this abbath motherfucker
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          Crack Bong (f169):
+         </div>
+         <a href="https://youtu.be/ORey8ZYyaQU" target="_blank">
+          https://youtu.be/ORey8ZYyaQU
+         </a>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         .
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         eat a cock
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         hey fags
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         <img src="http://www.fluidwire.com/ico/flip.gif" title="flip"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         <img src="http://www.fluidwire.com/ico/a2m.gif" title="a2m"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         hello?
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         anybody here?
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         No dot posting WTF
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          <a href="profile.php?id=267458">
+           Battery Bits
+          </a>
+          :
+         </div>
+         Weeeeee!
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          <a href="profile.php?id=267458">
+           Battery Bits
+          </a>
+          :
+         </div>
+         💜💖💘🖤
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         <img src="http://www.fluidwire.com/ico/flowers.gif" title="flowers"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         phildo is a phailure
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         COCK ANUS
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         PISSING COCK
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         <img alt="billyboi.gif" class="postimg" src="http://www.campidiot.net/dump/photo/billyboi.gif" title="billyboi.gif"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         DICKASS
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          <a href="profile.php?id=224172">
+           shlomo
+          </a>
+          :
+         </div>
+         <img src="http://www.fluidwire.com/ico/sadwave.gif" title="sadwave"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .BoomerBoi:
+         </div>
+         Ballsacks
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         howcum I can't post on CI?
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          .:
+         </div>
+         <img src="http://www.fluidwire.com/ico/hump.gif" title="hump"/>
+        </div>
+        <div class="chatbubble">
+         <div class="moniker">
+          <a href="profile.php?id=262599">
+           MATT MAUPIN HAS AIDS
+          </a>
+          :
+         </div>
+         Donkeys like me
+        </div>
+       </div>
+      </div>
+      <div class="chattextentry">
+       <form id="chatform" name="chatform">
+        <input name="moniker" style="width:30%;" value="."/>
+        <div style="background-color: #c9d0da; width:3%; height: 17px; float:left;">
+        </div>
+        <input name="message" style="width: 67%"/>
+       </form>
+      </div>
+     </div>
+     <!-- /chatcontainer -->
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
