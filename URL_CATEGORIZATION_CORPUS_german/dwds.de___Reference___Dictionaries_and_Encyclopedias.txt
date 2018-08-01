@@ -1,0 +1,3340 @@
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <base href="https://www.dwds.de/"/>
+   <title>
+    DWDS
+       
+       –
+       
+         Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart
+   </title>
+   <link href="https://www.dwds.de/search.xml" rel="search" title="DWDS Suche" type="application/opensearchdescription+xml"/>
+   <link href="https://www.dwds.de/api/feed/adt" rel="alternate" title="DWDS: Wort des Tages" type="application/atom+xml"/>
+   <link href="https://www.dwds.de/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://www.dwds.de/favicon.gif" rel="shortcut icon" type="image/gif"/>
+   <!-- Bootstrap -->
+   <link href="static/bootstrap-3.3.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <link href="static/bootstrap-slider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+   <!--[if lt IE 9]>
+       <script src="https://www.dwds.de/static/js/html5shiv.min.js"></script>
+       <script src="https://www.dwds.de/static/js/respond.min.js"></script>
+     <![endif]-->
+   <link href="static/dwds.css?v=29" rel="stylesheet"/>
+   <link href="static/dwdswb.css?v=57" rel="stylesheet"/>
+   <link href="static/etymwb.css?v=4" rel="stylesheet"/>
+   <link href="static/dwb.css?v=2" rel="stylesheet"/>
+   <link href="static/wdg.css" rel="stylesheet"/>
+   <link href="static/ddc.css?v=2" rel="stylesheet"/>
+   <link href="static/wp.css?v=5" rel="stylesheet"/>
+   <link href="static/typeahead.css" rel="stylesheet"/>
+  </head>
+  <body>
+   <noscript>
+    <div class="alert alert-danger" style="text-align:center;margin-bottom:5px">
+     Um den vollen Funktionsumfang dieser Webseite nutzen zu können, muss JavaScript aktiviert sein.
+     <br/>
+     <a href="http://www.enable-javascript.com/de" target="_blank">
+      Hier finden Sie Hinweise, wie Sie JavaScript in Ihrem Browser aktivieren können.
+     </a>
+    </div>
+   </noscript>
+   <!-- spinner -->
+   <div id="spinner" style="display:none">
+    Bitte warten Sie einen Moment …
+   </div>
+   <div aria-labelledby="dwds-export-title" class="modal fade" id="dwds-export" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h4 class="modal-title" id="dwds-export-title">
+        Korpusergebnisse exportieren
+       </h4>
+      </div>
+      <div class="modal-body">
+       <form action="https://www.dwds.de/r" id="export-formdata" method="get">
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-format">
+            Trefferformat:
+           </label>
+           <select class="form-control" id="export-format" name="format">
+            <option value="kwic">
+             KWIC
+            </option>
+            <option value="full">
+             voll
+            </option>
+            <option value="max">
+             maximal
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-limit">
+            Anzahl:
+           </label>
+           <input class="form-control" id="export-limit" max="5000" min="1" name="limit" type="number" value="100"/>
+          </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-view">
+            Datenformat:
+           </label>
+           <select class="form-control" id="export-view" name="view">
+            <option value="csv">
+             CSV (für MS Excel etc.)
+            </option>
+            <option value="json">
+             JSON
+            </option>
+            <option value="tcf">
+             TCF
+            </option>
+            <option value="tsv">
+             TSV (tabsepariert)
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <label for="export-output">
+           Ausgabe:
+          </label>
+          <select class="form-control" id="export-output" name="output">
+           <option value="inline">
+            im Browser
+           </option>
+           <option value="file">
+            als Download
+           </option>
+          </select>
+         </div>
+        </div>
+        <input name="q" type="hidden" value=""/>
+        <input name="corpus" type="hidden" value=""/>
+        <input name="sort" type="hidden" value=""/>
+       </form>
+       <p class="small">
+        Hinweis: Die Trefferanzahl ist auf maximal 5 000 beschränkt.
+           Sie können über den URL-Parameter
+        <tt>
+         p
+        </tt>
+        weitere Ergebnisseiten
+           abfragen.
+        <a href="https://www.dwds.de/d/api#export">
+         Weitere Informationen dazu …
+        </a>
+       </p>
+      </div>
+      <div class="modal-footer">
+       <button class="btn btn-default" data-dismiss="modal" type="button">
+        schließen
+       </button>
+       <button class="btn btn-primary" onclick="export_submit()" type="button">
+        exportieren
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function export_submit() {
+     $('#export-formdata').submit();
+   }
+   </script>
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-static-top dwds-top">
+    <div class="container-fluid" style="padding-left:0">
+     <div class="navbar-header">
+      <a class="navbar-brand visible-xs-inline" href="https://www.dwds.de/" style="margin:1px;padding:0 0 0 15px">
+       <img src="https://www.dwds.de/static/images/dwds_286_67.png" width="210"/>
+      </a>
+      <a class="navbar-brand hidden-xs" href="https://www.dwds.de/" style="margin:1px;padding:0">
+       <img data-placement="right" data-toggle="tooltip" src="https://www.dwds.de/static/images/dwds_286_67.png" title="Digitales Wörterbuch der deutschen Sprache" width="210"/>
+      </a>
+      <div class="visible-xs-inline-block" style="float:right;padding:8px">
+       <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+        <span class="glyphicon glyphicon-log-in">
+        </span>
+        Login
+       </a>
+      </div>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-left">
+       <li class="hidden-xs hidden-sm sf" style="color:#fff; padding:15px">
+        Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart.
+       </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+       <li style="margin-right:10px;margin-left:10px">
+        <p class="navbar-btn">
+         <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+          <span class="glyphicon glyphicon-log-in">
+          </span>
+          Anmelden
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="container-fluid" style="max-width:1400px">
+    <div class="row" style="margin-top:20px">
+     <div class="col-md-9">
+      <!--    <h1 style="font-size:20pt">Das <a href="https://www.dwds.de/d/hintergrund">Wortauskunftssystem</a> zur deutschen Sprache in Geschichte und Gegenwart.</h1>-->
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-9">
+      <div class="row" style="margin-top:30px;margin-bottom:50px">
+       <div class="col-md-12">
+        <form action="https://www.dwds.de/" class="form-horizontal autosubmit" method="get">
+         <div class="input-group">
+          <input autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control input-lg" id="q" name="q" placeholder="Suche im Wortauskunftssystem" spellcheck="false" type="search"/>
+          <div class="input-group-btn" style="vertical-align:top">
+           <button class="btn btn-primary btn-lg" type="submit">
+            <i class="glyphicon glyphicon-search">
+            </i>
+           </button>
+           <a class="btn btn-default btn-lg" href="https://www.dwds.de/d/suche">
+            <i class="glyphicon glyphicon-question-sign">
+            </i>
+           </a>
+          </div>
+         </div>
+        </form>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/wb">
+           Wörterbücher
+          </a>
+         </h3>
+         <p>
+          465 000 Einträge in verschiedenen Wörterbüchern.
+         </p>
+         <a href="https://www.dwds.de/wb">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/dwdswb.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/r">
+           Textkorpora
+          </a>
+         </h3>
+         <p>
+          Dreizehn Milliarden Belege aus historischen und gegenwartssprachlichen Textkorpora.
+         </p>
+         <a href="https://www.dwds.de/r">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/kwic.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/stats">
+           Statistische Auswertungen
+          </a>
+         </h3>
+         <p>
+          Häufigkeiten, typische Verbindungen und zeitliche Verläufe über 400 Jahre.
+         </p>
+         <a href="https://www.dwds.de/stats">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/plot.png"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="row hidden-xs hidden-sm" style="margin-top:50px">
+       <div class="col-md-8" style="padding:23px;font-size:smaller">
+        <p>
+         Das Akademienvorhaben DWDS ist Teil des von Bund und Ländern geförderten
+         <a href="http://www.akademienunion.de/forschung/akademienprogramm/" target="_blank">
+          Akademienprogramms
+         </a>
+         ,
+           das der Erhaltung, Sicherung und Vergegenwärtigung unseres kulturellen Erbes dient.
+           Koordiniert wird das Programm von der
+         <a href="http://www.akademienunion.de/akademienunion/ueber-uns/" target="_blank">
+          Union der
+           Deutschen Akademien der Wissenschaften.
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="col-md-3">
+      <div class="sidebar">
+       <h3>
+        Wort des Tages
+       </h3>
+       <p>
+        <a href="https://www.dwds.de/wb/Bierdose" style="font-size:16pt;font-weight:large">
+         Bierdose
+        </a>
+        <span class="smaller">
+         , die
+        </span>
+       </p>
+       <p class="smaller">
+        für Bier verwendete Getränkedose
+       </p>
+       <h3>
+        <span id="switch-latest-articles">
+         Neueste Artikel
+        </span>
+        |
+        <span class="btn-link" id="switch-random-articles" style="cursor:pointer">
+         Zufällige Artikel
+        </span>
+       </h3>
+       <div id="latest-articles">
+        <p>
+         <a href="https://www.dwds.de/wb/Dankesch%C3%B6n">
+          Dankeschön, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herkunftsbezeichnung">
+          Herkunftsbezeichnung, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsinstrument">
+          Herrschaftsinstrument, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsstruktur">
+          Herrschaftsstruktur, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/altersgerecht">
+          altersgerecht, Adj.
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+       </div>
+       <div id="random-articles" style="display:none">
+        <p>
+         <a href="https://www.dwds.de/wb/Modefan">
+          Modefan, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Staat">
+          Staat, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Olympiagel%C3%A4nde">
+          Olympiagelände
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Gruppenpr%C3%A4mie">
+          Gruppenprämie
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Rennklasse">
+          Rennklasse
+         </a>
+        </p>
+       </div>
+       <p style="text-align:right;font-style:italic">
+        <a href="https://www.dwds.de/backlist">
+         Historie …
+        </a>
+       </p>
+       <h3>
+        Aus dem Projekt
+       </h3>
+       <p style="margin-bottom:10px">
+        Aus unserem Blog:
+        <a href="https://sprache.hypotheses.org/731">
+         Eine Miszelle zum Eintrag Drohne im DWDS
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        CLARIN-D-Blog:
+        <a href="https://www.clarin-d.net/de/blog-clarin-d/10-wortartentagging-fuer-die-lexikographische-recherche">
+         Wortartentagging für die lexikographische Recherche
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://www.dwds.de/d/neues">
+         Informationen zur neuen Webseite
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://clarin-d.de/de/kollokationsanalyse-in-diachroner-perspektive">
+         DiaCollo: Kollokationsanalyse in diachroner Perspektive
+        </a>
+       </p>
+       <span class="twitter-follow">
+        <img src="https://www.dwds.de/static/images/twitter.png"/>
+        <a href="https://twitter.com/intent/follow?region=follow_link&amp;screen_name=dwds_de">
+         @dwds_de folgen
+        </a>
+       </span>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div style="height:100px">
+   </div>
+   <footer class="dwds-bottom">
+    <div class="container-fluid">
+     <div class="row">
+      <div class="col-md-offset-1 col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Partnerprojekte:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.deutschestextarchiv.de">
+          Deutsches Textarchiv
+         </a>
+        </li>
+        <li>
+         <a href="//www.clarin-d.de">
+          CLARIN-D
+         </a>
+        </li>
+        <li>
+         <a href="http://ocr-d.de/">
+          OCR-D
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Über uns (Projekt):
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/hintergrund">
+          Hintergrund
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/projektgruppe">
+          Projektgruppe
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/publikationen">
+          Publikationen
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/kooperationen">
+          Kooperationen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Ressourcen:
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/woerterbuecher">
+          Wörterbücher
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/korpora">
+          Textkorpora
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/ressources">
+          Statistische Auswertungen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-4 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        DWDS – Digitales Wörterbuch der deutschen Sprache
+       </p>
+       <div class="row">
+        <div class="col-md-6">
+         <ul>
+          <li>
+           <a href="https://www.dwds.de/d/suche">
+            Hilfe zur Suche
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/datenschutz">
+            Datenschutz
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/nutzungsbedingungen">
+            Nutzungsbedingungen
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/contact">
+            Kontakt und Feedback
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/imprint">
+            Impressum
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="col-md-6 hidden-xs hidden-sm">
+         <a href="http://www.bbaw.de/">
+          <img src="static/images/bbaw.svg" style="height:80px;margin-top:5px"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="visible-xs-block visible-sm-block" style="padding:20px">
+       <p>
+        <a href="https://www.dwds.de/d/suche">
+         Hilfe zur Suche
+        </a>
+        |
+        <a href="https://www.dwds.de/d/datenschutz">
+         Datenschutz
+        </a>
+        |
+        <a href="https://www.dwds.de/d/nutzungsbedingungen">
+         Nutzungsbedingungen
+        </a>
+        |
+        <a href="https://www.dwds.de/contact">
+         Kontakt und Feedback
+        </a>
+        |
+        <a href="https://www.dwds.de/imprint">
+         Impressum
+        </a>
+       </p>
+       <p>
+        Über uns (Projekt):
+        <a href="https://www.dwds.de/d/hintergrund">
+         Hintergrund
+        </a>
+        |
+        <a href="https://www.dwds.de/d/projektgruppe">
+         Projektgruppe
+        </a>
+        |
+        <a href="https://www.dwds.de/d/publikationen">
+         Publikationen
+        </a>
+        |
+        <a href="https://www.dwds.de/d/kooperationen">
+         Kooperationen
+        </a>
+       </p>
+       <p>
+        Ressourcen:
+        <a href="https://www.dwds.de/d/woerterbuecher">
+         Wörterbücher
+        </a>
+        |
+        <a href="https://www.dwds.de/d/korpora">
+         Textkorpora
+        </a>
+        |
+        <a href="https://www.dwds.de/d/ressources">
+         Statistische Auswertungen
+        </a>
+       </p>
+       <p>
+        Partnerprojekte:
+        <a href="http://www.deutschestextarchiv.de">
+         Deutsches Textarchiv
+        </a>
+        |
+        <a href="//www.clarin-d.de">
+         CLARIN-D
+        </a>
+        |
+        <a href="http://ocr-d.de/">
+         OCR-D
+        </a>
+       </p>
+       <p>
+        DWDS (Digitales Wörterbuch der deutschen Sprache) – ein Projekt der
+        <a href="http://www.bbaw.de/">
+         Berlin-Brandenburgischen Akademie der Wissenschaften
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </footer>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="static/js/jquery-3.1.1.min.js">
+   </script>
+   <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="static/bootstrap-3.3.2-dist/js/bootstrap.min.js">
+   </script>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <script src="static/bootstrap-slider/bootstrap-slider.min.js">
+   </script>
+   <!-- typeahead.js, https://github.com/twitter/typeahead.js -->
+   <script src="static/typeahead.js/typeahead.bundle.js">
+   </script>
+   <!-- lightbox.js -->
+   <script src="static/js/ekko-lightbox.min.js">
+   </script>
+   <!-- jQuery expander -->
+   <script src="static/js/jquery.expander.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    base = 'https://www.dwds.de/';
+       q    = "";
+   </script>
+   <script src="static/dwds.js?v=48">
+   </script>
+   <script src="https://www.dwds.de/static/wp.js?v=19" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var _paq = _paq || [];
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         (function() {
+           var u="//eins.dwds.de/piwik/";
+           _paq.push(['setTrackerUrl', u+'piwik.php']);
+           _paq.push(['setSiteId', 3]);
+           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+         })();
+   </script>
+   <noscript>
+    <p>
+     <img alt="" src="//eins.dwds.de/piwik/piwik.php?idsite=3" style="border:0;"/>
+    </p>
+   </noscript>
+  </body>
+ </html>
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <base href="https://www.dwds.de/"/>
+   <title>
+    DWDS
+       
+       –
+       
+         Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart
+   </title>
+   <link href="https://www.dwds.de/search.xml" rel="search" title="DWDS Suche" type="application/opensearchdescription+xml"/>
+   <link href="https://www.dwds.de/api/feed/adt" rel="alternate" title="DWDS: Wort des Tages" type="application/atom+xml"/>
+   <link href="https://www.dwds.de/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://www.dwds.de/favicon.gif" rel="shortcut icon" type="image/gif"/>
+   <!-- Bootstrap -->
+   <link href="static/bootstrap-3.3.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <link href="static/bootstrap-slider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+   <!--[if lt IE 9]>
+       <script src="https://www.dwds.de/static/js/html5shiv.min.js"></script>
+       <script src="https://www.dwds.de/static/js/respond.min.js"></script>
+     <![endif]-->
+   <link href="static/dwds.css?v=29" rel="stylesheet"/>
+   <link href="static/dwdswb.css?v=57" rel="stylesheet"/>
+   <link href="static/etymwb.css?v=4" rel="stylesheet"/>
+   <link href="static/dwb.css?v=2" rel="stylesheet"/>
+   <link href="static/wdg.css" rel="stylesheet"/>
+   <link href="static/ddc.css?v=2" rel="stylesheet"/>
+   <link href="static/wp.css?v=5" rel="stylesheet"/>
+   <link href="static/typeahead.css" rel="stylesheet"/>
+  </head>
+  <body>
+   <noscript>
+    <div class="alert alert-danger" style="text-align:center;margin-bottom:5px">
+     Um den vollen Funktionsumfang dieser Webseite nutzen zu können, muss JavaScript aktiviert sein.
+     <br/>
+     <a href="http://www.enable-javascript.com/de" target="_blank">
+      Hier finden Sie Hinweise, wie Sie JavaScript in Ihrem Browser aktivieren können.
+     </a>
+    </div>
+   </noscript>
+   <!-- spinner -->
+   <div id="spinner" style="display:none">
+    Bitte warten Sie einen Moment …
+   </div>
+   <div aria-labelledby="dwds-export-title" class="modal fade" id="dwds-export" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h4 class="modal-title" id="dwds-export-title">
+        Korpusergebnisse exportieren
+       </h4>
+      </div>
+      <div class="modal-body">
+       <form action="https://www.dwds.de/r" id="export-formdata" method="get">
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-format">
+            Trefferformat:
+           </label>
+           <select class="form-control" id="export-format" name="format">
+            <option value="kwic">
+             KWIC
+            </option>
+            <option value="full">
+             voll
+            </option>
+            <option value="max">
+             maximal
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-limit">
+            Anzahl:
+           </label>
+           <input class="form-control" id="export-limit" max="5000" min="1" name="limit" type="number" value="100"/>
+          </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-view">
+            Datenformat:
+           </label>
+           <select class="form-control" id="export-view" name="view">
+            <option value="csv">
+             CSV (für MS Excel etc.)
+            </option>
+            <option value="json">
+             JSON
+            </option>
+            <option value="tcf">
+             TCF
+            </option>
+            <option value="tsv">
+             TSV (tabsepariert)
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <label for="export-output">
+           Ausgabe:
+          </label>
+          <select class="form-control" id="export-output" name="output">
+           <option value="inline">
+            im Browser
+           </option>
+           <option value="file">
+            als Download
+           </option>
+          </select>
+         </div>
+        </div>
+        <input name="q" type="hidden" value=""/>
+        <input name="corpus" type="hidden" value=""/>
+        <input name="sort" type="hidden" value=""/>
+       </form>
+       <p class="small">
+        Hinweis: Die Trefferanzahl ist auf maximal 5 000 beschränkt.
+           Sie können über den URL-Parameter
+        <tt>
+         p
+        </tt>
+        weitere Ergebnisseiten
+           abfragen.
+        <a href="https://www.dwds.de/d/api#export">
+         Weitere Informationen dazu …
+        </a>
+       </p>
+      </div>
+      <div class="modal-footer">
+       <button class="btn btn-default" data-dismiss="modal" type="button">
+        schließen
+       </button>
+       <button class="btn btn-primary" onclick="export_submit()" type="button">
+        exportieren
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function export_submit() {
+     $('#export-formdata').submit();
+   }
+   </script>
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-static-top dwds-top">
+    <div class="container-fluid" style="padding-left:0">
+     <div class="navbar-header">
+      <a class="navbar-brand visible-xs-inline" href="https://www.dwds.de/" style="margin:1px;padding:0 0 0 15px">
+       <img src="https://www.dwds.de/static/images/dwds_286_67.png" width="210"/>
+      </a>
+      <a class="navbar-brand hidden-xs" href="https://www.dwds.de/" style="margin:1px;padding:0">
+       <img data-placement="right" data-toggle="tooltip" src="https://www.dwds.de/static/images/dwds_286_67.png" title="Digitales Wörterbuch der deutschen Sprache" width="210"/>
+      </a>
+      <div class="visible-xs-inline-block" style="float:right;padding:8px">
+       <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+        <span class="glyphicon glyphicon-log-in">
+        </span>
+        Login
+       </a>
+      </div>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-left">
+       <li class="hidden-xs hidden-sm sf" style="color:#fff; padding:15px">
+        Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart.
+       </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+       <li style="margin-right:10px;margin-left:10px">
+        <p class="navbar-btn">
+         <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+          <span class="glyphicon glyphicon-log-in">
+          </span>
+          Anmelden
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="container-fluid" style="max-width:1400px">
+    <div class="row" style="margin-top:20px">
+     <div class="col-md-9">
+      <!--    <h1 style="font-size:20pt">Das <a href="https://www.dwds.de/d/hintergrund">Wortauskunftssystem</a> zur deutschen Sprache in Geschichte und Gegenwart.</h1>-->
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-9">
+      <div class="row" style="margin-top:30px;margin-bottom:50px">
+       <div class="col-md-12">
+        <form action="https://www.dwds.de/" class="form-horizontal autosubmit" method="get">
+         <div class="input-group">
+          <input autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control input-lg" id="q" name="q" placeholder="Suche im Wortauskunftssystem" spellcheck="false" type="search"/>
+          <div class="input-group-btn" style="vertical-align:top">
+           <button class="btn btn-primary btn-lg" type="submit">
+            <i class="glyphicon glyphicon-search">
+            </i>
+           </button>
+           <a class="btn btn-default btn-lg" href="https://www.dwds.de/d/suche">
+            <i class="glyphicon glyphicon-question-sign">
+            </i>
+           </a>
+          </div>
+         </div>
+        </form>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/wb">
+           Wörterbücher
+          </a>
+         </h3>
+         <p>
+          465 000 Einträge in verschiedenen Wörterbüchern.
+         </p>
+         <a href="https://www.dwds.de/wb">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/dwdswb.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/r">
+           Textkorpora
+          </a>
+         </h3>
+         <p>
+          Dreizehn Milliarden Belege aus historischen und gegenwartssprachlichen Textkorpora.
+         </p>
+         <a href="https://www.dwds.de/r">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/kwic.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/stats">
+           Statistische Auswertungen
+          </a>
+         </h3>
+         <p>
+          Häufigkeiten, typische Verbindungen und zeitliche Verläufe über 400 Jahre.
+         </p>
+         <a href="https://www.dwds.de/stats">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/plot.png"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="row hidden-xs hidden-sm" style="margin-top:50px">
+       <div class="col-md-8" style="padding:23px;font-size:smaller">
+        <p>
+         Das Akademienvorhaben DWDS ist Teil des von Bund und Ländern geförderten
+         <a href="http://www.akademienunion.de/forschung/akademienprogramm/" target="_blank">
+          Akademienprogramms
+         </a>
+         ,
+           das der Erhaltung, Sicherung und Vergegenwärtigung unseres kulturellen Erbes dient.
+           Koordiniert wird das Programm von der
+         <a href="http://www.akademienunion.de/akademienunion/ueber-uns/" target="_blank">
+          Union der
+           Deutschen Akademien der Wissenschaften.
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="col-md-3">
+      <div class="sidebar">
+       <h3>
+        Wort des Tages
+       </h3>
+       <p>
+        <a href="https://www.dwds.de/wb/Bierdose" style="font-size:16pt;font-weight:large">
+         Bierdose
+        </a>
+        <span class="smaller">
+         , die
+        </span>
+       </p>
+       <p class="smaller">
+        für Bier verwendete Getränkedose
+       </p>
+       <h3>
+        <span id="switch-latest-articles">
+         Neueste Artikel
+        </span>
+        |
+        <span class="btn-link" id="switch-random-articles" style="cursor:pointer">
+         Zufällige Artikel
+        </span>
+       </h3>
+       <div id="latest-articles">
+        <p>
+         <a href="https://www.dwds.de/wb/Dankesch%C3%B6n">
+          Dankeschön, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herkunftsbezeichnung">
+          Herkunftsbezeichnung, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsinstrument">
+          Herrschaftsinstrument, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsstruktur">
+          Herrschaftsstruktur, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/altersgerecht">
+          altersgerecht, Adj.
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+       </div>
+       <div id="random-articles" style="display:none">
+        <p>
+         <a href="https://www.dwds.de/wb/Modefan">
+          Modefan, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Staat">
+          Staat, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Olympiagel%C3%A4nde">
+          Olympiagelände
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Gruppenpr%C3%A4mie">
+          Gruppenprämie
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Rennklasse">
+          Rennklasse
+         </a>
+        </p>
+       </div>
+       <p style="text-align:right;font-style:italic">
+        <a href="https://www.dwds.de/backlist">
+         Historie …
+        </a>
+       </p>
+       <h3>
+        Aus dem Projekt
+       </h3>
+       <p style="margin-bottom:10px">
+        Aus unserem Blog:
+        <a href="https://sprache.hypotheses.org/731">
+         Eine Miszelle zum Eintrag Drohne im DWDS
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        CLARIN-D-Blog:
+        <a href="https://www.clarin-d.net/de/blog-clarin-d/10-wortartentagging-fuer-die-lexikographische-recherche">
+         Wortartentagging für die lexikographische Recherche
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://www.dwds.de/d/neues">
+         Informationen zur neuen Webseite
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://clarin-d.de/de/kollokationsanalyse-in-diachroner-perspektive">
+         DiaCollo: Kollokationsanalyse in diachroner Perspektive
+        </a>
+       </p>
+       <span class="twitter-follow">
+        <img src="https://www.dwds.de/static/images/twitter.png"/>
+        <a href="https://twitter.com/intent/follow?region=follow_link&amp;screen_name=dwds_de">
+         @dwds_de folgen
+        </a>
+       </span>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div style="height:100px">
+   </div>
+   <footer class="dwds-bottom">
+    <div class="container-fluid">
+     <div class="row">
+      <div class="col-md-offset-1 col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Partnerprojekte:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.deutschestextarchiv.de">
+          Deutsches Textarchiv
+         </a>
+        </li>
+        <li>
+         <a href="//www.clarin-d.de">
+          CLARIN-D
+         </a>
+        </li>
+        <li>
+         <a href="http://ocr-d.de/">
+          OCR-D
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Über uns (Projekt):
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/hintergrund">
+          Hintergrund
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/projektgruppe">
+          Projektgruppe
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/publikationen">
+          Publikationen
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/kooperationen">
+          Kooperationen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Ressourcen:
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/woerterbuecher">
+          Wörterbücher
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/korpora">
+          Textkorpora
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/ressources">
+          Statistische Auswertungen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-4 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        DWDS – Digitales Wörterbuch der deutschen Sprache
+       </p>
+       <div class="row">
+        <div class="col-md-6">
+         <ul>
+          <li>
+           <a href="https://www.dwds.de/d/suche">
+            Hilfe zur Suche
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/datenschutz">
+            Datenschutz
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/nutzungsbedingungen">
+            Nutzungsbedingungen
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/contact">
+            Kontakt und Feedback
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/imprint">
+            Impressum
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="col-md-6 hidden-xs hidden-sm">
+         <a href="http://www.bbaw.de/">
+          <img src="static/images/bbaw.svg" style="height:80px;margin-top:5px"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="visible-xs-block visible-sm-block" style="padding:20px">
+       <p>
+        <a href="https://www.dwds.de/d/suche">
+         Hilfe zur Suche
+        </a>
+        |
+        <a href="https://www.dwds.de/d/datenschutz">
+         Datenschutz
+        </a>
+        |
+        <a href="https://www.dwds.de/d/nutzungsbedingungen">
+         Nutzungsbedingungen
+        </a>
+        |
+        <a href="https://www.dwds.de/contact">
+         Kontakt und Feedback
+        </a>
+        |
+        <a href="https://www.dwds.de/imprint">
+         Impressum
+        </a>
+       </p>
+       <p>
+        Über uns (Projekt):
+        <a href="https://www.dwds.de/d/hintergrund">
+         Hintergrund
+        </a>
+        |
+        <a href="https://www.dwds.de/d/projektgruppe">
+         Projektgruppe
+        </a>
+        |
+        <a href="https://www.dwds.de/d/publikationen">
+         Publikationen
+        </a>
+        |
+        <a href="https://www.dwds.de/d/kooperationen">
+         Kooperationen
+        </a>
+       </p>
+       <p>
+        Ressourcen:
+        <a href="https://www.dwds.de/d/woerterbuecher">
+         Wörterbücher
+        </a>
+        |
+        <a href="https://www.dwds.de/d/korpora">
+         Textkorpora
+        </a>
+        |
+        <a href="https://www.dwds.de/d/ressources">
+         Statistische Auswertungen
+        </a>
+       </p>
+       <p>
+        Partnerprojekte:
+        <a href="http://www.deutschestextarchiv.de">
+         Deutsches Textarchiv
+        </a>
+        |
+        <a href="//www.clarin-d.de">
+         CLARIN-D
+        </a>
+        |
+        <a href="http://ocr-d.de/">
+         OCR-D
+        </a>
+       </p>
+       <p>
+        DWDS (Digitales Wörterbuch der deutschen Sprache) – ein Projekt der
+        <a href="http://www.bbaw.de/">
+         Berlin-Brandenburgischen Akademie der Wissenschaften
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </footer>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="static/js/jquery-3.1.1.min.js">
+   </script>
+   <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="static/bootstrap-3.3.2-dist/js/bootstrap.min.js">
+   </script>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <script src="static/bootstrap-slider/bootstrap-slider.min.js">
+   </script>
+   <!-- typeahead.js, https://github.com/twitter/typeahead.js -->
+   <script src="static/typeahead.js/typeahead.bundle.js">
+   </script>
+   <!-- lightbox.js -->
+   <script src="static/js/ekko-lightbox.min.js">
+   </script>
+   <!-- jQuery expander -->
+   <script src="static/js/jquery.expander.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    base = 'https://www.dwds.de/';
+       q    = "";
+   </script>
+   <script src="static/dwds.js?v=48">
+   </script>
+   <script src="https://www.dwds.de/static/wp.js?v=19" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var _paq = _paq || [];
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         (function() {
+           var u="//eins.dwds.de/piwik/";
+           _paq.push(['setTrackerUrl', u+'piwik.php']);
+           _paq.push(['setSiteId', 3]);
+           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+         })();
+   </script>
+   <noscript>
+    <p>
+     <img alt="" src="//eins.dwds.de/piwik/piwik.php?idsite=3" style="border:0;"/>
+    </p>
+   </noscript>
+  </body>
+ </html>
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <base href="https://www.dwds.de/"/>
+   <title>
+    DWDS
+       
+       –
+       
+         Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart
+   </title>
+   <link href="https://www.dwds.de/search.xml" rel="search" title="DWDS Suche" type="application/opensearchdescription+xml"/>
+   <link href="https://www.dwds.de/api/feed/adt" rel="alternate" title="DWDS: Wort des Tages" type="application/atom+xml"/>
+   <link href="https://www.dwds.de/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://www.dwds.de/favicon.gif" rel="shortcut icon" type="image/gif"/>
+   <!-- Bootstrap -->
+   <link href="static/bootstrap-3.3.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <link href="static/bootstrap-slider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+   <!--[if lt IE 9]>
+       <script src="https://www.dwds.de/static/js/html5shiv.min.js"></script>
+       <script src="https://www.dwds.de/static/js/respond.min.js"></script>
+     <![endif]-->
+   <link href="static/dwds.css?v=29" rel="stylesheet"/>
+   <link href="static/dwdswb.css?v=57" rel="stylesheet"/>
+   <link href="static/etymwb.css?v=4" rel="stylesheet"/>
+   <link href="static/dwb.css?v=2" rel="stylesheet"/>
+   <link href="static/wdg.css" rel="stylesheet"/>
+   <link href="static/ddc.css?v=2" rel="stylesheet"/>
+   <link href="static/wp.css?v=5" rel="stylesheet"/>
+   <link href="static/typeahead.css" rel="stylesheet"/>
+  </head>
+  <body>
+   <noscript>
+    <div class="alert alert-danger" style="text-align:center;margin-bottom:5px">
+     Um den vollen Funktionsumfang dieser Webseite nutzen zu können, muss JavaScript aktiviert sein.
+     <br/>
+     <a href="http://www.enable-javascript.com/de" target="_blank">
+      Hier finden Sie Hinweise, wie Sie JavaScript in Ihrem Browser aktivieren können.
+     </a>
+    </div>
+   </noscript>
+   <!-- spinner -->
+   <div id="spinner" style="display:none">
+    Bitte warten Sie einen Moment …
+   </div>
+   <div aria-labelledby="dwds-export-title" class="modal fade" id="dwds-export" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h4 class="modal-title" id="dwds-export-title">
+        Korpusergebnisse exportieren
+       </h4>
+      </div>
+      <div class="modal-body">
+       <form action="https://www.dwds.de/r" id="export-formdata" method="get">
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-format">
+            Trefferformat:
+           </label>
+           <select class="form-control" id="export-format" name="format">
+            <option value="kwic">
+             KWIC
+            </option>
+            <option value="full">
+             voll
+            </option>
+            <option value="max">
+             maximal
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-limit">
+            Anzahl:
+           </label>
+           <input class="form-control" id="export-limit" max="5000" min="1" name="limit" type="number" value="100"/>
+          </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-view">
+            Datenformat:
+           </label>
+           <select class="form-control" id="export-view" name="view">
+            <option value="csv">
+             CSV (für MS Excel etc.)
+            </option>
+            <option value="json">
+             JSON
+            </option>
+            <option value="tcf">
+             TCF
+            </option>
+            <option value="tsv">
+             TSV (tabsepariert)
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <label for="export-output">
+           Ausgabe:
+          </label>
+          <select class="form-control" id="export-output" name="output">
+           <option value="inline">
+            im Browser
+           </option>
+           <option value="file">
+            als Download
+           </option>
+          </select>
+         </div>
+        </div>
+        <input name="q" type="hidden" value=""/>
+        <input name="corpus" type="hidden" value=""/>
+        <input name="sort" type="hidden" value=""/>
+       </form>
+       <p class="small">
+        Hinweis: Die Trefferanzahl ist auf maximal 5 000 beschränkt.
+           Sie können über den URL-Parameter
+        <tt>
+         p
+        </tt>
+        weitere Ergebnisseiten
+           abfragen.
+        <a href="https://www.dwds.de/d/api#export">
+         Weitere Informationen dazu …
+        </a>
+       </p>
+      </div>
+      <div class="modal-footer">
+       <button class="btn btn-default" data-dismiss="modal" type="button">
+        schließen
+       </button>
+       <button class="btn btn-primary" onclick="export_submit()" type="button">
+        exportieren
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function export_submit() {
+     $('#export-formdata').submit();
+   }
+   </script>
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-static-top dwds-top">
+    <div class="container-fluid" style="padding-left:0">
+     <div class="navbar-header">
+      <a class="navbar-brand visible-xs-inline" href="https://www.dwds.de/" style="margin:1px;padding:0 0 0 15px">
+       <img src="https://www.dwds.de/static/images/dwds_286_67.png" width="210"/>
+      </a>
+      <a class="navbar-brand hidden-xs" href="https://www.dwds.de/" style="margin:1px;padding:0">
+       <img data-placement="right" data-toggle="tooltip" src="https://www.dwds.de/static/images/dwds_286_67.png" title="Digitales Wörterbuch der deutschen Sprache" width="210"/>
+      </a>
+      <div class="visible-xs-inline-block" style="float:right;padding:8px">
+       <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+        <span class="glyphicon glyphicon-log-in">
+        </span>
+        Login
+       </a>
+      </div>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-left">
+       <li class="hidden-xs hidden-sm sf" style="color:#fff; padding:15px">
+        Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart.
+       </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+       <li style="margin-right:10px;margin-left:10px">
+        <p class="navbar-btn">
+         <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+          <span class="glyphicon glyphicon-log-in">
+          </span>
+          Anmelden
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="container-fluid" style="max-width:1400px">
+    <div class="row" style="margin-top:20px">
+     <div class="col-md-9">
+      <!--    <h1 style="font-size:20pt">Das <a href="https://www.dwds.de/d/hintergrund">Wortauskunftssystem</a> zur deutschen Sprache in Geschichte und Gegenwart.</h1>-->
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-9">
+      <div class="row" style="margin-top:30px;margin-bottom:50px">
+       <div class="col-md-12">
+        <form action="https://www.dwds.de/" class="form-horizontal autosubmit" method="get">
+         <div class="input-group">
+          <input autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control input-lg" id="q" name="q" placeholder="Suche im Wortauskunftssystem" spellcheck="false" type="search"/>
+          <div class="input-group-btn" style="vertical-align:top">
+           <button class="btn btn-primary btn-lg" type="submit">
+            <i class="glyphicon glyphicon-search">
+            </i>
+           </button>
+           <a class="btn btn-default btn-lg" href="https://www.dwds.de/d/suche">
+            <i class="glyphicon glyphicon-question-sign">
+            </i>
+           </a>
+          </div>
+         </div>
+        </form>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/wb">
+           Wörterbücher
+          </a>
+         </h3>
+         <p>
+          465 000 Einträge in verschiedenen Wörterbüchern.
+         </p>
+         <a href="https://www.dwds.de/wb">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/dwdswb.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/r">
+           Textkorpora
+          </a>
+         </h3>
+         <p>
+          Dreizehn Milliarden Belege aus historischen und gegenwartssprachlichen Textkorpora.
+         </p>
+         <a href="https://www.dwds.de/r">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/kwic.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/stats">
+           Statistische Auswertungen
+          </a>
+         </h3>
+         <p>
+          Häufigkeiten, typische Verbindungen und zeitliche Verläufe über 400 Jahre.
+         </p>
+         <a href="https://www.dwds.de/stats">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/plot.png"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="row hidden-xs hidden-sm" style="margin-top:50px">
+       <div class="col-md-8" style="padding:23px;font-size:smaller">
+        <p>
+         Das Akademienvorhaben DWDS ist Teil des von Bund und Ländern geförderten
+         <a href="http://www.akademienunion.de/forschung/akademienprogramm/" target="_blank">
+          Akademienprogramms
+         </a>
+         ,
+           das der Erhaltung, Sicherung und Vergegenwärtigung unseres kulturellen Erbes dient.
+           Koordiniert wird das Programm von der
+         <a href="http://www.akademienunion.de/akademienunion/ueber-uns/" target="_blank">
+          Union der
+           Deutschen Akademien der Wissenschaften.
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="col-md-3">
+      <div class="sidebar">
+       <h3>
+        Wort des Tages
+       </h3>
+       <p>
+        <a href="https://www.dwds.de/wb/Bierdose" style="font-size:16pt;font-weight:large">
+         Bierdose
+        </a>
+        <span class="smaller">
+         , die
+        </span>
+       </p>
+       <p class="smaller">
+        für Bier verwendete Getränkedose
+       </p>
+       <h3>
+        <span id="switch-latest-articles">
+         Neueste Artikel
+        </span>
+        |
+        <span class="btn-link" id="switch-random-articles" style="cursor:pointer">
+         Zufällige Artikel
+        </span>
+       </h3>
+       <div id="latest-articles">
+        <p>
+         <a href="https://www.dwds.de/wb/Dankesch%C3%B6n">
+          Dankeschön, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herkunftsbezeichnung">
+          Herkunftsbezeichnung, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsinstrument">
+          Herrschaftsinstrument, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsstruktur">
+          Herrschaftsstruktur, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/altersgerecht">
+          altersgerecht, Adj.
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+       </div>
+       <div id="random-articles" style="display:none">
+        <p>
+         <a href="https://www.dwds.de/wb/Modefan">
+          Modefan, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Staat">
+          Staat, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Olympiagel%C3%A4nde">
+          Olympiagelände
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Gruppenpr%C3%A4mie">
+          Gruppenprämie
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Rennklasse">
+          Rennklasse
+         </a>
+        </p>
+       </div>
+       <p style="text-align:right;font-style:italic">
+        <a href="https://www.dwds.de/backlist">
+         Historie …
+        </a>
+       </p>
+       <h3>
+        Aus dem Projekt
+       </h3>
+       <p style="margin-bottom:10px">
+        Aus unserem Blog:
+        <a href="https://sprache.hypotheses.org/731">
+         Eine Miszelle zum Eintrag Drohne im DWDS
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        CLARIN-D-Blog:
+        <a href="https://www.clarin-d.net/de/blog-clarin-d/10-wortartentagging-fuer-die-lexikographische-recherche">
+         Wortartentagging für die lexikographische Recherche
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://www.dwds.de/d/neues">
+         Informationen zur neuen Webseite
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://clarin-d.de/de/kollokationsanalyse-in-diachroner-perspektive">
+         DiaCollo: Kollokationsanalyse in diachroner Perspektive
+        </a>
+       </p>
+       <span class="twitter-follow">
+        <img src="https://www.dwds.de/static/images/twitter.png"/>
+        <a href="https://twitter.com/intent/follow?region=follow_link&amp;screen_name=dwds_de">
+         @dwds_de folgen
+        </a>
+       </span>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div style="height:100px">
+   </div>
+   <footer class="dwds-bottom">
+    <div class="container-fluid">
+     <div class="row">
+      <div class="col-md-offset-1 col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Partnerprojekte:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.deutschestextarchiv.de">
+          Deutsches Textarchiv
+         </a>
+        </li>
+        <li>
+         <a href="//www.clarin-d.de">
+          CLARIN-D
+         </a>
+        </li>
+        <li>
+         <a href="http://ocr-d.de/">
+          OCR-D
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Über uns (Projekt):
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/hintergrund">
+          Hintergrund
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/projektgruppe">
+          Projektgruppe
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/publikationen">
+          Publikationen
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/kooperationen">
+          Kooperationen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Ressourcen:
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/woerterbuecher">
+          Wörterbücher
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/korpora">
+          Textkorpora
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/ressources">
+          Statistische Auswertungen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-4 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        DWDS – Digitales Wörterbuch der deutschen Sprache
+       </p>
+       <div class="row">
+        <div class="col-md-6">
+         <ul>
+          <li>
+           <a href="https://www.dwds.de/d/suche">
+            Hilfe zur Suche
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/datenschutz">
+            Datenschutz
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/nutzungsbedingungen">
+            Nutzungsbedingungen
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/contact">
+            Kontakt und Feedback
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/imprint">
+            Impressum
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="col-md-6 hidden-xs hidden-sm">
+         <a href="http://www.bbaw.de/">
+          <img src="static/images/bbaw.svg" style="height:80px;margin-top:5px"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="visible-xs-block visible-sm-block" style="padding:20px">
+       <p>
+        <a href="https://www.dwds.de/d/suche">
+         Hilfe zur Suche
+        </a>
+        |
+        <a href="https://www.dwds.de/d/datenschutz">
+         Datenschutz
+        </a>
+        |
+        <a href="https://www.dwds.de/d/nutzungsbedingungen">
+         Nutzungsbedingungen
+        </a>
+        |
+        <a href="https://www.dwds.de/contact">
+         Kontakt und Feedback
+        </a>
+        |
+        <a href="https://www.dwds.de/imprint">
+         Impressum
+        </a>
+       </p>
+       <p>
+        Über uns (Projekt):
+        <a href="https://www.dwds.de/d/hintergrund">
+         Hintergrund
+        </a>
+        |
+        <a href="https://www.dwds.de/d/projektgruppe">
+         Projektgruppe
+        </a>
+        |
+        <a href="https://www.dwds.de/d/publikationen">
+         Publikationen
+        </a>
+        |
+        <a href="https://www.dwds.de/d/kooperationen">
+         Kooperationen
+        </a>
+       </p>
+       <p>
+        Ressourcen:
+        <a href="https://www.dwds.de/d/woerterbuecher">
+         Wörterbücher
+        </a>
+        |
+        <a href="https://www.dwds.de/d/korpora">
+         Textkorpora
+        </a>
+        |
+        <a href="https://www.dwds.de/d/ressources">
+         Statistische Auswertungen
+        </a>
+       </p>
+       <p>
+        Partnerprojekte:
+        <a href="http://www.deutschestextarchiv.de">
+         Deutsches Textarchiv
+        </a>
+        |
+        <a href="//www.clarin-d.de">
+         CLARIN-D
+        </a>
+        |
+        <a href="http://ocr-d.de/">
+         OCR-D
+        </a>
+       </p>
+       <p>
+        DWDS (Digitales Wörterbuch der deutschen Sprache) – ein Projekt der
+        <a href="http://www.bbaw.de/">
+         Berlin-Brandenburgischen Akademie der Wissenschaften
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </footer>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="static/js/jquery-3.1.1.min.js">
+   </script>
+   <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="static/bootstrap-3.3.2-dist/js/bootstrap.min.js">
+   </script>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <script src="static/bootstrap-slider/bootstrap-slider.min.js">
+   </script>
+   <!-- typeahead.js, https://github.com/twitter/typeahead.js -->
+   <script src="static/typeahead.js/typeahead.bundle.js">
+   </script>
+   <!-- lightbox.js -->
+   <script src="static/js/ekko-lightbox.min.js">
+   </script>
+   <!-- jQuery expander -->
+   <script src="static/js/jquery.expander.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    base = 'https://www.dwds.de/';
+       q    = "";
+   </script>
+   <script src="static/dwds.js?v=48">
+   </script>
+   <script src="https://www.dwds.de/static/wp.js?v=19" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var _paq = _paq || [];
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         (function() {
+           var u="//eins.dwds.de/piwik/";
+           _paq.push(['setTrackerUrl', u+'piwik.php']);
+           _paq.push(['setSiteId', 3]);
+           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+         })();
+   </script>
+   <noscript>
+    <p>
+     <img alt="" src="//eins.dwds.de/piwik/piwik.php?idsite=3" style="border:0;"/>
+    </p>
+   </noscript>
+  </body>
+ </html>
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <base href="https://www.dwds.de/"/>
+   <title>
+    DWDS
+       
+       –
+       
+         Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart
+   </title>
+   <link href="https://www.dwds.de/search.xml" rel="search" title="DWDS Suche" type="application/opensearchdescription+xml"/>
+   <link href="https://www.dwds.de/api/feed/adt" rel="alternate" title="DWDS: Wort des Tages" type="application/atom+xml"/>
+   <link href="https://www.dwds.de/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://www.dwds.de/favicon.gif" rel="shortcut icon" type="image/gif"/>
+   <!-- Bootstrap -->
+   <link href="static/bootstrap-3.3.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <link href="static/bootstrap-slider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+   <!--[if lt IE 9]>
+       <script src="https://www.dwds.de/static/js/html5shiv.min.js"></script>
+       <script src="https://www.dwds.de/static/js/respond.min.js"></script>
+     <![endif]-->
+   <link href="static/dwds.css?v=29" rel="stylesheet"/>
+   <link href="static/dwdswb.css?v=57" rel="stylesheet"/>
+   <link href="static/etymwb.css?v=4" rel="stylesheet"/>
+   <link href="static/dwb.css?v=2" rel="stylesheet"/>
+   <link href="static/wdg.css" rel="stylesheet"/>
+   <link href="static/ddc.css?v=2" rel="stylesheet"/>
+   <link href="static/wp.css?v=5" rel="stylesheet"/>
+   <link href="static/typeahead.css" rel="stylesheet"/>
+  </head>
+  <body>
+   <noscript>
+    <div class="alert alert-danger" style="text-align:center;margin-bottom:5px">
+     Um den vollen Funktionsumfang dieser Webseite nutzen zu können, muss JavaScript aktiviert sein.
+     <br/>
+     <a href="http://www.enable-javascript.com/de" target="_blank">
+      Hier finden Sie Hinweise, wie Sie JavaScript in Ihrem Browser aktivieren können.
+     </a>
+    </div>
+   </noscript>
+   <!-- spinner -->
+   <div id="spinner" style="display:none">
+    Bitte warten Sie einen Moment …
+   </div>
+   <div aria-labelledby="dwds-export-title" class="modal fade" id="dwds-export" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h4 class="modal-title" id="dwds-export-title">
+        Korpusergebnisse exportieren
+       </h4>
+      </div>
+      <div class="modal-body">
+       <form action="https://www.dwds.de/r" id="export-formdata" method="get">
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-format">
+            Trefferformat:
+           </label>
+           <select class="form-control" id="export-format" name="format">
+            <option value="kwic">
+             KWIC
+            </option>
+            <option value="full">
+             voll
+            </option>
+            <option value="max">
+             maximal
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-limit">
+            Anzahl:
+           </label>
+           <input class="form-control" id="export-limit" max="5000" min="1" name="limit" type="number" value="100"/>
+          </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-view">
+            Datenformat:
+           </label>
+           <select class="form-control" id="export-view" name="view">
+            <option value="csv">
+             CSV (für MS Excel etc.)
+            </option>
+            <option value="json">
+             JSON
+            </option>
+            <option value="tcf">
+             TCF
+            </option>
+            <option value="tsv">
+             TSV (tabsepariert)
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <label for="export-output">
+           Ausgabe:
+          </label>
+          <select class="form-control" id="export-output" name="output">
+           <option value="inline">
+            im Browser
+           </option>
+           <option value="file">
+            als Download
+           </option>
+          </select>
+         </div>
+        </div>
+        <input name="q" type="hidden" value=""/>
+        <input name="corpus" type="hidden" value=""/>
+        <input name="sort" type="hidden" value=""/>
+       </form>
+       <p class="small">
+        Hinweis: Die Trefferanzahl ist auf maximal 5 000 beschränkt.
+           Sie können über den URL-Parameter
+        <tt>
+         p
+        </tt>
+        weitere Ergebnisseiten
+           abfragen.
+        <a href="https://www.dwds.de/d/api#export">
+         Weitere Informationen dazu …
+        </a>
+       </p>
+      </div>
+      <div class="modal-footer">
+       <button class="btn btn-default" data-dismiss="modal" type="button">
+        schließen
+       </button>
+       <button class="btn btn-primary" onclick="export_submit()" type="button">
+        exportieren
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function export_submit() {
+     $('#export-formdata').submit();
+   }
+   </script>
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-static-top dwds-top">
+    <div class="container-fluid" style="padding-left:0">
+     <div class="navbar-header">
+      <a class="navbar-brand visible-xs-inline" href="https://www.dwds.de/" style="margin:1px;padding:0 0 0 15px">
+       <img src="https://www.dwds.de/static/images/dwds_286_67.png" width="210"/>
+      </a>
+      <a class="navbar-brand hidden-xs" href="https://www.dwds.de/" style="margin:1px;padding:0">
+       <img data-placement="right" data-toggle="tooltip" src="https://www.dwds.de/static/images/dwds_286_67.png" title="Digitales Wörterbuch der deutschen Sprache" width="210"/>
+      </a>
+      <div class="visible-xs-inline-block" style="float:right;padding:8px">
+       <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+        <span class="glyphicon glyphicon-log-in">
+        </span>
+        Login
+       </a>
+      </div>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-left">
+       <li class="hidden-xs hidden-sm sf" style="color:#fff; padding:15px">
+        Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart.
+       </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+       <li style="margin-right:10px;margin-left:10px">
+        <p class="navbar-btn">
+         <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+          <span class="glyphicon glyphicon-log-in">
+          </span>
+          Anmelden
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="container-fluid" style="max-width:1400px">
+    <div class="row" style="margin-top:20px">
+     <div class="col-md-9">
+      <!--    <h1 style="font-size:20pt">Das <a href="https://www.dwds.de/d/hintergrund">Wortauskunftssystem</a> zur deutschen Sprache in Geschichte und Gegenwart.</h1>-->
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-9">
+      <div class="row" style="margin-top:30px;margin-bottom:50px">
+       <div class="col-md-12">
+        <form action="https://www.dwds.de/" class="form-horizontal autosubmit" method="get">
+         <div class="input-group">
+          <input autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control input-lg" id="q" name="q" placeholder="Suche im Wortauskunftssystem" spellcheck="false" type="search"/>
+          <div class="input-group-btn" style="vertical-align:top">
+           <button class="btn btn-primary btn-lg" type="submit">
+            <i class="glyphicon glyphicon-search">
+            </i>
+           </button>
+           <a class="btn btn-default btn-lg" href="https://www.dwds.de/d/suche">
+            <i class="glyphicon glyphicon-question-sign">
+            </i>
+           </a>
+          </div>
+         </div>
+        </form>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/wb">
+           Wörterbücher
+          </a>
+         </h3>
+         <p>
+          465 000 Einträge in verschiedenen Wörterbüchern.
+         </p>
+         <a href="https://www.dwds.de/wb">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/dwdswb.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/r">
+           Textkorpora
+          </a>
+         </h3>
+         <p>
+          Dreizehn Milliarden Belege aus historischen und gegenwartssprachlichen Textkorpora.
+         </p>
+         <a href="https://www.dwds.de/r">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/kwic.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/stats">
+           Statistische Auswertungen
+          </a>
+         </h3>
+         <p>
+          Häufigkeiten, typische Verbindungen und zeitliche Verläufe über 400 Jahre.
+         </p>
+         <a href="https://www.dwds.de/stats">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/plot.png"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="row hidden-xs hidden-sm" style="margin-top:50px">
+       <div class="col-md-8" style="padding:23px;font-size:smaller">
+        <p>
+         Das Akademienvorhaben DWDS ist Teil des von Bund und Ländern geförderten
+         <a href="http://www.akademienunion.de/forschung/akademienprogramm/" target="_blank">
+          Akademienprogramms
+         </a>
+         ,
+           das der Erhaltung, Sicherung und Vergegenwärtigung unseres kulturellen Erbes dient.
+           Koordiniert wird das Programm von der
+         <a href="http://www.akademienunion.de/akademienunion/ueber-uns/" target="_blank">
+          Union der
+           Deutschen Akademien der Wissenschaften.
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="col-md-3">
+      <div class="sidebar">
+       <h3>
+        Wort des Tages
+       </h3>
+       <p>
+        <a href="https://www.dwds.de/wb/Bierdose" style="font-size:16pt;font-weight:large">
+         Bierdose
+        </a>
+        <span class="smaller">
+         , die
+        </span>
+       </p>
+       <p class="smaller">
+        für Bier verwendete Getränkedose
+       </p>
+       <h3>
+        <span id="switch-latest-articles">
+         Neueste Artikel
+        </span>
+        |
+        <span class="btn-link" id="switch-random-articles" style="cursor:pointer">
+         Zufällige Artikel
+        </span>
+       </h3>
+       <div id="latest-articles">
+        <p>
+         <a href="https://www.dwds.de/wb/Dankesch%C3%B6n">
+          Dankeschön, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herkunftsbezeichnung">
+          Herkunftsbezeichnung, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsinstrument">
+          Herrschaftsinstrument, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsstruktur">
+          Herrschaftsstruktur, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/altersgerecht">
+          altersgerecht, Adj.
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+       </div>
+       <div id="random-articles" style="display:none">
+        <p>
+         <a href="https://www.dwds.de/wb/Modefan">
+          Modefan, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Staat">
+          Staat, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Olympiagel%C3%A4nde">
+          Olympiagelände
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Gruppenpr%C3%A4mie">
+          Gruppenprämie
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Rennklasse">
+          Rennklasse
+         </a>
+        </p>
+       </div>
+       <p style="text-align:right;font-style:italic">
+        <a href="https://www.dwds.de/backlist">
+         Historie …
+        </a>
+       </p>
+       <h3>
+        Aus dem Projekt
+       </h3>
+       <p style="margin-bottom:10px">
+        Aus unserem Blog:
+        <a href="https://sprache.hypotheses.org/731">
+         Eine Miszelle zum Eintrag Drohne im DWDS
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        CLARIN-D-Blog:
+        <a href="https://www.clarin-d.net/de/blog-clarin-d/10-wortartentagging-fuer-die-lexikographische-recherche">
+         Wortartentagging für die lexikographische Recherche
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://www.dwds.de/d/neues">
+         Informationen zur neuen Webseite
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://clarin-d.de/de/kollokationsanalyse-in-diachroner-perspektive">
+         DiaCollo: Kollokationsanalyse in diachroner Perspektive
+        </a>
+       </p>
+       <span class="twitter-follow">
+        <img src="https://www.dwds.de/static/images/twitter.png"/>
+        <a href="https://twitter.com/intent/follow?region=follow_link&amp;screen_name=dwds_de">
+         @dwds_de folgen
+        </a>
+       </span>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div style="height:100px">
+   </div>
+   <footer class="dwds-bottom">
+    <div class="container-fluid">
+     <div class="row">
+      <div class="col-md-offset-1 col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Partnerprojekte:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.deutschestextarchiv.de">
+          Deutsches Textarchiv
+         </a>
+        </li>
+        <li>
+         <a href="//www.clarin-d.de">
+          CLARIN-D
+         </a>
+        </li>
+        <li>
+         <a href="http://ocr-d.de/">
+          OCR-D
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Über uns (Projekt):
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/hintergrund">
+          Hintergrund
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/projektgruppe">
+          Projektgruppe
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/publikationen">
+          Publikationen
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/kooperationen">
+          Kooperationen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Ressourcen:
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/woerterbuecher">
+          Wörterbücher
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/korpora">
+          Textkorpora
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/ressources">
+          Statistische Auswertungen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-4 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        DWDS – Digitales Wörterbuch der deutschen Sprache
+       </p>
+       <div class="row">
+        <div class="col-md-6">
+         <ul>
+          <li>
+           <a href="https://www.dwds.de/d/suche">
+            Hilfe zur Suche
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/datenschutz">
+            Datenschutz
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/nutzungsbedingungen">
+            Nutzungsbedingungen
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/contact">
+            Kontakt und Feedback
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/imprint">
+            Impressum
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="col-md-6 hidden-xs hidden-sm">
+         <a href="http://www.bbaw.de/">
+          <img src="static/images/bbaw.svg" style="height:80px;margin-top:5px"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="visible-xs-block visible-sm-block" style="padding:20px">
+       <p>
+        <a href="https://www.dwds.de/d/suche">
+         Hilfe zur Suche
+        </a>
+        |
+        <a href="https://www.dwds.de/d/datenschutz">
+         Datenschutz
+        </a>
+        |
+        <a href="https://www.dwds.de/d/nutzungsbedingungen">
+         Nutzungsbedingungen
+        </a>
+        |
+        <a href="https://www.dwds.de/contact">
+         Kontakt und Feedback
+        </a>
+        |
+        <a href="https://www.dwds.de/imprint">
+         Impressum
+        </a>
+       </p>
+       <p>
+        Über uns (Projekt):
+        <a href="https://www.dwds.de/d/hintergrund">
+         Hintergrund
+        </a>
+        |
+        <a href="https://www.dwds.de/d/projektgruppe">
+         Projektgruppe
+        </a>
+        |
+        <a href="https://www.dwds.de/d/publikationen">
+         Publikationen
+        </a>
+        |
+        <a href="https://www.dwds.de/d/kooperationen">
+         Kooperationen
+        </a>
+       </p>
+       <p>
+        Ressourcen:
+        <a href="https://www.dwds.de/d/woerterbuecher">
+         Wörterbücher
+        </a>
+        |
+        <a href="https://www.dwds.de/d/korpora">
+         Textkorpora
+        </a>
+        |
+        <a href="https://www.dwds.de/d/ressources">
+         Statistische Auswertungen
+        </a>
+       </p>
+       <p>
+        Partnerprojekte:
+        <a href="http://www.deutschestextarchiv.de">
+         Deutsches Textarchiv
+        </a>
+        |
+        <a href="//www.clarin-d.de">
+         CLARIN-D
+        </a>
+        |
+        <a href="http://ocr-d.de/">
+         OCR-D
+        </a>
+       </p>
+       <p>
+        DWDS (Digitales Wörterbuch der deutschen Sprache) – ein Projekt der
+        <a href="http://www.bbaw.de/">
+         Berlin-Brandenburgischen Akademie der Wissenschaften
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </footer>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="static/js/jquery-3.1.1.min.js">
+   </script>
+   <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="static/bootstrap-3.3.2-dist/js/bootstrap.min.js">
+   </script>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <script src="static/bootstrap-slider/bootstrap-slider.min.js">
+   </script>
+   <!-- typeahead.js, https://github.com/twitter/typeahead.js -->
+   <script src="static/typeahead.js/typeahead.bundle.js">
+   </script>
+   <!-- lightbox.js -->
+   <script src="static/js/ekko-lightbox.min.js">
+   </script>
+   <!-- jQuery expander -->
+   <script src="static/js/jquery.expander.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    base = 'https://www.dwds.de/';
+       q    = "";
+   </script>
+   <script src="static/dwds.js?v=48">
+   </script>
+   <script src="https://www.dwds.de/static/wp.js?v=19" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var _paq = _paq || [];
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         (function() {
+           var u="//eins.dwds.de/piwik/";
+           _paq.push(['setTrackerUrl', u+'piwik.php']);
+           _paq.push(['setSiteId', 3]);
+           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+         })();
+   </script>
+   <noscript>
+    <p>
+     <img alt="" src="//eins.dwds.de/piwik/piwik.php?idsite=3" style="border:0;"/>
+    </p>
+   </noscript>
+  </body>
+ </html>
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <base href="https://www.dwds.de/"/>
+   <title>
+    DWDS
+       
+       –
+       
+         Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart
+   </title>
+   <link href="https://www.dwds.de/search.xml" rel="search" title="DWDS Suche" type="application/opensearchdescription+xml"/>
+   <link href="https://www.dwds.de/api/feed/adt" rel="alternate" title="DWDS: Wort des Tages" type="application/atom+xml"/>
+   <link href="https://www.dwds.de/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://www.dwds.de/favicon.gif" rel="shortcut icon" type="image/gif"/>
+   <!-- Bootstrap -->
+   <link href="static/bootstrap-3.3.2-dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <link href="static/bootstrap-slider/css/bootstrap-slider.min.css" rel="stylesheet"/>
+   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+   <!--[if lt IE 9]>
+       <script src="https://www.dwds.de/static/js/html5shiv.min.js"></script>
+       <script src="https://www.dwds.de/static/js/respond.min.js"></script>
+     <![endif]-->
+   <link href="static/dwds.css?v=29" rel="stylesheet"/>
+   <link href="static/dwdswb.css?v=57" rel="stylesheet"/>
+   <link href="static/etymwb.css?v=4" rel="stylesheet"/>
+   <link href="static/dwb.css?v=2" rel="stylesheet"/>
+   <link href="static/wdg.css" rel="stylesheet"/>
+   <link href="static/ddc.css?v=2" rel="stylesheet"/>
+   <link href="static/wp.css?v=5" rel="stylesheet"/>
+   <link href="static/typeahead.css" rel="stylesheet"/>
+  </head>
+  <body>
+   <noscript>
+    <div class="alert alert-danger" style="text-align:center;margin-bottom:5px">
+     Um den vollen Funktionsumfang dieser Webseite nutzen zu können, muss JavaScript aktiviert sein.
+     <br/>
+     <a href="http://www.enable-javascript.com/de" target="_blank">
+      Hier finden Sie Hinweise, wie Sie JavaScript in Ihrem Browser aktivieren können.
+     </a>
+    </div>
+   </noscript>
+   <!-- spinner -->
+   <div id="spinner" style="display:none">
+    Bitte warten Sie einen Moment …
+   </div>
+   <div aria-labelledby="dwds-export-title" class="modal fade" id="dwds-export" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h4 class="modal-title" id="dwds-export-title">
+        Korpusergebnisse exportieren
+       </h4>
+      </div>
+      <div class="modal-body">
+       <form action="https://www.dwds.de/r" id="export-formdata" method="get">
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-format">
+            Trefferformat:
+           </label>
+           <select class="form-control" id="export-format" name="format">
+            <option value="kwic">
+             KWIC
+            </option>
+            <option value="full">
+             voll
+            </option>
+            <option value="max">
+             maximal
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-limit">
+            Anzahl:
+           </label>
+           <input class="form-control" id="export-limit" max="5000" min="1" name="limit" type="number" value="100"/>
+          </div>
+         </div>
+        </div>
+        <div class="row">
+         <div class="col-md-6">
+          <div class="form-group">
+           <label for="export-view">
+            Datenformat:
+           </label>
+           <select class="form-control" id="export-view" name="view">
+            <option value="csv">
+             CSV (für MS Excel etc.)
+            </option>
+            <option value="json">
+             JSON
+            </option>
+            <option value="tcf">
+             TCF
+            </option>
+            <option value="tsv">
+             TSV (tabsepariert)
+            </option>
+           </select>
+          </div>
+         </div>
+         <div class="col-md-6">
+          <label for="export-output">
+           Ausgabe:
+          </label>
+          <select class="form-control" id="export-output" name="output">
+           <option value="inline">
+            im Browser
+           </option>
+           <option value="file">
+            als Download
+           </option>
+          </select>
+         </div>
+        </div>
+        <input name="q" type="hidden" value=""/>
+        <input name="corpus" type="hidden" value=""/>
+        <input name="sort" type="hidden" value=""/>
+       </form>
+       <p class="small">
+        Hinweis: Die Trefferanzahl ist auf maximal 5 000 beschränkt.
+           Sie können über den URL-Parameter
+        <tt>
+         p
+        </tt>
+        weitere Ergebnisseiten
+           abfragen.
+        <a href="https://www.dwds.de/d/api#export">
+         Weitere Informationen dazu …
+        </a>
+       </p>
+      </div>
+      <div class="modal-footer">
+       <button class="btn btn-default" data-dismiss="modal" type="button">
+        schließen
+       </button>
+       <button class="btn btn-primary" onclick="export_submit()" type="button">
+        exportieren
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    function export_submit() {
+     $('#export-formdata').submit();
+   }
+   </script>
+   <!-- Static navbar -->
+   <nav class="navbar navbar-default navbar-static-top dwds-top">
+    <div class="container-fluid" style="padding-left:0">
+     <div class="navbar-header">
+      <a class="navbar-brand visible-xs-inline" href="https://www.dwds.de/" style="margin:1px;padding:0 0 0 15px">
+       <img src="https://www.dwds.de/static/images/dwds_286_67.png" width="210"/>
+      </a>
+      <a class="navbar-brand hidden-xs" href="https://www.dwds.de/" style="margin:1px;padding:0">
+       <img data-placement="right" data-toggle="tooltip" src="https://www.dwds.de/static/images/dwds_286_67.png" title="Digitales Wörterbuch der deutschen Sprache" width="210"/>
+      </a>
+      <div class="visible-xs-inline-block" style="float:right;padding:8px">
+       <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+        <span class="glyphicon glyphicon-log-in">
+        </span>
+        Login
+       </a>
+      </div>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-left">
+       <li class="hidden-xs hidden-sm sf" style="color:#fff; padding:15px">
+        Das Wortauskunftssystem zur deutschen Sprache in Geschichte und Gegenwart.
+       </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right hidden-xs">
+       <li style="margin-right:10px;margin-left:10px">
+        <p class="navbar-btn">
+         <a class="btn btn-sm btn-default" href="https://www.dwds.de/profile/login?c=">
+          <span class="glyphicon glyphicon-log-in">
+          </span>
+          Anmelden
+         </a>
+        </p>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </nav>
+   <div class="container-fluid" style="max-width:1400px">
+    <div class="row" style="margin-top:20px">
+     <div class="col-md-9">
+      <!--    <h1 style="font-size:20pt">Das <a href="https://www.dwds.de/d/hintergrund">Wortauskunftssystem</a> zur deutschen Sprache in Geschichte und Gegenwart.</h1>-->
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-9">
+      <div class="row" style="margin-top:30px;margin-bottom:50px">
+       <div class="col-md-12">
+        <form action="https://www.dwds.de/" class="form-horizontal autosubmit" method="get">
+         <div class="input-group">
+          <input autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control input-lg" id="q" name="q" placeholder="Suche im Wortauskunftssystem" spellcheck="false" type="search"/>
+          <div class="input-group-btn" style="vertical-align:top">
+           <button class="btn btn-primary btn-lg" type="submit">
+            <i class="glyphicon glyphicon-search">
+            </i>
+           </button>
+           <a class="btn btn-default btn-lg" href="https://www.dwds.de/d/suche">
+            <i class="glyphicon glyphicon-question-sign">
+            </i>
+           </a>
+          </div>
+         </div>
+        </form>
+       </div>
+      </div>
+      <div class="row">
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/wb">
+           Wörterbücher
+          </a>
+         </h3>
+         <p>
+          465 000 Einträge in verschiedenen Wörterbüchern.
+         </p>
+         <a href="https://www.dwds.de/wb">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/dwdswb.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/r">
+           Textkorpora
+          </a>
+         </h3>
+         <p>
+          Dreizehn Milliarden Belege aus historischen und gegenwartssprachlichen Textkorpora.
+         </p>
+         <a href="https://www.dwds.de/r">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/kwic.png"/>
+         </a>
+        </div>
+       </div>
+       <div class="col-md-4">
+        <div class="startbox">
+         <h3>
+          <a href="https://www.dwds.de/stats">
+           Statistische Auswertungen
+          </a>
+         </h3>
+         <p>
+          Häufigkeiten, typische Verbindungen und zeitliche Verläufe über 400 Jahre.
+         </p>
+         <a href="https://www.dwds.de/stats">
+          <img class="hidden-xs hidden-sm" src="static/images/screenshots/plot.png"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="row hidden-xs hidden-sm" style="margin-top:50px">
+       <div class="col-md-8" style="padding:23px;font-size:smaller">
+        <p>
+         Das Akademienvorhaben DWDS ist Teil des von Bund und Ländern geförderten
+         <a href="http://www.akademienunion.de/forschung/akademienprogramm/" target="_blank">
+          Akademienprogramms
+         </a>
+         ,
+           das der Erhaltung, Sicherung und Vergegenwärtigung unseres kulturellen Erbes dient.
+           Koordiniert wird das Programm von der
+         <a href="http://www.akademienunion.de/akademienunion/ueber-uns/" target="_blank">
+          Union der
+           Deutschen Akademien der Wissenschaften.
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="col-md-3">
+      <div class="sidebar">
+       <h3>
+        Wort des Tages
+       </h3>
+       <p>
+        <a href="https://www.dwds.de/wb/Bierdose" style="font-size:16pt;font-weight:large">
+         Bierdose
+        </a>
+        <span class="smaller">
+         , die
+        </span>
+       </p>
+       <p class="smaller">
+        für Bier verwendete Getränkedose
+       </p>
+       <h3>
+        <span id="switch-latest-articles">
+         Neueste Artikel
+        </span>
+        |
+        <span class="btn-link" id="switch-random-articles" style="cursor:pointer">
+         Zufällige Artikel
+        </span>
+       </h3>
+       <div id="latest-articles">
+        <p>
+         <a href="https://www.dwds.de/wb/Dankesch%C3%B6n">
+          Dankeschön, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herkunftsbezeichnung">
+          Herkunftsbezeichnung, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsinstrument">
+          Herrschaftsinstrument, das
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Herrschaftsstruktur">
+          Herrschaftsstruktur, die
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/altersgerecht">
+          altersgerecht, Adj.
+         </a>
+         <span class="smaller">
+          [06.06.2018]
+         </span>
+        </p>
+       </div>
+       <div id="random-articles" style="display:none">
+        <p>
+         <a href="https://www.dwds.de/wb/Modefan">
+          Modefan, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Staat">
+          Staat, der
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Olympiagel%C3%A4nde">
+          Olympiagelände
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Gruppenpr%C3%A4mie">
+          Gruppenprämie
+         </a>
+        </p>
+        <p>
+         <a href="https://www.dwds.de/wb/Rennklasse">
+          Rennklasse
+         </a>
+        </p>
+       </div>
+       <p style="text-align:right;font-style:italic">
+        <a href="https://www.dwds.de/backlist">
+         Historie …
+        </a>
+       </p>
+       <h3>
+        Aus dem Projekt
+       </h3>
+       <p style="margin-bottom:10px">
+        Aus unserem Blog:
+        <a href="https://sprache.hypotheses.org/731">
+         Eine Miszelle zum Eintrag Drohne im DWDS
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        CLARIN-D-Blog:
+        <a href="https://www.clarin-d.net/de/blog-clarin-d/10-wortartentagging-fuer-die-lexikographische-recherche">
+         Wortartentagging für die lexikographische Recherche
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://www.dwds.de/d/neues">
+         Informationen zur neuen Webseite
+        </a>
+       </p>
+       <p style="margin-bottom:10px">
+        <a href="https://clarin-d.de/de/kollokationsanalyse-in-diachroner-perspektive">
+         DiaCollo: Kollokationsanalyse in diachroner Perspektive
+        </a>
+       </p>
+       <span class="twitter-follow">
+        <img src="https://www.dwds.de/static/images/twitter.png"/>
+        <a href="https://twitter.com/intent/follow?region=follow_link&amp;screen_name=dwds_de">
+         @dwds_de folgen
+        </a>
+       </span>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div style="height:100px">
+   </div>
+   <footer class="dwds-bottom">
+    <div class="container-fluid">
+     <div class="row">
+      <div class="col-md-offset-1 col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Partnerprojekte:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.deutschestextarchiv.de">
+          Deutsches Textarchiv
+         </a>
+        </li>
+        <li>
+         <a href="//www.clarin-d.de">
+          CLARIN-D
+         </a>
+        </li>
+        <li>
+         <a href="http://ocr-d.de/">
+          OCR-D
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Über uns (Projekt):
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/hintergrund">
+          Hintergrund
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/projektgruppe">
+          Projektgruppe
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/publikationen">
+          Publikationen
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/kooperationen">
+          Kooperationen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-2 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        Ressourcen:
+       </p>
+       <ul>
+        <li>
+         <a href="https://www.dwds.de/d/woerterbuecher">
+          Wörterbücher
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/korpora">
+          Textkorpora
+         </a>
+        </li>
+        <li>
+         <a href="https://www.dwds.de/d/ressources">
+          Statistische Auswertungen
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="col-md-4 hidden-xs hidden-sm" style="padding-top:20px">
+       <p>
+        DWDS – Digitales Wörterbuch der deutschen Sprache
+       </p>
+       <div class="row">
+        <div class="col-md-6">
+         <ul>
+          <li>
+           <a href="https://www.dwds.de/d/suche">
+            Hilfe zur Suche
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/datenschutz">
+            Datenschutz
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/d/nutzungsbedingungen">
+            Nutzungsbedingungen
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/contact">
+            Kontakt und Feedback
+           </a>
+          </li>
+          <li>
+           <a href="https://www.dwds.de/imprint">
+            Impressum
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="col-md-6 hidden-xs hidden-sm">
+         <a href="http://www.bbaw.de/">
+          <img src="static/images/bbaw.svg" style="height:80px;margin-top:5px"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="visible-xs-block visible-sm-block" style="padding:20px">
+       <p>
+        <a href="https://www.dwds.de/d/suche">
+         Hilfe zur Suche
+        </a>
+        |
+        <a href="https://www.dwds.de/d/datenschutz">
+         Datenschutz
+        </a>
+        |
+        <a href="https://www.dwds.de/d/nutzungsbedingungen">
+         Nutzungsbedingungen
+        </a>
+        |
+        <a href="https://www.dwds.de/contact">
+         Kontakt und Feedback
+        </a>
+        |
+        <a href="https://www.dwds.de/imprint">
+         Impressum
+        </a>
+       </p>
+       <p>
+        Über uns (Projekt):
+        <a href="https://www.dwds.de/d/hintergrund">
+         Hintergrund
+        </a>
+        |
+        <a href="https://www.dwds.de/d/projektgruppe">
+         Projektgruppe
+        </a>
+        |
+        <a href="https://www.dwds.de/d/publikationen">
+         Publikationen
+        </a>
+        |
+        <a href="https://www.dwds.de/d/kooperationen">
+         Kooperationen
+        </a>
+       </p>
+       <p>
+        Ressourcen:
+        <a href="https://www.dwds.de/d/woerterbuecher">
+         Wörterbücher
+        </a>
+        |
+        <a href="https://www.dwds.de/d/korpora">
+         Textkorpora
+        </a>
+        |
+        <a href="https://www.dwds.de/d/ressources">
+         Statistische Auswertungen
+        </a>
+       </p>
+       <p>
+        Partnerprojekte:
+        <a href="http://www.deutschestextarchiv.de">
+         Deutsches Textarchiv
+        </a>
+        |
+        <a href="//www.clarin-d.de">
+         CLARIN-D
+        </a>
+        |
+        <a href="http://ocr-d.de/">
+         OCR-D
+        </a>
+       </p>
+       <p>
+        DWDS (Digitales Wörterbuch der deutschen Sprache) – ein Projekt der
+        <a href="http://www.bbaw.de/">
+         Berlin-Brandenburgischen Akademie der Wissenschaften
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+   </footer>
+   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+   <script src="static/js/jquery-3.1.1.min.js">
+   </script>
+   <!-- Include all compiled plugins (below), or include individual files as needed -->
+   <script src="static/bootstrap-3.3.2-dist/js/bootstrap.min.js">
+   </script>
+   <!-- Bootstrap slider, https://github.com/seiyria/bootstrap-slider -->
+   <script src="static/bootstrap-slider/bootstrap-slider.min.js">
+   </script>
+   <!-- typeahead.js, https://github.com/twitter/typeahead.js -->
+   <script src="static/typeahead.js/typeahead.bundle.js">
+   </script>
+   <!-- lightbox.js -->
+   <script src="static/js/ekko-lightbox.min.js">
+   </script>
+   <!-- jQuery expander -->
+   <script src="static/js/jquery.expander.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    base = 'https://www.dwds.de/';
+       q    = "";
+   </script>
+   <script src="static/dwds.js?v=48">
+   </script>
+   <script src="https://www.dwds.de/static/wp.js?v=19" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var _paq = _paq || [];
+         _paq.push(['trackPageView']);
+         _paq.push(['enableLinkTracking']);
+         (function() {
+           var u="//eins.dwds.de/piwik/";
+           _paq.push(['setTrackerUrl', u+'piwik.php']);
+           _paq.push(['setSiteId', 3]);
+           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+         })();
+   </script>
+   <noscript>
+    <p>
+     <img alt="" src="//eins.dwds.de/piwik/piwik.php?idsite=3" style="border:0;"/>
+    </p>
+   </noscript>
+  </body>
+ </html>

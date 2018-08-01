@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+ <html lang="fr">
+  <head>
+   <base href="http://www.cyclismactu.net/"/>
+   <link href="images/favicon.png" rel="icon" type="image/png"/>
+   <link href="images/favicon2.png" rel="apple-touch-icon" sizes="180x180"/>
+   <meta content="Cyclism'Actu, cyclisme, velo, actu, info, news, UCI, world-tour" name="keywords"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+   <link href="tacki-002.css" rel="stylesheet" type="text/css"/>
+   <title>
+    Toute l'actualité cycliste , les résultats, classements, transferts, et vidéos en direct live - Cyclism'Actu
+   </title>
+   <meta content="summary_large_image" name="twitter:card"/>
+   <meta content="@cyclismactu.net" name="twitter:site"/>
+   <meta content="@Cyclismactu" name="twitter:creator"/>
+   <meta content="Toute l'actu du Cyclisme" name="twitter:description"/>
+   <link href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" rel="stylesheet" type="text/css"/>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js">
+   </script>
+   <script>
+    window.addEventListener("load", function(){
+ window.cookieconsent.initialise({
+   "palette": {
+     "popup": {
+       "background": "#000"
+     },
+     "button": {
+       "background": "#f1d600"
+     }
+   },
+   "content": {
+     "message": "En poursuivant votre navigation sur ce site, vous acceptez notre <a href='/?page=cookies'>Politique de confidentialité</a> et l’utilisation de cookies pour vous proposer des contenus, des services et des publicités adaptés à vos centres d’intérêts et de réaliser des statistiques de visites. <a href='/?page=cookies'>En savoir plus et gérer ces paramètres</a>.",
+     "dismiss": "OK",
+     "link": ""
+   }
+ })});
+   </script>
+  </head>
+  <script language="JavaScript">
+   function extractUrlParams(url){
+    var t = url.substring(1).split('&');
+    var f = [];
+    for (var i=0; i<t.length; i++){
+       var x = t[ i ].split('=');
+       f[x[0]]=x[1];
+    }
+    return f;
+ }
+ function envoieRequete(url,id){
+ 	var xhr_object = null; var position = id; var page='';
+ 	if (url.match('.php')) {var next=url.split('.php'); page=next[0];  var suite=next[1].replace('?',''); } 
+ 	else { if (url.match('?')) {var next=url.split('?'); if (next[1]!="") {var suite=next[1];} else {var suite=next[0];} } else {var suite='';} }
+ 	if (suite!="") {var fin='&'+suite;} else {var fin="";}
+ 	var param=extractUrlParams(fin);
+ 	var rdep='dep='+param['dep']; var fin=fin.replace(rdep,''); fin=fin.replace('&&','');
+ 	   if(window.XMLHttpRequest)  xhr_object = new XMLHttpRequest();
+ 	  else
+ 	    if (window.ActiveXObject)  xhr_object = new ActiveXObject("Microsoft.XMLHTTP"); 
+ 	// On ouvre la requete vers la page désirée
+ 	xhr_object.open("GET", url, true);
+ 	xhr_object.onreadystatechange = function(){
+ 	if ( xhr_object.readyState == 4 )
+ 	{
+ 	// j'affiche dans la DIV spécifiées le contenu retourné par le fichier
+ 	if (document.getElementById(position)) 
+ 		{var e = document.getElementById(position); e.innerHTML = xhr_object.responseText;}
+ 	// on modifie la barre d'adresse
+ 	if (position=='leftmain') 
+ 		{window.history.pushState('' ,'' , '?page='+page+''+fin); }
+ 	// on relance les javascripts
+ 	if (position=='leftmain' || position=='pic_gallery' || page=='saisie_coureur'  || page=='saisie_club') {	
+ 		var AllScripts=e.getElementsByTagName("script");
+ 		  for (var i=0; i<AllScripts.length; i++) {
+ 			 var s=AllScripts[i];
+ 			 if (s.src && s.src!="") {
+ 				eval(file_get_contents(s.src));
+ 			 }
+ 			 else {
+ 				eval(s.innerHTML);
+ 			 }
+ 		  }
+ 		}
+ 	}
+ 	}
+ 	// dans le cas du get
+ 	xhr_object.send(null);
+ }
+ function file_get_contents(url, flags, context, offset, maxLen) {
+   var tmp, headers = [],
+     newTmp = [],
+     k = 0,
+     i = 0,
+     href = '',
+     pathPos = -1,
+     flagNames = 0,
+     content = null,
+     http_stream = false;
+   var func = function(value) {
+     return value.substring(1) !== '';
+   };
+ 
+   // BEGIN REDUNDANT
+   this.php_js = this.php_js || {};
+   this.php_js.ini = this.php_js.ini || {};
+   // END REDUNDANT
+   var ini = this.php_js.ini;
+   context = context || this.php_js.default_streams_context || null;
+ 
+   if (!flags) {
+     flags = 0;
+   }
+   var OPTS = {
+     FILE_USE_INCLUDE_PATH: 1,
+     FILE_TEXT: 32,
+     FILE_BINARY: 64
+   };
+   if (typeof flags === 'number') { // Allow for a single string or an array of string flags
+     flagNames = flags;
+   } else {
+     flags = [].concat(flags);
+     for (i = 0; i < flags.length; i++) {
+       if (OPTS[flags[i]]) {
+         flagNames = flagNames | OPTS[flags[i]];
+       }
+     }
+   }
+ 
+   if (flagNames & OPTS.FILE_BINARY && (flagNames & OPTS.FILE_TEXT)) { // These flags shouldn't be together
+     throw 'You cannot pass both FILE_BINARY and FILE_TEXT to file_get_contents()';
+   }
+ 
+   if ((flagNames & OPTS.FILE_USE_INCLUDE_PATH) && ini.include_path && ini.include_path.local_value) {
+     var slash = ini.include_path.local_value.indexOf('/') !== -1 ? '/' : '\\';
+     url = ini.include_path.local_value + slash + url;
+   } else if (!/^(https?|file):/.test(url)) { // Allow references within or below the same directory (should fix to allow other relative references or root reference; could make dependent on parse_url())
+     href = this.window.location.href;
+     pathPos = url.indexOf('/') === 0 ? href.indexOf('/', 8) - 1 : href.lastIndexOf('/');
+     url = href.slice(0, pathPos + 1) + url;
+   }
+ 
+   var http_options;
+   if (context) {
+     http_options = context.stream_options && context.stream_options.http;
+     http_stream = !! http_options;
+   }
+ 
+   if (!context || http_stream) {
+     var req = this.window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+     if (!req) {
+       throw new Error('XMLHttpRequest not supported');
+     }
+ 
+     var method = http_stream ? http_options.method : 'GET';
+     var async = !! (context && context.stream_params && context.stream_params['phpjs.async']);
+ 
+     if (ini['phpjs.ajaxBypassCache'] && ini['phpjs.ajaxBypassCache'].local_value) {
+       url += (url.match(/\?/) == null ? '?' : '&') + (new Date())
+         .getTime(); // Give optional means of forcing bypass of cache
+     }
+ 
+     req.open(method, url, async);
+     if (async) {
+       var notification = context.stream_params.notification;
+       if (typeof notification === 'function') {
+         // Fix: make work with req.addEventListener if available: https://developer.mozilla.org/En/Using_XMLHttpRequest
+         if (0 && req.addEventListener) { // Unimplemented so don't allow to get here
+           /*
+           req.addEventListener('progress', updateProgress, false);
+           req.addEventListener('load', transferComplete, false);
+           req.addEventListener('error', transferFailed, false);
+           req.addEventListener('abort', transferCanceled, false);
+           */
+         } else {
+           req.onreadystatechange = function(aEvt) { // aEvt has stopPropagation(), preventDefault(); see https://developer.mozilla.org/en/NsIDOMEvent
+             // Other XMLHttpRequest properties: multipart, responseXML, status, statusText, upload, withCredentials
+ 
+             var objContext = {
+               responseText: req.responseText,
+               responseXML: req.responseXML,
+               status: req.status,
+               statusText: req.statusText,
+               readyState: req.readyState,
+               evt: aEvt
+             }; // properties are not available in PHP, but offered on notification via 'this' for convenience
+             // notification args: notification_code, severity, message, message_code, bytes_transferred, bytes_max (all int's except string 'message')
+             // Need to add message, etc.
+             var bytes_transferred;
+             switch (req.readyState) {
+               case 0:
+                 //     UNINITIALIZED     open() has not been called yet.
+                 notification.call(objContext, 0, 0, '', 0, 0, 0);
+                 break;
+               case 1:
+                 //     LOADING     send() has not been called yet.
+                 notification.call(objContext, 0, 0, '', 0, 0, 0);
+                 break;
+               case 2:
+                 //     LOADED     send() has been called, and headers and status are available.
+                 notification.call(objContext, 0, 0, '', 0, 0, 0);
+                 break;
+               case 3:
+                 //     INTERACTIVE     Downloading; responseText holds partial data.
+                 bytes_transferred = req.responseText.length * 2; // One character is two bytes
+                 notification.call(objContext, 7, 0, '', 0, bytes_transferred, 0);
+                 break;
+               case 4:
+                 //     COMPLETED     The operation is complete.
+                 if (req.status >= 200 && req.status < 400) {
+                   bytes_transferred = req.responseText.length * 2; // One character is two bytes
+                   notification.call(objContext, 8, 0, '', req.status, bytes_transferred, 0);
+                 } else if (req.status === 403) { // Fix: These two are finished except for message
+                   notification.call(objContext, 10, 2, '', req.status, 0, 0);
+                 } else { // Errors
+                   notification.call(objContext, 9, 2, '', req.status, 0, 0);
+                 }
+                 break;
+               default:
+                 throw 'Unrecognized ready state for file_get_contents()';
+             }
+           };
+         }
+       }
+     }
+ 
+     if (http_stream) {
+       var sendHeaders = http_options.header && http_options.header.split(/\r?\n/);
+       var userAgentSent = false;
+       for (i = 0; i < sendHeaders.length; i++) {
+         var sendHeader = sendHeaders[i];
+         var breakPos = sendHeader.search(/:\s*/);
+         var sendHeaderName = sendHeader.substring(0, breakPos);
+         req.setRequestHeader(sendHeaderName, sendHeader.substring(breakPos + 1));
+         if (sendHeaderName === 'User-Agent') {
+           userAgentSent = true;
+         }
+       }
+       if (!userAgentSent) {
+         var user_agent = http_options.user_agent || (ini.user_agent && ini.user_agent.local_value);
+         if (user_agent) {
+           req.setRequestHeader('User-Agent', user_agent);
+         }
+       }
+       content = http_options.content || null;
+       /*
+       // Presently unimplemented HTTP context options
+       var request_fulluri = http_options.request_fulluri || false; // When set to TRUE, the entire URI will be used when constructing the request. (i.e. GET http://www.example.com/path/to/file.html HTTP/1.0). While this is a non-standard request format, some proxy servers require it.
+       var max_redirects = http_options.max_redirects || 20; // The max number of redirects to follow. Value 1 or less means that no redirects are followed.
+       var protocol_version = http_options.protocol_version || 1.0; // HTTP protocol version
+       var timeout = http_options.timeout || (ini.default_socket_timeout && ini.default_socket_timeout.local_value); // Read timeout in seconds, specified by a float
+       var ignore_errors = http_options.ignore_errors || false; // Fetch the content even on failure status codes.
+       */
+     }
+ 
+     if (flagNames & OPTS.FILE_TEXT) { // Overrides how encoding is treated (regardless of what is returned from the server)
+       var content_type = 'text/html';
+       if (http_options && http_options['phpjs.override']) { // Fix: Could allow for non-HTTP as well
+         content_type = http_options['phpjs.override']; // We use this, e.g., in gettext-related functions if character set
+         //   overridden earlier by bind_textdomain_codeset()
+       } else {
+         var encoding = (ini['unicode.stream_encoding'] && ini['unicode.stream_encoding'].local_value) ||
+           'UTF-8';
+         if (http_options && http_options.header && (/^content-type:/im)
+           .test(http_options.header)) { // We'll assume a content-type expects its own specified encoding if present
+           content_type = http_options.header.match(/^content-type:\s*(.*)$/im)[1]; // We let any header encoding stand
+         }
+         if (!(/;\s*charset=/)
+           .test(content_type)) { // If no encoding
+           content_type += '; charset=' + encoding;
+         }
+       }
+       req.overrideMimeType(content_type);
+     }
+     // Default is FILE_BINARY, but for binary, we apparently deviate from PHP in requiring the flag, since many if not
+     //     most people will also want a way to have it be auto-converted into native JavaScript text instead
+     else if (flagNames & OPTS.FILE_BINARY) { // Trick at https://developer.mozilla.org/En/Using_XMLHttpRequest to get binary
+       req.overrideMimeType('text/plain; charset=x-user-defined');
+       // Getting an individual byte then requires:
+       // responseText.charCodeAt(x) & 0xFF; // throw away high-order byte (f7) where x is 0 to responseText.length-1 (see notes in our substr())
+     }
+ 
+     try {
+       if (http_options && http_options['phpjs.sendAsBinary']) { // For content sent in a POST or PUT request (use with file_put_contents()?)
+         req.sendAsBinary(content); // In Firefox, only available FF3+
+       } else {
+         req.send(content);
+       }
+     } catch (e) {
+       // catches exception reported in issue #66
+       return false;
+     }
+ 
+     tmp = req.getAllResponseHeaders();
+     if (tmp) {
+       tmp = tmp.split('\n');
+       for (k = 0; k < tmp.length; k++) {
+         if (func(tmp[k])) {
+           newTmp.push(tmp[k]);
+         }
+       }
+       tmp = newTmp;
+       for (i = 0; i < tmp.length; i++) {
+         headers[i] = tmp[i];
+       }
+       this.$http_response_header = headers; // see http://php.net/manual/en/reserved.variables.httpresponseheader.php
+     }
+ 
+     if (offset || maxLen) {
+       if (maxLen) {
+         return req.responseText.substr(offset || 0, maxLen);
+       }
+       return req.responseText.substr(offset);
+     }
+     return req.responseText;
+   }
+   return false;
+ }
+  </script>
+  <!-- adsense page_level_ads mobile-->
+  <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  </script>
+  <script>
+   (adsbygoogle = window.adsbygoogle || []).push({
+     google_ad_client: "ca-pub-6292237303049595",
+     enable_page_level_ads: true
+   });
+  </script>
+  <script>
+   // facebook
+ window.fbAsyncInit = function() {
+ FB.init({
+ appId      : '901109329899346',
+ xfbml      : true,
+ version    : 'v2.2'
+ });
+ };
+ (function(d, s, id){
+ var js, fjs = d.getElementsByTagName(s)[0];
+ if (d.getElementById(id)) {return;}
+ js = d.createElement(s); js.id = id;
+ js.src = "//connect.facebook.net/en_US/sdk.js";
+ fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <body>
+   <!-- ///////////////////
+ /////// PUBS ///////////
+ //////////////////////-->
+   <div id="fb-root">
+   </div>
+   <!-- BEGIN Hi-Media Media AdTag, cyclismactu.net 1x1 - v1.0 -->
+   <div class="hmads_1x1" style="height:0px;">
+    <script type="text/javascript">
+     var adlSite='cyclismactu.net';
+         var adlZone='habillage';
+         var adlKv='';
+         var adlPro=window.location.protocol=='https:'?'https:':'http:';
+         document.write('<'+'sc'+'ript type="text/javascript" src="'+adlPro+'//js.himediads.com/js?lang=fr&amp;s='+adlSite+'&amp;z='+adlZone+'&amp;d='+Math.floor(Math.random()*10000000000)+'"><\/'+'sc'+'ript>');
+    </script>
+    <script type="text/javascript">
+     if (typeof getAdLinkAdTag=='function') getAdLinkAdTag( '1x1' );
+    </script>
+   </div>
+   <!-- END Hi-Media Media AdTag, cyclismactu.net 1x1 - v1.0 -->
+   <!-- ///////////////////
+ /////// SITE ///////////
+ //////////////////////-->
+   <div id="page-outer-wrap">
+    <div id="page-inner-wrap">
+     <div class="container">
+      <div id="bs-example-navbar-collapse-1" style="float:left;">
+      </div>
+      <!-- Adikteev Mobile -->
+      <div id="akv-overlay">
+      </div>
+      <script type="text/javascript">
+       (function(){
+ 	p=function(e,t){
+ 	t=t||{};var n=document.createElement('script');
+ 	var r='https:'==window.location.protocol?'https://':'http://';
+ 	n.setAttribute('data-cfasync',false);
+ 	n.src=r+'cdn.adikteev.com/lib/v3/aksdk.moment?t='+((new Date).getTime()/1e3/3600).toFixed();
+ 	n.type='text/javascript';n.async='true';
+ 	n.onload=n.onreadystatechange=function(){
+ 	var n=this.readyState;if(n&&n!='complete'&&n!='loaded')return;
+ 	try{top.AKSdk.init(e,t);top.AKSdk.call_action('default_read_article_ml_app' ); }catch(r){}
+ 	};
+ 	try{ var i=top.document.getElementsByTagName('script')[0];i.parentNode.insertBefore(n,i); }catch(e){};
+ 	};
+ 	p({"mobile":"wr0I06DTMFYtY322yAxlYSvn_AEL-8n1GPn9SMMjIN4="},{});
+ 	})()
+      </script>
+      <header class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+       <div class="col-xs-0 col-sm-0 col-md-12 col-lg-12" style="clear:both;float:left;margin-top:4px">
+        <form method="post" style="float:left;display:inline-block;margin-left:20px;">
+         <input name="login" placeholder="Identifiant" style="width:75px;" type="text"/>
+         <input name="password" placeholder="Mot de passe" style="width:75px;" type="password"/>
+         <input type="submit" value="&gt;"/>
+         <br/>
+         <small>
+          <small>
+           <a href="inscription.html">
+            Créer mon compte
+           </a>
+          </small>
+         </small>
+        </form>
+        <form action="recherche-article.html" method="post" style="float:left;display:inline-block;margin-left:250px;">
+         <input name="recherche" placeholder="Rechercher un article..." style="width:200px;" type="text"/>
+         <input style="color:#828282;" type="submit" value="&gt;"/>
+        </form>
+        <a href="http://www.cyclismactu.net/rss_cyclismactu.xml" target="_blank" title="Flux RSS">
+         <div style="float:right;margin-left:2px;height:20px;width:20px;background:url(images/icons.jpg) -4px -4px;background-repeat:no-repeat;">
+         </div>
+        </a>
+        <a href="https://www.facebook.com/cyclismactu/" target="_blank" title="Facebook">
+         <div style="float:right;margin-left:2px;height:20px;width:20px;background:url(images/icons.jpg) -29px -4px;background-repeat:no-repeat;">
+         </div>
+        </a>
+        <a href="https://twitter.com/cyclismactu" target="_blank" title="Twitter">
+         <div style="float:right;margin-left:2px;height:20px;width:20px;background:url(images/icons.jpg) -54px -4px;background-repeat:no-repeat;">
+         </div>
+        </a>
+       </div>
+       <div class="col-xs-0 col-sm-0 col-md-4 col-lg-4" style="float:left;text-align:left;padding:15px;">
+        <!--<a href="CA-PREZ.pdf" target="_blank"><img src="/pubs/234x60/234x60_vous_ici.jpg" width="234" height="60"></a>-->
+        <!--<a href="http://fr.giro.com/eu_en/" target="_blank"><img src="/pubs/234x60/factor0.gif" width="234" height="60"></a>-->
+        <a href="http://www.challengevelo.com/game/" target="_blank">
+         <img height="60" src="/pubs/234x60/cv.jpg" width="234"/>
+        </a>
+       </div>
+       <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="padding:0px 5px;float:left;">
+        <div class="col-xs-10" style="float:left;">
+         <a href=".">
+          <img class="img-responsive" src="images/logo2017.png" style="display:inline;max-height:100px;"/>
+         </a>
+        </div>
+        <div class="col-xs-2" style="min-width:30px;float:right;">
+         <label class="toggle toggle-menu" for="main-nav-check" onclick="" title="Menu">
+          ≡
+         </label>
+        </div>
+       </div>
+       <div class="col-xs-0 col-sm-0 col-md-4 col-lg-4" style="float:right;text-align:right;padding:15px;">
+        <!--<a href="CA-PREZ.pdf" target="_blank"><img src="/pubs/234x60/234x60_vous_ici.jpg" width="234" height="60"></a>-->
+        <a href="http://www.cyclismactu.net/jeu/pronos-accueil/">
+         <img height="60" src="/pubs/234x60/pronos.jpg" width="234"/>
+        </a>
+        <!--<a href="http://fr.giro.com/eu_en/" target="_blank"><img src="/pubs/234x60/factor1.gif" width="234" height="60"></a>-->
+       </div>
+      </header>
+      <input id="main-nav-check" type="checkbox"/>
+      <div id="menu">
+       <label class="toggle" for="main-nav-check" onclick="" title="Close">
+        ×
+       </label>
+       <ul>
+        <li class="cat-black">
+         <a href=".">
+          <img src="images/home.png" style="margin-top:5px;" title="Accueil"/>
+         </a>
+         <!--
+ 			<label for="fof" class="toggle-sub" onclick="">&#9658;</label>
+ 	    	<input type="checkbox" id="fof" class="sub-nav-check"/>
+                 <ul id="fof-sub" class="sub-nav">
+ 		    <li class="sub-heading">Cyclism'Actu <label for="fof" class="toggle" onclick="" title="Back">&#9658;</label></li>
+ 		    <li><a href="#about">A propos</a></li>
+ 		    <li><a href="mailto:contact@swar-agency.com">Contact</a></li>
+ 		    <li><a href="#">Portfolio</a> <label for="fof-portfolio" class="toggle-sub" onclick="">&#9658;</label>
+ 			<input type="checkbox" id="fof-portfolio" class="sub-nav-check"/>
+ 	                <ul id="fof-portfolio-sub" class="sub-nav">
+ 			    <li class="sub-heading">Portfolio <label for="fof-portfolio" class="toggle" onclick="" title="Back">&#9658;</label></li>
+ 			    <li><a href="#">Graphics &amp; Artwork</a> <label for="fof-portfolio-graphics" class="toggle-sub" onclick="">&#9658;</label>
+ 				<input type="checkbox" id="fof-portfolio-graphics" class="sub-nav-check"/>	
+ 	                	<ul id="fof-portfolio-graphics-sub" class="sub-nav">
+ 				    <li class="sub-heading">Graphics &amp; Artwork <label for="fof-portfolio-graphics" class="toggle" onclick="" title="Back">&#9658;</label></li>
+ 				    <li><a href="#">Artwork</a></li>
+ 				</ul>
+ 			    </li>
+ 			    <li><a href="#">Website Design</a></li>
+ 			</ul>
+ 		    </li>
+ 			</ul>
+ 			-->
+        </li>
+        <li class="cat-green col-md-0 col-lg-0">
+         <a href="inscription.html">
+          Inscription
+         </a>
+        </li>
+        <li class="cat-red">
+         <a href="equipes.html">
+          Équipes
+         </a>
+        </li>
+        <li class="cat-blue">
+         <a href="calendrier.html">
+          Calendrier
+         </a>
+        </li>
+        <li class="cat-purple">
+         <a href="classements.html">
+          Classements
+         </a>
+        </li>
+        <li class="cat-green">
+         <a href="https://www.dailymotion.com/Cyclismactu" target="_blank">
+          Cyclism'Actu TV
+         </a>
+        </li>
+        <li class="cat-green col-md-0 col-lg-0">
+         <a href="recherche-article.html">
+          Recherche
+         </a>
+        </li>
+        <li class="cat-red">
+         <a href="/jeu/pronos-accueil/">
+          Pronos
+         </a>
+         <label class="toggle-sub" for="fast-pronos" onclick="">
+          ►
+         </label>
+         <input class="sub-nav-check" id="fast-pronos" type="checkbox"/>
+         <ul class="sub-nav" id="fast-pronos-sub">
+          <li class="sub-heading">
+           Pronos
+           <label class="toggle" for="fast-pronos" onclick="" title="Back">
+            ►
+           </label>
+          </li>
+          <li>
+           <a href="/jeu/pronos-calendrier/">
+            Calendrier
+           </a>
+          </li>
+          <li>
+           <a href="/jeu/pronos-classements/">
+            Classements
+           </a>
+          </li>
+          <li>
+           <a href="/jeu/pronos-reglement/">
+            Règlement
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="cat-blue">
+         <a href="">
+          Partenaires
+         </a>
+         <label class="toggle-sub" for="fast-apps" onclick="">
+          ►
+         </label>
+         <input class="sub-nav-check" id="fast-apps" type="checkbox"/>
+         <ul class="sub-nav" id="fast-apps-sub">
+          <li class="sub-heading">
+           Partenaires
+           <label class="toggle" for="fast-apps" onclick="" title="Back">
+            ►
+           </label>
+          </li>
+          <li>
+           <a href="http://www.tennisactu.net">
+            Tennis Actu
+           </a>
+          </li>
+          <!-- <li><a href="http://www.cyclisme-pch-futuroscope-86.com/">FDJ Nouvelle-Aquitaine Futuroscope</a></li>-->
+          <li>
+           <a href="http://www.challengevelo.com/game/">
+            ChallengeVelo.com | Le Jeu
+           </a>
+          </li>
+          <li>
+           <a href="http://www.velo-identity.net">
+            Velo-Identity.net | Le Jeu
+           </a>
+          </li>
+          <li>
+           <a href="http://www.velo-manager.net">
+            Velo-Manager.net | Le Jeu
+           </a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="header-pub" style="text-align:center;">
+       <!-- HABILLAGE LEADERBOARD -->
+       <div style="margin:5px 0px;max-height:90px;">
+        <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+        </script>
+        <ins class="adsbygoogle" data-ad-client="ca-pub-6292237303049595" data-ad-format="auto" data-ad-slot="2756597844" style="display:block">
+        </ins>
+        <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+       </div>
+      </div>
+      <div class="page col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
+       <div class="col-xs-12 col-sm-12 col-md-0 col-lg-0" id="mobileBreves" style="clear:both;float:center;">
+       </div>
+       <div class="main-left col-xs-12 col-sm-12 col-md-7 col-lg-9 ">
+        <div id="messageImp1529587613" style="background-color:#e5e5e5; padding:20px;margin-top:200px;margin-bottom:250px;display:none;">
+        </div>
+        <h2>
+         à la Une
+        </h2>
+        <span class="borderline">
+        </span>
+        <a href="news-route-bernard-hinault-des-propos-irresponsables-pour-sky-75455.html">
+         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="position:relative;background: url(http://www.cyclismactu.tv/photo/news/75455_hf.jpg) center; border:5px solid white; background-size:cover; height: 230px; font-weight:bold;">
+          <div style="float:left; clear:both; background:#51a3ff; font-weight:bold; font-size:11px; margin-top:15px; padding:4px; color:white;">
+           Route
+          </div>
+          <div class="caption" style="position:absolute; bottom:0; width:100%; padding:10px; font-size:14px; text-align:center; color:white;background-color: rgba(0, 0, 0, 0.5);">
+           21/06 - Bernard Hinault, des propos "irresponsables" pour Sky
+          </div>
+         </div>
+        </a>
+        <a href="news-chronique-bouhanni-froome-le-tour-l-analyse-mangeas-75438.html">
+         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="position:relative;background: url(http://www.cyclismactu.tv/photo/news/75438_74766_mangeas.jpg) center; border:5px solid white; background-size:cover; height: 230px; font-weight:bold;">
+          <div style="float:left; clear:both; background:#51a3ff; font-weight:bold; font-size:11px; margin-top:15px; padding:4px; color:white;">
+           Chronique
+          </div>
+          <div class="caption" style="position:absolute; bottom:0; width:100%; padding:10px; font-size:14px; text-align:center; color:white;background-color: rgba(0, 0, 0, 0.5);">
+           21/06 - Bouhanni, Froome, le Tour : l'analyse Mangeas !
+          </div>
+         </div>
+        </a>
+        <a href="news-route-hinault-chris-froome-le-peloton-doit-faire-greve-75437.html">
+         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="position:relative;background: url(http://www.cyclismactu.net/photo/news/75437_hinault1.png) center; border:5px solid white; background-size:cover; height: 230px; font-weight:bold;">
+          <div style="float:left; clear:both; background:#51a3ff; font-weight:bold; font-size:11px; margin-top:15px; padding:4px; color:white;">
+           Route
+          </div>
+          <div class="caption" style="position:absolute; bottom:0; width:100%; padding:10px; font-size:14px; text-align:center; color:white;background-color: rgba(0, 0, 0, 0.5);">
+           20/06 - Hinault : "Chris Froome ? Le peloton doit faire grève"
+          </div>
+         </div>
+        </a>
+        <a href="news-chronique-pinot-gaudu-froome-le-tour-guimard-decrypte-75305.html">
+         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6" style="position:relative;background: url(http://www.cyclismactu.tv/photo/news/75305_69733_66699_65966_64259_guimard2.jpg) center; border:5px solid white; background-size:cover; height: 230px; font-weight:bold;">
+          <div style="float:left; clear:both; background:#51a3ff; font-weight:bold; font-size:11px; margin-top:15px; padding:4px; color:white;">
+           Chronique
+          </div>
+          <div class="caption" style="position:absolute; bottom:0; width:100%; padding:10px; font-size:14px; text-align:center; color:white;background-color: rgba(0, 0, 0, 0.5);">
+           16/06 - Pinot, Gaudu, Froome, le Tour : Guimard décrypte
+          </div>
+         </div>
+        </a>
+        <!-- articles récents et populaire -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:5px;">
+         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border:5px solid transparent;">
+          <h2 style="color:#d4ca56;">
+           Récent
+          </h2>
+          <span class="borderline">
+          </span>
+          <a href="news-tour-de-france-lotto-soudal-autour-de-benoot-et-greipel-75459.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Lotto Soudal autour de Benoot et Greipel
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75459_745719744.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Après la LottoNL-Jumbo, l'AG2R et la Mitchelton-Scott, la Lotto-Soudal est la quatrième équipe à avoir révélé s...
+             <br/>
+             <br/>
+             <small>
+              21/06 15:13
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-caleb-ewan-devaste-par-sa-non-selection-75460.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Caleb Ewan "dévasté" par sa non-sélection
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75460_74924_74307_74183_72697_ewan.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Absent de la sélection pour le prochain Tour de France, Caleb Ewan (Mitchelton-Scott) a exprimé son immense déception sur son compte twitte...
+             <br/>
+             <br/>
+             <small>
+              21/06 14:50
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-championnats-d-italie-avec-nibali-et-viviani-aru-reserviste-75458.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Championnats d'Italie Avec Nibali et Viviani, Aru réserviste
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75458_75229_746128254.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             La course en ligne des championnats d'Italie sur route se tiendra le 30 juin prochain, ce sera l'occasion pour Fabio Aru (UAE-Emirates) de remettre en jeu ...
+             <br/>
+             <br/>
+             <small>
+              21/06 14:26
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-adam-yates-c-est-bon-d-etre-de-retour-75456.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Adam Yates : "C'est bon d'être de retour"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75456_adam_yates.png) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             La formation australienne Mitchelton-Scott a livré sa sélection de 8 coureurs qui représenteront ses couleurs sur le prochain Tour de Franc...
+             <br/>
+             <br/>
+             <small>
+              21/06 14:01
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-yvon-caer-barguil-est-dans-un-timing-ideal-75457.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Yvon Caër : "Barguil est dans un timing idéal"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75457_75119_731265656.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Actuellement en stage de dix jours à Isola 2000 pour se préparer au Tour de France, Warren Barguil (Fortunéo Samsic) a ét&amp;eacut...
+             <br/>
+             <br/>
+             <small>
+              21/06 13:37
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-paris-chauny-team-direct-energie-avec-boudat-et-petit-75451.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Paris-Chauny Team Direct Energie avec Boudat et Petit
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75451_dgiedaowsaecoxt.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Désormais classée en catégorie 1.1, la classique Paris-Chauny sera une des dernières courses où les sprinteurs pourront s'exp...
+             <br/>
+             <br/>
+             <small>
+              21/06 13:11
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-adriatica-ionica-race-2e-etape-sprinteurs-ou-audacieux-75453.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Adriatica Ionica Race 2e étape, sprinteurs ou audacieux ?
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75453_dgnbi_kx4aa9y_l.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Au lendemain du contre-la-montre par équipes inaugural remporté par la formation Quick-Step Floors et de la prise de pouvoir d'Elia Viviani, l'Adr...
+             <br/>
+             <br/>
+             <small>
+              21/06 12:47
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-mitchelton-scott-autour-de-yates-ewan-absent-75454.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Mitchelton-Scott autour de Yates, Ewan absent
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75454_747296877.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Initialement prévu pour participer à son premier Tour de France, Caleb Ewan (Mitchelton-SCOTT) ne fait pas partie de la sélection de son &amp;e...
+             <br/>
+             <br/>
+             <small>
+              21/06 12:22
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-le-mpcc-franchit-le-cap-des-200-coureurs-membres-75403.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route Le MPCC franchit le cap des 200 coureurs membres
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75403_mpcc1.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Lors d'une réunion du conseil d'administration du Mouvement Pour un Cyclisme Crédible (MPCC) ayant eu lieu le mardi 5 juin, il a été...
+             <br/>
+             <br/>
+             <small>
+              21/06 12:17
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-bernard-hinault-des-propos-irresponsables-pour-sky-75455.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route Bernard Hinault, des propos "irresponsables" pour Sky
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75455_hf.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Au lendemain de la sortie virulente de Bernard Hinault au sujet du dossier Christopher Froome, la formation Sky a répondu au Français par le biais...
+             <br/>
+             <br/>
+             <small>
+              21/06 12:04
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-savoie-mont-blanc-la-liste-des-engages-sur-l-epreuve-75452.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de Savoie Mont-Blanc La liste des engagés sur l'épreuve
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75452_75181_639254429.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Le Tour de Savoie Mont-Blanc (21-24 juin), remporté par Egan Bernal (Team Sky) l'an passé, s'élance pour sa 20e édition ce...
+             <br/>
+             <br/>
+             <small>
+              21/06 12:00
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-paris-chauny-samuel-dumoulin-leader-d-ag2r-la-mondiale-75450.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Paris-Chauny Samuel Dumoulin leader d'AG2R la Mondiale
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75450_paris-chauny-fr.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Si Paris-Chauny n'est pas une course extrêmement réputée dans le monde cycliste, elle n'en est pas moins une course ancienne (premièr...
+             <br/>
+             <br/>
+             <small>
+              21/06 11:34
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-la-bora-hansgrohe-avec-un-second-rouleur-75420.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France La Bora-Hansgrohe avec un second rouleur
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75420_746960505.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Premier des 8 coureurs de la formation Bora-Hansgrohe annoncés au départ du Tour de France, Maciej Bodnar éprouvera des difficultés ...
+             <br/>
+             <br/>
+             <small>
+              21/06 11:10
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-championnats-d-espagne-valverde-doublera-pas-landa-75449.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Championnats d'Espagne Valverde doublera, pas Landa
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75449_valverde.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             La fin du mois de juin approche et avec elle les divers championnats nationaux en Europe. Il s'agira pour certains de réaliser un ultime test a...
+             <br/>
+             <br/>
+             <small>
+              21/06 10:45
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-chronique-bouhanni-froome-le-tour-l-analyse-mangeas-75438.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Chronique Bouhanni, Froome, le Tour : l'analyse Mangeas !
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75438_74766_mangeas.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Le Tour de France 2018 approche à grands pas avec le Grand Départ prévu le 7 juillet prochain. Daniel Mangeas, ancien speaker de l'&amp;ea...
+             <br/>
+             <br/>
+             <small>
+              21/06 10:26
+             </small>
+            </p>
+           </div>
+          </a>
+         </div>
+         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border:5px solid transparent;">
+          <h2 style="color:#6f9ed3;">
+           Populaire
+          </h2>
+          <span class="borderline">
+          </span>
+          <a href="news-tour-de-france-cyril-gautier-il-faut-respecter-les-choix-75391.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Cyril Gautier : "Il faut respecter les choix"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75391_712836229.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             L'équipe AG2R La Mondiale se présentera sur le prochain Tour de France sans Cyril Gautier. Le coureur breton l'a annoncé à Ouest-Fra...
+             <br/>
+             <br/>
+             <small>
+              19/06 14:50
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-dopage-un-document-de-la-defense-de-froome-mis-en-doute-75390.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Dopage Un document de la défense de Froome mis en doute
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75390_743355988.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Des doutes ont été émis à propos d'un document que Chris Froome (Team Sky) utilise pour se défendre sur son contrôle an...
+             <br/>
+             <br/>
+             <small>
+              18/06 18:55
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-hinault-chris-froome-le-peloton-doit-faire-greve-75437.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route Hinault : "Chris Froome ? Le peloton doit faire grève"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75437_hinault1.png) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Quelques semaines après une sortie au sujet de Christopher Froome qui avait beaucoup fait parler, Bernard Hinault en a remis une couche. Le quintuple vai...
+             <br/>
+             <br/>
+             <small>
+              20/06 17:54
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-19-cyclistes-renverses-par-une-voiture-en-belgique-75394.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route 19 cyclistes renversés par une voiture en Belgique
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75394_e46bc064f8e92ac2c404b9871b2a4ef2-1529247119.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Une information judiciaire a été ouverte aujourd'hui après l'accident qui s'est produit dimanche aux alentours de 16h sur une course &amp;agrav...
+             <br/>
+             <br/>
+             <small>
+              18/06 19:52
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-media-cyclisme-bike-n-connect-et-le-concept-100-velo-73814.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Media Cyclisme Bike'n Connect et le concept 100% vélo
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/73814_photos_pub.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Bike’n connect, le concept 100% vélo : Venez découvrir la nouvelle interface web ainsi que la nouveau application mobile de Bike’...
+             <br/>
+             <br/>
+             <small>
+              19/06 13:29
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-frank-schleck-dans-le-cyclisme-dans-la-peau-74903.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route Fränk Schleck dans "Le Cyclisme dans la peau"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/74903_fschleck_@cyclismactu.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Après Tom Boonen, c'est au tour de Frank Schleck de sortir sa biographie. Le coureur parti à la retraite voici un an et demi a présent&amp;eacu...
+             <br/>
+             <br/>
+             <small>
+              19/06 19:25
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-championnats-de-france-clm-la-liste-des-engages-75426.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Championnats de France - CLM La liste des engagés
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75426_sto.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Qui succèdera à Pierre Latour au palmarès du contre-la-montre des Championnats de France ? Le coureur de la formation AG2R La Mondiale d&amp;ea...
+             <br/>
+             <br/>
+             <small>
+              20/06 14:35
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-chronique-bouhanni-froome-le-tour-l-analyse-mangeas-75438.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Chronique Bouhanni, Froome, le Tour : l'analyse Mangeas !
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75438_74766_mangeas.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Le Tour de France 2018 approche à grands pas avec le Grand Départ prévu le 7 juillet prochain. Daniel Mangeas, ancien speaker de l'&amp;ea...
+             <br/>
+             <br/>
+             <small>
+              21/06 10:26
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-joaquim-rodriguez-ironise-sur-sa-presence-75441.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Joaquim Rodriguez ironise sur sa présence !
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75441_purito2017.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Joaquim Rodriguez ne manque pas d'humour. Le grimpeur catalan, retraité depuis un an et demi, l'a une nouvelle fois prouvé en publiant un message ...
+             <br/>
+             <br/>
+             <small>
+              20/06 19:25
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-vincenzo-nibali-je-ne-suis-pas-inquiet-75276.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Vincenzo Nibali : "Je ne suis pas inquiet"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75276_dfqvenjwaaa4p9f_670.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             L'un des grands favoris de la 105ème édition du Tour de France vient d'entamer la phase finale de sa préparation pour le principal objectif...
+             <br/>
+             <br/>
+             <small>
+              19/06 17:55
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-la-selection-ag2r-avec-alexandre-geniez-75398.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France La sélection AG2R avec Alexandre Geniez !
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75398_geniez.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Fin du suspense pour l'équipe AG2R La Mondiale ! La formation dirigée par Vincent Lavenu a dévoilé ce mardi le nom des huit coureurs...
+             <br/>
+             <br/>
+             <small>
+              19/06 09:52
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-adrien-petit-pas-une-periode-hyper-simple-75389.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France Adrien Petit : "Pas une période hyper simple"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75389_714811671.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Alors que la formation Direct Energie n'a pas encore annoncé sa sélection pour le Tour de France, Adrien Petit est dans l'attente. Le Nordiste, qu...
+             <br/>
+             <br/>
+             <small>
+              18/06 17:03
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-route-van-avermaet-mon-avenir-sera-fixe-avant-le-tour-75408.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Route Van Avermaet : "Mon avenir sera fixé avant le Tour"
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75408_749476735.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Greg Van Avermaet (BMC) a affirmé auprès de nos confrères de Cyclingnews que son futur serait décidé avant le Tour ...
+             <br/>
+             <br/>
+             <small>
+              19/06 15:36
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-d-italie-le-giro-decale-d-une-semaine-en-2019-75337.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour d'Italie Le Giro décalé d'une semaine en 2019
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.net/photo/news/75337_sky_giro_2018_@giroditalia.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Vous rêvez d'assister à un doublé Giro-Tour la même année comme l'ont réalisé le Grand Eddy Merckx, le Blaireau B...
+             <br/>
+             <br/>
+             <small>
+              20/06 13:21
+             </small>
+            </p>
+           </div>
+          </a>
+          <a href="news-tour-de-france-la-bora-hansgrohe-avec-un-second-rouleur-75420.html" style="color:black;">
+           <div style="margin:0px 5px; padding:10px 5px;float:left;width:100%;font-size:12px;border-bottom:1px solid #e3e3e3;">
+            <b>
+             Tour de France La Bora-Hansgrohe avec un second rouleur
+            </b>
+            <br/>
+            <div style="margin:10px;background:url(http://www.cyclismactu.tv/photo/news/75420_746960505.jpg) center;background-size:cover;float:left;height:90px;width:120px;">
+            </div>
+            <p style="margin-top:15px;color:#5c5c5c;text-align:justify;">
+             Premier des 8 coureurs de la formation Bora-Hansgrohe annoncés au départ du Tour de France, Maciej Bodnar éprouvera des difficultés ...
+             <br/>
+             <br/>
+             <small>
+              21/06 11:10
+             </small>
+            </p>
+           </div>
+          </a>
+         </div>
+        </div>
+        <!-- jukebox dailymotion -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding:5px;">
+         <iframe align="middle" allowtransparency="TRUE" frameborder="0" id="dm_jukebox_iframe" marginheight="0" marginwidth="0" src="http://www.dailymotion.com/widget/jukebox?list[]=%2Fplaylist%2Fx2aycs_Cyclismactu_cyclismactu-videos%2F1&amp;skin=default&amp;autoplay=0&amp;automute=0" style="overflow:hidden; margin:0; padding:0; width: 100%; height: 442px;" width="100%">
+         </iframe>
+        </div>
+        <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+        </script>
+        <ins class="adsbygoogle" data-ad-client="ca-pub-2908504529538871" data-ad-format="auto" data-ad-slot="9725935545" style="display:block">
+        </ins>
+        <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+       </div>
+       <div class="main-right col-xs-12 col-sm-12 col-md-5 col-lg-3">
+        <h2>
+         Brèves
+        </h2>
+        <span class="borderline">
+        </span>
+        <div class="col-xs-0 col-sm-0 col-md-12 col-lg-12" id="breves" style="border-left:3px solid transparent;">
+         ﻿
+         <a href="news-tour-de-france-lotto-soudal-autour-de-benoot-et-greipel-75459.html" style="color:#E20F22;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Lotto Soudal autour de Benoot et Greipel">
+          <b>
+           <span style="color: #bbb;">
+            15:13
+           </span>
+           Tour de France
+          </b>
+          Lotto Soudal autour de Benoot et Greipel
+         </a>
+         <br/>
+         <a href="news-tour-de-france-caleb-ewan-devaste-par-sa-non-selection-75460.html" style="color:#28AD09;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Caleb Ewan 'dévasté' par sa non-sélection">
+          <b>
+           <span style="color: #bbb;">
+            14:50
+           </span>
+           Tour de France
+          </b>
+          Caleb Ewan "dévasté" par sa non-sélection
+         </a>
+         <br/>
+         <a href="news-championnats-d-italie-avec-nibali-et-viviani-aru-reserviste-75458.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Avec Nibali et Viviani, Aru réserviste">
+          <b>
+           <span style="color: #bbb;">
+            14:26
+           </span>
+           Championnats d'Italie
+          </b>
+          Avec Nibali et Viviani, Aru réserviste
+         </a>
+         <br/>
+         <a href="news-tour-de-france-adam-yates-c-est-bon-d-etre-de-retour-75456.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Adam Yates : 'C'est bon d'être de retour'">
+          <b>
+           <span style="color: #bbb;">
+            14:01
+           </span>
+           Tour de France
+          </b>
+          Adam Yates : "C'est bon d'être de retour"
+         </a>
+         <br/>
+         <a href="news-tour-de-france-yvon-caer-barguil-est-dans-un-timing-ideal-75457.html" style="color:#28AD09;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Yvon Caër : 'Barguil est dans un timing idéal'">
+          <b>
+           <span style="color: #bbb;">
+            13:37
+           </span>
+           Tour de France
+          </b>
+          Yvon Caër : "Barguil est dans un timing idéal"
+         </a>
+         <br/>
+         <a href="news-paris-chauny-team-direct-energie-avec-boudat-et-petit-75451.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Team Direct Energie avec Boudat et Petit">
+          <b>
+           <span style="color: #bbb;">
+            13:11
+           </span>
+           Paris-Chauny
+          </b>
+          Team Direct Energie avec Boudat et Petit
+         </a>
+         <br/>
+         <a href="news-adriatica-ionica-race-2e-etape-sprinteurs-ou-audacieux-75453.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="2e étape, sprinteurs ou audacieux ? ">
+          <b>
+           <span style="color: #bbb;">
+            12:47
+           </span>
+           Adriatica Ionica Race
+          </b>
+          2e étape, sprinteurs ou audacieux ?
+         </a>
+         <br/>
+         <a href="news-tour-de-france-mitchelton-scott-autour-de-yates-ewan-absent-75454.html" style="color:#E20F22;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Mitchelton-Scott autour de Yates, Ewan absent">
+          <b>
+           <span style="color: #bbb;">
+            12:22
+           </span>
+           Tour de France
+          </b>
+          Mitchelton-Scott autour de Yates, Ewan absent
+         </a>
+         <br/>
+         <a href="news-route-le-mpcc-franchit-le-cap-des-200-coureurs-membres-75403.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Le MPCC franchit le cap des 200 coureurs membres">
+          <b>
+           <span style="color: #bbb;">
+            12:17
+           </span>
+           Route
+          </b>
+          Le MPCC franchit le cap des 200 coureurs membres
+         </a>
+         <br/>
+         <a href="news-route-bernard-hinault-des-propos-irresponsables-pour-sky-75455.html" style="color:#E20F22;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Bernard Hinault, des propos 'irresponsables' pour Sky">
+          <b>
+           <span style="color: #bbb;">
+            12:04
+           </span>
+           Route
+          </b>
+          Bernard Hinault, des propos "irresponsables" pour Sky
+         </a>
+         <br/>
+         <a href="news-tour-de-savoie-mont-blanc-la-liste-des-engages-sur-l-epreuve-75452.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="La liste des engagés sur l'épreuve">
+          <b>
+           <span style="color: #bbb;">
+            12:00
+           </span>
+           Tour de Savoie Mont-Blanc
+          </b>
+          La liste des engagés sur l'épreuve
+         </a>
+         <br/>
+         <a href="news-paris-chauny-samuel-dumoulin-leader-d-ag2r-la-mondiale-75450.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Samuel Dumoulin leader d'AG2R la Mondiale">
+          <b>
+           <span style="color: #bbb;">
+            11:34
+           </span>
+           Paris-Chauny
+          </b>
+          Samuel Dumoulin leader d'AG2R la Mondiale
+         </a>
+         <br/>
+         <a href="news-tour-de-france-la-bora-hansgrohe-avec-un-second-rouleur-75420.html" style="color:#28AD09;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="La Bora-Hansgrohe avec un second rouleur">
+          <b>
+           <span style="color: #bbb;">
+            11:10
+           </span>
+           Tour de France
+          </b>
+          La Bora-Hansgrohe avec un second rouleur
+         </a>
+         <br/>
+         <a href="news-championnats-d-espagne-valverde-doublera-pas-landa-75449.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Valverde doublera, pas Landa">
+          <b>
+           <span style="color: #bbb;">
+            10:45
+           </span>
+           Championnats d'Espagne
+          </b>
+          Valverde doublera, pas Landa
+         </a>
+         <br/>
+         <a href="news-chronique-bouhanni-froome-le-tour-l-analyse-mangeas-75438.html" style="color:#E20F22;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Bouhanni, Froome, le Tour : l'analyse Mangeas !">
+          <b>
+           <span style="color: #bbb;">
+            10:26
+           </span>
+           Chronique
+          </b>
+          Bouhanni, Froome, le Tour : l'analyse Mangeas !
+         </a>
+         <br/>
+         <a href="news-chpt-d-ukraine-clm-andriy-grivko-remporte-son-6e-titre-75447.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Andriy Grivko remporte son 6e titre">
+          <b>
+           <span style="color: #bbb;">
+            10:20
+           </span>
+           Chpt d'Ukraine - CLM
+          </b>
+          Andriy Grivko remporte son 6e titre
+         </a>
+         <br/>
+         <a href="news-tour-de-france-pichon-le-tour-un-petit-reve-d-enfant-75448.html" style="color:#222;font-family: 'Roboto', sans-serif;font-size:11px;text-decoration:none;" title="Pichon : 'Le Tour ? Un petit rêve d'enfant'">
+          <b>
+           <span style="color: #bbb;">
+            09:55
+           </span>
+           Tour de France
+          </b>
+          Pichon : "Le Tour ? Un petit rêve d'enfant"
+         </a>
+         <br/>
+         <div style="float:left; width:100%;">
+          <img onclick="envoieRequete('inc-breves.php?start=17','breves');" src="images/down.gif" title="Plus ancien"/>
+         </div>
+        </div>
+        <script type="text/javascript">
+         document.getElementById('mobileBreves').innerHTML=document.getElementById('breves').innerHTML;
+        </script>
+        <div style="text-align:center;margin-top:15px;">
+         <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+         </script>
+         <!-- DroiteFixe -->
+         <ins class="adsbygoogle" data-ad-client="ca-pub-6323590091557071" data-ad-slot="3303761462" style="display:inline-block;width:300px;height:250px">
+         </ins>
+         <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+         </script>
+        </div>
+        <h2>
+         Transferts
+        </h2>
+        <span class="borderline">
+        </span>
+        <div style="text-align:center;">
+         <a href="transferts-2017-2018.html">
+          <div style="margin: 0 auto; background-image: url(images/transferts.jpg); background-size:cover; height: 90px; width: 100%; max-width:300px; font-weight:bold;">
+           <div style="float:left; clear:both; background:#51a3ff; font-weight:bold; font-size:11px; margin-top:35px; padding:4px; color:white;">
+            TRANSFERTS
+           </div>
+           <div style="float:left; width:100%; padding:4px; font-size:22px; text-align:center; color:white;background-color: rgba(0, 0, 0, 0.4);">
+            2017 - 2018
+           </div>
+          </div>
+         </a>
+        </div>
+        <br/>
+        <div style="text-align:center;">
+         <!--JavaScript Tag // DailyFreshmedia // Website: Cyclisme Actu // CyclismeActu_300x60_RG_ATF (6481150) -->
+         <script language="javascript">
+          <!--
+ document.write('<scr'+'ipt language="javascript1.1" src="https://adserver.adtech.de/addyn/3.0/1502/6481150/0/529/ADTECH;loc=100;target=_blank;grp=[group];misc='+new Date().getTime()+'"></scri'+'pt>');
+ //-->
+         </script>
+         <noscript>
+          <a href="https://adserver.adtech.de/adlink/3.0/1502/6481150/0/529/ADTECH;loc=300;grp=[group]" target="_blank">
+           <img border="0" height="600" src="https://adserver.adtech.de/adserv/3.0/1502/6481150/0/529/ADTECH;loc=300;grp=[group]" width="300"/>
+          </a>
+         </noscript>
+         <!-- End of JavaScript Tag -->
+        </div>
+        <!-- dernier sondage-->
+        <h2>
+         Sondage
+        </h2>
+        <span class="borderline">
+        </span>
+        <div>
+         <div style="font-size:1.8em;color:#222;margin-left:15px;">
+          Pensez-vous, comme Cyrille Guimard, que David Gaudu n'est pas prêt pour le Tour de France ?
+         </div>
+         <br/>
+         <form action="sondage.html" method="post">
+          <input id="rep0" name="reponse" style="margin-top:5px;margin-left:35px;" type="radio" value="1"/>
+          <label for="rep0" style="color:#bbb;">
+           OUI
+          </label>
+          <br/>
+          <input id="rep1" name="reponse" style="margin-top:5px;margin-left:35px;" type="radio" value="2"/>
+          <label for="rep1" style="color:#bbb;">
+           NON
+          </label>
+          <br/>
+          <input id="rep2" name="reponse" style="margin-top:5px;margin-left:35px;" type="radio" value="3"/>
+          <label for="rep2" style="color:#bbb;">
+           SANS AVIS
+          </label>
+          <br/>
+          <br/>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="text-align:center;">
+           <a href="sondage.html" style="color:#222;">
+            Résultats
+           </a>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="text-align:center;">
+           <input name="sondage" type="hidden" value="392"/>
+           <input name="submit" style="color:black;" type="submit" value="Voter"/>
+          </div>
+         </form>
+        </div>
+        <br/>
+        <br/>
+        <!-- derniers résultats-->
+        <!-- PUBS 300x125 -->
+        <h2>
+         Partenaires
+        </h2>
+        <span class="borderline">
+        </span>
+        <div style="text-align:center;">
+         <iframe charset="UTF-8" scrolling="no" src="http://www.challengevelo.com/widget.php?communaute=CA" style="border:0;height:125px;width:300px;margin:10 0;" type="text/javascript">
+         </iframe>
+         <a href="http://www.cyclismactu.net/jeu/pronos-accueil/" target="_blank">
+          <img src="pubs/300x125/300x125_pronos2.jpg" style="margin-top:10px;width:300px;max-height:125px;"/>
+         </a>
+         <a href="http://www.tennisactu.net" target="_blank">
+          <img src="pubs/300x125/tennisfb.jpg" style="margin-top:10px;width:300px;max-height:125px;"/>
+         </a>
+         <br/>
+         <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+         </script>
+         <ins class="adsbygoogle" data-ad-client="ca-pub-6292237303049595" data-ad-format="auto" data-ad-slot="3619087524" style="display:block">
+         </ins>
+         <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+         </script>
+        </div>
+       </div>
+      </div>
+      <footer class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+       <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="text-align:center;">
+        <img class="img-responsive" src="images/logo2017.png" style="display:inline;"/>
+       </div>
+       <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4" id="about" name="about">
+        <b>
+         A propos de Cyclism'Actu
+        </b>
+        <br/>
+        Cyclism'Actu est édité par Swar-Agency
+        <br/>
+        1 Avenue de La Plante 5000 Namur
+        <br/>
+        SPRLS BE 0836.273.820
+       </div>
+       <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+        <b>
+         Informations supplémentaires
+        </b>
+        <br/>
+        <a href="mailto:contact@swar-agency">
+         Devenir partenaire
+        </a>
+        <br/>
+        <a href="mailto:contact@swar-agency">
+         Nous contacter
+        </a>
+        <br/>
+        <a href="//www.tennisactu.net" target="_blank">
+         Tennis Actu
+        </a>
+        <br/>
+        <a href="cgu.html">
+         Conditions Générales
+        </a>
+        -
+        <a href="cookies.html">
+         Données Personnelles
+        </a>
+       </div>
+      </footer>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="footer-under">
+       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="text-align:left;">
+        <b>
+         © Cyclism'Actu
+        </b>
+        Tous droits réservés ©2008-2018
+       </div>
+       <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="text-align:right;">
+        Produit par
+        <b>
+         <a href="http://www.swar-agency.com" target="_blank">
+          Swar Agency
+         </a>
+         .
+        </b>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Analytics -->
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+   ga('create', 'UA-6409795-1', 'auto');
+   ga('send', 'pageview');
+   </script>
+   <div id="akv-overlay">
+   </div>
+   <script type="text/javascript">
+    // footer desktop
+ (function(){
+ p=function(e,t){
+ t=t||{};var n=document.createElement('script');
+ var r='https:'==window.location.protocol?'https://':'http://';
+ n.setAttribute('data-cfasync',false);
+ n.src=r+'cdn.adikteev.com/lib/v3/aksdk.moment?t='+((new Date).getTime()/1e3/3600).toFixed();
+ n.type='text/javascript';n.async='true';
+ n.onload=n.onreadystatechange=function(){
+ var n=this.readyState;if(n&&n!='complete'&&n!='loaded')return;
+ try{top.AKSdk.init(e,t);top.AKSdk.call_action('default_footer' ); }catch(r){}
+ };
+ try{ var i=top.document.getElementsByTagName('script')[0];i.parentNode.insertBefore(n,i); }catch(e){};
+ };
+ p({"desktop":"5-FpARM1rmaUvCzLw_bKsQ=="},{});
+ })()
+   </script>
+   <div id="akv-overlay">
+   </div>
+   <script type="text/javascript">
+    // wallpaper
+ (function(){
+ p=function(e,t){
+ t=t||{};var n=document.createElement('script');
+ var r='https:'==window.location.protocol?'https://':'http://';
+ n.setAttribute('data-cfasync',false);
+ n.src=r+'cdn.adikteev.com/lib/v3/aksdk.moment?t='+((new Date).getTime()/1e3/3600).toFixed();
+ n.type='text/javascript';n.async='true';
+ n.onload=n.onreadystatechange=function(){
+ var n=this.readyState;if(n&&n!='complete'&&n!='loaded')return;
+ try{top.AKSdk.init(e,t);top.AKSdk.call_action('default_suit' ); }catch(r){}
+ };
+ try{ var i=top.document.getElementsByTagName('script')[0];i.parentNode.insertBefore(n,i); }catch(e){};
+ };
+ p({"desktop":"5-FpARM1rmaUvCzLw_bKsQ=="},{});
+ })()
+   </script>
+   <!-- Big Footer AD6media (passback de adikteev)
+ <script type="text/javascript">
+ /* <![CDATA[ */
+ (function(){var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.src="http://g08l5y9wc2.s.ad6media.fr/?d="+(new Date).getTime()+"&r=";try{a.src+=encodeURIComponent(top.document.referrer)}catch(c){a.src+=encodeURIComponent(document.referrer)}a.type="text/javascript";a.async=!0;b.parentNode.insertBefore(a,b)})();/* ]]> */
+ </script>
+  -->
+   <script src="adserver.js" type="text/javascript">
+   </script>
+   <script>
+    if (document.getElementById('ads') == null) {
+ document.getElementById('messageImp1529587613').style.display='block'; document.getElementById('messageImp1529587613').innerHTML='<b>Un bloqueur de publicité a été détecté !</b><br/>Nous souhaitons vous informer que les publicités représentent près de 90% des revenus de notre site, et permet de proposer un contenu gratuit, de répondre au frais d\'hébergement du site, domaines, et de contribuer à son développement.<br/>C\'est pourquoi nous vous serions reconnaissant de bien vouloir désactiver votre bloqueur de publicité sur notre site.<br/>Merci !<br/>';
+ }
+   </script>
+  </body>
+ </html>
