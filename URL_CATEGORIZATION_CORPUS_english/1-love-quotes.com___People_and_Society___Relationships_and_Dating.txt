@@ -1,0 +1,1649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html dir="ltr" lang="en-US" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Love Quotes at 1-Love-Quotes.com
+   </title>
+   <meta content="One of the largest love quote databases on the internet. Cute quotes, sweet love quotes, and more." name="description"/>
+   <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="dff2bfce8ef0c3175cdb8613-">
+   </script>
+   <script src="/static/common/js/hairball.1.min.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+   </script>
+   <script src="/static/common/js/h1.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+   </script>
+   <script src="/static/common/js/h2.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+   </script>
+   <link href="/static/LoveHome/css/blueprint/screen.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+   <link href="/static/LoveHome/css/blueprint/print.css" media="print" rel="stylesheet" type="text/css"/>
+   <!--[if IE]><link rel="stylesheet" href="/static/LoveHome/css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+   <link href="/static/LoveHome/css/blueprint/plugins/fancy-type/screen.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+   <link href="/static/js/ui_themes/average-gray/jquery-ui-1.8.5.custom.css" rel="stylesheet" type="text/css"/>
+   <link href="/static/css/social-buttons.css" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .container {
+ 	background-color:white;
+ 	padding:0 12px 12px 12px;
+ 	display:block;		
+ }
+ .no_focus_input {
+ 	color:gray;
+ }
+ .in_focus_input {
+ 	color:black;
+ }
+ #sidebar {
+         position: absolute;
+ 	left: -177px;
+ 	top:121px;
+ }
+ 
+ .pList ul { 
+ 	list-style:none;
+ 	margin-right:27px;
+ 	float:left;
+ }
+ .site_stats {
+     float:right;
+ }
+ .search_box {
+     width: 705px;
+ }
+   </style>
+   <link href="/static/common/css/main.0.4.css" rel="stylesheet" type="text/css"/>
+   <link href="/static/common/css/search.0.4.css" rel="stylesheet" type="text/css"/>
+   <link href="/static/css/main.0.1.css" rel="stylesheet" type="text/css"/>
+   <link href="http://fonts.googleapis.com/css?family=Asap" rel="stylesheet" type="text/css"/>
+   <script type="dff2bfce8ef0c3175cdb8613-">
+    $(document).ready(function() {
+ 
+         $( ".search_button" ).click(function() {
+             var keyword = $(this).parents('.autocomplete_search').children('.search_box').val();
+ 
+             if(keyword == "") {
+                 return false;
+             }
+ 
+             var q = $.parseQuery($(this).attr('data-meta'));
+             var document_type_name = q['document_type_name'];
+ 
+             url = "/" + document_type_name + "/keyword/" + keyword;
+             url = normalize_url(url);
+ 
+             if(!document_type_name) {
+                 console.log("Error: No document type specified.");
+                 return false;
+             }
+ 
+             window.location = (url);
+ 
+         });
+ 
+         $(".search_box").live("focus", function() {
+ 
+         //var search_box_title = $(".search_box").attr("title");
+ 
+         var q = $.parseQuery($(this).attr('data-meta'));
+         var document_type_name = q['document_type_name'] || 'quotes';
+         var document_type_name_singular = document_type_name.substr(0, document_type_name.length-1);
+ 
+     	$( this )
+ 			.bind( "keydown", function( event ) {
+                 q = $.parseQuery($(this).attr('data-meta'));
+                 document_type_name = q['document_type_name'] || 'quotes';
+                 document_type_name_singular = document_type_name.substr(0, document_type_name.length-1);
+ 				if ( event.keyCode === $.ui.keyCode.TAB &&
+ 						$( this ).data( "autocomplete" ).menu.active ) {
+ 					event.preventDefault();
+ 				}
+ 			})     
+         .autocomplete({
+ 			minLength: 2,
+ 			source: function( request, response ) {
+ 					$.getJSON( "/json/advanced_autocomplete?type=" + q['type'] + "&document_type_name=" + q['document_type_name'], {
+ 						//term: extractLast( request.term )
+                         term: function() {
+                             if(q['list'] == "true") {
+                                 return extractLast( request.term );
+                             }
+                             else {
+                                 return request.term;
+                             }
+                         }
+ 					}, response );
+ 				},
+ 			search: function() {
+ 				// custom minLength
+ 				var term = extractLast( this.value );
+ 				if ( term.length < 2 ) {
+ 					return false;
+ 				}
+ 			},
+ 			focus: function() {
+ 				return false;
+ 			},
+ 			select: function( event, ui ) {
+ 
+                 if(q['override_select'] != "" && q['override_select'] != null) {
+                     eval(q['override_select'] + "(event, ui, this, q['document_id'])");
+                     return false;
+                 }
+ 
+                 if(q['type'] == "topic") {
+                     var terms = split( this.value );
+                     terms.pop();
+                     terms.push( ui.item.name );
+                     terms.push( "" );
+                     this.value = terms.join( ", " );
+                     return false;
+                 }
+                 else if(q['type'] == "author") {
+                     
+                     if(q['list']) {
+                         var terms = split( this.value );
+                         terms.pop();
+                         terms.push( ui.item.name );
+                         terms.push( "" );
+                         this.value = terms.join( ", " );
+                     }
+                     else {
+                         this.value = ui.item.name;
+                     }
+                     return false;
+                 }
+                 var string = ui.item.name;
+                 var url = "";
+ 
+                 if(ui.item.type == "author") {
+                     url = "/" + document_type_name + "/author/" + ui.item.first_name + "-SPLIT-" + ui.item.last_name;
+                     string = ui.item.name;
+                 }
+                 else if(ui.item.type == "user") {
+                     url = "/" + document_type_name + "/author/" + ui.item.uid;
+                     string = ui.item.uid;
+                 }
+                 else if(ui.item.type == "document") {
+                     url = "/" + document_type_name_singular + "/" + ui.item.id;
+                     string = ui.item.title || ui.item.body;
+                 }
+                 else {
+                     url = "/" + document_type_name + "/" + ui.item.type + "/" + ui.item.name;
+                 }
+ 
+                 $(this).val( string );
+ 
+                 url = normalize_url(url);
+ 
+                 window.location = (url);
+ 
+                 return false;
+ 			}
+ 		})
+         .data( "autocomplete" )._renderItem = function( ul, item ) {
+             var description = "";
+             var movie_year = "";
+             var css_class = item.type;
+             var name = item.name || "";
+             var doc = item.title || item.body || "";
+             if(item.description != null && item.description != "") {
+                 description = '<br /><small><span style="color:gray;">' + item.description + "</span></small>";
+             }
+             if(item.type == "movie") {
+                 if(item.year != null && item.year != "0000") {
+                     movie_year = " <small>" + item.year + "</small>";
+                 }
+             }
+             else if(item.type == "author") {
+                 if(item.birth && item.birth != "0000-00-00") {
+                     name = name + " <small>" + item.birth + "</small>";
+                 }
+                 if(item.death && item.death != "0000-00-00") {
+                     name = name + " <small> - " + item.death + "</small>";
+                 }
+             }
+ 
+             var image = "";
+             
+             if(item.has_image == 1) {
+                 var image_folder = "authors";
+                 if(item.type == "user") {
+                     image_folder = "users";
+                 }
+                 image = '<img src="/static/images/' + image_folder +'/' + item.id + '-small.jpg" alt="" class="left" style="margin-right:8px;height:33px;" />'
+             }
+             
+             var doc_count = "";
+             //if(item.doc_count == 0) {
+                 //console.log("Skip - has no documents.");
+                 // do nothing
+                 //return;
+             //}
+             if(item.type != 'keyword' && item.doc_count != null && q['show_count'] != 'false') {
+                 doc_count =
+                     '<span style="color:gray;font-size:10px;"> - ' 
+                     + item.doc_count
+                     + ' Documents Found</span>';
+             }
+ 
+             if(item.no_results == 1) {
+                 return $( '<li></li>' )
+                     .data( "item.autocomplete", item )
+                     .append( "No Results Found" )
+                     .addClass(css_class + "_auto")
+                     .appendTo( ul );
+             }
+             else {
+                 return $( '<li></li>' )
+                     .data( "item.autocomplete", item )
+                     .append( 
+                         '<a>' 
+                         + image
+                         + name 
+                         + doc
+                         + movie_year 
+                         + description 
+                         + doc_count
+                         + "</a>" )
+                     .addClass(css_class + "_auto")
+                     .appendTo( ul );
+             }
+ 		};
+ 
+         function split( val ) {
+ 			return val.split( /,\s*/ );
+ 		}
+         function extractLast( term ) {
+ 			return split( term ).pop();
+ 		}
+ 
+ });
+ 	});
+ 
+ function normalize_url(url) {
+     url = url.replace(/-SPLIT-/g, "/");
+     return url.replace(/ /g, "+");
+ }
+   </script>
+  </head>
+  <body>
+   <div class="tabs_wrapper">
+    <div class="tabs">
+     <div class="left">
+      <ul>
+       <li class="selected">
+        <a href="/">
+         Quotes
+        </a>
+       </li>
+       <li>
+        <a href="/Love-Poems.html">
+         Poems
+        </a>
+       </li>
+      </ul>
+     </div>
+     <ul>
+      <li style="margin-left:100px">
+       <a href="/photos">
+        Picture Quotes
+       </a>
+      </li>
+     </ul>
+     <div class="right">
+      <ul>
+       <div id="login_dialog">
+       </div>
+       <li>
+        <a class="signup_button" href="/signup">
+         Sign Up
+        </a>
+       </li>
+       <li>
+        <a class="login_button" href="#">
+         Log In
+        </a>
+       </li>
+       <li class="nopad">
+        <a href="/contact" style="margin-right:0;">
+         <img alt="Contact" src="/static/OwlHome/images/menu/contact-icon.png" style="vertical-align:middle;"/>
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="header">
+    <div class="span-3 last">
+     <a href="/">
+      <img alt="1-Love-Quotes.com" src="/static/LoveHome/images/logo.2.1.png" style="padding-top:11px;"/>
+     </a>
+    </div>
+    <script type="dff2bfce8ef0c3175cdb8613-">
+     //JQuery Fader code
+ $(document).ready(function(){
+     setTimeout(function(){
+     // Slow can be any number of ms
+     $("div.search_wrapper").fadeIn('slow', function () {
+         // Do nothing
+         });
+     }, 100); // Fade in after 2000 ms (2 secs)
+ });
+    </script>
+    <div class="span-16 last">
+     <div class="search_wrapper" style="z-index:1001;display:none">
+      <div class="my_form autocomplete_search" style="margin-right:13px;">
+       <label for="search_box">
+        Start typing a quote, author, topic, movie, etc.
+       </label>
+       <input class="search_box" data-meta="&amp;document_type_name=quotes" id="search_box" style="border-right: 0; margin:9px; margin-right:0;" type="text" value=""/>
+       <div class="search_button" style="border-bottom: 0;font-size: 0;line-height: 0;margin-top: 0;padding: 0;position: relative;display: inline-block;text-shadow: 0;top:0;">
+        <input alt="Search Button" img="" src="/static/OwlHome/images/menu/magnifying-glass.jpg" style="margin-top:9px;float:left;" type="image"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="span-6 last">
+     <a class="top_100_button" href="/love_quotes_top_100.htm" style="float: right;margin-top: 14px;">
+      Top 100 Love Quotes
+     </a>
+    </div>
+    <style type="text/css">
+     /* 
+ 	LEVEL ONE
+ */
+ ul.dropdown                         { position: relative;z-index: 1; }
+ ul.dropdown li                      { font-weight: bold; float: left; zoom: 1; }
+ ul.dropdown a:hover		            {  }
+ ul.dropdown a:active                { color: #ffa500; }
+ ul.dropdown li a                    { display: block;
+ 	 								   }
+ ul.dropdown li:last-child a         { border-right: none; } /* Doesn't work in IE */
+ ul.dropdown li.hover,
+ ul.dropdown li:hover                { position: relative; }
+ ul.dropdown li.hover a              { color: black; }
+ 
+ 
+ /* 
+ 	LEVEL TWO
+ */
+ ul.dropdown ul 						{ width: 220px; visibility: hidden; position: absolute; top: 100%; left: -5px; }
+ ul.dropdown ul li 					{ font-weight: normal; background: #c3b7a3; color: #000; 
+ 									  float: none; margin-top: 0; }
+ 									  
+                                     /* IE 6 & 7 Needs Inline Block */
+ ul.dropdown ul li a					{ border-right: none; width: 100%; display: inline-block; } 
+ 
+ /* 
+ 	LEVEL THREE
+ */
+ ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ ul.dropdown li:hover > ul 			{ visibility: visible; }
+ .ui-autocomplete {
+     z-index:1;
+ }
+    </style>
+    <div class="span-25 clear last">
+     <div class="menu_arrow_up">
+     </div>
+     <ul class="menu clear dropdown">
+      <li class="first">
+       <a href="/quotes/category/Love" title="All Love Quotes">
+        All Love Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Top_10_Love_Quotes.htm" title="Top 10 Love Quotes">
+        Top 10 Love Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/quotes/category/Cute" title="Cute Quotes">
+        Cute Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/quotes/category/Break+Up" title="Break Up Love Quotes">
+        Break Up
+       </a>
+      </li>
+      <li>
+       <a href="/quotes/category/Love+Quotes+for+Him">
+        Love Quotes for Him
+       </a>
+      </li>
+      <li>
+       <a href="/userquotes">
+        <b>
+         User Quotes
+        </b>
+       </a>
+      </li>
+     </ul>
+    </div>
+    <hr class="space"/>
+    <div class="span-19">
+     <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+      <!--
+                 google_ad_client = "ca-pub-8224596240707812";
+                 /* Great Quotes */
+                 google_ad_slot = "5633693209";
+                 google_ad_width = 728;
+                 google_ad_height = 90;
+                 //-->
+     </script>
+     <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+     </script>
+    </div>
+    <div class="span-4 last">
+     <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" type="dff2bfce8ef0c3175cdb8613-">
+     </script>
+     <ins class="adsbygoogle" data-ad-client="ca-pub-4026447410222405" data-ad-slot="9212009777" style="display:inline-block;width:200px;height:90px">
+     </ins>
+     <script type="dff2bfce8ef0c3175cdb8613-">
+      (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+    </div>
+    <hr class="space"/>
+   </div>
+   <div class="container">
+    <div id="sidebar">
+     <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+      google_ad_client = "ca-pub-8224596240707812";
+                 /* Skyscraper Wide - Love */
+                 google_ad_slot = "1299905491";
+                 google_ad_width = 160;
+                 google_ad_height = 600;
+     </script>
+     <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+     </script>
+    </div>
+    <hr class="space"/>
+    <hr/>
+    <div class="span-15 colborder">
+     <style type="text/css">
+      li.no_bg a {
+             background-color:transparent; 
+         }
+     </style>
+     <div style="min-height:2515px;">
+      <div class="clear">
+       <h1 style="float:left;margin-right:20px;">
+        Love Quotes
+       </h1>
+       <div style="margin-top:6px;">
+        <div class="addthis_toolbox addthis_default_style ">
+         <a class="addthis_button_facebook_like" fb:like:layout="button_count">
+         </a>
+         <a class="addthis_button_tweet">
+         </a>
+         <a class="addthis_button_google_plusone" g:plusone:size="medium">
+         </a>
+         <a class="addthis_button_pinterest_pinit">
+         </a>
+        </div>
+        <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4fdb6c5520061ec7" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+        </script>
+        <a class="twitter-follow-button" data-show-count="false" href="https://twitter.com/1lovequotescom">
+         Follow @1lovequotescom
+        </a>
+        <script type="dff2bfce8ef0c3175cdb8613-">
+         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+        </script>
+       </div>
+      </div>
+      <br/>
+      <p class="clear">
+       Welcome to "
+       <b>
+        Love Quotes
+       </b>
+       " where we have thousands of Quotes &amp; Poems that speak only of
+       <b>
+        love
+       </b>
+       and
+       <b>
+        Quotes about Love
+       </b>
+       . Top 10 Love lists, Top 50 Lists and
+       <a href="/quotes/category/Famous+Love">
+        Famous Love Quotes
+       </a>
+       just for you!
+      </p>
+      <br/>
+      <hr/>
+      <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+       $(document).ready(function() {
+             $("#dialog").dialog({
+                 modal: true,
+                 autoOpen: false,
+                 close: function() {
+                     $("#dialog").html("");
+                 }
+             });
+             $(".subscribe").click(function(){
+                 $.ajax({
+                   url: "/rotatedocument/email/subscribe",
+                   success: function(data){
+                     $("#dialog").html(data);
+                     $("#dialog").dialog( "option", "title", 'Subscribe - Quote of the Day by Email' );
+                     $("#dialog").dialog( "option", "width", 550 );
+                     $("#dialog").dialog('open');
+                   }
+                 });
+             });
+         });
+      </script>
+      <div id="dialog">
+      </div>
+      <div class="module_wrapper span-15" style="background-color:#fff5f5;display:none;">
+       <div class="module_header red" style="margin-bottom:8px;font-size:20px;">
+        <img alt="Quote of the Day by Email" src="/static/OwlHome/images/menu/contact-icon.png" style="margin-right:9px;"/>
+        Quote of the Day by Email
+       </div>
+       <div class="module_body lustria_font" style="font-size: 17px;">
+        <div class="span-9 left" style="padding-left: 10px;">
+         Subscribe to the
+         <b>
+          Quote of the Day
+         </b>
+         and you'll be able to choose a category from our broad range of quotes, and be sent a popular quote in that category daily!
+        </div>
+        <div class="span-5 last right">
+         <a class="myButton subscribe" href="#null" style="float:right;font-size:18px; margin-top: 30px;margin-right: 30px;">
+          Subscribe Me!
+         </a>
+        </div>
+       </div>
+       <hr class="space"/>
+      </div>
+      <hr class="space"/>
+      <div class="pList">
+       <h2 class="alt">
+        Popular Love Quotes Topics
+       </h2>
+       <ul>
+        <li>
+         <a href="/quotes/category/Love">
+          All Love Quotes
+         </a>
+        </li>
+        <li>
+         <a href="/Top_Ten_Break_Up.htm">
+          Top 10 Break Up
+         </a>
+        </li>
+        <li>
+         <a href="/quotes/category/Cute+Love">
+          Cute Love
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/Top_10_Love_Quotes.htm">
+          Top 10 Love
+         </a>
+        </li>
+        <li>
+         <a href="/Top_50_Love_Quotes.html">
+          Top 50 Love
+         </a>
+        </li>
+        <li>
+         <a href="/love_quotes_top_100.htm" title="100 Best Love Quotes">
+          Top 100 Love
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/quotes/category/Sad+Love">
+          Sad Love
+         </a>
+        </li>
+        <li>
+         <a href="/Top_Ten_Sad_Love.htm">
+          Top 10 Sad Love
+         </a>
+        </li>
+        <li>
+         <a href="/Top_Ten_Cute_Love.html">
+          Top 10 Cute Love
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/quotes/category/Break+Up">
+          Break Up
+         </a>
+        </li>
+        <li>
+         <a href="/Top_10_Cute_Quotes.html">
+          Top 10 Cute
+         </a>
+        </li>
+        <li>
+         <a href="/quotes/Category/Cute">
+          Cute Quotes
+         </a>
+        </li>
+       </ul>
+      </div>
+      <hr/>
+      <div class="module_wrapper span-15 last">
+       <div class="module_header brown">
+        Picture Quotes
+        <a href="/quotes/filter/photos" style="color:white;">
+         (
+         <span style="text-decoration:underline;">
+          view all
+         </span>
+         )
+        </a>
+       </div>
+       <div class="module_body" style="margin-top:5px;">
+        <a href="/quotes/filter/photos">
+         <img alt="Kiss me and you will see stars; love me and I will give them to you. - Author Unknown" src="18/1893D7EA-67EC-11E1-ADA3-9D4B86F4E388.jpg"/>
+        </a>
+        <div style="float:right;margin-right:5px;">
+         <a href="#null" onclick="window.open( 'http://www.facebook.com/sharer.php?u=http://www.1-love-quotes.com/photo/1018349', 'FacebookShare', 'status = 1, height = 425, width = 625, resizable = 0' )" original-title="">
+          <img alt="Facebook Icon" src="/static/images/fb-icon.jpg" style="vertical-align: top; margin-right:3px;"/>
+          SHARE
+         </a>
+        </div>
+       </div>
+      </div>
+      <hr class="space"/>
+      <style type="text/css">
+       .love_topics ul {
+         margin-right: 55px;
+     }
+      </style>
+      <div class="pList love_topics">
+       <h2 class="alt" style="float:left;margin-right:30px;">
+        Popular Love Topics
+       </h2>
+       <div style="float:left;font-size:15px;padding-top:10px;">
+        <span style="color:#ef5f77;">
+         New!
+        </span>
+        <a href="/quotes/category/I+Love+You">
+         "I Love You" Quotes
+        </a>
+       </div>
+       <div class="clear">
+        <ul>
+         <li>
+          <a href="/quotes/category/Affection">
+           Affection
+          </a>
+         </li>
+         <li>
+          <a href="/Top_Anonymous_Love_Quotes.htm">
+           Anonymous Love
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Commitment">
+           Commitment
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/Category/dating">
+           Dating
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Desire">
+           Desire
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Famous+Love">
+           Famous Love
+          </a>
+         </li>
+         <li>
+          <a href="/Favorite_Love_Quotes.htm">
+           Favorite Love
+          </a>
+         </li>
+        </ul>
+        <ul>
+         <li>
+          <a href="/quotes/category/Flirting">
+           Flirting
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Friends+Or+Friendship">
+           Friendship
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Funny+Love">
+           Funny Love
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Heartbreak">
+           Heartbreak
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Husbands">
+           Husbands
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Inspirational">
+           Inspirational
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Jealousy">
+           Jealousy
+          </a>
+         </li>
+        </ul>
+        <ul>
+         <li>
+          <a href="/quotes/category/I+Love+You">
+           I Love You
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Kiss">
+           Kiss
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Kisses+And+Kissing">
+           Kissing
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Lies+And+Lying">
+           Lies
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Lovers">
+           Lovers
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Marriage">
+           Marriage
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Men">
+           Men
+          </a>
+         </li>
+        </ul>
+        <ul>
+         <li>
+          <a href="/quotes/category/Morality">
+           Morality
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Mothers">
+           Mothers
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Parents+And+Parenting">
+           Parents
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Passion">
+           Passion
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Pleasure">
+           Pleasure
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Romance">
+           Romance
+          </a>
+         </li>
+         <li>
+          <a href="/quotes/category/Teen+Love">
+           Teen Love
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <hr/>
+      <h3 class="alt" style="font-size:25px;color:#854e32;">
+       Love Quotes' Blog
+      </h3>
+      <h2>
+       A Girl and her Troubles
+      </h2>
+      <img alt="Alicia Haynes" src="http://www.1-love-quotes.com/static/managed_images/11/11AA9ADA-76D3-11E2-A86C-86F9D2894A9A.jpg" style="vertical-align:middle; float:left; margin-right:12px; width:250px"/>
+      <br/>
+      <div style="float:left;margin-right:2px;">
+       Posted
+       <i>
+        May 08, 2013
+       </i>
+       by
+       <b>
+        Alicia Haynes
+       </b>
+      </div>
+      <div style="float:left; margin-right:5px; margin-left:5px;">
+       <div class="favorite login_button doc_side_bar_element" style="background: transparent url(/static/images/favorite-gray.png) 0 -18px no-repeat;">
+        <a class="favorite_button login_and_action" href="#action=favorite&amp;id=1024159&amp;type=document&amp;data=favorite">
+         Fav
+        </a>
+       </div>
+      </div>
+      <div style="float:left;">
+       <div class="like doc_side_bar_element">
+        <a class="like_button" href="#action=like&amp;id=1024159&amp;type=document&amp;data=like&amp;increment=405">
+         405
+        </a>
+        <br/>
+        <span class="vote_count edit_likes edit" data-meta="1024159">
+         405
+        </span>
+       </div>
+      </div>
+      <div style="margin-top:10px; clear:both; float:left;">
+       Mother's Day this Sunday...
+       <br/>
+       <br/>
+       Louisa May Alcott, the beloved writer of Little Women, which was basically a model of her own life with her sisters and her mother, asked this question, "What do girls do who haven't any mothers to help them through their troubles?" This question is very plaguing, because when we look around us at the world, at the girls that we grow up with in school, the ones that we see growing up in the media spot light, and the women that we grow to love as close friends through out our lives. Well, it becomes clear to us that not every girl has been able to grow up with the
+       <a href="http://www.1-love-quotes.com/quotes/category/Love">
+        love
+       </a>
+       of a
+       <a href="http://www.1-love-quotes.com/quotes/category/Mothers">
+        mother
+       </a>
+       .
+       <br/>
+       <br/>
+       We see all of the ways that these types of situations can have on a girl. She might grow up to be unsure of herself. She might not receive all of the important life lessons that a mother can give her daughter. This might not be because of an abandonment, it might be from the passing of the mother at an early age, but no matter what the reason is for the absence of a mother in a little girl's life, it really can affect them and mold them through out the rest of their life.
+       <br/>
+       <br/>
+       We see the girls who have grown up with no mother to guide them in the gentle, and sometimes quite frank ways that a mother does. There are situations that come up in a girls life, especially a young teenager when it is just hard to talk about a man, your father, about it. These are things like your menstruation, the period of time that you are essentially, becoming a woman. It is an awkward, strange time filled with raging hormones and a nervous anxiety that goes along with it. A man can't put himself in a girls shoes, because he has not been in her shoes before. A woman though, she is well aware of all of the horribly awkward steps to becoming a woman.
+       <br/>
+       <br/>
+       There are the times when a girl is going to feel unsure of herself, she is going to need that boost in confidence that only a mother or a very close girl friend can give. There are things such as cosmetics, hair products, feminine products, and things that are just considered for girls, that a man will not get, they will not understand. There are so many troubles that a girl will live through in even just one day of her teenage life, so with no mothers influence to help her set things straight, and help her to stay positive, even through the most embarrassing moments in her life so far.
+       <br/>
+       <br/>
+       <a href="http://www.1-love-quotes.com/quotes/author/Louisa+May/Alcott">
+        Louisa May Alcott
+       </a>
+       grew up with a bunch of sisters and a devoted mother, so although she probably had enough of her own embarrassing moments in life she did have a big support group. There are a lot of girls who will never be able to experience this first hand, but they can always through her books about the March sisters
+       <br/>
+       <a href="/article/1024159">
+        Read More
+       </a>
+       <br/>
+       <br/>
+      </div>
+      <a href="/articles/sort/recent" style="clear:both; float:left;">
+       View More Recent Posts
+      </a>
+      <hr/>
+      <div style="clear:both;">
+       <h3>
+        "Love Quotes" Articles
+       </h3>
+       <ul>
+        <li>
+         <a href="/article/1024159">
+          A Girl and her Troubles
+         </a>
+        </li>
+        <li>
+         <a href="/article/1024153">
+          Guys Like it Too...
+         </a>
+        </li>
+        <li>
+         <a href="/article/1024074">
+          The gift of love for Valentine's
+         </a>
+        </li>
+        <li>
+         <a href="/article/1024048">
+          My one true love
+         </a>
+        </li>
+        <li>
+         <a href="/article/1024046">
+          Love Quotes that Romance
+         </a>
+        </li>
+        <li>
+         <a href="/article/1023944">
+          Love, Actually
+         </a>
+        </li>
+        <li>
+         <a href="/article/1023636">
+          Husband Quotes: 10 Years of 'Blissful Love and Happiness' (BLAH)
+         </a>
+        </li>
+        <li>
+         <a href="/article/1020067">
+          Who said these Love Quotes?
+         </a>
+        </li>
+       </ul>
+      </div>
+      <hr class="space"/>
+      <hr/>
+      <div class="span-5 colborder">
+       <p>
+        <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+         <!--
+ google_ad_client = "ca-pub-8224596240707812";
+ /* heading_ad_unit */
+ google_ad_slot = "2540295104";
+ google_ad_width = 200;
+ google_ad_height = 90;
+ //-->
+        </script>
+        <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+        </script>
+       </p>
+      </div>
+      <div class="span-5 colborder">
+       <p>
+        <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+         <!--
+ google_ad_client = "ca-pub-8224596240707812";
+ /* heading_ad_unit_2 */
+ google_ad_slot = "9172340817";
+ google_ad_width = 200;
+ google_ad_height = 90;
+ //-->
+        </script>
+        <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+        </script>
+       </p>
+      </div>
+      <div class="span-3 last">
+       <h6>
+        Recommended
+       </h6>
+       <p style="font-size:11px;">
+        <a href="/quotes/category/Wedding">
+         Wedding Quotes
+        </a>
+        <br/>
+        <a href="/Great_Wedding_Toasts.htm">
+         Wedding Toasts
+        </a>
+        <br/>
+        <a href="/Famous_Wedding_Toasts.htm">
+         Wedding Toasts
+        </a>
+        <br/>
+        <a href="/Irish_Wedding_Toasts.htm">
+         Irish Wedding Toasts
+        </a>
+        <br/>
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="span-8 last">
+     <p>
+      <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+       <!--
+                                                 google_ad_client = "ca-pub-8224596240707812";
+                                                 /* Widget Ad */
+                                                 google_ad_slot = "9231465688";
+                                                 google_ad_width = 300;
+                                                 google_ad_height = 250;
+                                                 //-->
+      </script>
+      <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+      </script>
+     </p>
+    </div>
+    <div>
+     <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+      <!--
+ width = "295";
+ height = "220";
+ format = "formatted";
+ resolution = "wide";
+ site = "1LQ";
+ //-->
+     </script>
+     <script src="http://www.1-love-quotes.com/static/js/quote_widget.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+     </script>
+     <a href="/QuoteoftheDay/widget/formatted">
+      <img alt="Add this widget to your website!" src="/static/LoveHome/images/widget/add_button.png"/>
+     </a>
+    </div>
+    <div class="span-8 last">
+    </div>
+    <br/>
+    <div class="span-8 last" style="margin-top:10px">
+     <p>
+      <script src="http://connect.facebook.net/en_US/all.js#xfbml=1" type="dff2bfce8ef0c3175cdb8613-">
+      </script>
+      <fb:like-box header="false" height="180" href="http://www.facebook.com/pages/1-love-quotescom/192960397412487" show_faces="true" stream="false" width="300">
+      </fb:like-box>
+     </p>
+     <hr class="space"/>
+    </div>
+    <div class="span-8 last">
+     <ul>
+      <h2 class="alt">
+       Top Love Lists
+      </h2>
+      <li>
+       <a href="/love_quotes_top_100.htm" title="100 Best Love Quotes">
+        Top 100 Love Quotes of all Time
+       </a>
+      </li>
+      <li>
+       <a href="/Top_10_Love_Quotes.htm">
+        Top 10 Love Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Top_Ten_Break_Up.htm">
+        Top 10 Break Up Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Top_Ten_Sad_Love.htm">
+        Top 10 Sad Love Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Top_Ten_Cute_Love.html">
+        Top 10 Cute Love Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Top_10_Cute_Quotes.html">
+        Top Cute Quotes
+       </a>
+      </li>
+     </ul>
+     <ul class="list">
+      <h2 class="alt">
+       Wedding Topics
+      </h2>
+      <li>
+       <a href="/quotes/category/Wedding">
+        Wedding Quotes
+       </a>
+      </li>
+      <li>
+       <a href="/Great_Wedding_Toasts.htm">
+        Wedding Toasts
+        <small>
+         General
+        </small>
+       </a>
+      </li>
+      <li>
+       <a href="/Famous_Wedding_Toasts.htm">
+        Wedding Toasts
+        <small>
+         Famous
+        </small>
+       </a>
+      </li>
+      <li>
+       <a href="/Irish_Wedding_Toasts.htm">
+        Irish Wedding Toasts
+       </a>
+      </li>
+     </ul>
+    </div>
+    <h2 class="alt">
+     Popular Authors &amp; Topics
+    </h2>
+    <div class="span-3 colborder">
+     <li>
+      <a href="/quotes/author/Marilyn/Monroe">
+       Marilyn Monroe
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Bob/Marley">
+       Bob Marley
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/William/Shakespeare">
+       Shakespeare
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Audrey/Hepburn">
+       Audrey Hepburn
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Mother/Teresa">
+       Mother Teresa
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Dr/Seuss">
+       Dr Seuss
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Albert/Einstein">
+       Albert Einstein
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Emily/Bronte">
+       Emily Bronte
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Elizabeth/Browning">
+       Elizabeth Barrett Browning
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/Oscar/Wilde">
+       Oscar Wilde
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/author/David+Henry/Thoreau">
+       Henry David Thoreau
+      </a>
+     </li>
+    </div>
+    <div class="span-4 last">
+     <li>
+      <a href="/quotes/category/Famous+Love">
+       Famous Love Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Funny">
+       Funny Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Inspirational">
+       Inspirational
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Life">
+       Quotes about Life
+      </a>
+     </li>
+     <li>
+      <a href="/Love-Poems.html">
+       Love Poems
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Birthday">
+       Birthday Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Family">
+       Family Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Cute">
+       Cute Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Motivational">
+       Motivational Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Happiness">
+       Happiness Quotes
+      </a>
+     </li>
+     <li>
+      <a href="/quotes/category/Life">
+       Life Quotes
+      </a>
+     </li>
+    </div>
+    <div class="span-8 last">
+     <hr class="space"/>
+     <hr/>
+     <h2 class="alt">
+      Topics Alphabetically
+     </h2>
+     <a href=" /quotes/category/A.htm">
+      A
+     </a>
+     |
+     <a href="/quotes/category/B.htm">
+      B
+     </a>
+     |
+     <a href="/quotes/category/C.htm">
+      C
+     </a>
+     |
+     <a href="/quotes/category/D.htm">
+      D
+     </a>
+     |
+     <a href="/quotes/category/E.htm">
+      E
+     </a>
+     |
+     <a href="/quotes/category/F.htm">
+      F
+     </a>
+     |
+     <a href="/quotes/category/G.htm">
+      G
+     </a>
+     |
+     <a href="/quotes/category/H.htm">
+      H
+     </a>
+     |
+     <a href="/quotes/category/I.htm">
+      I
+     </a>
+     |
+     <a href="/quotes/category/J.htm">
+      J
+     </a>
+     |
+     <a href="/quotes/category/K.htm">
+      K
+     </a>
+     |
+     <a href="/quotes/category/L.htm">
+      L
+     </a>
+     |
+     <a href="/quotes/category/M.htm">
+      M
+     </a>
+     |
+     <a href="/quotes/category/N.htm">
+      N
+     </a>
+     |
+     <a href="/quotes/category/O.htm">
+      O
+     </a>
+     |
+     <a href="/quotes/category/P.htm">
+      P
+     </a>
+     |
+     <a href="/quotes/category/Q.htm">
+      Q
+     </a>
+     |
+     <a href="/quotes/category/R.htm">
+      R
+     </a>
+     |
+     <a href="/quotes/category/S.htm">
+      S
+     </a>
+     |
+     <a href="/quotes/category/T.htm">
+      T
+     </a>
+     |
+     <a href="/quotes/category/U.htm">
+      U
+     </a>
+     |
+     <a href="/quotes/category/V.htm">
+      V
+     </a>
+     |
+     <a href="/quotes/category/W.htm">
+      W
+     </a>
+     |
+     <a href="/quotes/category/X.htm">
+      X
+     </a>
+     |
+     <a href="/quotes/category/Y.htm">
+      Y
+     </a>
+     |
+     <a href="/quotes/category/Z.htm">
+      Z
+     </a>
+     <h2 class="alt">
+      Authors by Last Name
+     </h2>
+     <a href=" /quotes/author/A.htm">
+      A
+     </a>
+     |
+     <a href="/quotes/author/B.htm">
+      B
+     </a>
+     |
+     <a href="/quotes/author/C.htm">
+      C
+     </a>
+     |
+     <a href="/quotes/author/D.htm">
+      D
+     </a>
+     |
+     <a href="/quotes/author/E.htm">
+      E
+     </a>
+     |
+     <a href="/quotes/author/F.htm">
+      F
+     </a>
+     |
+     <a href="/quotes/author/G.htm">
+      G
+     </a>
+     |
+     <a href="/quotes/author/H.htm">
+      H
+     </a>
+     |
+     <a href="/quotes/author/I.htm">
+      I
+     </a>
+     |
+     <a href="/quotes/author/J.htm">
+      J
+     </a>
+     |
+     <a href="/quotes/author/K.htm">
+      K
+     </a>
+     |
+     <a href="/quotes/author/L.htm">
+      L
+     </a>
+     |
+     <a href="/quotes/author/M.htm">
+      M
+     </a>
+     |
+     <a href="/quotes/author/N.htm">
+      N
+     </a>
+     |
+     <a href="/quotes/author/O.htm">
+      O
+     </a>
+     |
+     <a href="/quotes/author/P.htm">
+      P
+     </a>
+     |
+     <a href="/quotes/author/Q.htm">
+      Q
+     </a>
+     |
+     <a href="/quotes/author/R.htm">
+      R
+     </a>
+     |
+     <a href="/quotes/author/S.htm">
+      S
+     </a>
+     |
+     <a href="/quotes/author/T.htm">
+      T
+     </a>
+     |
+     <a href="/quotes/author/U.htm">
+      U
+     </a>
+     |
+     <a href="/quotes/author/V.htm">
+      V
+     </a>
+     |
+     <a href="/quotes/author/W.htm">
+      W
+     </a>
+     |
+     <a href="/quotes/author/X.htm">
+      X
+     </a>
+     |
+     <a href="/quotes/author/Y.htm">
+      Y
+     </a>
+     |
+     <a href="/quotes/author/Z.htm">
+      Z
+     </a>
+    </div>
+    <div class="span-8 last">
+     <hr class="space"/>
+     <hr/>
+     <h3>
+      <span class="alt">
+       About
+      </span>
+      1-Love-Quotes.com
+     </h3>
+     <p>
+      1-Love-Quotes.com is dedicated to provide you with more
+      <a href="http://www.1-love-quotes.com/">
+       Love Quotes
+      </a>
+      , and now, starting soon, more
+      <a href="/Love-Poems.html">
+       Love Poems
+      </a>
+      than any site on the entire World Wide Web.
+     </p>
+    </div>
+    <hr/>
+    <h2 class="alt" style="float: left;margin-right: 112px;">
+     "Words of love to be remembered."
+    </h2>
+    <form action="http://www.google.com/cse" id="cse-search-box">
+     <div>
+      <input name="cx" type="hidden" value="partner-pub-8224596240707812:3369978136"/>
+      <input name="ie" type="hidden" value="UTF-8"/>
+      <input name="q" size="55" type="text"/>
+      <input name="sa" type="submit" value="Search"/>
+     </div>
+    </form>
+    <script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+    </script>
+    <p class="quiet">
+     Copyright © 2002-2013 1-Love-Quotes.com
+    </p>
+    <hr/>
+   </div>
+   <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+    $(document).ready(function() {
+             
+         $(".embed_button").click(function(){
+             $("#embed_code").dialog({                
+                 title: 'Embed Document',
+                 width: 870,
+                 height: 180,
+                 modal: true,
+                 draggable: false,
+                 resizable: false,
+             });
+             var document_id = $(this).parents('.document_wrapper').attr('id');
+             document_id = document_id.match(/([0-9]+)/);
+             document_id = document_id[0];
+             var textarea_contents = $('#embed_code').children('textarea').html();
+             textarea_contents = textarea_contents.replace(/document_id=[0-9]+/igm, "document_id=" + document_id);
+             $('#embed_code').children('textarea').html(textarea_contents);
+             $('#embed_code').children('textarea').select();
+             $("#embed_code").dialog('open');
+ 
+         });
+ 
+         $('textarea').autogrow();
+ 
+         $("label").inFieldLabels();
+ 
+         $('.auto_select').live("click", function() {
+             this.select();
+         });
+ 
+         $('.doc_tier').tipsy({
+             gravity: 'w',
+         });
+ 
+         $('.tipsy_w').tipsy({
+             gravity: 'w',
+         });
+         $('.tipsy_e').tipsy({
+             gravity: 'e',
+         });
+ 
+         $('.doc_side_bar_element').tipsy({
+             gravity: 'w',
+         });
+ 
+         $('.document_action_menu a').tipsy({
+             gravity: 'n',
+         });
+ 
+         $(".login_and_action").live("click", function(){
+ 
+             var this_button = $(this);
+ 
+ 		    var button_href_original = $(this).attr('href');
+             button_href = button_href_original.substring(1);
+ 
+             var q = $.parseQuery(button_href);
+ 
+             if(q['action'] == "comment") {
+                 q['data'] = $("#document_" + q['id']).find('.comment_box').val();
+             }
+             else if (q['action'] == "add_topic") {
+                 q['data'] = $("#add_topic_" + q['id']).val();
+             }
+             else if (q['action'] == "add_document") {
+                 q['data'] = $(this_button).parents('.submit_document').find('.document_body').val();
+                 q['category_data'] = $(this_button).parents('.submit_document').find('.submit_document_topics').val();
+             }
+             if(q['data'] == undefined || q['data'] == "") {
+                $(".login_button:first").trigger('click');
+                return false;
+             }
+ 
+             $.ajax({
+                 type: 'POST',
+                 url: "/savetosession",
+                 data: q,
+                 success: function(data){
+                     if(data.success) {}
+                     else {
+                         console.log('Error with saving post login action.');
+                     }
+                 }
+             });
+ 
+             $(".login_button:first").trigger('click');
+         });
+     });
+     
+ function clear_all() {
+     $(".error_text").html("");
+     $("input").removeClass("error_box");
+ }
+   </script>
+   <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+    var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-2073088-3']);
+   _gaq.push(['_trackPageview']);
+ 
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+   </script>
+   <div class="fixed-position" id="site-bottom-bar">
+    <div id="site-bottom-bar-frame">
+     <div id="site-bottom-bar-content">
+      <div class="fb_sliver_text">
+       Like us on Facebook for a love quote every day!
+      </div>
+      <div class="fb_sliver_widget">
+       <iframe allowtransparency="true" frameborder="0" scrolling="no" src="http://www.facebook.com/connect/connect.php?id=383546501684499&amp;amp&amp;connections=0&amp;send=false&amp;ampcolorscheme=dark" style="border:none; overflow:hidden; width:265px; height:80px;">
+       </iframe>
+      </div>
+      <div class="close_fb_sliver_div">
+       <a class="close_fb_sliver" href="#null">
+        X
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--	<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+         <script type="text/javascript" src="/static/js/jquery.ajax_errors.js"></script>
+         <script type="text/javascript" src="/static/common/js/jquery.ajax_login.js"></script>
+         <script type="text/javascript" src="/static/js/jquery.expander.js"></script>
+         <!--[if lt IE 9]>
+         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+         <![endif]-->
+   <script src="/static/js/like_dislike.js" type="dff2bfce8ef0c3175cdb8613-text/javascript">
+   </script>
+   <script type="dff2bfce8ef0c3175cdb8613-text/javascript">
+    $(document).ready(function() {
+                 $('.author_bio').expander({
+                     slicePoint: 550,
+                     widow: 2,
+                     userCollapse:     false,
+                     expandEffect: 'slideDown'
+                 });
+ 
+                 $('.category_description').expander({
+                     slicePoint: 750, 
+                     widow: 2,
+                     userCollapse:     false,
+                     expandEffect: 'slideDown'
+                 });
+ $("a").filter(function() {
+     return this.hostname && this.hostname !== location.hostname;
+ }).addClass('external');
+   });
+   </script>
+   <script data-cf-nonce="dff2bfce8ef0c3175cdb8613-" defer="" src="https://ajax.cloudflare.com/cdn-cgi/scripts/4f936b58/cloudflare-static/rocket-loader.min.js">
+   </script>
+  </body>
+ </html>

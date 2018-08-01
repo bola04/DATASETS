@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+ <!--[if lt IE 7]><html lang="en-US" class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+ <!--[if (IE 7)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9 lt-ie8"><![endif]-->
+ <!--[if (IE 8)&!(IEMobile)]><html lang="en-US" class="no-js lt-ie9"><![endif]-->
+ <!--[if gt IE 8]><!-->
+ <html class="no-js" lang="en-US" xmlns:fb="https://www.facebook.com/2008/fbml" xmlns:og="http://ogp.me/ns#">
+  <!--<![endif]-->
+  <head id="Head1">
+   <script src="/WebResource.axd?d=84AQHpSJXImEKTIUD2UbW-YG2mRNSeUgeu28zEw0Muj4qFZdunQyVfYB_V9JhfvWX1LzeDEBLyYw6fjE3P-v7cRKJ77wbEej_xWup05ZQh7LYX6c_3EMw4fDJZyIuCY2ddVxmPKuHfdWilZFuuT5EmrjZhgSLqLRV1NM3OJT_ebY123Pnuz0pcM4LIKWl0rV25Bl92gnv9Yerm3_BvFhDg2&amp;t=636651894893491107" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    (function() { TrackingConsentManager.init('\u003cscript\u003e\r\n    (function () {\n        // Stop from running again, if accidently included more than once.\n        //if (window.hasCookieConsent) return;\n        //window.hasCookieConsent = true;\n\n        /*\n         Constants\n         */\n\n        // Client variable which may be present containing options to override with\n        var OPTIONS_VARIABLE = \u0027cookieconsent_options\u0027;\n\n        // Change cookie consent options on the fly.\n        var OPTIONS_UPDATER = \u0027update_cookieconsent_options\u0027;\n\n        // Name of cookie to be set when dismissed\n        var DISMISSED_COOKIE = \u0027sf-tracking-consent\u0027;\n\n        //// The path to built in themes\n        //// Note: Directly linking to a version on the CDN like this is horrible, but it\u0027s less horrible than people downloading the code\n        //// then discovering that their CSS bucket disappeared\n        //var THEME_BUCKET_PATH = \u0027//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/\u0027;\n\n        // No point going further if they\u0027ve already dismissed.\n        //if (document.cookie.indexOf(DISMISSED_COOKIE) \u003e -1 || (window.navigator \u0026\u0026 window.navigator.CookiesOK)) {\r\n        //    return;\r\n       // }\n\n        // IE8...\n        if (typeof String.prototype.trim !== \u0027function\u0027) {\r\n            String.prototype.trim = function () {\r\n                return this.replace(/^\\s+|\\s+$/g, \u0027\u0027);\r\n            };\r\n        }\n\n        /*\n         Helper methods\n         */\n        var Util = {\r\n            isArray: function (obj) {\r\n                var proto = Object.prototype.toString.call(obj);\n                return proto === \u0027[object Array]\u0027;\r\n            },\n\n            isObject: function (obj) {\r\n                return Object.prototype.toString.call(obj) == \u0027[object Object]\u0027;\r\n            },\n\n            each: function (arr, callback, /* optional: */context, force) {\r\n                if (Util.isObject(arr) \u0026\u0026 !force) {\r\n                    for (var key in arr) {\r\n                        if (arr.hasOwnProperty(key)) {\r\n                            callback.call(context, arr[key], key, arr);\r\n                        }\r\n                    }\r\n                } else {\r\n                    for (var i = 0, ii = arr.length; i \u003c ii; i++) {\r\n                        callback.call(context, arr[i], i, arr);\r\n                    }\r\n                }\r\n            },\n\n            merge: function (obj1, obj2) {\r\n                if (!obj1) return;\n                Util.each(obj2, function (val, key) {\r\n                    if (Util.isObject(val) \u0026\u0026 Util.isObject(obj1[key])) {\r\n                        Util.merge(obj1[key], val);\r\n                    } else {\r\n                        obj1[key] = val;\r\n                    }\r\n                })\r\n            },\n\n            bind: function (func, context) {\r\n                return function () {\r\n                    return func.apply(context, arguments);\r\n                };\r\n            },\n\n            /*\n             find a property based on a . separated path.\n             i.e. queryObject({details: {name: \u0027Adam\u0027}}, \u0027details.name\u0027) // -\u003e \u0027Adam\u0027\n             returns null if not found\n             */\n            queryObject: function (object, query) {\r\n                var queryPart;\n                var i = 0;\n                var head = object;\n                query = query.split(\u0027.\u0027);\n                while ((queryPart = query[i++]) \u0026\u0026 head.hasOwnProperty(queryPart) \u0026\u0026 (head = head[queryPart])) {\r\n                    if (i === query.length) return head;\r\n                }\n                return null;\r\n            },\n\n            addEventListener: function (el, event, eventListener) {\r\n                if (el.addEventListener) {\r\n                    el.addEventListener(event, eventListener);\r\n                } else {\r\n                    el.attachEvent(\u0027on\u0027 + event, eventListener);\r\n                }\r\n            }\r\n        };\n\n        var DomBuilder = (function () {\n            /*\n             The attribute we store events in.\n             */\n            var eventAttribute = \u0027data-cc-event\u0027;\n            var conditionAttribute = \u0027data-cc-if\u0027;\n\n            /*\n             Shim to make addEventListener work correctly with IE.\n             */\n            var addEventListener = function (el, event, eventListener) {\n                // Add multiple event listeners at once if array is passed.\n                if (Util.isArray(event)) {\r\n                    return Util.each(event, function (ev) {\r\n                        addEventListener(el, ev, eventListener);\r\n                    });\r\n                }\n\n                if (el.addEventListener) {\r\n                    el.addEventListener(event, eventListener);\r\n                } else {\r\n                    el.attachEvent(\u0027on\u0027 + event, eventListener);\r\n                }\r\n            };\n\n            /*\n             Replace {{variable.name}} with it\u0027s property on the scope\n             Also supports {{variable.name || another.name || \u0027string\u0027}}\n             */\n            var insertReplacements = function (htmlStr, scope) {\r\n                return htmlStr.replace(/\\{\\{(.*?)\\}\\}/g, function (_match, sub) {\r\n                    var tokens = sub.split(\u0027||\u0027);\n                    var value, token;\n                    while (token = tokens.shift()) {\r\n                        token = token.trim();\n\n                        // If string\n                        if (token[0] === \u0027\"\u0027) return token.slice(1, token.length - 1);\n\n                        // If query matches\n                        value = Util.queryObject(scope, token);\n\n                        if (value) return value;\r\n                    }\n\n                    return \u0027\u0027;\r\n                });\r\n            };\n\n            /*\n             Turn a string of html into DOM\n             */\n            var buildDom = function (htmlStr) {\r\n                var container = document.createElement(\u0027div\u0027);\n                container.innerHTML = htmlStr;\n                return container.children[0];\r\n            };\n\n            var applyToElementsWithAttribute = function (dom, attribute, func) {\r\n                var els = dom.parentNode.querySelectorAll(\u0027[\u0027 + attribute + \u0027]\u0027);\n                Util.each(els, function (element) {\r\n                    var attributeVal = element.getAttribute(attribute);\n                    func(element, attributeVal);\r\n                }, window, true);\r\n            };\n\n            /*\n             Parse event attributes in dom and set listeners to their matching scope methods\n             */\n            var applyEvents = function (dom, scope) {\r\n                applyToElementsWithAttribute(dom, eventAttribute, function (element, attributeVal) {\r\n                    var parts = attributeVal.split(\u0027:\u0027);\n                    var listener = Util.queryObject(scope, parts[1]);\n                    addEventListener(element, parts[0], Util.bind(listener, scope));\r\n                });\r\n            };\n\n            var applyConditionals = function (dom, scope) {\r\n                applyToElementsWithAttribute(dom, conditionAttribute, function (element, attributeVal) {\r\n                    var value = Util.queryObject(scope, attributeVal);\n                    if (!value) {\r\n                        element.parentNode.removeChild(element);\r\n                    }\r\n                });\r\n            };\n\n            return {\r\n                build: function (htmlStr, scope) {\r\n                    if (Util.isArray(htmlStr)) htmlStr = htmlStr.join(\u0027\u0027);\n\n                    htmlStr = insertReplacements(htmlStr, scope);\n                    var dom = buildDom(htmlStr);\n                    applyEvents(dom, scope);\n                    applyConditionals(dom, scope);\n\n                    return dom;\r\n                }\r\n            };\r\n        })();\n\n\n        /*\n         Plugin\n         \u0027\n         */\n        var text = \u0027\u003cp class=\"cc_paragraph\"\u003eWe use cookies on our website to enhance your browsing experience.\u0027 +\n        \u0027To understand more about how we use cookies, or change your preference and browser settings,\u0027 +\n        \u0027please see our \u003ca data-cc-if=\"options.linkPrivacy\" target=\"{{ options.target }}\" class=\"cc_more_info\" href=\"{{options.linkPrivacy || \"#null\"}}\"\u003eGlobal Privacy Statement\u003c/a\u003e.\u0027 +\n        \u0027You can choose to accept or reject the use of cookies on our website by clicking \u003ci\u003eI accept cookies\u003c/i\u003e or \u003ci\u003eI refuse cookies\u003c/i\u003e.\u003c/p\u003e\u0027 +\n        \u0027\u003cp class=\"cc_paragraph\"\u003e\u003cem\u003ePlease note that if you choose to reject cookies, doing so may impair some of our website\\\u0027s functionality.\u003c/em\u003e\u003c/p\u003e\u0027;\n        var cookieconsent = {\r\n            options: {\r\n                message: \u0027We use cookies\u0027,\n                dismiss: \u0027I accept cookies\u0027,\n                learnMore: \u0027Cookie Policy.\u0027,\n                linkPrivacy: \"/global-privacy-statement\",\n                link: \u0027/global-privacy-statement\u0027,\n                target: \u0027_blank\u0027,\n                container: null, // selector\n                domain: null, // default to current domain.\n                path: \u0027/\u0027,\n                expiryDays: 90,\n                markup: [\n                  \u0027\u003cdiv class=\"cc_banner-wrapper {{containerClasses}}\"\u003e\u0027,\n                  \u0027\u003cdiv class=\"cc_banner cc_container cc_container--open\"\u003e\u0027,\n                  \u0027\u003cdiv class=\"cc_exit\"\u003e\u003ca href=\"\" data-cc-event=\"click:cancel\"\u003eX\u003c/a\u003e\u003c/div\u003e\u0027,\n                  \u0027\u003cdiv class=\"cc_message\"\u003e\u0027,\n                  text,\n                  \u0027\u003cdiv class=\"cc_buttons\"\u003e\u0027,\n                  \u0027\u003ca href=\"#null\" data-cc-event=\"click:dismiss\" target=\"_blank\" class=\"cc_btn cc_btn_accept_all\"\u003eI accept cookies\u003c/a\u003e\u0027,\n                  \u0027\u003ca href=\"#null\" data-cc-event=\"click:refuse\" class=\"cc_refuse\"\u003eI refuse cookies.\u003c/a\u003e\u0027,\n                ]\r\n            },\n\n            init: function () {\r\n                var options = window[OPTIONS_VARIABLE];\n                if (options) this.setOptions(options);\n\n                this.setContainer();\n\n                // Calls render when theme is loaded.\n                if (this.options.theme) {\r\n                    this.loadTheme(this.render);\r\n                } else {\r\n                    this.render();\r\n                }\r\n            },\n\n            setOptionsOnTheFly: function (options) {\r\n                this.setOptions(options);\n                this.render();\r\n            },\n\n            setOptions: function (options) {\r\n                Util.merge(this.options, options);\r\n            },\n\n            setContainer: function () {\r\n                if (this.options.container) {\r\n                    this.container = document.querySelector(this.options.container);\r\n                } else {\r\n                    this.container = document.body;\r\n                }\n\n                // Add class to container classes so we can specify css for IE8 only.\n                this.containerClasses = \u0027\u0027;\n                if (navigator.appVersion.indexOf(\u0027MSIE 8\u0027) \u003e -1) {\r\n                    this.containerClasses += \u0027 cc_ie8\u0027\r\n                }\r\n            },\n\n            loadTheme: function (callback) {\r\n                var theme = this.options.theme;\n\n                // If theme is specified by name\n                if (theme.indexOf(\u0027.css\u0027) === -1) {\r\n                    theme = THEME_BUCKET_PATH + theme + \u0027.css\u0027;\r\n                }\n\n                var link = document.createElement(\u0027link\u0027);\n                link.rel = \u0027stylesheet\u0027;\n                link.type = \u0027text/css\u0027;\n                link.href = theme;\n\n                var loaded = false;\n                link.onload = Util.bind(function () {\r\n                    if (!loaded \u0026\u0026 callback) {\r\n                        callback.call(this);\n                        loaded = true;\r\n                    }\r\n                }, this);\n\n                document.getElementsByTagName(\"head\")[0].appendChild(link);\r\n            },\n\n            render: function () {\n                // remove current element (if we\u0027ve already rendered)\n                if (this.element \u0026\u0026 this.element.parentNode) {\r\n                    this.element.parentNode.removeChild(this.element);\n                    delete this.element;\r\n                }\n\n                this.element = DomBuilder.build(this.options.markup, this);\n                if (!this.container.firstChild) {\r\n                    this.container.appendChild(this.element);\r\n                } else {\r\n                    this.container.insertBefore(this.element, this.container.firstChild);\r\n                }\r\n            },\n\n            dismiss: function (evt) {\r\n                evt.preventDefault \u0026\u0026 evt.preventDefault();\n                evt.returnValue = false;\n                this.setDismissedCookie();\n                this.container.removeChild(this.element);\r\n            },\n\n            refuse: function (evt) {\r\n                evt.preventDefault \u0026\u0026 evt.preventDefault();\n                evt.returnValue = false;\n                this.setRefuseCookie();\n                this.container.removeChild(this.element);\r\n            },\n\n            cancel: function (evt) {\r\n                evt.preventDefault \u0026\u0026 evt.preventDefault();\n                evt.returnValue = false;\n                this.setRefuseCookie();\n                this.container.removeChild(this.element);\r\n\r\n            },\n\n            setRefuseCookie: function () { //refuse cookies\r\n                TrackingConsentManager.updateUserConsent(false);\r\n                var expires = \"expires=0\";\r\n                if (/MSIE 10/i.test(navigator.userAgent)) {\r\n                    expires = \"\";\r\n                } else\r\n                    if (/MSIE 9/i.test(navigator.userAgent) || /rv:11.0/i.test(navigator.userAgent)) {\r\n                        // This is internet explorer 9 or 11\r\n                        expires = \"\";\r\n                    } else\r\n                        if (/Edge\\/\\d./i.test(navigator.userAgent)) {\r\n                            // This is Microsoft Edge\r\n                           expires = \"\";\r\n                        } else\r\n                            if (navigator.appName == \u0027Microsoft Internet Explorer\u0027 || (navigator.appName == \"Netscape\" \u0026\u0026 navigator.appVersion.indexOf(\u0027Edge\u0027) \u003e -1)) {\r\n                                // This is Microsoft Edge\r\n                                expires = \"\";\r\n                            }\r\n                document.cookie = \"sf-tracking-consent=false;\" + expires;\r\n            },\n\n            setDismissedCookie: function () { //Accept cookies\r\n                TrackingConsentManager.updateUserConsent(true);\r\n                var d = new Date();\r\n                d.setTime(d.getTime() + (90 * 24 * 60 * 60 * 1000));\r\n                var expires = \"expires=\" + d.toUTCString();\r\n                document.cookie = \"sf-tracking-consent=true;\"+expires;\r\n            }\r\n        };\n\n        var init;\n        var initialized = false;\n        (init = function () {\r\n            if (!initialized \u0026\u0026 document.readyState == \u0027complete\u0027) {\r\n                cookieconsent.init();\n                initialized = true;\n                window[OPTIONS_UPDATER] = Util.bind(cookieconsent.setOptionsOnTheFly, cookieconsent);\r\n            }\r\n        })();\n\n        Util.addEventListener(document, \u0027readystatechange\u0027, init);\r\n\n    })();\r\n\u003c/script\u003e'); })();
+   </script>
+   <title>
+    Paul Hastings LLP
+   </title>
+   <meta charset="utf-8"/>
+   <meta content="True" name="HandheldFriendly"/>
+   <meta content="320" name="MobileOptimized"/>
+   <meta content="width=device-width, initial-scale=1, user-scalable=0" name="viewport"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <link href="http://www.paulhastings.com/images/default-source/Images/ph_favicon_071014.jpg" rel="shortcut icon"/>
+   <!-- Include Print CSS -->
+   <link href="/css/print.css" media="print" rel="stylesheet" type="text/css"/>
+   <script src="/Main/App_Themes/Main/Js/jquery-1.11.3.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/jquery-migrate-1.2.1.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/jquery-ui.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/jquery.mobile.custom.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/main.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/swiper.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/jquery.waypoints.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/pathways.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/imageMapResizer.min.js" type="text/javascript">
+   </script>
+   <script src="/Main/App_Themes/Main/Js/tracking.js" type="text/javascript">
+   </script>
+   <script src="https://use.fontawesome.com/2c6cbee67c.js">
+   </script>
+   <!-- Google Tag Manager -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-KTD2J9" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <script>
+    if (!_dntEnabled()) {
+             (function (w, d, s, l, i) {
+                 w[l] = w[l] || []; w[l].push({
+                     'gtm.start':
+                     new Date().getTime(), event: 'gtm.js'
+                 }); var f = d.getElementsByTagName(s)[0],
+                 j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                 '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+             })(window, document, 'script', 'dataLayer', 'GTM-KTD2J9');
+         }
+   </script>
+   <!-- End Google Tag Manager -->
+   <script type="application/ld+json">
+    {
+           "@context": "http://schema.org",
+           "@type": "Organization",
+           "url": "http://www.paulhastings.com",
+           "logo": "http://www.paulhastings.com/main/app_themes/main/images/logo.png"
+         }
+   </script>
+   <script>
+    $(document).ready(function () {
+ 
+              var swiper6 = new Swiper('.globalbus', {
+                  slidesPerView: 1,
+                  spaceBetween: 30,
+                  nextButton: '.tgb-next',
+                  prevButton: '.tgb-prev',
+                  pagination: '.tgb-pagination',
+                  paginationClickable: true
+              });
+ 
+ 
+          });
+   </script>
+   <meta content="14Rzhn-X7MD4hsfe12M2xXbWYk300jEugmAH9XMFynU" name="google-site-verification"/>
+   <script src="https://use.fontawesome.com/2c6cbee67c.js">
+   </script>
+   <style>
+    .content-bg {
+        width: 680px;
+        height: 290px;
+    }
+ 
+    h3.slider-header {
+     font-size: 28px;
+     line-height: 30px;
+     color:#fff;
+     margin:0 0 20px;
+     text-transform:capitalize;
+   }
+ 
+    .slider-text p {
+        font-size: 14px;
+        line-height: 18px;
+    }
+ 
+    .slider-content a{
+        color:#fff;
+        font-size:16px;
+        line-height:18px;
+        font-weight:700;
+    }
+ 
+    .slider-content a:hover{
+       font-size:18px;
+    }
+ 
+    .slider-content a .fa{
+        margin-left:5px;
+    }
+ 
+ @media all and (min-width:1200px){ 
+       .slider-content{
+          width:55%  !important;
+          height:150px !important;
+         top:150px !important;
+ 
+ }
+ 
+ }
+ 
+ @media all and (min-width: 960px) and (max-width: 1199px) { 
+        .slider-content{
+          width:60%  !important;
+          height:130px !important;
+         top:130px !important;
+ 
+ }
+ 
+ }
+ 
+ @media all and (min-width: 786px) and (max-width: 959px) { 
+       .slider-content{
+             width:70%  !important;
+             height:120px !important;
+             top:120px !important;
+         }
+ 
+       .slider-content a{
+             color:#fff !important;
+ 
+    }
+ 
+       h3.slider-header{
+           font-size:26px;
+           line-height:28px;
+           margin:10px 0 20px;
+       }
+ 
+ 
+ }
+ 
+ @media all and (min-width: 655px) and (max-width: 785px) {
+     .slider-content{
+             width:90%  !important;
+             height:200px !important;
+             top:100px !important;
+     }
+ 
+     h3.slider-header{
+           font-size:24px;
+           line-height:26px;
+           margin:30px 0 20px;
+       }
+ 
+ 
+ }
+ 
+ @media all and (max-width: 654px){
+ 
+         .slider-content{
+             width:90%  !important;
+             height:200px !important;
+             top:50px !important;
+     }
+ 
+          .slider-content a{
+              color:#fff !important;
+              font-size:14px;
+ 
+    }
+ 
+         h3.slider-header {
+             font-size: 18px;
+             line-height: 20px;
+             margin:30px 0 10px;
+    
+   }
+ 
+ }
+ 
+ @media all and (max-width: 410px){
+ 
+     h3.slider-header{
+         font-size:16px;
+         line-height:18px;
+     }
+ }
+ 
+ .tgb-banner{
+ 	width:100%;
+ 	height:400px;
+ 	background-image:url("https://www.paulhastings.com/images/default-source/tomorrowsglobalbusiness/web_highlight_backgrounds_1800x400_19-tgb.png?sfvrsn=ffbc89ac_2");
+ 	background-position: center center;
+ 	background-repeat:no-repeat;
+ 	background-size:cover;
+ 	}
+ 	
+ 	.banner-content{
+ 		width:830px;
+ 		text-align:center;
+ 		color:#fff;
+ 		margin:0 auto;
+ 		padding-top:40px;
+ 	}
+ 	
+ 	.banner-images{
+ 		height:100px;
+ 		margin-bottom:20px;
+ 		
+ 	}
+ 	
+ 	.banner-images img{
+ 		display:inline-block;
+ 		vertical-align:middle;
+ 	}
+ 	
+ 	.banner-images img.ph-logo{
+ 		margin-right:45px;
+ 	}
+ 
+        .banner-images img.ft-logo{
+                 width:8%;
+ }
+ 	
+ 
+ 	.banner-content h3{
+ 		font-size:28px !important;
+ 		line-height:32px !important;
+ 		color:#b4a06e !important;
+ 		text-transform:capitalize !important;
+ 		margin:0 !important;
+ 		padding:0 !important;
+ 	}
+ 	
+ 	.banner-content h4{
+ 		font-size:20px !important;
+ 		line-height:24px !important;
+ 		margin:0 0 15px !important;
+ 		color:#fff !important;
+ 		text-transform:none;
+ 	}
+ 	
+ 	.banner-content p{
+ 		margin-bottom:25px !important;
+ 		font-size:18px !important;
+ 		line-height:24px !important;
+ 	}
+ 	
+ 	.banner-content a.readMore{
+ 		color:#fff !important;
+ 		font-weight:700 !important;
+ 		text-decoration:none !important;
+ 		font-size:16px !important;
+ 		line-height:22px !important;
+ 	}
+ 	
+ 	.banner-content a.readMore:hover{
+ 		color:#fff !important;
+ 		text-decoration:none !important;
+ 		font-size:18px !important;
+ 	}
+ 
+ 
+ 	@media all and (max-width: 959px) {
+ 		
+ 		.banner-content {
+ 			width:86%;
+ 			
+ 		}
+ 	
+ 	}
+ 	
+ 	@media all and (max-width: 480px) {
+ 		
+ 		.banner-content{
+ 			padding-top:20px;
+ 		}
+ 	}
+ 	
+ 	@media all and (max-width: 380px) {
+ 		
+ 		.banner-images{
+ 			height:80px;
+ 		}
+ 		
+ 		.banner-images img.ph-logo{
+ 			margin-right:15px;
+ 			width:50%;
+ 			height:auto;
+ 		}
+ 		
+ 		.banner-images img.ft-logo{
+ 			width:15%;
+ 			height:auto;
+ 		}
+ 		
+ 		.banner-content h3{
+ 			font-size:22px !important;
+ 			line-height:28px !important;
+ 		}
+ 		
+ 		.banner-content h4{
+ 			font-size:16px !important;
+ 			line-height:20px !important;
+ 		}
+ 		
+ 	}
+ 	
+ 	@media all and (max-width: 360px){
+ 		.banner-images{
+ 			height:60px;
+ 		}
+ 		
+ 		.banner-content h3{
+ 			font-size:20px !important;
+ 			line-height:24px !important;
+ 		}
+ 		
+ 		.banner-content h4{
+ 			font-size:16px !important;
+ 			line-height:20px !important;
+ 		}
+ 		
+ 		.banner-content p{
+ 			font-size:14px !important;
+ 			line-height:18px !important;
+ 		}
+ 		
+ 		
+ 	}
+   </style>
+   <meta content="Sitefinity 10.2.6602.0 PE" name="Generator"/>
+   <link href="http://www.paulhastings.com" rel="canonical"/>
+   <link href="/Main/App_Themes/Main/global/Reset.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/Layout.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/custom.css?v=636651895091467064" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/dd.css?v=636651895091467064" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/dedicated.css?v=636651895091467064" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/font-awesome.min.css?v=636167216916088748" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/global.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/idangerous.swiper.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/idangerous.swiper.scrollbar.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/inccssstyles_003.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/jquery-ui.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/jquery.mobile.custom.structure.min.css?v=636651895091622865" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/main.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/modaal.min.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/pathways.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/professional.css?v=636651895091779126" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/search.css?v=636651895091935374" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/swiper.css?v=636651895091935374" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/z_query.css?v=636651895091935374" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/_mobile.css?v=636651895091467064" rel="stylesheet" type="text/css"/>
+   <link href="/Main/App_Themes/Main/global/_reset.css?v=636651895091467064" rel="stylesheet" type="text/css"/>
+   <meta content="Paul Hastings is a leading international law firm that provides innovative legal solutions to many of the world's top financial institutions and Fortune Global 500 companies. 
+  " name="description"/>
+  </head>
+  <body class="pathways">
+   <form action="./" id="form1" method="post">
+    <div class="aspNetHidden">
+     <input id="ctl08_TSM" name="ctl08_TSM" type="hidden" value=""/>
+     <input id="ctl09_TSSM" name="ctl09_TSSM" type="hidden" value=""/>
+     <input id="__EVENTTARGET" name="__EVENTTARGET" type="hidden" value=""/>
+     <input id="__EVENTARGUMENT" name="__EVENTARGUMENT" type="hidden" value=""/>
+     <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value="/wEPDwUKLTIwMDI4NjI1MGRkCOcCQseZC978hVZdWIy1BbL+ZupSqToDAMMg8nNzaVw="/>
+    </div>
+    <script type="text/javascript">
+     //<![CDATA[
+ var theForm = document.forms['form1'];
+ if (!theForm) {
+     theForm = document.form1;
+ }
+ function __doPostBack(eventTarget, eventArgument) {
+     if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+         theForm.__EVENTTARGET.value = eventTarget;
+         theForm.__EVENTARGUMENT.value = eventArgument;
+         theForm.submit();
+     }
+ }
+ //]]>
+    </script>
+    <script src="/WebResource.axd?d=OX467mg_bhvIKZNtUmVkiAmGyO1wSg2SgzT2_b5Y7_s4xMVG2wIf2LE3v-7qZMneI97Rb9iEypYyBdueni_yHAnnXiZ9Atnnss1lqLMcuWk1&amp;t=636646921609799326" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+     //<![CDATA[
+ var __cultureInfo = {"name":"en","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":true,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"$","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-Infinity","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"Infinity","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"‰","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"\/Date(-62135568000000)\/","MaxSupportedDateTime":"\/Date(253402300799999)\/","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":true},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, MMMM d, yyyy h:mm:ss tt","LongDatePattern":"dddd, MMMM d, yyyy","LongTimePattern":"h:mm:ss tt","MonthDayPattern":"MMMM d","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\u0027:\u0027mm\u0027:\u0027ss \u0027GMT\u0027","ShortDatePattern":"M/d/yyyy","ShortTimePattern":"h:mm tt","SortableDateTimePattern":"yyyy\u0027-\u0027MM\u0027-\u0027dd\u0027T\u0027HH\u0027:\u0027mm\u0027:\u0027ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\u0027-\u0027MM\u0027-\u0027dd HH\u0027:\u0027mm\u0027:\u0027ss\u0027Z\u0027","YearMonthPattern":"MMMM yyyy","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":true,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]},"eras":[1,"A.D.",null,0]};//]]>
+    </script>
+    <script src="/Telerik.Web.UI.WebResource.axd?_TSM_HiddenField_=ctl08_TSM&amp;compress=0&amp;_TSM_CombinedScripts_=%3b%3bSystem.Web.Extensions%2c+Version%3d4.0.0.0%2c+Culture%3dneutral%2c+PublicKeyToken%3d31bf3856ad364e35%3aen%3a2caafa8b-6f58-4a66-a3cd-4d77ee6a1707%3aea597d4b%3ab25378d2" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+     //<![CDATA[
+ if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+ //]]>
+    </script>
+    <div class="aspNetHidden">
+     <input id="__VIEWSTATEGENERATOR" name="__VIEWSTATEGENERATOR" type="hidden" value="DAC17930"/>
+     <input id="__EVENTVALIDATION" name="__EVENTVALIDATION" type="hidden" value="/wEdAAUkej6QhFiWJFLjNL++z8xl01z0+nBt2GYTdT8dZtLGDB8tdU/Gta5C2ukmRneDbFKq53Lbm73Y6Xt1aKE0z6Vkw+xvZnG2XZLlwwIFqV/tr/jrmW9OUep6rlZaoPkUqLDcEAJG1Xd+k3dPuoiUtsLr"/>
+    </div>
+    <script type="text/javascript">
+     //<![CDATA[
+ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl08', 'form1', [], [], [], 90, 'ctl00');
+ //]]>
+    </script>
+    <input id="ctl08" name="ctl00$ctl08" type="hidden"/>
+    <script type="text/javascript">
+     //<![CDATA[
+ Sys.Application.setServerId("ctl08", "ctl00$ctl08");
+ Sys.Application._enableHistoryInScriptManager();
+ //]]>
+    </script>
+    <div class="body-wrapper">
+     <a href="#" id="toTop">
+     </a>
+     <a class="icon-menu" href="javascript:void(0)">
+      <span class="mobileLabel">
+       Menu
+      </span>
+      <div class="hamWrap">
+       <span class="ham1">
+       </span>
+       <span class="ham2">
+       </span>
+       <span class="ham3">
+       </span>
+      </div>
+     </a>
+     <!-- Header for all height resolution pages -->
+     <script type="text/javascript">
+      var globalCulture = '';
+     </script>
+     <div class="pageHeader" id="ucHeader_pageHeader">
+      <div class="wrap">
+       <a href="/" id="logo" title="Paul Hastings">
+       </a>
+       <div id="utilityBlock">
+        <ul id="login">
+         <li class="hasDrop">
+          <a class="login" href="/mlogin">
+           Login
+          </a>
+          <ul>
+           <li>
+            <a href="https://alumni.paulhastings.com" target="_blank">
+             Alumni
+            </a>
+           </li>
+           <li>
+            <a href="https://clients.paulhastings.com" target="_blank">
+             Clients
+            </a>
+           </li>
+           <li>
+            <a href="/login" target="_blank">
+             Paul Hastings
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <ul class="lang">
+         <li class="mobileHide hasDrop">
+          <span>
+           Language
+          </span>
+          <ul>
+           <li>
+            <a class="lang" href="/" id="ucHeader_lb_en" title="English">
+             English
+            </a>
+           </li>
+           <li>
+            <a class="french" href="/fr/" id="ucHeader_lb_fr" title="French">
+             Français
+            </a>
+           </li>
+           <li>
+            <a class="lang-chinese" href="/zh/" id="ucHeader_lb_zh" title="Chinese">
+            </a>
+           </li>
+           <li>
+            <a class="lang-japanese" href="/ja/" id="ucHeader_lb_ja" title="Japanese">
+            </a>
+           </li>
+           <li>
+            <a class="lang-korean" href="/ko/" id="ucHeader_lb_ko" title="Korean">
+            </a>
+           </li>
+           <li>
+            <a class="german" href="/de/" id="ucHeader_lb_de" title="German">
+             Deutsch
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+        <div class="search-menu" id="ucHeader_Panel1" onkeypress="javascript:return WebForm_FireDefaultButton(event, 'btnSearch')">
+         <a href="javascript:__doPostBack('ctl00$ucHeader$btnSearch','')" id="btnSearch" onclick="searchGlobal(); return false;">
+          <span aria-hidden="true" class="icon-search">
+          </span>
+         </a>
+         <input id="txtSearch" name="ctl00$ucHeader$txtSearch" placeholder="SEARCH" type="text"/>
+        </div>
+       </div>
+       <div id="secondaryNav">
+        <ul id="subNav">
+         <li>
+          <a href="about-us/value-added-services">
+           Clients
+          </a>
+         </li>
+         <li>
+          <a href="about-us/alumni" target="_blank">
+           Alumni
+          </a>
+         </li>
+         <li>
+          <a href="publications-items/blog">
+           BLOGS
+          </a>
+         </li>
+         <li>
+          <a href="forms/contact-us">
+           CONTACT
+          </a>
+         </li>
+         <!--<a id="ucHeader_hkMail" href="/mail?ref=http%3a%2f%2fwww.paulhastings.com%2f"><img src="Main/App_Themes/Main/Images/contact-icon.png" alt="" /></a>-->
+         <!--<a href="mail" id="ucHeader_A4" target="_blank">
+                             <img src="App_Data/Sitefinity/WebsiteTemplates/Main/App_Themes/Main/Images/contact-icon.png" id="ucHeader_Img11" /></a>-->
+        </ul>
+       </div>
+      </div>
+     </div>
+     <!-- Menu for all height resolution pages -->
+     <div id="nav-bar">
+      <ul>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_0">
+        <a href="home" id="ucNavigation_repeaterMenu_A1_0" title="Home">
+         Home
+        </a>
+       </li>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_1">
+        <a href="about-us" id="ucNavigation_repeaterMenu_A1_1" title="About Us">
+         About Us
+        </a>
+       </li>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_7">
+        <a href="professionals" id="ucNavigation_repeaterMenu_A1_7" title="Professionals">
+         Professionals
+        </a>
+       </li>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_10">
+        <a href="practice-areas" id="ucNavigation_repeaterMenu_A1_10" title="Practice Areas">
+         Practice Areas
+        </a>
+       </li>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_11">
+        <a href="PHOffices" id="ucNavigation_repeaterMenu_A1_11" title="Offices">
+         Offices
+        </a>
+       </li>
+       <li id="ucNavigation_repeaterMenu_liPlaceHolder_18">
+        <a href="events" id="ucNavigation_repeaterMenu_A1_18" title="Events">
+         Events
+        </a>
+       </li>
+       <li class="hasDrop" id="ucNavigation_repeaterMenu_liPlaceHolder_19">
+        <a href="news" id="ucNavigation_repeaterMenu_A1_19" title="News">
+         News
+        </a>
+        <ul>
+         <li>
+          <a href="news/press-center" id="ucNavigation_repeaterMenu_repeaterSubmenu_19_A1_0" title="Press Center">
+           Press Center
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="hasDrop" id="ucNavigation_repeaterMenu_liPlaceHolder_20">
+        <a href="publications-items" id="ucNavigation_repeaterMenu_A1_20" title="Insights">
+         Insights
+        </a>
+        <ul>
+         <li>
+          <a href="/publications-items/listing/" id="ucNavigation_repeaterMenu_repeaterSubmenu_20_A1_0" title="Publications">
+           Publications
+          </a>
+         </li>
+         <li>
+          <a href="publications-items/blog" id="ucNavigation_repeaterMenu_repeaterSubmenu_20_A1_1" title="Blogs">
+           Blogs
+          </a>
+         </li>
+         <li>
+          <a href="publications-items/podcast" id="ucNavigation_repeaterMenu_repeaterSubmenu_20_A1_2" title="Podcast">
+           Podcast
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="hasDrop" id="ucNavigation_repeaterMenu_liPlaceHolder_21">
+        <a href="csr" id="ucNavigation_repeaterMenu_A1_21" title="CSR">
+         CSR
+        </a>
+        <ul>
+         <li>
+          <a href="csr/pro-bono-and-community" id="ucNavigation_repeaterMenu_repeaterSubmenu_21_A1_0" title="Pro Bono and Community">
+           Pro Bono and Community
+          </a>
+         </li>
+         <li>
+          <a href="csr/environmental-sustainability" id="ucNavigation_repeaterMenu_repeaterSubmenu_21_A1_1" title="Environmental Sustainability">
+           Environmental Sustainability
+          </a>
+         </li>
+         <li>
+          <a href="csr/diversity" id="ucNavigation_repeaterMenu_repeaterSubmenu_21_A1_2" title="Diversity">
+           Diversity
+          </a>
+         </li>
+         <li>
+          <a href="csr/charitable-giving" id="ucNavigation_repeaterMenu_repeaterSubmenu_21_A1_3" title="Charitable Giving">
+           Charitable Giving
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="hasDrop" id="ucNavigation_repeaterMenu_liPlaceHolder_22">
+        <a href="careers" id="ucNavigation_repeaterMenu_A1_22" title="Careers">
+         Careers
+        </a>
+        <ul>
+         <li>
+          <a href="careers/experienced-lawyers" id="ucNavigation_repeaterMenu_repeaterSubmenu_22_A1_0" title="Experienced Lawyers">
+           Experienced Lawyers
+          </a>
+         </li>
+         <li>
+          <a href="careers/law-students" id="ucNavigation_repeaterMenu_repeaterSubmenu_22_A1_1" title="Law Students">
+           Law Students
+          </a>
+         </li>
+         <li>
+          <a href="careers/business-professionals" id="ucNavigation_repeaterMenu_repeaterSubmenu_22_A1_2" title="Business Professionals">
+           Business Professionals
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+     </div>
+     <!-- Page specific content -->
+     <div class="cf" id="content">
+      <div class="slider" id="hero">
+       <div class="swiper-container slider" id="hero">
+        <div class="swiper-wrapper">
+         <div class="swiper-slide slideContent" style="background-image:url(http://www.paulhastings.com/images/default-source/home-page-slides/web_highlight_backgrounds_1200x400_56-ph-ip-team-recognized-as-the-trans.jpg?sfvrsn=2f7565ae_0)">
+          <div class="slider-content">
+           <div class="slider-text">
+            <h3 class="slider-header">
+             Paul Hastings Wins Transatlantic IP Team of the Year
+            </h3>
+            <p style="display:none;">
+             The American Lawyer named Paul Hastings its Transatlantic IP Team of the Year at the 2018 Transatlantic Legal Awards. The awards honor the top legal work between the U.S. and the UK and European legal markets.
+            </p>
+           </div>
+           <a href="http://www.paulhastings.com/news/details/?id=f49efb6a-2334-6428-811c-ff00004cbded&amp;utm_source=website&amp;utm_medium=homepage-highlight&amp;utm_campaign=IP-Transatlantic-Accolade">
+            Read More
+            <i class="fa fa-play">
+            </i>
+           </a>
+          </div>
+         </div>
+         <div class="swiper-slide slideContent" style="background-image:url(http://www.paulhastings.com/images/default-source/home-page-slides/web_highlight_backgrounds_1200x400_54-san-francisco-marks-largest-office.jpg?sfvrsn=8e1161ae_0)">
+          <div class="slider-content">
+           <div class="slider-text">
+            <h3 class="slider-header">
+             San Francisco Marks Largest Office Lease in City’s History with Facebook Transaction
+            </h3>
+            <p style="display:none;">
+             The firm represented Facebook in a lease agreement with affiliates of MetLife Investment Management and John Buck Company in San Francisco’s Park Tower, the largest office lease deal in San Francisco history.
+            </p>
+           </div>
+           <a href="https://www.paulhastings.com/news/details/?id=7af3e46a-2334-6428-811c-ff00004cbded&amp;utm_source=website&amp;utm_medium=homepage-highlight&amp;utm_campaign=SF-Facebook-Lease">
+            Read More
+            <i class="fa fa-play">
+            </i>
+           </a>
+          </div>
+         </div>
+         <div class="swiper-slide slideContent" style="background-image:url(http://www.paulhastings.com/images/default-source/home-page-slides/web_highlight_backgrounds_1200x400_55-employment-law-partner-maria-a-aud.jpg?sfvrsn=e2ff9caf_0)">
+          <div class="slider-content">
+           <div class="slider-text">
+            <h3 class="slider-header">
+             Employment Law Partner Maria A. Audero Appointed United States Magistrate Judge
+            </h3>
+            <p style="display:none;">
+             Maria A. Audero, a partner in the firm’s Employment Law practice, has been appointed as a United States Magistrate Judge in the United States District Court for the Central District of California.
+            </p>
+           </div>
+           <a href="https://www.paulhastings.com/news/details/?id=42c4f86a-2334-6428-811c-ff00004cbded&amp;utm_source=website&amp;utm_medium=homepage-highlight&amp;utm_campaign=ELD-partner-Maria">
+            Read More
+            <i class="fa fa-play">
+            </i>
+           </a>
+          </div>
+         </div>
+         <div class="swiper-slide slideContent" style="background-image:url(http://www.paulhastings.com/images/default-source/home-page-slides/web_highlight_backgrounds_1200x400_49-paul-hastings-continues-london-exp.jpg?sfvrsn=10dd80af_0)">
+          <div class="slider-content">
+           <div class="slider-text">
+            <h3 class="slider-header">
+             Paul Hastings Continues London Expansion with Private Equity Star Anu Balasubramanian
+            </h3>
+            <p style="display:none;">
+             We are pleased to announce that buyout star Anu Balasubramanian will be joining the firm to lead our private equity offering in London.
+            </p>
+           </div>
+           <a href="https://www.paulhastings.com/news/details/?id=07a9c86a-2334-6428-811c-ff00004cbded&amp;utm_source=website&amp;utm_medium=homepage-highlight&amp;utm_campaign=Partner-Anu-Balasubramanian">
+            Learn More
+            <i class="fa fa-play">
+            </i>
+           </a>
+          </div>
+         </div>
+        </div>
+        <div class="swiper-pagination">
+        </div>
+        <div class="swiper-button-next next">
+        </div>
+        <div class="swiper-button-prev prev">
+        </div>
+       </div>
+       <script type="text/javascript">
+        var swiper = new Swiper('.swiper-container', {
+         pagination: '.swiper-pagination',
+         paginationClickable: true,
+         nextButton: '.swiper-button-next',
+         prevButton: '.swiper-button-prev',
+         loop: true,
+         autoplay: 7000,
+         speed: 1000,
+         autoplayDisableOnInteraction: true
+     });
+       </script>
+      </div>
+      <div class="cf" id="news">
+       <div class="wrap">
+        <div class="m-all t-all d-1of2 news-block">
+         <div class="inner cf">
+          <h4>
+           <a class="column-static" href="/news/news-listing/" id="hlNews">
+            Client News
+           </a>
+          </h4>
+          <a class="hide_for_mobile icon-rss rss" href="/Rss/NewsRss.aspx" title="RSS">
+          </a>
+          <div class="content-scroller">
+           <div class="information">
+            <div class="info-line">
+             <a class="list-item" href="/news/details/?id=9d34fa6a-2334-6428-811c-ff00004cbded" title="">
+              <div class="news-line">
+               Teleperformance Announces Acquisition of Intelenet from Blackstone
+              </div>
+             </a>
+             <div class="news-date">
+              June 14, 2018
+             </div>
+            </div>
+            <div class="info-line">
+             <a class="list-item" href="/news/details/?id=db37fa6a-2334-6428-811c-ff00004cbded" title="">
+              <div class="news-line">
+               CDH Investments to Acquire Sirtex for US$1.4 Billion
+              </div>
+             </a>
+             <div class="news-date">
+              June 14, 2018
+             </div>
+            </div>
+            <div class="info-line">
+             <a class="list-item" href="/news/details/?id=acfdeb6a-2334-6428-811c-ff00004cbded" title="">
+              <div class="news-line">
+               Osprey Energy Acquisition Corp. Acquires Royal Resources Assets from Blackstone in $894 Million Business Combination
+              </div>
+             </a>
+             <div class="news-date">
+              June 04, 2018
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <a class="show_for_mobile button" href="/news/news-listing/" title="">
+          More News
+         </a>
+        </div>
+        <div class="m-all t-all d-1of2 news-block">
+         <div class="inner cf">
+          <h4>
+           <a class="column-static" href="/publications-items/listing/" id="hlAlerts">
+            Insights
+           </a>
+          </h4>
+          <a class="hide_for_mobile icon-rss rss" href="/Rss/PublicationsRss.aspx" title="RSS">
+          </a>
+          <div class="content-scroller">
+           <div class="information">
+            <div>
+             <span id="Debug">
+             </span>
+            </div>
+            <div class="info-line">
+             <a class="article-link" href="/publications-items/blog/ph-privacy/ph-privacy/2018/06/22/carpenter-v.-united-states-a-watershed-for-digital-privacy">
+              <div class="news-line">
+               Carpenter v. United States: A Watershed for Digital Privacy
+              </div>
+             </a>
+             <div class="news-date">
+              June 22, 2018
+              <span style="display:inline;top:5px;left:10px;position:relative;">
+               <img alt="media type" src="/Main/App_Themes/PH/Images/thumbnailblog.png"/>
+              </span>
+             </div>
+            </div>
+            <div class="info-line">
+             <a class="article-link" href="/publications-items/details/?id=b040016b-2334-6428-811c-ff00004cbded">
+              <div class="news-line">
+               Another Life Sciences Company Announces a Multi-Million Dollar Settlement in the U.S. Department of Justice’s Relentless Pursuit of Donations to Copay Assistance Charities
+              </div>
+             </a>
+             <div class="news-date">
+              June 19, 2018
+              <span style="display:none;">
+               <img alt="media type" src=""/>
+              </span>
+             </div>
+            </div>
+            <div class="info-line">
+             <a class="article-link" href="/publications-items/blog/ph-money-matters-this-week-in-washington/ph-money-matters-this-week-in-washington/2018/06/18/this-week-in-washington-for-june-18-2018">
+              <div class="news-line">
+               This Week in Washington for June 18, 2018
+              </div>
+             </a>
+             <div class="news-date">
+              June 18, 2018
+              <span style="display:inline;top:5px;left:10px;position:relative;">
+               <img alt="media type" src="/Main/App_Themes/PH/Images/thumbnailblog.png"/>
+              </span>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <a class="view-all show_for_mobile button" href="/publications-items/listing/" title="">
+          More Insights
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="cf" id="news-buttons">
+       <div class="wrap">
+        <div class="m-all t-all d-1of2">
+         <a class="view-all hide_for_mobile button" href="/news/news-listing/" title="">
+          More News
+         </a>
+        </div>
+        <div class="m-all t-all d-1of2">
+         <a class="view-all hide_for_mobile button" href="/publications-items/listing/" title="">
+          More Insights
+         </a>
+        </div>
+       </div>
+      </div>
+      <div class="sfContentBlock">
+       <div id="tom-global-bus">
+        <section class="tgb-banner">
+         <div class="banner-content">
+          <div class="banner-images">
+           <img alt="" class="ph-logo" src="https://www.paulhastings.com/images/default-source/tomorrowsglobalbusiness/ph-tgb-logo.png?sfvrsn=f4bc89ac_2"/>
+           <img alt="" class="ft-logo" src="https://www.paulhastings.com/images/default-source/tomorrowsglobalbusiness/ft-tgb-logo.png?sfvrsn=f1bc89ac_2"/>
+          </div>
+          <h3>
+           Tomorrow’s Global Business
+          </h3>
+          <h4>
+           Insights on topics and trends impacting our clients
+          </h4>
+          <p>
+           Created with the general counsel’s office in mind, our concise articles and videos provide high-level updates
+ in-house lawyers can share with their C-suite and board—to brief them on the critical issues they should follow.
+          </p>
+          <a class="readMore" href="https://www.paulhastings.com/about-us/tomorrows-global-business">
+           Read More
+           <em class="fa fa-play">
+           </em>
+          </a>
+         </div>
+        </section>
+       </div>
+      </div>
+      <div class="sfContentBlock">
+       <div class="cf" id="who-we-are">
+        <div class="banner-block">
+         <div class="wrap">
+          <h4>
+           Who We Are
+          </h4>
+          <p class="big">
+           In today’s world of transformative change, our purpose is clear — to help our clients and people navigate new paths to growth. With a strong presence throughout Asia, Europe, Latin America, and the U.S., Paul Hastings is recognized as one of the world’s most innovative global law firms.
+          </p>
+         </div>
+         <div class="wave">
+         </div>
+        </div>
+        <div class="content wrap cf">
+         <div class="m-all t-1of2 d-1of4 aniln">
+          <div class="icon06 wwa-icon">
+          </div>
+          <br/>
+          <p>
+           on
+           <em>
+            The American Lawyer’s
+           </em>
+           A-List of the most successful firms in the U.S. seven years in a row
+          </p>
+         </div>
+         <div class="m-all t-1of2 d-1of4 aniIn">
+          <div class="icon02 wwa-icon">
+          </div>
+          <br/>
+          <p>
+           in the
+           <em>
+            Financial Times’
+           </em>
+           Innovative Lawyers Report across Asia, Europe, and North America
+          </p>
+         </div>
+         <div class="m-all t-1of2 d-1of4 aniIn">
+          <div class="icon03 wwa-icon">
+          </div>
+          <br/>
+          <p>
+           for “Overall Best Law Firm to Work For” in Vault’s annual survey
+          </p>
+         </div>
+         <div class="m-all t-1of2 d-1of4 aniIn">
+          <div class="icon04 wwa-icon">
+          </div>
+          <br/>
+          <p>
+           for Best Overall Diversity, according to Vault and MCCA
+          </p>
+         </div>
+        </div>
+        <a class="button" href="/about-us">
+         More About Us
+        </a>
+       </div>
+      </div>
+      <div class="cf" id="find-professional">
+       <div class="banner-block">
+        <div class="wrap">
+         <h4>
+          Find A Professional
+         </h4>
+         <p class="big">
+          Our leading lawyers deliver innovative solutions 
+                             to clients doing business in markets around the world.
+         </p>
+        </div>
+        <video autoplay="" class="video" loop="" muted="" preload="auto">
+         <source src="/NewMain/App_Themes/ph/Videos/video.webm" type="video/webm">
+          <source src="/NewMain/App_Themes/ph/Videos/video2.mp4" type="video/mp4">
+           <source src="/NewMain/App_Themes/ph/Videos/video.ogv" type="video/ogv">
+           </source>
+          </source>
+         </source>
+        </video>
+       </div>
+       <div class="search-bar">
+        <div class="wrap cf">
+         <input id="txtprofsearch" name="ctl00$txtprofsearch" placeholder="Who are you searching for?" type="text"/>
+         <input id="btnprofsearch" name="ctl00$btnprofsearch" type="submit" value="SEARCH"/>
+        </div>
+       </div>
+      </div>
+      <div class="sfContentBlock">
+       <div class="cf" id="offices">
+        <div class="banner-block">
+         <h4>
+          Offices
+         </h4>
+         <p class="big">
+          Our offices are situated in key financial centers throughout the world to best serve our clients' local and global business needs.
+         </p>
+         <div class="content office-wrap mobileHideO">
+          <img alt="" class="officemap" src="../../Main/App_Themes/Main/Images/map@2x.png" usemap="#officemap"/>
+          <map id="officemap" name="officemap">
+           <!-- US -->
+           <area alt="Atlanta" coords="734,375,9" href="/office/atlanta" shape="circle" title="Atlanta">
+           </area>
+           <area alt="Chicago" coords="715,325,9" href="/office/chicago" shape="circle" title="Chicago">
+           </area>
+           <area alt="Houston" coords="684,382,9" href="/office/houston" shape="circle" title="Houston">
+           </area>
+           <area alt="LosAngeles" coords="585,360,9" href="/office/los-angeles" shape="circle" title="Los Angeles">
+           </area>
+           <area alt="NewYork" coords="777,328,9" href="/office/new-york" shape="circle" title="New York">
+           </area>
+           <area alt="OrangeCounty" coords="594,362,9" href="/office/orange-county" shape="circle" title="Orange County">
+           </area>
+           <area alt="PaloAlto" coords="576,348,9" href="/office/palo-alto" shape="circle" title="Palo Alto">
+           </area>
+           <area alt="SanFrancisco" coords="569,341,9" href="/office/san-francisco" shape="circle" title="San Francisco">
+           </area>
+           <area alt="SanDiego" coords="597,372,9" href="/office/san-diego" shape="circle" title="San Diego">
+           </area>
+           <area alt="SaoPaulo" coords="891,614,9" href="/office/sao-paulo" shape="circle" title="São Paulo">
+           </area>
+           <area alt="WashingtonDC" coords="759,345,9" href="/office/washingtondc" shape="circle" title="Washington, D.C.">
+           </area>
+           <!-- Europe -->
+           <area alt="Brussels" coords="1105,208,9" href="/office/brussels" shape="circle" title="Brussels">
+           </area>
+           <area alt="Frankfurt" coords="1126,281,9" href="office/frankfurt" shape="circle" title="Frankfurt">
+           </area>
+           <area alt="London" coords="1087,275,9" href="/office/london" shape="circle" title="London">
+           </area>
+           <area alt="Milan" coords="1128,306,9" href="/office/milan" shape="circle" title="Milan">
+           </area>
+           <area alt="Paris" coords="1098,292,9" href="/office/paris" shape="circle" title="Paris">
+           </area>
+           <!-- Asia -->
+           <area alt="Beijing" coords="1570,337,9" href="/office/beijing" shape="circle" title="Beijing">
+           </area>
+           <area alt="HongKong" coords="1560,418,9" href="/office/HongKong" shape="circle" title="Hong Kong">
+           </area>
+           <area alt="Seoul" coords="1614,349,9" href="/office/Seoul" shape="circle" title="Seoul">
+           </area>
+           <area alt="Shanghai" coords="1587,377,9" href="/office/Shanghai" shape="circle" title="Shanghai">
+           </area>
+           <area alt="Tokyo" coords="1666,360,9" href="/office/Tokyo" shape="circle" title="Tokyo">
+           </area>
+          </map>
+          <div class="office-list usa">
+           <h3>
+            The Americas
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/atlanta">
+              Atlanta
+             </a>
+            </li>
+            <li>
+             <a href="/office/Chicago">
+              Chicago
+             </a>
+            </li>
+            <li>
+             <a href="/office/houston">
+              Houston
+             </a>
+            </li>
+            <li>
+             <a href="/office/los-angeles">
+              Los Angeles
+             </a>
+            </li>
+            <li>
+             <span style="font-size: 24px; color: #b4a06e;">
+              ‣
+             </span>
+             <a href="/office/century-city">
+              Century City
+             </a>
+            </li>
+            <li>
+             <a href="/office/new-york">
+              New York
+             </a>
+            </li>
+            <li>
+             <a href="/office/orange-county">
+              Orange County
+             </a>
+            </li>
+            <li>
+             <a href="/office/palo-alto">
+              Palo Alto
+             </a>
+            </li>
+            <li>
+             <a href="/office/san-diego">
+              San Diego
+             </a>
+            </li>
+            <li>
+             <a href="/office/san-francisco">
+              San Francisco
+             </a>
+            </li>
+            <li>
+             <a href="/office/sao-paulo">
+              São Paulo
+             </a>
+            </li>
+            <li>
+             <a href="/office/washinton-dc">
+              Washington, D.C.
+             </a>
+            </li>
+           </ul>
+          </div>
+          <div class="office-list europe">
+           <h3>
+            Europe
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/Brussels">
+              Brussels
+             </a>
+            </li>
+            <li>
+             <a href="/office/frankfurt">
+              Frankfurt
+             </a>
+            </li>
+            <li>
+             <a href="/office/london">
+              London
+             </a>
+            </li>
+            <li>
+             <a href="/office/milan">
+              Milan
+             </a>
+            </li>
+            <li>
+             <a href="/office/paris">
+              Paris
+             </a>
+            </li>
+           </ul>
+          </div>
+          <div class="office-list asia">
+           <h3>
+            Asia
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/beijing">
+              Beijing
+             </a>
+            </li>
+            <li>
+             <a href="/office/hong-kong">
+              Hong Kong
+             </a>
+            </li>
+            <li>
+             <a href="/office/seoul">
+              Seoul
+             </a>
+            </li>
+            <li>
+             <a href="/office/shanghai">
+              Shanghai
+             </a>
+            </li>
+            <li>
+             <a href="/office/tokyo">
+              Tokyo
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+         <div class="content office-wrap mobileShowO">
+          <div class="m-all t-all d-all office-list">
+           <h3>
+            The Americas
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/atlanta">
+              Atlanta
+             </a>
+            </li>
+            <li>
+             <a href="/office/Chicago">
+              Chicago
+             </a>
+            </li>
+            <li>
+             <a href="/office/houston">
+              Houston
+             </a>
+            </li>
+            <li>
+             <a href="/office/los-angeles">
+              Los Angeles
+             </a>
+            </li>
+            <li>
+             <span style="font-size: 24px; color: #b4a06e;">
+              ‣
+             </span>
+             <a href="/office/century-city">
+              Century City
+             </a>
+            </li>
+            <li>
+             <a href="/office/new-york">
+              New York
+             </a>
+            </li>
+            <li>
+             <a href="/office/orange-county">
+              Orange County
+             </a>
+            </li>
+            <li>
+             <a href="/office/palo-alto">
+              Palo Alto
+             </a>
+            </li>
+            <li>
+             <a href="/office/san-diego">
+              San Diego
+             </a>
+            </li>
+            <li>
+             <a href="/office/san-francisco">
+              San Francisco
+             </a>
+            </li>
+            <li>
+             <a href="/office/sao-paulo">
+              São Paulo
+             </a>
+            </li>
+            <li>
+             <a href="/office/washinton-dc">
+              Washington, D.C.
+             </a>
+            </li>
+           </ul>
+          </div>
+          <div class="m-all t-all d-all office-list">
+           <h3>
+            Europe
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/Brussels">
+              Brussels
+             </a>
+            </li>
+            <li>
+             <a href="/office/frankfurt">
+              Frankfurt
+             </a>
+            </li>
+            <li>
+             <a href="/office/london">
+              London
+             </a>
+            </li>
+            <li>
+             <a href="/office/milan">
+              Milan
+             </a>
+            </li>
+            <li>
+             <a href="/office/paris">
+              Paris
+             </a>
+            </li>
+           </ul>
+          </div>
+          <div class="m-all t-all d-all office-list">
+           <h3>
+            Asia
+           </h3>
+           <ul>
+            <li>
+             <a href="/office/beijing">
+              Beijing
+             </a>
+            </li>
+            <li>
+             <a href="/office/hong-kong">
+              Hong Kong
+             </a>
+            </li>
+            <li>
+             <a href="/office/seoul">
+              Seoul
+             </a>
+            </li>
+            <li>
+             <a href="/office/shanghai">
+              Shanghai
+             </a>
+            </li>
+            <li>
+             <a href="/office/tokyo">
+              Tokyo
+             </a>
+            </li>
+           </ul>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="sfContentBlock">
+      <div class="cf" id="footer">
+       <span class="follow">
+        Follow Us
+       </span>
+       <br/>
+       <ul class="socialLinks">
+        <li>
+         <a class="ln" href="http://www.linkedin.com/company/paul-hastings" target="_blank">
+         </a>
+        </li>
+        <li>
+         <a class="tw" href="http://www.twitter.com/paul_hastings" target="_blank">
+         </a>
+        </li>
+        <li>
+         <a class="fb" href="https://www.facebook.com/paulhastingsllp%20" target="_blank">
+         </a>
+        </li>
+        <li>
+         <a class="insta" href="https://www.instagram.com/paulhastingslaw" target="_blank">
+         </a>
+        </li>
+        <li>
+         <a class="yt" href="http://www.youtube.com/user/PaulHastingsLLP" target="_blank">
+         </a>
+        </li>
+        <li>
+         <a class="em" href="https://www.paulhastings.com/forms/contact-us" target="_blank">
+         </a>
+        </li>
+       </ul>
+       <br/>
+       <hr/>
+       <nav>
+        <ul>
+         <li>
+          <a class="hide_for_mobile" href="/sitemap">
+           Site Map
+          </a>
+         </li>
+         <li>
+          <a href="/global-privacy-statement">
+           Global Privacy Statement
+          </a>
+         </li>
+         <li>
+          <a href="/terms-and-conditions">
+           Terms &amp; Conditions
+          </a>
+         </li>
+        </ul>
+       </nav>
+       <div class="copyright">
+        <a href="http://www.paulhastings.com/terms-and-conditions">
+         Attorney Advertising
+        </a>
+        Copyright © 2017 Paul Hastings LLP. All rights reserved.
+        <div class="ServerVar">
+         <asp:literal id="Literal1" runat="server">
+         </asp:literal>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <script type="text/javascript">
+     $('map').imageMapResize();
+    </script>
+    <script>
+     $(window).scroll(function () {
+                 if ($(this).scrollTop()) {
+                     $('#toTop').fadeIn();
+                 } else {
+                     $('#toTop').fadeOut();
+                 }
+             });
+             //search handle code
+             function searchGlobal() {
+ 
+                 var txtString = document.getElementById("txtSearch").value.replace("<", "").replace(">", "").replace("%", "").replace("<a", "");
+                 //alert(txtString);
+                 location.href = "/results?indexCatalogue=main-search&searchQuery=" + txtString + "&wordsMode=0";
+                 return false;
+             }
+    </script>
+    <!-- Page container -->
+   </form>
+  </body>
+ </html>

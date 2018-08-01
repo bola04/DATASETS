@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+ <html lang="en" ng-app="app.home.main">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1 ,  user-scalable=no" name="viewport"/>
+   <meta content="no-cache" http-equiv="pragma"/>
+   <title>
+    Road Conditions, Speeds, Travel Times, Traffic Cameras, Live Streaming Traffic Cameras, Road Closures and Road Work Information provided by Intelligent Transportation Systems (ITS) a branch of Colorado Department of Transportation
+   </title>
+   <meta content="Colorado, road, conditions, cdot, transportation, weather, highway, traffic, denver, dot, travel, cameras, cams, closures, map, cotrip, cotrip.org, cotrip, I-70, I-25, colorado, 
+ 		        department, co, www.cotrip.org, reports, its, colorado, Live Streaming Video, Live Traffic Cameras " name="keywords"/>
+   <meta content="Traveler information for Colorado Interstates and Highways about Current Road Conditions and Weather Information, Accurate Travel Times and Speeds, Live Streaming Video and Still Cameras, 
+ 		        Current Road Closures and Construction Events and Incident information, Messages on Overhead Message Boards and Weather Station Information provided on a timely basis on CoTrip.org" name="description"/>
+   <meta content="ALL" name="robots"/>
+   <meta content="General" name="rating"/>
+   <link href="https://fonts.googleapis.com/css?family=Arvo:400,700,400italic,700italic|Roboto+Slab:400,300,700,100|Crete+Round:400,400italic&amp;v=1" rel="stylesheet"/>
+   <link href="/home/styles/Home.min.css?v=00578" rel="stylesheet"/>
+   <!--[if lt IE 10]>
+ 	<style>
+ 		.home-highway-section .btn {
+ 			font-size	: 11px;
+ 		}
+ 	</style>
+ <![endif]-->
+  </head>
+  <body id="home" ng-controller="NotificationCtrl">
+   <div>
+    <section class="row clearfix navbar-fixed-top top-header" id="header_top">
+     <div class="col-sm-12 col-md-12 col-lg-12">
+      <div class="container" id="incompatibleBrowser">
+      </div>
+      <div class="container top-header">
+       <div class="push-1">
+        <a href="http://www.colorado.gov" target="_new">
+         <img alt="Colorado: The Official State Web Portal" height="41" src="http://i.cotrip.org/images/banner_logo.png?v=00578" width="290"/>
+        </a>
+       </div>
+      </div>
+     </div>
+    </section>
+    <!--  </div> -->
+    <!-- cdot-nav navbar-default -->
+    <nav class="cdot-nav navbar navbar-inverse navbar-fixed-top" id="navigation" role="navigation">
+     <div class="container nav-bar-container" ng-controller="NavBarCtrl">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+       <button class="navbar-toggle collapsed" ng-click="toggleMenuCollapsed()" type="button">
+        <span class="sr-only">
+         Toggle navigation
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+        <span class="icon-bar">
+        </span>
+        Menu
+       </button>
+       <a class="navbar-toggle collapsed navbar_alert" ng-click="control.showingNotifications = !control.showingNotifications" ng-cloak="" ng-if="notificationCount&gt;0">
+        <img class="nav-link cotrip-nav-link" src="http://i.cotrip.org/images/AlertActive.png?v=00578"/>
+        {{notificationCount}}
+       </a>
+       <!--style="position:relative;margin-top: 12px;" -->
+       <div class="navbar-brand">
+        <img alt="Cotrip" border="0" class="image-responsive" height="34" src="http://i.cotrip.org/images/common/codot.png?v=00578" usemap="#nav-map" width="175"/>
+        <map name="nav-map">
+         <area alt="rect" class="image-link" coords="0,0,73,34" href="https://www.codot.gov/" shape="rect" target="_self" title="www.codot.gov">
+         </area>
+         <area alt="rect" class="image-link" coords="74,0,175,34" href="home.htm" shape="rect" title="cotrip.org/home">
+         </area>
+        </map>
+       </div>
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" collapse="isMenuCollapsed">
+       <ul class="nav navbar-nav">
+        <li class="home-link">
+         <a href="home.htm">
+          Home
+         </a>
+        </li>
+        <li class="travel-link">
+         <a href="travelAlerts.htm">
+          Travel Alerts
+         </a>
+        </li>
+        <li class="highways-link">
+         <a href="highways.htm">
+          Routes
+         </a>
+        </li>
+        <li class="rc-link">
+         <a href="map.htm#/roadConditions">
+          Road Conditions
+         </a>
+        </li>
+        <li class="speed-link">
+         <a href="map.htm#/speed">
+          Speeds
+         </a>
+        </li>
+        <li class="rw-link">
+         <a href="map.htm#/roadWork">
+          Road Work
+         </a>
+        </li>
+        <li class="truckers-link">
+         <a href="truckers.htm">
+          Truckers
+         </a>
+        </li>
+        <li class="snowplow-link">
+         <a href="snowplow.htm#/snowplow">
+          Snowplows
+         </a>
+        </li>
+        <li class="construction-report-link hidden-sm hidden-md hidden-lg">
+         <a href="constructionReport.htm">
+          Construction Report
+         </a>
+        </li>
+        <li class="notification-link" ng-cloak="">
+         <a ng-click="control.showingNotifications = !control.showingNotifications" ng-if="notificationCount&gt;0">
+          <img class="nav-link cotrip-nav-link" src="http://i.cotrip.org/images/AlertActive.png?v=00578"/>
+          {{notificationCount}}
+         </a>
+        </li>
+       </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+     </div>
+    </nav>
+   </div>
+   <!-- THIS IS THE RULE THAT DRIVES THE SLIDESHOW bg-slideshow  -->
+   <header class="clearfix container-fluid header base-header" ng-class="headerBgStyle" ng-controller="PageBgController">
+    <!--<div class="container-fluid"> -->
+    <section class="row header ">
+     <!-- Col 2 -->
+     <section class="col-xs-12 col-sm-12 col-md-12">
+      <div class="container mar-top">
+       <div class="row">
+        <!-- 20.0  AMBER ALERT INCLUDE ========================================================= -->
+        <script>
+         var notificationsEnabled = true;
+        </script>
+        <div class="row mar-bottom" collapse="!(notificationCount &gt;0 &amp;&amp; control.showingNotifications == true)" ng-cloak="">
+         <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-notification">
+          <div class="home-amber-announcement-section">
+           <button class="close" ng-click="control.showingNotifications = !control.showingNotifications" title="Close Notification(s)" type="button">
+            <span aria-hidden="true" class="glyphicon glyphicon-remove">
+            </span>
+           </button>
+           <app-notifications add-amber-alert="addAmberAlert" add-announcement="addAnnouncement" amber-alerts="amberAlerts" announcements="announcements">
+           </app-notifications>
+          </div>
+         </section>
+        </div>
+        <!-- END AMBER ALERT INCLUDE -->
+       </div>
+      </div>
+      <!-- 60.0 ADVERTISEMENT SECTION ========================================================================================= -->
+      <section class="mar-bottom-10">
+      </section>
+      <!-- Start  -->
+      <!-- first row start ====================================================== -->
+      <section class="home_two container">
+       <div class="row" ng-controller="Home2Controller">
+        <div class="row">
+         <section class="col-xs-12 col-sm-6 col-md-4">
+          <div class="hidden-xs hidden-sm hidden-md sidenav_home pad-top-30 pad-bottom-5">
+           <!-- 10.0 SIDEBAR NESTED SECTION ========================================================================================= -->
+           <section class="col-sm-1 hidden-xs">
+            <ul class="sidebar_nav pull-right mar-left-40 list-unstyled row">
+             <li class="static-left-nav-icon1">
+              <a href="https://www.codot.gov/travel" title="Link to CDOT Travel Page">
+              </a>
+             </li>
+             <li class="static-left-nav-icon2">
+              <a href="https://www.codot.gov/news" title="Link to CDOT News Page">
+              </a>
+             </li>
+             <li class="static-left-nav-icon3">
+              <a href="https://www.codot.gov/safety" title="Link to CDOT Safety Page">
+              </a>
+             </li>
+             <li class="static-left-nav-icon4">
+              <a href="https://www.codot.gov/performance" title="Link to CDOT Performance Page">
+              </a>
+             </li>
+             <li class="static-left-nav-icon5">
+              <a href="https://www.codot.gov/business" title="Link to CDOT Business Page">
+              </a>
+             </li>
+             <li class="static-left-nav-icon6">
+              <a href="https://www.codot.gov/programs-projects" title="Link to CDOT Programs &amp; Projects page">
+              </a>
+             </li>
+            </ul>
+           </section>
+          </div>
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/MapIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body">
+            <h2 class="text-center">
+             Interactive Map
+            </h2>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-streaming_camera" ng-href="/map.htm#roadConditions?focus=StreamingCameras" role="button">
+             Cameras
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-weather" ng-href="/map.htm#/roadConditions" role="button">
+             Road Conditions
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-speed" ng-href="/map.htm#/speed" role="button">
+             Speeds
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-road_work" ng-href="/map.htm#/roadWork" role="button">
+             Road Work
+            </a>
+           </div>
+          </div>
+         </section>
+         <section class="col-xs-12 col-sm-6 col-md-4 home-highway-section" ng-cloak="">
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/HighwayIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body white-dropdown">
+            <h2 class="text-center">
+             Route Information
+            </h2>
+            <div class="webkit-layout">
+             <div class="fill-flex mar-right-5">
+              <!-- dropdown button -->
+              <div class="webkit-layout">
+               <span class="highway-label">
+                From:
+               </span>
+               <div class="btn-group btn-block btn-block-highways center-block-highways " dropdown="" is-open="menu.fromisopen">
+                <button class="btn btn-white btn-lg btn-block center-block-highways dropdown-toggle" dropdown-toggle="" type="button">
+                 <span class="dropdown-btn-text">
+                  {{locationIdTextMap[control.fromLocationId] || 'From:'}}
+                 </span>
+                 <span class="caret">
+                 </span>
+                </button>
+                <ul class="dropdown-menu btn-block" role="menu">
+                 <li ng-repeat="commuteRoute in homeCommuteRoutes | unique:'fromCommuteLocationId'">
+                  <a ng-click="toggleDropdown('fromLocationId', commuteRoute.fromCommuteLocationId, 'fromisopen')">
+                   {{commuteRoute.fromLocationNameTxt}}
+                  </a>
+                 </li>
+                </ul>
+               </div>
+               <!-- dropdown button -->
+              </div>
+              <!-- dropdown button -->
+              <div class="webkit-layout">
+               <span class="highway-label">
+                To:
+               </span>
+               <div class="btn-group btn-block btn-block-highways center-block-highways " dropdown="" is-open="menu.toisopen">
+                <button class="btn btn-white btn-lg btn-block center-block-highways dropdown-toggle" dropdown-toggle="" type="button">
+                 <span class="dropdown-btn-text">
+                  {{locationIdTextMap[control.toLocationId] || 'To:'}}
+                 </span>
+                 <span class="caret">
+                 </span>
+                </button>
+                <ul class="dropdown-menu btn-block" role="menu">
+                 <li ng-repeat="commuteRoute in homeCommuteRoutes | filter:{'fromCommuteLocationId': control.fromLocationId} | unique:'toCommuteLocationId'">
+                  <a ng-click="toggleDropdown('toLocationId', commuteRoute.toCommuteLocationId, 'toisopen')">
+                   {{commuteRoute.toLocationNameTxt}}
+                  </a>
+                 </li>
+                </ul>
+               </div>
+               <!-- dropdown button -->
+              </div>
+             </div>
+             <div class="center-block mar-left-5">
+              <a class="btn btn-primary pull-right mar-top-5" ng-click="swapFromAndTo()" ng-disabled="!(commutePathAvailableLocations.indexOf(control.toLocationId+'~'+control.fromLocationId) != -1)" role="button">
+               <span aria-hidden="true" class="glyphicon glyphicon-retweet">
+               </span>
+              </a>
+             </div>
+            </div>
+            <div class="webkit-layout">
+             <span class="highway-label">
+              Via:
+             </span>
+             <!-- dropdown button -->
+             <div class="btn-group btn-block btn-block-highways center-block-highways pad-right-50 mar-top-10" dropdown="" is-open="menu.viaisopen">
+              <button class="btn btn-white btn-lg btn-block center-block-highways dropdown-toggle" dropdown-toggle="" type="button">
+               <span class="dropdown-btn-text">
+                {{control.viaLocation || (defaultVia[control.fromLocationId+'~'+control.toLocationId] ? defaultVia[control.fromLocationId+'~'+control.toLocationId] : 'Via')}}
+               </span>
+               <span class="caret">
+               </span>
+              </button>
+              <ul class="dropdown-menu btn-block" role="menu">
+               <li ng-repeat="commuteRoute in homeCommuteRoutes | filter:{'fromCommuteLocationId': control.fromLocationId, 'toCommuteLocationId' : control.toLocationId} | unique:'viaTxt'">
+                <a ng-click="toggleDropdown('viaLocation', commuteRoute.viaTxt, 'viaisopen')">
+                 {{commuteRoute.viaTxt}}
+                </a>
+               </li>
+              </ul>
+             </div>
+             <!-- dropdown button -->
+            </div>
+            <div class="center-block highway-info">
+             <a class="btn btn-primary center-block mar-top-5" ng-click="routeToHighway()" ng-disabled="!(commutePathAvailableLocations.indexOf(control.fromLocationId+'~'+control.toLocationId) != -1)" role="button">
+              Go
+             </a>
+            </div>
+           </div>
+          </div>
+         </section>
+         <section class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/AlertsIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body">
+            <h2 class="text-center">
+             Travel Alerts
+            </h2>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-home-alerts" ng-href="/travelAlerts.htm" role="button">
+             Statewide Alerts
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-hwy_shield_interstate70" ng-href="/travelAlerts.htm#?roadId=32" role="button">
+             I-70 Alerts
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-hwy_shield_interstate25" ng-href="/travelAlerts.htm#?roadId=31" role="button">
+             I-25 Alerts
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-hwy_shield_us_36" ng-href="/travelAlerts.htm#?roadId=40" role="button">
+             US 36 Alerts
+            </a>
+           </div>
+          </div>
+         </section>
+         <!-- second row start ====================================================== -->
+         <section class="col-xs-12 col-sm-6 col-md-4" ng-cloak="">
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/CameraIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body white-dropdown still-cameras">
+            <div ng-if="homeCameraTours.length&lt;=0">
+             <div class="appInfoNoData">
+              No Camera Tours to display
+             </div>
+            </div>
+            <!-- dropdown button -->
+            <div class="btn-group btn-block mar-top" dropdown="" is-open="menu.cameraisopen" ng-if="homeCameraTours.length&gt;0">
+             <button class="btn btn-white btn-lg btn-block dropdown-toggle" dropdown-toggle="" type="button">
+              <span ng-if="selectedCameraTour">
+               <span ng-bind-html="selectedCameraTour.TourName">
+               </span>
+              </span>
+              <span ng-if="!selectedCameraTour">
+               Select Camera Tour
+              </span>
+              <span class="caret">
+              </span>
+             </button>
+             <ul class="dropdown-menu btn-block white-dropdown" role="menu">
+              <li ng-repeat="cameraTour in homeCameraTours">
+               <a ng-click="toggleDropdown('selectedCameraTourId', cameraTour.CameraTourId, 'cameraisopen')">
+                <span ng-bind-html="cameraTour.TourName">
+                </span>
+               </a>
+              </li>
+             </ul>
+            </div>
+            <!-- dropdown button -->
+            <carousel interval="5000" ng-if="selectedCameraTour.CameraView">
+             <slide ng-repeat="slide in selectedCameraTour.CameraView">
+              <img data-update-image-version="" ng-if="slide.ImageLocation" ng-src="slide.ImageLocation"/>
+              <div>
+               <span class="card-headline">
+                <span ng-if="slide.ViewDescription">
+                 {{slide.ViewDescription}}
+                 <br/>
+                </span>
+                <span class="card-date">
+                 Last Updated: {{(slide.LastUpdatedDate | date : 'MM/d/yyyy h:mm a') || 'NA'}}
+                </span>
+               </span>
+              </div>
+             </slide>
+            </carousel>
+           </div>
+           <!-- end panel body -->
+          </div>
+         </section>
+         <section class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/TruckersIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body">
+            <h2 class="text-center">
+             Truckers
+            </h2>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-chain_tire" ng-href="/truckers.htm##chainLaws" role="button">
+             Chain Laws
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-chain_stations" ng-href="/map.htm#roadConditions?focus=ChainStation" role="button">
+             Chain Stations
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-harzard" ng-href="https://www.codot.gov/business/hazmat-routing" role="button" target="_self">
+             Hazmat
+            </a>
+            <a class="btn btn-white btn-lg center-block btn_home_size home-permit" ng-href="https://coopr.codot.gov/" role="button" target="_self">
+             Online Permits
+            </a>
+           </div>
+          </div>
+         </section>
+         <section class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-primary bg-opacity">
+           <div class="panel-heading">
+            <img class="header_icon img-responsive" src="http://i.cotrip.org/images/RadioIcon84x84.png?v=00578"/>
+           </div>
+           <div class="panel-body radio_signal">
+            <!-- 30.0 CAUROSEL NESTED SECTION =========================================================================================   -->
+            <section class="row home_carrousel">
+             <section class="col-xs-12">
+              <carousel class="mar-bottom" interval="5000">
+               <slide ng-repeat="ad in homePageAds">
+                <span ng-bind-html="ad.html">
+                </span>
+                <div class="express-lane-toll-ad mar-top" ng-if="ad.isExpressLaneAd">
+                 <!-- If express lane ad show the toll rate below the image -->
+                 <div class="mar-left-20" ng-repeat="alert in managedLaneAlerts">
+                  <app-managed-lane-alert alert="alert" details-url="alert.DetailURL">
+                  </app-managed-lane-alert>
+                 </div>
+                </div>
+               </slide>
+              </carousel>
+             </section>
+            </section>
+            <!-- end CAUROSEL NESTED SECTION  -->
+           </div>
+           <!-- end panel body -->
+          </div>
+          <!-- end panel -->
+         </section>
+        </div>
+        <!-- row -->
+       </div>
+       <!-- row -->
+      </section>
+      <!-- home_two container -->
+      <!-- end -->
+     </section>
+    </section>
+   </header>
+   <!--  row end -->
+   <!-- HEADER END =================================================================================== -->
+   <!-- 80.0 1st FOOTER START =================================================================================== -->
+   <footer ng-cloak="">
+    <div class="container-fluid text-center">
+     <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+       <div class="btn-group mode-icons">
+        <button class="btn footer-express-toll" onclick="window.open('https://www.expresstoll.com','_self');" title="Express Toll" type="button">
+         <img onerror="this.src=/images/common/express_toll_45x128.png" src="http://i.cotrip.org/images/common/express_toll_45x128.png?v=00578" style="width:45px;"/>
+        </button>
+        <button alt="Bicycle Program" class="btn" onclick="window.open('https://www.codot.gov/programs/bikeped','_self');" title="Bicycle Program" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/bike.png" src="http://i.cotrip.org/images/common/bike.svg?v=00578"/>
+        </button>
+        <button alt="Transit and Rail" class="btn" onclick="window.open('https://www.codot.gov/topcontent/transitfooter.html','_self');" title="Transit and Rail" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/bus.png" src="http://i.cotrip.org/images/common/bus.svg?v=00578"/>
+        </button>
+        <button alt="Aeronautics" class="btn" onclick="window.open('https://www.codot.gov/programs/aeronautics','_self');" title="Aeronautics" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/plane.png" src="http://i.cotrip.org/images/common/plane.svg?v=00578"/>
+        </button>
+        <button alt="Transit and Rail" class="btn" onclick="window.open('https://www.codot.gov/programs/transitandrail','_self');" title="Transit and Rail" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/train.png" src="http://i.cotrip.org/images/common/train.svg?v=00578"/>
+        </button>
+        <button alt="Autos" class="btn" onclick="window.open('https://www.codot.gov/topcontent/motorvehiclefooter','_self');" title="Autos" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/car.png" src="http://i.cotrip.org/images/common/car.svg?v=00578"/>
+        </button>
+        <button alt="Pedestrian Program" class="btn" onclick="window.open('https://www.codot.gov/programs/bikeped/information-for-pedestrians','_self');" title="Pedestrian Program" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/ped.png" src="http://i.cotrip.org/images/common/ped.svg?v=00578"/>
+        </button>
+        <button alt="Commercial Vehicles" class="btn" onclick="window.open('https://www.codot.gov/topcontent/commercialvehiclefooter','_self');" title="Commercial Vehicles" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/truck.png" src="http://i.cotrip.org/images/common/truck.svg?v=00578"/>
+        </button>
+       </div>
+       <a href="https://www.codot.gov/topcontent/contact-cdot">
+        <button class="btn btn-xs btn-default contact-us" type="button">
+         <span alt="Contact Us" class="contact-us-text" title="Contact Us">
+          Contact Us
+         </span>
+         <img alt="Contact Us" onerror="this.src=theme/cotrip.org/images/common/contact_speechbubble.png" src="http://i.cotrip.org/images/common/contact_speechbubble.svg?v=00578" title="Contact Us"/>
+         <img alt="Contact Us" onerror="this.src=theme/cotrip.org/images/common/contact_phone.png" src="http://i.cotrip.org/images/common/contact_phone.svg?v=00578" title="Contact Us"/>
+         <img alt="Contact Us" onerror="this.src=theme/cotrip.org/images/common/contact_511.png" src="http://i.cotrip.org/images/common/contact_511.svg?v=00578" title="Contact Us"/>
+        </button>
+       </a>
+       <div class="btn-group social-icons">
+        <button alt="Facebook" class="btn" onclick="window.open('https://www.facebook.com/coloradodot');" title="Facebook" type="button">
+         <img class="img-responsive" onerror="this.src=theme/cotrip.org/images/common/facebook.png" src="http://i.cotrip.org/images/common/facebook.svg?v=00578"/>
+        </button>
+        <button alt="Twitter" class="btn" onclick="window.open('https://twitter.com/ColoradoDOT');" title="Twitter" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/twitter.png" src="http://i.cotrip.org/images/common/twitter.svg?v=00578"/>
+        </button>
+        <button alt="YouTube" class="btn" onclick="window.open('https://www.youtube.com/channel/UC0WFfiQ-SE4kV07saKZdueA');" title="YouTube" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/common/youtube.png" src="http://i.cotrip.org/images/common/youtube.svg?v=00578"/>
+        </button>
+        <button alt="LinkedIn" class="btn" onclick="window.open('https://www.linkedin.com/company/3690818');" title="LinkedIn" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/linkedin.png" src="http://i.cotrip.org/images/common/linkedin.svg?v=00578"/>
+        </button>
+        <button alt="Mobile Application Download" class="btn" onclick="window.open('https://www.codot.gov/travel/get-connected.html');" title="Mobile Application Download" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/footer_message.png" src="http://i.cotrip.org/images/common/footer_message.svg?v=00578"/>
+        </button>
+        <button alt="Email List Signup" class="btn" onclick="window.open('http://subscription.cotrip.org');" title="Email List Signup" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/footer_mail.png" src="http://i.cotrip.org/images/common/footer_mail.svg?v=00578"/>
+        </button>
+        <button alt="Flickr" class="btn" onclick="window.open('https://www.flickr.com/photos/coloradodot');" title="Flickr" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/footer_flikr.png" src="http://i.cotrip.org/images/common/footer_flikr.svg?v=00578"/>
+        </button>
+        <button class="btn" onclick="window.open('/faq.htm','_self');" title="FAQ" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/FAQ50x50.png" src="http://i.cotrip.org/images/common/FAQ50x50.svg?v=00578"/>
+        </button>
+        <button class="btn" onclick="window.open('/xmlFeed.htm','_self');" title="XML" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/XML50x50.png" src="http://i.cotrip.org/images/common/XML50x50.svg?v=00578"/>
+        </button>
+        <button class="btn" onclick="window.open('http://www.cotrip.org/weatherReport.htm','_self');" title="Download Road Conditions Report" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/pdf.png" src="http://i.cotrip.org/images/common/pdf.svg?v=00578"/>
+        </button>
+        <button class="btn" onclick="window.open('/constructionReport.htm','_self');" title="Run Construction Report" type="button">
+         <img onerror="this.src=theme/cotrip.org/images/pdf.png" src="http://i.cotrip.org/images/common/construction.svg?v=00578"/>
+        </button>
+       </div>
+       <span class="build-info">
+        Build No: 00578
+       </span>
+      </div>
+      <!-- end row -->
+     </div>
+     <!-- end container -->
+    </div>
+   </footer>
+  </body>
+  <script type="text/javascript">
+   var theme = 'cotrip.org';
+ 		var buildNum = '00578';
+  </script>
+  <script type="text/javascript">
+   IMAGESERVER_HOSTS = new Array("i.cotrip.org");
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular-sanitize.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular-animate.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular-route.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular-aria.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular/1.3.1/js/angular-touch.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular-storage/0.3.0/js/ngStorage.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/angular-bootstrap/0.12.1/js/ui-bootstrap.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="thirdparty/hammer/2.0.4/js/hammer.min.js?v=00578" type="text/javascript">
+  </script>
+  <script src="/home2/js/Home2.min.js?v=00578" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var commuteRoutesJSON = {"CommuteRoute":[{"id":"7","viaTxt":"US-36","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"48.5","fromMMFlt":"37.6","toCommuteLocationId":"11","orderNum":"160","fromCommuteLocationId":"10","toLocationNameTxt":"Broomfield (US 36/Wadsworth)"},{"id":"8","viaTxt":"I-25","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"184.21","fromMMFlt":"37.6","toCommuteLocationId":"21","orderNum":"170","fromCommuteLocationId":"10","toLocationNameTxt":"Castle Rock (I-25/US 85)"},{"id":"9","viaTxt":"I-225","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"184.21","fromMMFlt":"37.6","toCommuteLocationId":"21","orderNum":"175","fromCommuteLocationId":"10","toLocationNameTxt":"Castle Rock (I-25/US 85)"},{"id":"11","viaTxt":"I-270","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"7","fromMMFlt":"37.6","toCommuteLocationId":"32","orderNum":"190","fromCommuteLocationId":"10","toLocationNameTxt":"DIA (E-470/Pena Blvd)"},{"id":"10","viaTxt":"I-70","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"7","fromMMFlt":"37.6","toCommuteLocationId":"32","orderNum":"180","fromCommuteLocationId":"10","toLocationNameTxt":"DIA (E-470/Pena Blvd)"},{"id":"5","viaTxt":"I-25","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"26.2","fromMMFlt":"37.6","toCommuteLocationId":"20","orderNum":"140","fromCommuteLocationId":"10","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"6","viaTxt":"I-225","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"26.2","fromMMFlt":"37.6","toCommuteLocationId":"20","orderNum":"150","fromCommuteLocationId":"10","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"3","viaTxt":"I-25","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"200.09","fromMMFlt":"37.6","toCommuteLocationId":"19","orderNum":"120","fromCommuteLocationId":"10","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"4","viaTxt":"I-70","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"200.09","fromMMFlt":"37.6","toCommuteLocationId":"19","orderNum":"130","fromCommuteLocationId":"10","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"2","viaTxt":"I-25","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"211","fromMMFlt":"37.6","toCommuteLocationId":"18","orderNum":"110","fromCommuteLocationId":"10","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"13","viaTxt":"US-6","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"260","fromMMFlt":"37.6","toCommuteLocationId":"29","orderNum":"220","fromCommuteLocationId":"10","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"12","viaTxt":"I-70","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"260","fromMMFlt":"37.6","toCommuteLocationId":"29","orderNum":"200","fromCommuteLocationId":"10","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"14","viaTxt":"I-25","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"223.05","fromMMFlt":"37.6","toCommuteLocationId":"14","orderNum":"230","fromCommuteLocationId":"10","toLocationNameTxt":"Northglenn (I-25/120th Ave)"},{"id":"1","viaTxt":"US-36","fromLocationNameTxt":"Boulder (US 36/Baseline)","toMMFlt":"217","fromMMFlt":"37.6","toCommuteLocationId":"12","orderNum":"100","fromCommuteLocationId":"10","toLocationNameTxt":"US 36/I-25"},{"id":"15","viaTxt":"US-36","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"37.6","fromMMFlt":"48.5","toCommuteLocationId":"10","orderNum":"100","fromCommuteLocationId":"11","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"19","viaTxt":"I-25","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"26.2","fromMMFlt":"48.5","toCommuteLocationId":"20","orderNum":"140","fromCommuteLocationId":"11","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"20","viaTxt":"I-225","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"26.2","fromMMFlt":"48.5","toCommuteLocationId":"20","orderNum":"150","fromCommuteLocationId":"11","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"18","viaTxt":"I-70","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"200.09","fromMMFlt":"48.5","toCommuteLocationId":"19","orderNum":"130","fromCommuteLocationId":"11","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"17","viaTxt":"I-25","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"200.09","fromMMFlt":"48.5","toCommuteLocationId":"19","orderNum":"120","fromCommuteLocationId":"11","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"16","viaTxt":"I-25","fromLocationNameTxt":"Broomfield (US 36/Wadsworth)","toMMFlt":"211","fromMMFlt":"48.5","toCommuteLocationId":"18","orderNum":"110","fromCommuteLocationId":"11","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"23","viaTxt":"I-25","fromLocationNameTxt":"Castle Rock (I-25/US 85)","toMMFlt":"156","fromMMFlt":"184.21","toCommuteLocationId":"23","orderNum":"120","fromCommuteLocationId":"21","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"21","viaTxt":"I-25","fromLocationNameTxt":"Castle Rock (I-25/US 85)","toMMFlt":"200.09","fromMMFlt":"184.21","toCommuteLocationId":"19","orderNum":"100","fromCommuteLocationId":"21","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"22","viaTxt":"I-25","fromLocationNameTxt":"Castle Rock (I-25/US 85)","toMMFlt":"211","fromMMFlt":"184.21","toCommuteLocationId":"18","orderNum":"110","fromCommuteLocationId":"21","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"25","viaTxt":"I-25","fromLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)","toMMFlt":"184.21","fromMMFlt":"156","toCommuteLocationId":"21","orderNum":"110","fromCommuteLocationId":"23","toLocationNameTxt":"Castle Rock (I-25/US 85)"},{"id":"26","viaTxt":"I-25","fromLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)","toMMFlt":"200.09","fromMMFlt":"156","toCommuteLocationId":"19","orderNum":"120","fromCommuteLocationId":"23","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"24","viaTxt":"I-25","fromLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)","toMMFlt":"211","fromMMFlt":"156","toCommuteLocationId":"18","orderNum":"100","fromCommuteLocationId":"23","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"69","viaTxt":"I-270","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"37.6","fromMMFlt":"7","toCommuteLocationId":"10","orderNum":"160","fromCommuteLocationId":"32","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"70","viaTxt":"I-225","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"156","fromMMFlt":"7","toCommuteLocationId":"23","orderNum":"170","fromCommuteLocationId":"32","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"68","viaTxt":"I-70/I-225","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"200.09","fromMMFlt":"7","toCommuteLocationId":"19","orderNum":"150","fromCommuteLocationId":"32","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"67","viaTxt":"I-70","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"211","fromMMFlt":"7","toCommuteLocationId":"18","orderNum":"140","fromCommuteLocationId":"32","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"28","viaTxt":"I-70","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"180","fromMMFlt":"7","toCommuteLocationId":"24","orderNum":"110","fromCommuteLocationId":"32","toLocationNameTxt":"E. Vail (I-70 Exit 182)"},{"id":"27","viaTxt":"I-70","fromLocationNameTxt":"DIA (E-470/Pena Blvd)","toMMFlt":"206","fromMMFlt":"7","toCommuteLocationId":"26","orderNum":"100","fromCommuteLocationId":"32","toLocationNameTxt":"Silverthorne (I-70 Exit 205)"},{"id":"36","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"37.6","fromMMFlt":"26.2","toCommuteLocationId":"10","orderNum":"100","fromCommuteLocationId":"20","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"37","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"48.5","fromMMFlt":"26.2","toCommuteLocationId":"11","orderNum":"110","fromCommuteLocationId":"20","toLocationNameTxt":"Broomfield (US 36/Wadsworth)"},{"id":"38","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"232","fromMMFlt":"26.2","toCommuteLocationId":"13","orderNum":"120","fromCommuteLocationId":"20","toLocationNameTxt":"Erie (I-25/160th Ave)"},{"id":"40","viaTxt":"C-470","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"260","fromMMFlt":"26.2","toCommuteLocationId":"29","orderNum":"140","fromCommuteLocationId":"20","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"41","viaTxt":"C-470","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"17","fromMMFlt":"26.2","toCommuteLocationId":"34","orderNum":"150","fromCommuteLocationId":"20","toLocationNameTxt":"Highlands Ranch (C-470/US 85)"},{"id":"39","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/C-470)","toMMFlt":"223.05","fromMMFlt":"26.2","toCommuteLocationId":"14","orderNum":"130","fromCommuteLocationId":"20","toLocationNameTxt":"Northglenn (I-25/120th Ave)"},{"id":"42","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"37.6","fromMMFlt":"200.09","toCommuteLocationId":"10","orderNum":"100","fromCommuteLocationId":"19","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"43","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"48.5","fromMMFlt":"200.09","toCommuteLocationId":"11","orderNum":"110","fromCommuteLocationId":"19","toLocationNameTxt":"Broomfield (US 36/Wadsworth)"},{"id":"48","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"156","fromMMFlt":"200.09","toCommuteLocationId":"23","orderNum":"160","fromCommuteLocationId":"19","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"44","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"232","fromMMFlt":"200.09","toCommuteLocationId":"13","orderNum":"120","fromCommuteLocationId":"19","toLocationNameTxt":"Erie (I-25/160th Ave)"},{"id":"46","viaTxt":"C-470","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"260","fromMMFlt":"200.09","toCommuteLocationId":"29","orderNum":"140","fromCommuteLocationId":"19","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"47","viaTxt":"C-470","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"17","fromMMFlt":"200.09","toCommuteLocationId":"34","orderNum":"150","fromCommuteLocationId":"19","toLocationNameTxt":"Highlands Ranch (C-470/US 85)"},{"id":"45","viaTxt":"I-25","fromLocationNameTxt":"DTC (I-25/I-225)","toMMFlt":"223.05","fromMMFlt":"200.09","toCommuteLocationId":"14","orderNum":"130","fromCommuteLocationId":"19","toLocationNameTxt":"Northglenn (I-25/120th Ave)"},{"id":"29","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"37.6","fromMMFlt":"211","toCommuteLocationId":"10","orderNum":"100","fromCommuteLocationId":"18","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"30","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"48.5","fromMMFlt":"211","toCommuteLocationId":"11","orderNum":"110","fromCommuteLocationId":"18","toLocationNameTxt":"Broomfield (US 36/Wadsworth)"},{"id":"34","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"184.21","fromMMFlt":"211","toCommuteLocationId":"21","orderNum":"150","fromCommuteLocationId":"18","toLocationNameTxt":"Castle Rock (I-25/US 85)"},{"id":"35","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"156","fromMMFlt":"211","toCommuteLocationId":"23","orderNum":"160","fromCommuteLocationId":"18","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"31","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"232","fromMMFlt":"211","toCommuteLocationId":"13","orderNum":"120","fromCommuteLocationId":"18","toLocationNameTxt":"Erie (I-25/160th Ave)"},{"id":"33","viaTxt":"US-6","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"260","fromMMFlt":"211","toCommuteLocationId":"29","orderNum":"140","fromCommuteLocationId":"18","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"32","viaTxt":"I-25","fromLocationNameTxt":"Downtown (I-25/Speer Blvd)","toMMFlt":"223.05","fromMMFlt":"211","toCommuteLocationId":"14","orderNum":"130","fromCommuteLocationId":"18","toLocationNameTxt":"Northglenn (I-25/120th Ave)"},{"id":"64","viaTxt":"I-70","fromLocationNameTxt":"E. Vail (I-70 Exit 182)","toMMFlt":"156","fromMMFlt":"180","toCommuteLocationId":"23","orderNum":"100","fromCommuteLocationId":"24","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"65","viaTxt":"I-70","fromLocationNameTxt":"E. Vail (I-70 Exit 182)","toMMFlt":"7","fromMMFlt":"180","toCommuteLocationId":"32","orderNum":"110","fromCommuteLocationId":"24","toLocationNameTxt":"DIA (E-470/Pena Blvd)"},{"id":"71","viaTxt":"US-6","fromLocationNameTxt":"E. Vail (I-70 Exit 182)","toMMFlt":"211","fromMMFlt":"180","toCommuteLocationId":"18","orderNum":"150","fromCommuteLocationId":"24","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"66","viaTxt":"I-70","fromLocationNameTxt":"E. Vail (I-70 Exit 182)","toMMFlt":"260","fromMMFlt":"180","toCommuteLocationId":"29","orderNum":"100","fromCommuteLocationId":"24","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"72","viaTxt":"US-36","fromLocationNameTxt":"Erie (I-25/160th Ave)","toMMFlt":"37.6","fromMMFlt":"232","toCommuteLocationId":"10","orderNum":"140","fromCommuteLocationId":"13","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"51","viaTxt":"I-25","fromLocationNameTxt":"Erie (I-25/160th Ave)","toMMFlt":"26.2","fromMMFlt":"232","toCommuteLocationId":"20","orderNum":"120","fromCommuteLocationId":"13","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"50","viaTxt":"I-25","fromLocationNameTxt":"Erie (I-25/160th Ave)","toMMFlt":"200.09","fromMMFlt":"232","toCommuteLocationId":"19","orderNum":"110","fromCommuteLocationId":"13","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"49","viaTxt":"I-25","fromLocationNameTxt":"Erie (I-25/160th Ave)","toMMFlt":"211","fromMMFlt":"232","toCommuteLocationId":"18","orderNum":"100","fromCommuteLocationId":"13","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"73","viaTxt":"C-470","fromLocationNameTxt":"Golden (I-70/C-470)","toMMFlt":"26.2","fromMMFlt":"260","toCommuteLocationId":"20","orderNum":"150","fromCommuteLocationId":"29","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"53","viaTxt":"C-470","fromLocationNameTxt":"Golden (I-70/C-470)","toMMFlt":"200.09","fromMMFlt":"260","toCommuteLocationId":"19","orderNum":"110","fromCommuteLocationId":"29","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"52","viaTxt":"US-6","fromLocationNameTxt":"Golden (I-70/C-470)","toMMFlt":"211","fromMMFlt":"260","toCommuteLocationId":"18","orderNum":"100","fromCommuteLocationId":"29","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"55","viaTxt":"I-70","fromLocationNameTxt":"Golden (I-70/C-470)","toMMFlt":"180","fromMMFlt":"260","toCommuteLocationId":"24","orderNum":"130","fromCommuteLocationId":"29","toLocationNameTxt":"E. Vail (I-70 Exit 182)"},{"id":"54","viaTxt":"I-70","fromLocationNameTxt":"Golden (I-70/C-470)","toMMFlt":"206","fromMMFlt":"260","toCommuteLocationId":"26","orderNum":"120","fromCommuteLocationId":"29","toLocationNameTxt":"Silverthorne (I-70 Exit 205)"},{"id":"56","viaTxt":"C-470","fromLocationNameTxt":"Highlands Ranch (C-470/US 85)","toMMFlt":"26.2","fromMMFlt":"17","toCommuteLocationId":"20","orderNum":"100","fromCommuteLocationId":"34","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"57","viaTxt":"I-25","fromLocationNameTxt":"Highlands Ranch (C-470/US 85)","toMMFlt":"200.09","fromMMFlt":"17","toCommuteLocationId":"19","orderNum":"110","fromCommuteLocationId":"34","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"74","viaTxt":"I-25","fromLocationNameTxt":"Highlands Ranch (C-470/US 85)","toMMFlt":"211","fromMMFlt":"17","toCommuteLocationId":"18","orderNum":"130","fromCommuteLocationId":"34","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"75","viaTxt":"C-470","fromLocationNameTxt":"Highlands Ranch (C-470/US 85)","toMMFlt":"206","fromMMFlt":"17","toCommuteLocationId":"26","orderNum":"140","fromCommuteLocationId":"34","toLocationNameTxt":"Silverthorne (I-70 Exit 205)"},{"id":"77","viaTxt":"US-36","fromLocationNameTxt":"Northglenn (I-25/120th Ave)","toMMFlt":"37.6","fromMMFlt":"223.05","toCommuteLocationId":"10","orderNum":"150","fromCommuteLocationId":"14","toLocationNameTxt":"Boulder (US 36/Baseline)"},{"id":"61","viaTxt":"I-25","fromLocationNameTxt":"Northglenn (I-25/120th Ave)","toMMFlt":"26.2","fromMMFlt":"223.05","toCommuteLocationId":"20","orderNum":"120","fromCommuteLocationId":"14","toLocationNameTxt":"DTC (I-25/C-470)"},{"id":"60","viaTxt":"I-25","fromLocationNameTxt":"Northglenn (I-25/120th Ave)","toMMFlt":"200.09","fromMMFlt":"223.05","toCommuteLocationId":"19","orderNum":"110","fromCommuteLocationId":"14","toLocationNameTxt":"DTC (I-25/I-225)"},{"id":"59","viaTxt":"I-25","fromLocationNameTxt":"Northglenn (I-25/120th Ave)","toMMFlt":"211","fromMMFlt":"223.05","toCommuteLocationId":"18","orderNum":"100","fromCommuteLocationId":"14","toLocationNameTxt":"Downtown (I-25/Speer Blvd)"},{"id":"76","viaTxt":"US-6","fromLocationNameTxt":"Northglenn (I-25/120th Ave)","toMMFlt":"260","fromMMFlt":"223.05","toCommuteLocationId":"29","orderNum":"140","fromCommuteLocationId":"14","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"62","viaTxt":"I-70","fromLocationNameTxt":"Silverthorne (I-70 Exit 205)","toMMFlt":"156","fromMMFlt":"206","toCommuteLocationId":"23","orderNum":"100","fromCommuteLocationId":"26","toLocationNameTxt":"Colorado Springs (I-25/Academy Blvd)"},{"id":"63","viaTxt":"I-70","fromLocationNameTxt":"Silverthorne (I-70 Exit 205)","toMMFlt":"7","fromMMFlt":"206","toCommuteLocationId":"32","orderNum":"110","fromCommuteLocationId":"26","toLocationNameTxt":"DIA (E-470/Pena Blvd)"},{"id":"78","viaTxt":"I-70","fromLocationNameTxt":"Silverthorne (I-70 Exit 205)","toMMFlt":"260","fromMMFlt":"206","toCommuteLocationId":"29","orderNum":"140","fromCommuteLocationId":"26","toLocationNameTxt":"Golden (I-70/C-470)"},{"id":"58","viaTxt":"US-36","fromLocationNameTxt":"US 36/I-25","toMMFlt":"37.6","fromMMFlt":"217","toCommuteLocationId":"10","orderNum":"100","fromCommuteLocationId":"12","toLocationNameTxt":"Boulder (US 36/Baseline)"}]};
+  </script>
+  <script type="text/javascript">
+   var cameraTourJSON = {"CameraDetails":{"Header":{"GeneratedDate":"2018-06-24T02:43:41.010-06:00","Domain":"cotrip.org,www.cotrip.org,beta.cotrip.org,www.beta.cotrip.org,m.cotrip.org,cell.cotrip.org,go.cotrip.org,data.cotrip.org,i.cotrip.org,legacy.cotrip.org,www.legacy.cotrip.org","EntityId":"1"},"CameraTour":[{"CameraView":[{"ViewDescription":"Traffic in lanes closest to camera moving West","CameraId":"10129","DisplayOrder":"1","RoadId":"32","CameraType":"Still","CameraViewId":"10329","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W254-65-W.jpg","LastUpdatedDate":"2018-06-24T02:38:13.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"1.1 mi E of Genesee Park Int","MileMarker":"254.65","RoadName":"I-70"},{"ViewDescription":"I-70 Looking West","CameraId":"10517","DisplayOrder":"2","RoadId":"32","CameraType":"Still","CameraViewId":"11148","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E195-30-W.jpg","LastUpdatedDate":"2018-06-24T02:39:12.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"CO-91 Copper Mtn","MileMarker":"195.3","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10100","DisplayOrder":"3","RoadId":"32","CameraType":"Still","CameraViewId":"10237","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E247-60-W.jpg","LastUpdatedDate":"2018-06-24T02:40:16.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"Beaver Brook Int - EB","MileMarker":"247.6","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10010","DisplayOrder":"4","RoadId":"32","CameraType":"Still","CameraViewId":"12256","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E241-70-W.jpg","LastUpdatedDate":"2018-06-24T02:38:01.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.6 mi W of VM Tnl","MileMarker":"241.7","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving West","CameraId":"10008","DisplayOrder":"5","RoadId":"32","CameraType":"Still","CameraViewId":"10018","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W228-05-W.jpg","LastUpdatedDate":"2018-06-24T02:40:19.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.1 mi E of 15th St","MileMarker":"228.05","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving West","CameraId":"10137","DisplayOrder":"6","RoadId":"32","CameraType":"Still","CameraViewId":"10340","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W217-40-W.jpg","LastUpdatedDate":"2018-06-24T02:40:15.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"1.0 mi W of Herman Gulch Rd","MileMarker":"217.4","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10133","DisplayOrder":"7","RoadId":"32","CameraType":"Still","CameraViewId":"10334","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E202-35-W.jpg","LastUpdatedDate":"2018-06-24T02:38:44.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"CO-9 Summit Blvd","MileMarker":"202.35","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving West","CameraId":"10540","DisplayOrder":"8","RoadId":"32","CameraType":"Still","CameraViewId":"11816","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W189-15-W.jpg","LastUpdatedDate":"2018-06-21T08:50:58.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi W of Vail Pass Summit","MileMarker":"189.15","RoadName":"I-70"}],"Status":"enabled","CameraTourId":"10570","Location":{"Latitude":"39.70191","Longitude":"-105.20215"},"TourName":"I-70 Westbound C-470 to Vail","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"I-70 Looking East","CameraId":"10517","DisplayOrder":"1","RoadId":"32","CameraType":"Still","CameraViewId":"11147","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E195-30-E.jpg","LastUpdatedDate":"2018-06-24T02:39:14.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"CO-91 Copper Mtn","MileMarker":"195.3","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10537","DisplayOrder":"2","RoadId":"32","CameraType":"Still","CameraViewId":"11804","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E186-40-E.jpg","LastUpdatedDate":"2018-06-24T02:38:13.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"3.0 mi W of Vail Pass Summit","MileMarker":"186.4","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10133","DisplayOrder":"3","RoadId":"32","CameraType":"Still","CameraViewId":"10335","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E202-35-E.jpg","LastUpdatedDate":"2018-06-24T02:38:49.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"CO-9 Summit Blvd","MileMarker":"202.35","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving East","CameraId":"10137","DisplayOrder":"4","RoadId":"32","CameraType":"Still","CameraViewId":"10341","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W217-40-E.jpg","LastUpdatedDate":"2018-06-24T02:40:18.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"1.0 mi W of Herman Gulch Rd","MileMarker":"217.4","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving East","CameraId":"10008","DisplayOrder":"5","RoadId":"32","CameraType":"Still","CameraViewId":"10019","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W228-05-E.jpg","LastUpdatedDate":"2018-06-24T02:40:24.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.1 mi E of 15th St","MileMarker":"228.05","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10010","DisplayOrder":"6","RoadId":"32","CameraType":"Still","CameraViewId":"12257","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E241-70-E.jpg","LastUpdatedDate":"2018-06-24T02:38:06.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.6 mi W of VM Tnl","MileMarker":"241.7","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10097","DisplayOrder":"7","RoadId":"32","CameraType":"Still","CameraViewId":"10229","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E246-50-E.jpg","LastUpdatedDate":"2018-06-24T02:40:19.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Beaver Brook W Int","MileMarker":"246.5","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving East","CameraId":"10129","DisplayOrder":"8","RoadId":"32","CameraType":"Still","CameraViewId":"10328","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W254-65-E.jpg","LastUpdatedDate":"2018-06-24T02:38:16.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"1.1 mi E of Genesee Park Int","MileMarker":"254.65","RoadName":"I-70"}],"Status":"enabled","CameraTourId":"10571","Location":{"Latitude":"39.64136","Longitude":"-106.35946"},"TourName":"I-70 Eastbound Vail to C-470","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes farthest from camera moving North","CameraId":"10061","DisplayOrder":"1","RoadId":"31","CameraType":"Still","CameraViewId":"12297","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S201-55-N.jpg","LastUpdatedDate":"2018-06-24T02:41:01.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"US-285 Hampden Ave","MileMarker":"201.55","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10053","DisplayOrder":"2","RoadId":"31","CameraType":"Still","CameraViewId":"10152","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N197-10-N.jpg","LastUpdatedDate":"2018-06-24T02:40:09.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"0.1 mi S of CO-88 Arapahoe Rd","MileMarker":"197.1","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10145","DisplayOrder":"3","RoadId":"31","CameraType":"Still","CameraViewId":"12151","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N205-95-N.jpg","LastUpdatedDate":"2018-06-24T02:38:06.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"Downing St","MileMarker":"205.9","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10050","DisplayOrder":"4","RoadId":"31","CameraType":"Still","CameraViewId":"12138","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N207-70-N.jpg","LastUpdatedDate":"2018-06-24T02:40:25.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"0.3 mi S of Alameda Ave","MileMarker":"207.7","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10197","DisplayOrder":"5","RoadId":"31","CameraType":"Still","CameraViewId":"12119","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N217-60-N.jpg","LastUpdatedDate":"2018-06-24T02:38:38.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"0.6 mi N of US-36","MileMarker":"217.6","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving North","CameraId":"10194","DisplayOrder":"6","RoadId":"31","CameraType":"Still","CameraViewId":"11010","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S217-95-N.jpg","LastUpdatedDate":"2018-06-24T02:38:38.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"0.5 mi S of 84th Ave","MileMarker":"217.95","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10179","DisplayOrder":"7","RoadId":"31","CameraType":"Still","CameraViewId":"10417","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N223-00-N.jpg","LastUpdatedDate":"2018-06-24T02:38:38.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"CO-128 120th Ave","MileMarker":"223","RoadName":"I-25"}],"Status":"enabled","CameraTourId":"10572","Location":{"Latitude":"39.59232","Longitude":"-104.88346"},"TourName":"I-25 Northbound Denver Metro","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10179","DisplayOrder":"1","RoadId":"31","CameraType":"Still","CameraViewId":"10418","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N223-00-S.jpg","LastUpdatedDate":"2018-06-24T02:38:36.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CO-128 120th Ave","MileMarker":"223","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving South","CameraId":"10194","DisplayOrder":"2","RoadId":"31","CameraType":"Still","CameraViewId":"11011","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S217-95-S.jpg","LastUpdatedDate":"2018-06-24T02:38:35.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"0.5 mi S of 84th Ave","MileMarker":"217.95","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10197","DisplayOrder":"3","RoadId":"31","CameraType":"Still","CameraViewId":"12120","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N217-60-S.jpg","LastUpdatedDate":"2018-06-24T02:38:35.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"0.6 mi N of US-36","MileMarker":"217.6","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving South","CameraId":"10019","DisplayOrder":"4","RoadId":"31","CameraType":"Still","CameraViewId":"12135","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S212-05-S.jpg","LastUpdatedDate":"2018-06-24T02:38:25.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"20th St","MileMarker":"212.05","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10018","DisplayOrder":"5","RoadId":"31","CameraType":"Still","CameraViewId":"10049","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N211-60-S.jpg","LastUpdatedDate":"2018-06-24T02:40:18.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi N of Speer Blvd-ML","MileMarker":"211.6","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10050","DisplayOrder":"6","RoadId":"31","CameraType":"Still","CameraViewId":"12137","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N207-70-S.jpg","LastUpdatedDate":"2018-06-24T02:40:22.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"0.3 mi S of Alameda Ave","MileMarker":"207.7","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10145","DisplayOrder":"7","RoadId":"31","CameraType":"Still","CameraViewId":"12152","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N205-95-S.jpg","LastUpdatedDate":"2018-06-24T02:38:08.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"Downing St","MileMarker":"205.9","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving South","CameraId":"10061","DisplayOrder":"8","RoadId":"31","CameraType":"Still","CameraViewId":"12298","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S201-55-S.jpg","LastUpdatedDate":"2018-06-24T02:41:06.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"US-285 Hampden Ave","MileMarker":"201.55","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10053","DisplayOrder":"9","RoadId":"31","CameraType":"Still","CameraViewId":"10153","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N197-10-S.jpg","LastUpdatedDate":"2018-06-24T02:40:06.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"0.1 mi S of CO-88 Arapahoe Rd","MileMarker":"197.1","RoadName":"I-25"}],"Status":"enabled","CameraTourId":"10573","Location":{"Latitude":"39.91338","Longitude":"-104.99"},"TourName":"I-25 Southbound Denver Metro","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10028","DisplayOrder":"1","RoadId":"40","CameraType":"Still","CameraViewId":"11307","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E056-80-W.jpg","LastUpdatedDate":"2018-06-24T02:40:22.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi W of Broadway-PML","MileMarker":"56.8","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes on right moving West","CameraId":"10032","DisplayOrder":"2","RoadId":"40","CameraType":"Still","CameraViewId":"10082","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036W054-65-W.jpg","LastUpdatedDate":"2018-06-24T02:40:23.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"US-36  0.2mi W of Federal Blvd","MileMarker":"54.65","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10031","DisplayOrder":"3","RoadId":"40","CameraType":"Still","CameraViewId":"10080","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E052-60-W.jpg","LastUpdatedDate":"2018-06-24T02:38:20.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"Sheridan Blvd","MileMarker":"52.6","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes closest to camera moving West","CameraId":"10174","DisplayOrder":"4","RoadId":"40","CameraType":"Still","CameraViewId":"11314","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036W043-05-W.jpg","LastUpdatedDate":"2018-06-24T02:40:07.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"US-36 @ McCaslin Blvd","MileMarker":"43.05","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10173","DisplayOrder":"5","RoadId":"40","CameraType":"Still","CameraViewId":"10406","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E041-85-W.jpg","LastUpdatedDate":"2018-06-24T02:38:58.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"Overlook","MileMarker":"41.85","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10172","DisplayOrder":"6","RoadId":"40","CameraType":"Still","CameraViewId":"10404","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E039-25-W.jpg","LastUpdatedDate":"2018-06-24T02:40:10.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"from CO-157/Foothills Pkwy","MileMarker":"39.25","RoadName":"US 36"}],"Status":"enabled","CameraTourId":"10575","Location":{"Latitude":"39.89174","Longitude":"-105.07523"},"TourName":"US 36 West Denver to Boulder","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10172","DisplayOrder":"1","RoadId":"40","CameraType":"Still","CameraViewId":"10403","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E039-25-E.jpg","LastUpdatedDate":"2018-06-24T02:40:07.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"from CO-157/Foothills Pkwy","MileMarker":"39.25","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10173","DisplayOrder":"2","RoadId":"40","CameraType":"Still","CameraViewId":"10405","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E041-85-E.jpg","LastUpdatedDate":"2018-06-24T02:39:00.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Overlook","MileMarker":"41.85","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes farthest from camera moving East","CameraId":"10174","DisplayOrder":"3","RoadId":"40","CameraType":"Still","CameraViewId":"11315","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036W043-05-E.jpg","LastUpdatedDate":"2018-06-24T02:40:10.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"US-36 @ McCaslin Blvd","MileMarker":"43.05","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10031","DisplayOrder":"4","RoadId":"40","CameraType":"Still","CameraViewId":"10081","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E052-60-E.jpg","LastUpdatedDate":"2018-06-24T02:38:22.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Sheridan Blvd","MileMarker":"52.6","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes on right moving East","CameraId":"10033","DisplayOrder":"5","RoadId":"40","CameraType":"Still","CameraViewId":"10085","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036W055-10-E.jpg","LastUpdatedDate":"2018-06-24T02:40:24.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.2mi E of Federal Blvd","MileMarker":"55.1","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes on right moving East","CameraId":"10034","DisplayOrder":"6","RoadId":"40","CameraType":"Still","CameraViewId":"10087","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E055-85-E.jpg","LastUpdatedDate":"2018-06-24T02:40:24.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Pecos St-PML","MileMarker":"55.85","RoadName":"US 36"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10028","DisplayOrder":"7","RoadId":"40","CameraType":"Still","CameraViewId":"11306","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM036E056-80-E.jpg","LastUpdatedDate":"2018-06-24T02:40:24.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi W of Broadway-PML","MileMarker":"56.8","RoadName":"US 36"}],"Status":"enabled","CameraTourId":"10576","Location":{"Latitude":"40.10047","Longitude":"-105.28201"},"TourName":"US 36 East Boulder to Denver","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10315","DisplayOrder":"1","RoadId":"32","CameraType":"Still","CameraViewId":"12172","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E278-95-W.jpg","LastUpdatedDate":"2018-06-24T02:38:03.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"I-270","MileMarker":"278.95","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10315","DisplayOrder":"2","RoadId":"32","CameraType":"Still","CameraViewId":"12171","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E278-95-E.jpg","LastUpdatedDate":"2018-06-24T02:38:06.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"I-270","MileMarker":"278.95","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10317","DisplayOrder":"3","RoadId":"32","CameraType":"Still","CameraViewId":"12169","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E282-50-E.jpg","LastUpdatedDate":"2018-06-24T02:38:08.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"I-225","MileMarker":"282.5","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10319","DisplayOrder":"4","RoadId":"32","CameraType":"Still","CameraViewId":"10619","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E285-20-E.jpg","LastUpdatedDate":"2018-06-24T02:38:06.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.5 mi W of Tower Rd","MileMarker":"285.2","RoadName":"I-70"},{"ViewDescription":"East","CameraId":"10569","DisplayOrder":"5","RoadId":"32","CameraType":"Still","CameraViewId":"12278","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W309-30-E.jpg","LastUpdatedDate":"2018-06-24T02:37:59.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.9 mi W of Strasburg Int","MileMarker":"309.3","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10092","DisplayOrder":"6","RoadId":"32","CameraType":"Still","CameraViewId":"10216","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E362-85-E.jpg","LastUpdatedDate":"2018-06-19T16:57:57.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi E of US-287","MileMarker":"362.85","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10168","DisplayOrder":"7","RoadId":"32","CameraType":"Still","CameraViewId":"10395","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E419-80-E.jpg","LastUpdatedDate":"2018-06-24T02:38:07.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.2 mi E of Stratton Exit","MileMarker":"419.8","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving East","CameraId":"10167","DisplayOrder":"8","RoadId":"32","CameraType":"Still","CameraViewId":"10393","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W436-75-E.jpg","LastUpdatedDate":"2018-06-24T02:38:07.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Lincoln St-Burlington","MileMarker":"436.75","RoadName":"I-70"},{"ViewDescription":"West","CameraId":"10569","DisplayOrder":"9","RoadId":"32","CameraType":"Still","CameraViewId":"12277","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070W309-30-W.jpg","LastUpdatedDate":"2018-06-24T02:38:01.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.9 mi W of Strasburg Int","MileMarker":"309.3","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10170","DisplayOrder":"10","RoadId":"32","CameraType":"Still","CameraViewId":"10399","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E328-65-E.jpg","LastUpdatedDate":"2018-06-24T02:38:07.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"0.3 mi E of Cedar St-Deer Trail","MileMarker":"328.65","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10170","DisplayOrder":"11","RoadId":"32","CameraType":"Still","CameraViewId":"10400","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E328-65-W.jpg","LastUpdatedDate":"2018-06-24T02:38:05.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"0.3 mi E of Cedar St-Deer Trail","MileMarker":"328.65","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes closest to camera moving East","CameraId":"10169","DisplayOrder":"12","RoadId":"32","CameraType":"Still","CameraViewId":"10397","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E371-50-E.jpg","LastUpdatedDate":"2018-06-19T16:46:43.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Genoa Int","MileMarker":"371.5","RoadName":"I-70"},{"ViewDescription":"Traffic in lanes farthest from camera moving West","CameraId":"10169","DisplayOrder":"13","RoadId":"32","CameraType":"Still","CameraViewId":"10398","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM070E371-50-W.jpg","LastUpdatedDate":"2018-06-19T16:46:40.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"Genoa Int","MileMarker":"371.5","RoadName":"I-70"}],"Status":"enabled","CameraTourId":"10577","Location":{"Latitude":"39.78337","Longitude":"-105.06261"},"TourName":"I-70 East Denver to Burlington","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"},{"CameraView":[{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10179","DisplayOrder":"1","RoadId":"31","CameraType":"Still","CameraViewId":"10418","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N223-00-S.jpg","LastUpdatedDate":"2018-06-24T02:38:36.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CO-128 120th Ave","MileMarker":"223","RoadName":"I-25"},{"ViewDescription":"I 25 Traffic","CameraId":"11085","DisplayOrder":"2","RoadId":"31","CameraType":"Still","CameraViewId":"13506","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S232-15-N.jpg","LastUpdatedDate":"2018-06-24T02:42:48.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"Erie Pkwy/Summit Blvd","MileMarker":"232.15","RoadName":"I-25"},{"ViewDescription":"Summit Blvd","CameraId":"11085","DisplayOrder":"3","RoadId":"31","CameraType":"Still","CameraViewId":"13507","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S232-15-E.jpg","LastUpdatedDate":"2018-06-24T02:42:45.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"Erie Pkwy/Summit Blvd","MileMarker":"232.15","RoadName":"I-25"},{"ViewDescription":"I-25 Traffic","CameraId":"11085","DisplayOrder":"4","RoadId":"31","CameraType":"Still","CameraViewId":"13508","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S232-15-S.jpg","LastUpdatedDate":"2018-06-24T02:42:43.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"Erie Pkwy/Summit Blvd","MileMarker":"232.15","RoadName":"I-25"},{"ViewDescription":"Summit Blvd","CameraId":"11085","DisplayOrder":"5","RoadId":"31","CameraType":"Still","CameraViewId":"13509","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S232-15-W.jpg","LastUpdatedDate":"2018-06-24T02:42:40.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"Erie Pkwy/Summit Blvd","MileMarker":"232.15","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes farthest from camera moving South","CameraId":"10255","DisplayOrder":"6","RoadId":"31","CameraType":"Still","CameraViewId":"11489","ImageLocation":"dimages/camera?imageURL=remote/TOCCCTV025N242-S-OF-SH66-S.jpg","LastUpdatedDate":"2018-06-24T02:37:58.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"1.4 mi S of CO-66","MileMarker":"241.7","RoadName":"I-25"},{"ViewDescription":"Traffic in lanes closest to camera moving North","CameraId":"10255","DisplayOrder":"7","RoadId":"31","CameraType":"Still","CameraViewId":"11491","ImageLocation":"dimages/camera?imageURL=remote/TOCCCTV025N242-S-OF-SH66-N.jpg","LastUpdatedDate":"2018-06-24T02:38:01.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"1.4 mi S of CO-66","MileMarker":"241.7","RoadName":"I-25"},{"ViewDescription":"Traffic closest to camera is travelling North","CameraId":"11096","DisplayOrder":"8","RoadId":"31","CameraType":"Still","CameraViewId":"13532","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N252-25-N.jpg","LastUpdatedDate":"2018-06-24T02:38:53.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"CO-60 Johnstown Milliken Exit","MileMarker":"252.25","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling South","CameraId":"11096","DisplayOrder":"9","RoadId":"31","CameraType":"Still","CameraViewId":"13533","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025N252-25-S.jpg","LastUpdatedDate":"2018-06-24T02:38:51.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CO-60 Johnstown Milliken Exit","MileMarker":"252.25","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling North","CameraId":"11101","DisplayOrder":"10","RoadId":"31","CameraType":"Still","CameraViewId":"13544","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S262-35-N.jpg","LastUpdatedDate":"2018-06-24T02:38:54.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"CO-392","MileMarker":"262.35","RoadName":"I-25"},{"ViewDescription":"Traffic closest to camera is travelling South","CameraId":"11101","DisplayOrder":"11","RoadId":"31","CameraType":"Still","CameraViewId":"13545","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S262-35-S.jpg","LastUpdatedDate":"2018-06-24T02:38:52.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CO-392","MileMarker":"262.35","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling North","CameraId":"11107","DisplayOrder":"12","RoadId":"31","CameraType":"Still","CameraViewId":"13560","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S271-40-N.jpg","LastUpdatedDate":"2018-06-24T02:42:49.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"CR-50 Mountain Vista Dr","MileMarker":"271.4","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling East","CameraId":"11107","DisplayOrder":"13","RoadId":"31","CameraType":"Still","CameraViewId":"13561","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S271-40-E.jpg","LastUpdatedDate":"2018-06-24T02:42:46.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"CR-50 Mountain Vista Dr","MileMarker":"271.4","RoadName":"I-25"},{"ViewDescription":"Traffic closest to camera is travelling South","CameraId":"11107","DisplayOrder":"14","RoadId":"31","CameraType":"Still","CameraViewId":"13562","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S271-40-S.jpg","LastUpdatedDate":"2018-06-24T02:42:44.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CR-50 Mountain Vista Dr","MileMarker":"271.4","RoadName":"I-25"},{"ViewDescription":"Traffic closest to camea is travelling West","CameraId":"11107","DisplayOrder":"15","RoadId":"31","CameraType":"Still","CameraViewId":"13563","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S271-40-W.jpg","LastUpdatedDate":"2018-06-24T02:42:41.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"CR-50 Mountain Vista Dr","MileMarker":"271.4","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling North","CameraId":"11112","DisplayOrder":"16","RoadId":"31","CameraType":"Still","CameraViewId":"13574","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S281-45-N.jpg","LastUpdatedDate":"2018-06-24T02:42:49.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"CR-70 Owl Canyon Rd","MileMarker":"281.45","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling East","CameraId":"11112","DisplayOrder":"17","RoadId":"31","CameraType":"Still","CameraViewId":"13575","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S281-45-E.jpg","LastUpdatedDate":"2018-06-24T02:42:47.000-06:00","Direction":"East","ImageSource":"Courtesy of ITS","CameraName":"CR-70 Owl Canyon Rd","MileMarker":"281.45","RoadName":"I-25"},{"ViewDescription":"Traffic closest to camera is travelling South","CameraId":"11112","DisplayOrder":"18","RoadId":"31","CameraType":"Still","CameraViewId":"13576","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S281-45-S.jpg","LastUpdatedDate":"2018-06-24T02:42:44.000-06:00","Direction":"South","ImageSource":"Courtesy of ITS","CameraName":"CR-70 Owl Canyon Rd","MileMarker":"281.45","RoadName":"I-25"},{"ViewDescription":"Traffiv closest to camera is travelling West","CameraId":"11112","DisplayOrder":"19","RoadId":"31","CameraType":"Still","CameraViewId":"13577","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S281-45-W.jpg","LastUpdatedDate":"2018-06-24T02:42:42.000-06:00","Direction":"West","ImageSource":"Courtesy of ITS","CameraName":"CR-70 Owl Canyon Rd","MileMarker":"281.45","RoadName":"I-25"},{"ViewDescription":"Traffic furthest from camera is travelling North","CameraId":"11115","DisplayOrder":"20","RoadId":"31","CameraType":"Still","CameraViewId":"13584","ImageLocation":"dimages/camera?imageURL=remote/CTMCCAM025S298-20-N.jpg","LastUpdatedDate":"2018-06-24T02:38:58.000-06:00","Direction":"North","ImageSource":"Courtesy of ITS","CameraName":"0.7 mi S of WY Border","MileMarker":"298.2","RoadName":"I-25"}],"Status":"enabled","CameraTourId":"11210","Location":{"Latitude":"39.91338","Longitude":"-104.99"},"TourName":"I-25 North Denver to Wyoming","Icon":"/images/cameraTour/icon_camera_still_tour_30x27.gif","Public":"true"}]}};
+  </script>
+  <script type="text/javascript">
+   var mountainRadioJSON = {"audioEnabledFlg":false,"audioDisplayText":"Tune in Saturday and Sunday from 6:00-9:00 am and 2:30-6:00 pm"};
+  </script>
+  <script type="text/javascript">
+   var managedLaneAlertJSON = {"Alerts":{"Alert":[],"Header":{"GeneratedDate":"2018-06-24T02:44:10.635-06:00","Domain":"cotrip.org,www.cotrip.org,beta.cotrip.org,www.beta.cotrip.org,m.cotrip.org,cell.cotrip.org,go.cotrip.org,data.cotrip.org,i.cotrip.org,legacy.cotrip.org,www.legacy.cotrip.org","EntityId":"1"}}};
+  </script>
+  <script type="text/javascript">
+   var defaultCommuteRouteId 	= 1,
+ 		mountainRadioEnabled 	= false;
+  </script>
+  <script type="text/javascript">
+   var amberAlertsJSON = {"Alerts":{"Alert":[],"Header":{"GeneratedDate":"2018-06-24T02:44:10.635-06:00","Domain":"cotrip.org,www.cotrip.org,beta.cotrip.org,www.beta.cotrip.org,m.cotrip.org,cell.cotrip.org,go.cotrip.org,data.cotrip.org,i.cotrip.org,legacy.cotrip.org,www.legacy.cotrip.org","EntityId":"1"}}};
+  </script>
+  <script type="text/javascript">
+   var announcementJSON = {"Announcements":{"Header":{"GeneratedDate":"2018-06-24T02:44:40.897-06:00","Domain":"cotrip.org,www.cotrip.org,beta.cotrip.org,www.beta.cotrip.org,m.cotrip.org,cell.cotrip.org,go.cotrip.org,data.cotrip.org,i.cotrip.org,legacy.cotrip.org,www.legacy.cotrip.org","EntityId":"1"}}};
+  </script>
+  <script type="text/javascript">
+   var alertsJSON = null;
+  </script>
+  <script type="text/javascript">
+   var roadsJSON = {"RoadDetails":{"Header":{"GeneratedDate":"2018-06-24T02:39:37.874-06:00","Domain":"cotrip.org,www.cotrip.org,beta.cotrip.org,www.beta.cotrip.org,m.cotrip.org,cell.cotrip.org,go.cotrip.org,data.cotrip.org,i.cotrip.org,legacy.cotrip.org,www.legacy.cotrip.org","EntityId":"1"},"Road":[{"Name":"CO 131","RoadId":"106","Type":"Colorado","Image":"/images/road/hwy_shield_co131_26x15.gif"},{"Name":"CO 62","RoadId":"79","Type":"Colorado","Image":"/images/road/hwy_shield_co62_26x15.gif"},{"Name":"US 40","RoadId":"41","Type":"Highway","Image":"/images/road/hwy_shield_us40_20x18.gif"},{"Name":"Lucent Blvd","RoadId":"191","Type":"Arterial"},{"Name":"CO 96","RoadId":"47","Type":"Colorado","Image":"/images/road/hwy_shield_co96_26x15.gif"},{"Name":"CO 84","RoadId":"85","Type":"Colorado","Image":"/images/road/hwy_shield_co84_26x15.gif"},{"Name":"N-470","RoadId":"167","Type":"Colorado"},{"Name":"CO 57","RoadId":"75","Type":"Colorado","Image":"/images/road/hwy_shield_co57_26x15.gif"},{"Name":"CO 64","RoadId":"81","Type":"Colorado","Image":"/images/road/hwy_shield_co64_26x15.gif"},{"Name":"US 385","RoadId":"162","Type":"Highway","Image":"/images/road/hwy_shield_us385_20x18.gif"},{"Name":"US 50","RoadId":"42","Type":"Highway","Image":"/images/road/hwy_shield_us50_20x18.gif"},{"Name":"CO 7","RoadId":"18","Type":"Colorado","Image":"/images/road/hwy_shield_co7_26x15.gif"},{"Name":"CO 2","RoadId":"50","Type":"Colorado","Image":"/images/road/hwy_shield_co2_26x15.gif"},{"Name":"Monarch Blvd","RoadId":"192","Type":"Arterial"},{"Name":"CO 38","RoadId":"66","Type":"Colorado","Image":"/images/road/hwy_shield_co38_26x15.gif"},{"Name":"CO 172","RoadId":"126","Type":"Colorado","Image":"/images/road/hwy_shield_co172_26x15.gif"},{"Name":"CO 86","RoadId":"25","Type":"Colorado","Image":"/images/road/hwy_shield_co86_26x15.gif"},{"Name":"CO 127","RoadId":"104","Type":"Colorado","Image":"/images/road/hwy_shield_co127_26x15.gif"},{"Name":"Lincoln Ave","RoadId":"179","Type":"Arterial"},{"Name":"CO 149","RoadId":"118","Type":"Colorado","Image":"/images/road/hwy_shield_co149_26x15.gif"},{"Name":"CO 167","RoadId":"124","Type":"Colorado","Image":"/images/road/hwy_shield_co167_26x15.gif"},{"Name":"E-470","RoadId":"29","Type":"Colorado"},{"Name":"CO 119","RoadId":"6","Type":"Colorado","Image":"/images/road/hwy_shield_co119_26x15.gif"},{"Name":"CO 263","RoadId":"143","Type":"Colorado","Image":"/images/road/hwy_shield_co263_26x15.gif"},{"Name":"GCR 12","RoadId":"173","Type":"Arterial"},{"Name":"CO 159","RoadId":"122","Type":"Colorado","Image":"/images/road/hwy_shield_co159_26x15.gif"},{"Name":"CO 105","RoadId":"5","Type":"Colorado","Image":"/images/road/hwy_shield_co105_26x15.gif"},{"Name":"CO 115","RoadId":"100","Type":"Colorado","Image":"/images/road/hwy_shield_co115_26x15.gif"},{"Name":"CO 74","RoadId":"21","Type":"Colorado","Image":"/images/road/hwy_shield_co74_26x15.gif"},{"Name":"CO 12","RoadId":"54","Type":"Colorado","Image":"/images/road/hwy_shield_co12_26x15.gif"},{"Name":"CO 370","RoadId":"156","Type":"Colorado","Image":"/images/road/hwy_shield_co370_26x15.gif"},{"Name":"CO 300","RoadId":"147","Type":"Colorado","Image":"/images/road/hwy_shield_co300_26x15.gif"},{"Name":"CO 16","RoadId":"57","Type":"Colorado","Image":"/images/road/hwy_shield_co16_26x15.gif"},{"Name":"CO 121","RoadId":"103","Type":"Colorado","Image":"/images/road/hwy_shield_co121_26x15.gif"},{"Name":"CO 10","RoadId":"3","Type":"Colorado","Image":"/images/road/hwy_shield_co10_26x15.gif"},{"Name":"CO 83","RoadId":"24","Type":"Colorado","Image":"/images/road/hwy_shield_co83_26x15.gif"},{"Name":"CO 227","RoadId":"137","Type":"Colorado","Image":"/images/road/hwy_shield_co227_26x15.gif"},{"Name":"CO 52","RoadId":"11","Type":"Colorado","Image":"/images/road/hwy_shield_co52_26x15.gif"},{"Name":"CO 53","RoadId":"74","Type":"Colorado","Image":"/images/road/hwy_shield_co53_26x15.gif"},{"Name":"CO 139","RoadId":"112","Type":"Colorado","Image":"/images/road/hwy_shield_co139_26x15.gif"},{"Name":"US 287","RoadId":"37","Type":"Highway","Image":"/images/road/hwy_shield_us287_20x18.gif"},{"Name":"CO 66","RoadId":"14","Type":"Colorado","Image":"/images/road/hwy_shield_co66_26x15.gif"},{"Name":"CO 144","RoadId":"116","Type":"Colorado","Image":"/images/road/hwy_shield_co144_26x15.gif"},{"Name":"CO 125","RoadId":"7","Type":"Colorado","Image":"/images/road/hwy_shield_co125_26x15.gif"},{"Name":"CO 112","RoadId":"97","Type":"Colorado","Image":"/images/road/hwy_shield_co112_26x15.gif"},{"Name":"CO 347","RoadId":"153","Type":"Colorado","Image":"/images/road/hwy_shield_co347_26x15.gif"},{"Name":"CO 89","RoadId":"87","Type":"Colorado","Image":"/images/road/hwy_shield_co89_26x15.gif"},{"Name":"CO 92","RoadId":"89","Type":"Colorado","Image":"/images/road/hwy_shield_co92_26x15.gif"},{"Name":"CO 100","RoadId":"93","Type":"Colorado","Image":"/images/road/hwy_shield_co100_26x15.gif"},{"Name":"CO 63","RoadId":"80","Type":"Colorado","Image":"/images/road/hwy_shield_co63_26x15.gif"},{"Name":"I-270","RoadId":"48","Type":"Interstate","Image":"/images/road/hwy_shield_I270_20x20.gif"},{"Name":"CO 135","RoadId":"109","Type":"Colorado","Image":"/images/road/hwy_shield_co135_26x15.gif"},{"Name":"CO 138","RoadId":"111","Type":"Colorado","Image":"/images/road/hwy_shield_co138_26x15.gif"},{"Name":"Park Meadows Dr","RoadId":"181","Type":"Arterial"},{"Name":"CO 95","RoadId":"91","Type":"Colorado","Image":"/images/road/hwy_shield_co95_26x15.gif"},{"Name":"Speer Blvd","RoadId":"165","Type":"Arterial"},{"Name":"CO 39","RoadId":"67","Type":"Colorado","Image":"/images/road/hwy_shield_co39_26x15.gif"},{"Name":"CO 394","RoadId":"160","Type":"Colorado","Image":"/images/road/hwy_shield_co394_26x15.gif"},{"Name":"CO 136","RoadId":"110","Type":"Colorado","Image":"/images/road/hwy_shield_co136_26x15.gif"},{"Name":"CO 196","RoadId":"132","Type":"Colorado","Image":"/images/road/hwy_shield_co196_26x15.gif"},{"Name":"CO 348","RoadId":"154","Type":"Colorado","Image":"/images/road/hwy_shield_co348_26x15.gif"},{"Name":"Broadway Blvd","RoadId":"190","Type":"Arterial"},{"Name":"US 36","RoadId":"40","Type":"Highway","Image":"/images/road/hwy_shield_us36_20x18.gif"},{"Name":"CO 110","RoadId":"96","Type":"Colorado","Image":"/images/road/hwy_shield_co110_26x15.gif"},{"Name":"CO 61","RoadId":"78","Type":"Colorado","Image":"/images/road/hwy_shield_co61_26x15.gif"},{"Name":"Jewell Ave","RoadId":"208","Type":"Arterial"},{"Name":"CO 29","RoadId":"62","Type":"Colorado","Image":"/images/road/hwy_shield_co29_26x15.gif"},{"Name":"US 350","RoadId":"39","Type":"Highway","Image":"/images/road/hwy_shield_us350_20x18.gif"},{"Name":"Buckley Rd","RoadId":"205","Type":"Arterial"},{"Name":"CO 3","RoadId":"51","Type":"Colorado","Image":"/images/road/hwy_shield_co3_26x15.gif"},{"Name":"CO 68","RoadId":"16","Type":"Colorado","Image":"/images/road/hwy_shield_co68_26x15.gif"},{"Name":"Union Blvd","RoadId":"170","Type":"Arterial"},{"Name":"Chester St","RoadId":"183","Type":"Arterial"},{"Name":"CO 134","RoadId":"108","Type":"Colorado","Image":"/images/road/hwy_shield_co134_26x15.gif"},{"Name":"CO 113","RoadId":"98","Type":"Colorado","Image":"/images/road/hwy_shield_co113_26x15.gif"},{"Name":"CO 133","RoadId":"107","Type":"Colorado","Image":"/images/road/hwy_shield_co133_26x15.gif"},{"Name":"Colorado Blvd","RoadId":"185","Type":"Arterial"},{"Name":"CO 23","RoadId":"60","Type":"Colorado","Image":"/images/road/hwy_shield_co23_26x15.gif"},{"Name":"Belleview Ave","RoadId":"194","Type":"Arterial"},{"Name":"PENA","RoadId":"49","Type":"Colorado"},{"Name":"Highlands Ranch Pkwy","RoadId":"188","Type":"Arterial"},{"Name":"CO 140","RoadId":"113","Type":"Colorado","Image":"/images/road/hwy_shield_co140_26x15.gif"},{"Name":"CO 109","RoadId":"95","Type":"Colorado","Image":"/images/road/hwy_shield_co109_26x15.gif"},{"Name":"CO 103","RoadId":"4","Type":"Colorado","Image":"/images/road/hwy_shield_co103_26x15.gif"},{"Name":"Iliff Ave","RoadId":"203","Type":"Arterial"},{"Name":"CO 256","RoadId":"141","Type":"Colorado","Image":"/images/road/hwy_shield_co256_26x15.gif"},{"Name":"CO 145","RoadId":"117","Type":"Colorado","Image":"/images/road/hwy_shield_co145_26x15.gif"},{"Name":"Orchard Rd","RoadId":"168","Type":"Arterial"},{"Name":"US 34","RoadId":"38","Type":"Highway","Image":"/images/road/hwy_shield_us34_20x18.gif"},{"Name":"CO 233","RoadId":"139","Type":"Colorado","Image":"/images/road/hwy_shield_co233_26x15.gif"},{"Name":"Kipling St","RoadId":"206","Type":"Arterial"},{"Name":"CO 11","RoadId":"53","Type":"Colorado","Image":"/images/road/hwy_shield_co11_26x15.gif"},{"Name":"CO 42","RoadId":"69","Type":"Colorado","Image":"/images/road/hwy_shield_co42_26x15.gif"},{"Name":"CO 392","RoadId":"9","Type":"Colorado","Image":"/images/road/hwy_shield_co392_26x15.gif"},{"Name":"Woodmen Rd","RoadId":"163","Type":"Arterial"},{"Name":"CO 183","RoadId":"128","Type":"Colorado","Image":"/images/road/hwy_shield_co183_26x15.gif"},{"Name":"CO 101","RoadId":"94","Type":"Colorado","Image":"/images/road/hwy_shield_co101_26x15.gif"},{"Name":"CO 46","RoadId":"72","Type":"Colorado","Image":"/images/road/hwy_shield_co46_26x15.gif"},{"Name":"9th St","RoadId":"187","Type":"Arterial"},{"Name":"CO 44","RoadId":"70","Type":"Colorado","Image":"/images/road/hwy_shield_co44_26x15.gif"},{"Name":"CO 389","RoadId":"158","Type":"Colorado","Image":"/images/road/hwy_shield_co389_26x15.gif"},{"Name":"26th Ave","RoadId":"207","Type":"Arterial"},{"Name":"CO 5","RoadId":"171","Type":"Colorado","Image":"/images/road/hwy_shield_co5_26x15.gif"},{"Name":"CO 291","RoadId":"146","Type":"Colorado","Image":"/images/road/hwy_shield_co291_26x15.gif"},{"Name":"I-70","RoadId":"32","Type":"Interstate","Image":"/images/road/hwy_shield_I70_20x20.gif"},{"Name":"CO 15","RoadId":"56","Type":"Colorado","Image":"/images/road/hwy_shield_co15_26x15.gif"},{"Name":"DTC Blvd","RoadId":"169","Type":"Arterial"},{"Name":"CO 141","RoadId":"114","Type":"Colorado","Image":"/images/road/hwy_shield_co141_26x15.gif"},{"Name":"McArthur Ranch Rd","RoadId":"198","Type":"Arterial"},{"Name":"Broncos Pkwy","RoadId":"200","Type":"Arterial"},{"Name":"CO 30","RoadId":"63","Type":"Colorado","Image":"/images/road/hwy_shield_co30_26x15.gif"},{"Name":"C-470","RoadId":"1","Type":"Colorado","Image":"/images/road/hwy_shield_c470_26x15.gif"},{"Name":"CO 371","RoadId":"157","Type":"Colorado","Image":"/images/road/hwy_shield_co371_26x15.gif"},{"Name":"Yosemite St","RoadId":"182","Type":"Arterial"},{"Name":"I-25","RoadId":"31","Type":"Interstate","Image":"/images/road/hwy_shield_I25_20x20.gif"},{"Name":"CO 90","RoadId":"88","Type":"Colorado","Image":"/images/road/hwy_shield_co90_26x15.gif"},{"Name":"CO 82","RoadId":"84","Type":"Colorado","Image":"/images/road/hwy_shield_co82_26x15.gif"},{"Name":"COS 1","RoadId":"172","Type":"Arterial"},{"Name":"US 6","RoadId":"44","Type":"Highway","Image":"/images/road/hwy_shield_us6_20x18.gif"},{"Name":"Arapahoe Rd","RoadId":"196","Type":"Arterial"},{"Name":"CO 317","RoadId":"148","Type":"Colorado","Image":"/images/road/hwy_shield_co317_26x15.gif"},{"Name":"CO 72","RoadId":"20","Type":"Colorado","Image":"/images/road/hwy_shield_co72_26x15.gif"},{"Name":"County Line Rd","RoadId":"184","Type":"Arterial"},{"Name":"CO 97","RoadId":"92","Type":"Colorado","Image":"/images/road/hwy_shield_co97_26x15.gif"},{"Name":"CO 368","RoadId":"155","Type":"Colorado","Image":"/images/road/hwy_shield_co368_26x15.gif"},{"Name":"CO 69","RoadId":"17","Type":"Colorado","Image":"/images/road/hwy_shield_co69_26x15.gif"},{"Name":"CO 209","RoadId":"135","Type":"Colorado","Image":"/images/road/hwy_shield_co209_26x15.gif"},{"Name":"CO 65","RoadId":"82","Type":"Colorado","Image":"/images/road/hwy_shield_co65_26x15.gif"},{"Name":"CO 187","RoadId":"130","Type":"Colorado","Image":"/images/road/hwy_shield_co187_26x15.gif"},{"Name":"CO 59","RoadId":"77","Type":"Colorado","Image":"/images/road/hwy_shield_co59_26x15.gif"},{"Name":"CO 71","RoadId":"19","Type":"Colorado","Image":"/images/road/hwy_shield_co71_26x15.gif"},{"Name":"CO 257","RoadId":"142","Type":"Colorado","Image":"/images/road/hwy_shield_co257_26x15.gif"},{"Name":"CO 170","RoadId":"125","Type":"Colorado","Image":"/images/road/hwy_shield_co170_26x15.gif"},{"Name":"US 24","RoadId":"35","Type":"Highway","Image":"/images/road/hwy_shield_us24_20x18.gif"},{"Name":"US 160","RoadId":"34","Type":"Highway","Image":"/images/road/hwy_shield_us160_20x18.gif"},{"Name":"CO 21","RoadId":"166","Type":"Colorado","Image":"/images/road/hwy_shield_co21_26x15.gif"},{"Name":"US 85","RoadId":"45","Type":"Highway","Image":"/images/road/hwy_shield_us85_20x18.gif"},{"Name":"Fairview Pkwy","RoadId":"199","Type":"Arterial"},{"Name":"CO 157","RoadId":"121","Type":"Colorado","Image":"/images/road/hwy_shield_co157_26x15.gif"},{"Name":"Wadsworth Bvld","RoadId":"193","Type":"Arterial"},{"Name":"Federal Blvd","RoadId":"186","Type":"Arterial"},{"Name":"CO 142","RoadId":"115","Type":"Colorado","Image":"/images/road/hwy_shield_co142_26x15.gif"},{"Name":"CO 325","RoadId":"150","Type":"Colorado","Image":"/images/road/hwy_shield_co325_26x15.gif"},{"Name":"CO 120","RoadId":"102","Type":"Colorado","Image":"/images/road/hwy_shield_co120_26x15.gif"},{"Name":"CO 26","RoadId":"61","Type":"Colorado","Image":"/images/road/hwy_shield_co26_26x15.gif"},{"Name":"CO 202","RoadId":"133","Type":"Colorado","Image":"/images/road/hwy_shield_co202_26x15.gif"},{"Name":"S Chambers Rd","RoadId":"201","Type":"Arterial"},{"Name":"CO 78","RoadId":"22","Type":"Colorado","Image":"/images/road/hwy_shield_co78_26x15.gif"},{"Name":"Powers Blvd","RoadId":"164","Type":"Arterial"},{"Name":"CO 60","RoadId":"13","Type":"Colorado","Image":"/images/road/hwy_shield_co60_26x15.gif"},{"Name":"CO 47","RoadId":"73","Type":"Colorado","Image":"/images/road/hwy_shield_co47_26x15.gif"},{"Name":"CO 116","RoadId":"101","Type":"Colorado","Image":"/images/road/hwy_shield_co116_26x15.gif"},{"Name":"CO 150","RoadId":"119","Type":"Colorado","Image":"/images/road/hwy_shield_co150_26x15.gif"},{"Name":"FR209, 306","RoadId":"174","Type":"Arterial"},{"Name":"CO 165","RoadId":"123","Type":"Colorado","Image":"/images/road/hwy_shield_co165_26x15.gif"},{"Name":"Park Meadows Ctr Dr","RoadId":"180","Type":"Arterial"},{"Name":"CO 231","RoadId":"138","Type":"Colorado","Image":"/images/road/hwy_shield_co231_26x15.gif"},{"Name":"CO 88","RoadId":"86","Type":"Colorado","Image":"/images/road/hwy_shield_co88_26x15.gif"},{"Name":"CO 239","RoadId":"140","Type":"Colorado","Image":"/images/road/hwy_shield_co239_26x15.gif"},{"Name":"CO 56","RoadId":"12","Type":"Colorado","Image":"/images/road/hwy_shield_co56_26x15.gif"},{"Name":"RidgeGate Pkwy","RoadId":"197","Type":"Arterial"},{"Name":"US 285","RoadId":"36","Type":"Highway","Image":"/images/road/hwy_shield_us285_20x18.gif"},{"Name":"CO 79","RoadId":"23","Type":"Colorado","Image":"/images/road/hwy_shield_co79_26x15.gif"},{"Name":"CO 330","RoadId":"151","Type":"Colorado","Image":"/images/road/hwy_shield_co330_26x15.gif"},{"Name":"CO 114","RoadId":"99","Type":"Colorado","Image":"/images/road/hwy_shield_co114_26x15.gif"},{"Name":"CO 14","RoadId":"8","Type":"Colorado","Image":"/images/road/hwy_shield_co14_26x15.gif"},{"Name":"CO 22","RoadId":"59","Type":"Colorado","Image":"/images/road/hwy_shield_co22_26x15.gif"},{"Name":"CO 391","RoadId":"159","Type":"Colorado","Image":"/images/road/hwy_shield_co391_26x15.gif"},{"Name":"CO 318","RoadId":"149","Type":"Colorado","Image":"/images/road/hwy_shield_co318_26x15.gif"},{"Name":"CO 9","RoadId":"26","Type":"Colorado","Image":"/images/road/hwy_shield_co9_26x15.gif"},{"Name":"CO 41","RoadId":"68","Type":"Colorado","Image":"/images/road/hwy_shield_co41_26x15.gif"},{"Name":"CO 35","RoadId":"64","Type":"Colorado","Image":"/images/road/hwy_shield_co35_26x15.gif"},{"Name":"CO 45","RoadId":"71","Type":"Colorado","Image":"/images/road/hwy_shield_co45_26x15.gif"},{"Name":"CO 194","RoadId":"131","Type":"Colorado","Image":"/images/road/hwy_shield_co194_26x15.gif"},{"Name":"I-76","RoadId":"33","Type":"Interstate","Image":"/images/road/hwy_shield_I76_20x20.gif"},{"Name":"I-225","RoadId":"30","Type":"Interstate","Image":"/images/road/hwy_shield_I225_20x20.gif"},{"Name":"CO 1","RoadId":"2","Type":"Colorado","Image":"/images/road/hwy_shield_co1_26x15.gif"},{"Name":"CO 207","RoadId":"134","Type":"Colorado","Image":"/images/road/hwy_shield_co207_26x15.gif"},{"Name":"CR381, 62","RoadId":"176","Type":"Arterial"},{"Name":"CO 266","RoadId":"145","Type":"Colorado","Image":"/images/road/hwy_shield_co266_26x15.gif"},{"Name":"CO 224","RoadId":"136","Type":"Colorado","Image":"/images/road/hwy_shield_co224_26x15.gif"},{"Name":"CO 402","RoadId":"10","Type":"Colorado","Image":"/images/road/hwy_shield_co402_26x15.gif"},{"Name":"CO 17","RoadId":"58","Type":"Colorado","Image":"/images/road/hwy_shield_co17_26x15.gif"},{"Name":"Peoria  St","RoadId":"202","Type":"Arterial"},{"Name":"CO 177","RoadId":"127","Type":"Colorado","Image":"/images/road/hwy_shield_co177_26x15.gif"},{"Name":"CO 94","RoadId":"90","Type":"Colorado","Image":"/images/road/hwy_shield_co94_26x15.gif"},{"Name":"CO 37","RoadId":"65","Type":"Colorado","Image":"/images/road/hwy_shield_co37_26x15.gif"},{"Name":"CO 340","RoadId":"152","Type":"Colorado","Image":"/images/road/hwy_shield_co340_26x15.gif"},{"Name":"CO 58","RoadId":"76","Type":"Colorado","Image":"/images/road/hwy_shield_co58_26x15.gif"},{"Name":"University Blvd","RoadId":"178","Type":"Arterial"},{"Name":"CO 184","RoadId":"129","Type":"Colorado","Image":"/images/road/hwy_shield_co184_26x15.gif"},{"Name":"CO 91","RoadId":"27","Type":"Colorado","Image":"/images/road/hwy_shield_co91_26x15.gif"},{"Name":"CO 55","RoadId":"43","Type":"Colorado","Image":"/images/road/hwy_shield_co55_26x15.gif"},{"Name":"CO 128","RoadId":"105","Type":"Colorado","Image":"/images/road/hwy_shield_co128_26x15.gif"},{"Name":"CO 93","RoadId":"28","Type":"Colorado","Image":"/images/road/hwy_shield_co93_26x15.gif"},{"Name":"Easter Ave","RoadId":"204","Type":"Arterial"},{"Name":"Wildcat Reserve Pkwy","RoadId":"189","Type":"Arterial"},{"Name":"CO 151","RoadId":"120","Type":"Colorado","Image":"/images/road/hwy_shield_co151_26x15.gif"},{"Name":"CO 8","RoadId":"52","Type":"Colorado","Image":"/images/road/hwy_shield_co8_26x15.gif"},{"Name":"Quebec St","RoadId":"177","Type":"Arterial"},{"Name":"CO 265","RoadId":"144","Type":"Colorado","Image":"/images/road/hwy_shield_co265_26x15.gif"},{"Name":"US 550","RoadId":"46","Type":"Highway","Image":"/images/road/hwy_shield_us550_20x18.gif"},{"Name":"CO 13","RoadId":"55","Type":"Colorado","Image":"/images/road/hwy_shield_co13_26x15.gif"},{"Name":"US 491","RoadId":"161","Type":"Highway","Image":"/images/road/hwy_shield_us491_20x18.gif"},{"Name":"CO 75","RoadId":"83","Type":"Colorado","Image":"/images/road/hwy_shield_co75_26x15.gif"},{"Name":"Colfax Ave","RoadId":"175","Type":"Arterial"},{"Name":"CO 67","RoadId":"15","Type":"Colorado","Image":"/images/road/hwy_shield_co67_26x15.gif"}]}};
+  </script>
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 	  ga('create', 'UA-45071817-1', 'cotrip.org');
+ 	  ga('send', 'pageview');
+  </script>
+ </html>

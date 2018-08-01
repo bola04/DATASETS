@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+ <html lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <meta content="5vBbe1vBBfK1Wx2I4OI326hZbxRtpuUkqxi2REVt_oE" name="google-site-verification"/>
+   <title>
+    Lori Foster | New York Times Bestselling Author
+   </title>
+   <link href="http://gmpg.org/xfn/11" rel="profile"/>
+   <link href="http://lorifoster.com/WP/xmlrpc.php" rel="pingback"/>
+   <!-- favicon begin -->
+   <link href="/favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+   <link href="/favicon/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+   <link href="/favicon/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+   <link href="/favicon/site.webmanifest" rel="manifest"/>
+   <link color="#5bbad5" href="/favicon/safari-pinned-tab.svg" rel="mask-icon"/>
+   <meta content="#da532c" name="msapplication-TileColor"/>
+   <meta content="#ffffff" name="theme-color"/>
+   <!-- favicon end -->
+   <!-- BEGIN Google Fonts -->
+   <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i" rel="stylesheet"/>
+   <!-- END Google Fonts -->
+   <!-- BEGIN Responsive Navigation -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js">
+   </script>
+   <script type="text/javascript">
+    jQuery(function($){
+ 				$( '.hamburger' ).click(function(){
+ 				$('.menu').toggleClass('expand')
+ 				})
+ 			})
+   </script>
+   <!-- END Responsive Navigation -->
+   <!-- Scripts for Popup window
+ 		<script src="http://lorifoster.com/WP/wp-content/themes/lorifoster2017/popup-subscribe/jquery.cookie.js"></script>
+ 		<script src="http://lorifoster.com/WP/wp-content/themes/lorifoster2017/popup-subscribe/script.js"></script> -->
+   <!-- BEGIN Google Maps for ACF -->
+   <!--
+ Google Maps Script required for events
+ http://www.advancedcustomfields.com/resources/google-map/#using-a google map field
+ -->
+   <script type="text/javascript">
+    (function($) {
+ 
+ /*
+ *  new_map
+ *
+ *  This function will render a Google Map onto the selected jQuery element
+ *
+ *  @type	function
+ *  @date	8/11/2013
+ *  @since	4.3.0
+ *
+ *  @param	$el (jQuery element)
+ *  @return	n/a
+ */
+ 
+ function new_map( $el ) {
+ 	
+ 	// var
+ 	var $markers = $el.find('.marker');
+ 	
+ 	
+ 	// vars
+ 	var args = {
+ 		zoom		: 16,
+ 		center		: new google.maps.LatLng(0, 0),
+ 		mapTypeId	: google.maps.MapTypeId.ROADMAP
+ 	};
+ 	
+ 	
+ 	// create map	        	
+ 	var map = new google.maps.Map( $el[0], args);
+ 	
+ 	
+ 	// add a markers reference
+ 	map.markers = [];
+ 	
+ 	
+ 	// add markers
+ 	$markers.each(function(){
+ 		
+     	add_marker( $(this), map );
+ 		
+ 	});
+ 	
+ 	
+ 	// center map
+ 	center_map( map );
+ 	
+ 	
+ 	// return
+ 	return map;
+ 	
+ }
+ 
+ /*
+ *  add_marker
+ *
+ *  This function will add a marker to the selected Google Map
+ *
+ *  @type	function
+ *  @date	8/11/2013
+ *  @since	4.3.0
+ *
+ *  @param	$marker (jQuery element)
+ *  @param	map (Google Map object)
+ *  @return	n/a
+ */
+ 
+ function add_marker( $marker, map ) {
+ 
+ 	// var
+ 	var latlng = new google.maps.LatLng( $marker.attr('data-lat'), $marker.attr('data-lng') );
+ 
+ 	// create marker
+ 	var marker = new google.maps.Marker({
+ 		position	: latlng,
+ 		map			: map
+ 	});
+ 
+ 	// add to array
+ 	map.markers.push( marker );
+ 
+ 	// if marker contains HTML, add it to an infoWindow
+ 	if( $marker.html() )
+ 	{
+ 		// create info window
+ 		var infowindow = new google.maps.InfoWindow({
+ 			content		: $marker.html()
+ 		});
+ 
+ 		// show info window when marker is clicked
+ 		google.maps.event.addListener(marker, 'click', function() {
+ 
+ 			infowindow.open( map, marker );
+ 
+ 		});
+ 	}
+ 
+ }
+ 
+ /*
+ *  center_map
+ *
+ *  This function will center the map, showing all markers attached to this map
+ *
+ *  @type	function
+ *  @date	8/11/2013
+ *  @since	4.3.0
+ *
+ *  @param	map (Google Map object)
+ *  @return	n/a
+ */
+ 
+ function center_map( map ) {
+ 
+ 	// vars
+ 	var bounds = new google.maps.LatLngBounds();
+ 
+ 	// loop through all markers and create bounds
+ 	$.each( map.markers, function( i, marker ){
+ 
+ 		var latlng = new google.maps.LatLng( marker.position.lat(), marker.position.lng() );
+ 
+ 		bounds.extend( latlng );
+ 
+ 	});
+ 
+ 	// only 1 marker?
+ 	if( map.markers.length == 1 )
+ 	{
+ 		// set center of map
+ 	    map.setCenter( bounds.getCenter() );
+ 	    map.setZoom( 16 );
+ 	}
+ 	else
+ 	{
+ 		// fit to bounds
+ 		map.fitBounds( bounds );
+ 	}
+ 
+ }
+ 
+ /*
+ *  document ready
+ *
+ *  This function will render each map when the document is ready (page has loaded)
+ *
+ *  @type	function
+ *  @date	8/11/2013
+ *  @since	5.0.0
+ *
+ *  @param	n/a
+ *  @return	n/a
+ */
+ // global var
+ var map = null;
+ 
+ $(document).ready(function(){
+ 
+ 	$('.acf-map').each(function(){
+ 
+ 		// create map
+ 		map = new_map( $(this) );
+ 
+ 	});
+ 
+ });
+ 
+ })(jQuery);
+   </script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkiWmWvZYTSmueCXi7PTku33wk8Yl6o6Y" type="text/javascript">
+   </script>
+   <!-- END Google Maps for ACF -->
+   <!-- Facebook Pixel Code
+ 		<script>
+ 		  !function(f,b,e,v,n,t,s)
+ 		  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+ 		  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+ 		  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+ 		  n.queue=[];t=b.createElement(e);t.async=!0;
+ 		  t.src=v;s=b.getElementsByTagName(e)[0];
+ 		  s.parentNode.insertBefore(t,s)}(window, document,'script',
+ 		  'https://connect.facebook.net/en_US/fbevents.js');
+ 		  fbq('init', '1069636586387540');
+ 		  fbq('track', 'PageView');
+ 		</script>
+ 		<noscript><img height="1" width="1" style="display:none"
+ 		  src="https://www.facebook.com/tr?id=1069636586387540&ev=PageView&noscript=1"
+ 		/></noscript>
+ 		<!-- End Facebook Pixel Code -->
+   <!-- Facebook feed -->
+  </head>
+  <body>
+   <div id="fb-root">
+   </div>
+   <script>
+    (function(d, s, id) {
+ 		  var js, fjs = d.getElementsByTagName(s)[0];
+ 		  if (d.getElementById(id)) return;
+ 		  js = d.createElement(s); js.id = id;
+ 		  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12';
+ 		  fjs.parentNode.insertBefore(js, fjs);
+ 		}(document, 'script', 'facebook-jssdk'));
+   </script>
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ 		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+ 		  ga('create', 'UA-1180338-35', 'auto');
+ 		  ga('require', 'displayfeatures');
+ 			ga('set', 'anonymizeIp', true);
+ 		  ga('send', 'pageview');
+   </script>
+   <!-- Global site tag (gtag.js) - AdWords: 938819621 -->
+   <script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-938819621">
+   </script>
+   <script>
+    window.dataLayer = window.dataLayer || [];
+ 		  function gtag(){dataLayer.push(arguments);}
+ 		  gtag('js', new Date());
+ 
+ 		  gtag('config', 'AW-938819621');
+   </script>
+   <script async="" defer="" src="https://www.google.com/recaptcha/api.js">
+   </script>
+   <!-- Twitter Card metadata -->
+   <meta content="summary" name="twitter:card"/>
+   <!-- Summary Card displays image and tweet -->
+   <meta content="@LoriLFoster" name="twitter:creator"/>
+   <!-- @username for the content creator / author. -->
+   <meta content="http://lorifoster.com/" property="og:url"/>
+   <meta content="Home" property="og:title"/>
+   <meta content="http://lorifoster.com/favicon/android-chrome-256x256.png" name="twitter:image"/>
+   <title>
+    Home | Lori Foster
+   </title>
+   <!-- This site is optimized with the Yoast SEO plugin v7.0.1 - https://yoast.com/wordpress/plugins/seo/ -->
+   <link href="http://lorifoster.com/" rel="canonical"/>
+   <meta content="en_US" property="og:locale"/>
+   <meta content="website" property="og:type"/>
+   <meta content="Home | Lori Foster" property="og:title"/>
+   <meta content="Lori Foster first published with Harlequin in January 1996. Her second book launched Temptation Blaze and her 25th book launched Temptation Heat. Since those early days, Lori has routinely had 6 to 10 releases a year. She’s a Waldenbooks, USA Today, Publisher’s Weekly and New York Times bestselling author with over 100 titles published through …" property="og:description"/>
+   <meta content="http://lorifoster.com/" property="og:url"/>
+   <meta content="Lori Foster" property="og:site_name"/>
+   <meta content="211772495553289" property="fb:app_id"/>
+   <meta content="http://lorifoster.com/WP/wp-content/uploads/2018/04/LORI_Favicon-256_02-1.png" property="og:image"/>
+   <meta content="summary" name="twitter:card"/>
+   <meta content="Lori Foster first published with Harlequin in January 1996. Her second book launched Temptation Blaze and her 25th book launched Temptation Heat. Since those early days, Lori has routinely had 6 to 10 releases a year. She’s a Waldenbooks, USA Today, Publisher’s Weekly and New York Times bestselling author with over 100 titles published through […]" name="twitter:description"/>
+   <meta content="Home | Lori Foster" name="twitter:title"/>
+   <meta content="@lorilfoster" name="twitter:site"/>
+   <meta content="http://lorifoster.com/WP/wp-content/uploads/2018/04/LORI_Favicon-256_02-1.png" name="twitter:image"/>
+   <meta content="@lorilfoster" name="twitter:creator"/>
+   <script type="application/ld+json">
+    {"@context":"https:\/\/schema.org","@type":"WebSite","@id":"#website","url":"http:\/\/lorifoster.com\/","name":"Lori Foster","potentialAction":{"@type":"SearchAction","target":"http:\/\/lorifoster.com\/?s={search_term_string}","query-input":"required name=search_term_string"}}
+   </script>
+   <script type="application/ld+json">
+    {"@context":"https:\/\/schema.org","@type":"Person","url":"http:\/\/lorifoster.com\/","sameAs":["https:\/\/www.facebook.com\/lorifoster","https:\/\/www.instagram.com\/lorilfoster\/","https:\/\/www.pinterest.com\/lorilfoster\/","https:\/\/twitter.com\/lorilfoster"],"@id":"#person","name":"Lori Foster"}
+   </script>
+   <!-- / Yoast SEO plugin. -->
+   <link href="//s.w.org" rel="dns-prefetch"/>
+   <link href="http://lorifoster.com/feed/" rel="alternate" title="Lori Foster » Feed" type="application/rss+xml"/>
+   <link href="http://lorifoster.com/comments/feed/" rel="alternate" title="Lori Foster » Comments Feed" type="application/rss+xml"/>
+   <script type="text/javascript">
+    window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/lorifoster.com\/WP\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.8.6"}};
+ 			!function(a,b,c){function d(a){var b,c,d,e,f=String.fromCharCode;if(!k||!k.fillText)return!1;switch(k.clearRect(0,0,j.width,j.height),k.textBaseline="top",k.font="600 32px Arial",a){case"flag":return k.fillText(f(55356,56826,55356,56819),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,56826,8203,55356,56819),0,0),c=j.toDataURL(),b!==c&&(k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447),0,0),c=j.toDataURL(),b!==c);case"emoji4":return k.fillText(f(55358,56794,8205,9794,65039),0,0),d=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55358,56794,8203,9794,65039),0,0),e=j.toDataURL(),d!==e}return!1}function e(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i,j=b.createElement("canvas"),k=j.getContext&&j.getContext("2d");for(i=Array("flag","emoji4"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+   </script>
+   <style type="text/css">
+    img.wp-smiley,
+ img.emoji {
+ 	display: inline !important;
+ 	border: none !important;
+ 	box-shadow: none !important;
+ 	height: 1em !important;
+ 	width: 1em !important;
+ 	margin: 0 .07em !important;
+ 	vertical-align: -0.1em !important;
+ 	background: none !important;
+ 	padding: 0 !important;
+ }
+   </style>
+   <link href="http://lorifoster.com/WP/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.0.2" id="contact-form-7-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://lorifoster.com/WP/wp-content/themes/lorifoster2017/style.css?ver=4.8.6" id="waxcreative-style-css" media="all" rel="stylesheet" type="text/css"/>
+   <script src="http://lorifoster.com/WP/wp-includes/js/jquery/jquery.js?ver=1.12.4" type="text/javascript">
+   </script>
+   <script src="http://lorifoster.com/WP/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1" type="text/javascript">
+   </script>
+   <link href="http://lorifoster.com/wp-json/" rel="https://api.w.org/"/>
+   <link href="http://lorifoster.com/WP/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml"/>
+   <link href="http://lorifoster.com/WP/wp-includes/wlwmanifest.xml" rel="wlwmanifest" type="application/wlwmanifest+xml"/>
+   <meta content="WordPress 4.8.6" name="generator"/>
+   <link href="http://lorifoster.com/" rel="shortlink"/>
+   <link href="http://lorifoster.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Florifoster.com%2F" rel="alternate" type="application/json+oembed"/>
+   <link href="http://lorifoster.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Florifoster.com%2F&amp;format=xml" rel="alternate" type="text/xml+oembed"/>
+   <style type="text/css">
+    .recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}
+   </style>
+   <link href="http://lorifoster.com/WP/wp-content/uploads/2018/03/cropped-android-chrome-192x192-32x32.png" rel="icon" sizes="32x32"/>
+   <link href="http://lorifoster.com/WP/wp-content/uploads/2018/03/cropped-android-chrome-192x192-192x192.png" rel="icon" sizes="192x192"/>
+   <link href="http://lorifoster.com/WP/wp-content/uploads/2018/03/cropped-android-chrome-192x192-180x180.png" rel="apple-touch-icon-precomposed"/>
+   <meta content="http://lorifoster.com/WP/wp-content/uploads/2018/03/cropped-android-chrome-192x192-270x270.png" name="msapplication-TileImage"/>
+   <meta content="qfnyuvdf63gk-6tl109bhn6nrb-ttzcwfpguss3et39feithshogg1x1qnk55nokj-qe79190qfiqizjemk7yn93c43cjqfqvsq0394b3g8ljo0af7w77jmpmsg90dry" name="norton-safeweb-site-verification"/>
+   <div class="subs-popup">
+    <div class="popup-container">
+     <h6 class="close-window" onclick="ga('send', 'event', 'Popup', 'click', 'close window');">
+      X
+     </h6>
+     <div class="text-center popup-book left fifty hide-tablet-small">
+      <h6 class="ltpurple thin glow-primary caps nomargin">
+       COMING JUNE 1
+      </h6>
+      <div class="cover-wrapper">
+       <a href="http://lorifoster.com/story/tucker/">
+        <img alt="Tucker" class="attachment-thumb-400 size-thumb-400 wp-post-image" height="400" src="http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-253x400.jpg" width="253"/>
+       </a>
+      </div>
+      <div class="text-center">
+       <div class="order-options">
+        <ul class="subnav">
+         <li>
+          <a href="http://amzn.to/2ye831I" onclick="ga('send', 'event', 'Popup', 'click', 'Amazon');" target="_blank">
+           Am
+           <span class="hide-tablet-large">
+            a
+           </span>
+           z
+           <span class="hide-tablet-large">
+            o
+           </span>
+           n
+          </a>
+         </li>
+         <li>
+          <a href="https://www.barnesandnoble.com/w/tucker-lori-foster/1127123920" onclick="ga('send', 'event', 'Popup', 'click', 'Barnes and Noble');" target="_blank">
+           B&amp;N
+          </a>
+         </li>
+         <li>
+          <a href="https://itunes.apple.com/us/book/tucker/id1286748764" onclick="ga('send', 'event', 'Popup', 'click', 'iBooks');" target="_blank">
+           iB
+           <span class="hide-tablet-large">
+            ooks
+           </span>
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="space-5">
+       </div>
+       <h6 class="meta nomargin">
+        <a href="http://lorifoster.com/story/tucker/#order" onclick="ga('send', 'event', 'Popup', 'click', 'More ordering options link');">
+         More Ordering Options
+        </a>
+       </h6>
+       <div class="space-5">
+       </div>
+       <h5 class="caps glow thin spaced">
+        <a class="boxed inline-block" href="http://lorifoster.com/story/tucker/#excerpt" onclick="ga('send', 'event', 'Popup', 'click', 'Read an excerpt link');">
+         read an
+         <br/>
+         excerpt
+        </a>
+       </h5>
+      </div>
+     </div>
+     <div class="subscribe-form-popup text-center fifty right">
+      <div class="space-5">
+      </div>
+      <h6 class="ltpurple thin glow-primary caps nomargin">
+       Sign up for Lori's Newsletter:
+      </h6>
+      <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+      <!--<link rel="stylesheet" href="/resources/demos/style.css"-->
+      <script src="https://code.jquery.com/jquery-1.12.4.js">
+      </script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js">
+      </script>
+      <script>
+       $( function() {
+ 	var selector = $('.nl.shadow-box input[name="email"]');
+ 	$( selector ).tooltip({
+ 		show: {effect: "clip", duration: 200},
+ 		position: {
+ 			my: "left+10 top-10",
+ 			at: "right top",
+ 			collision: "flipfit",
+ 			using: function( position, feedback ) {
+ 				$( this ).css( position );
+ 				$( "<div>" )
+ 				.addClass( "arrow" )
+ 				.addClass( feedback.vertical )
+ 				.addClass( feedback.horizontal )
+ 				.appendTo( this );
+ 			}
+ 		}
+ 	});
+ 	function toggleTooltip(){
+ 		if($(window).width() <= 480) {
+ 			$( selector ).tooltip( "disable" );
+ 		}
+ 		else {
+ 			$( selector ).tooltip( "enable" );
+ 		}
+ 	}
+ 	$(document).ready(function(){
+ 		toggleTooltip();
+ 	});
+ 	$(window).resize(function(){
+ 		toggleTooltip();
+ 	});
+ 
+ });
+      </script>
+      <!-- Newsletter Signup form -->
+      <div class="nl shadow-box">
+       <form accept-charset="utf-8" action="http://lorifoster.com/list/forms/subscribe.php" method="POST">
+        <p class="">
+         <!--<input type="text"
+     name="name"
+     id="name"
+     class=""
+     value="Your Name (not required)"
+     onblur="if (this.value == '') {this.value = 'Your Name (not required)';}"
+     onfocus="if (this.value == 'Your Name (not required)') {this.value = '';}"
+     size=""
+     style="box-sizing: content-box !important;"/>
+ <br />-->
+         <span class="tooltip-handle">
+          ?
+         </span>
+         <span class="tooltip">
+          Take a look at
+          <a href="/site/#privacy">
+           Lori’s privacy policy
+          </a>
+          for details on how she protects and manages your data.
+         </span>
+         <input class="" id="email" name="email" onblur="if (this.value == '') {this.value = 'Your Email (required)';}" onfocus="if (this.value == 'Your Email (required)') {this.value = '';}" size="" style="box-sizing: content-box !important;" title="Email address is collected in order to be added to Lori’s newsletter list." type="text" value="Your Email (required)"/>
+        </p>
+        <div class="g-recaptcha" data-sitekey="6LdQgSkTAAAAACl7j8LSCoDxoDfwMM-iTtVrO7PW" style="transform:scale(0.666);-webkit-transform:scale(0.666);transform-origin:0 0;-webkit-transform-origin:0 0; margin:-8px auto -20px; width: 200px;">
+        </div>
+        <p class="meta nomargin-bottom purple">
+         I consent to having Lori Foster collect my email address in accordance with her
+         <a href="/site/#privacy">
+          privacy policy
+         </a>
+         .
+        </p>
+        <input class="" id="submit" name="submit" type="submit" value="Subscribe"/>
+       </form>
+      </div>
+      <!-- Newsletter Signup form --->
+      <script>
+       $( ".tooltip-handle" ).click(function() {
+ 	$( ".tooltip" ).toggleClass( "visible" );
+ });
+      </script>
+      <h6 class="space-5 sans no-thanks meta">
+       No, thank you.
+      </h6>
+     </div>
+    </div>
+    <script type="text/javascript">
+     $('.no-thanks, .close-window').click(function() {
+ 			$('.subs-popup').hide();
+ 			$limit = 9999;
+ 		});
+    </script>
+   </div>
+   <div class="site-page">
+    <main class="wrap">
+     <div class="flower">
+      <header class="masthead" role="banner">
+       <img class="floating-lilies" src="/WP/wp-content/themes/lorifoster2017/images/global/flowers-top-left.png" width="115"/>
+       <nav class="top-navigation" role="navigation">
+        <div class="top-nav-wrapper">
+         <div class="menu-top-menu-container">
+          <ul class="top-menu" id="secondary-menu">
+           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4843" id="menu-item-4843">
+            <a href="http://readerauthorgettogether.com" target="_blank">
+             RAGT
+            </a>
+           </li>
+           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5757" id="menu-item-5757">
+            <a href="/faq/how-do-i-sign-up-for-the-newsletter/">
+             Subscribe
+            </a>
+           </li>
+           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5978" id="menu-item-5978">
+            <a href="http://lorifoster.com/headlines/giveaways/">
+             Giveaways
+            </a>
+           </li>
+           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4848" id="menu-item-4848">
+            <a href="/faq">
+             FAQ
+            </a>
+           </li>
+           <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5758" id="menu-item-5758">
+            <a href="/news">
+             Updates
+            </a>
+           </li>
+          </ul>
+         </div>
+         <div class="social-navigation">
+          <ul class="social-icons">
+           <li>
+            <a class="icon-facebook" href="https://www.facebook.com/lorifoster" target="_blank">
+             <span>
+              facebook
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-twitter" href="https://twitter.com/lorilfoster" target="_blank">
+             <span>
+              twitter
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-pinterest" href="http://www.pinterest.com/lorilfoster/" target="_blank">
+             <span>
+              pinterest
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-instagram" href="https://www.instagram.com/lorilfoster/" target="_blank">
+             <span>
+              instagram
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-goodreads" href="https://www.goodreads.com/author/show/17597.Lori_Foster" target="_blank">
+             <span>
+              goodreads
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-bookbub" href="https://www.bookbub.com/authors/lori-foster" target="_blank">
+             <span>
+              bookbub
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-rss" href="/contact/#site-news">
+             <span>
+              rss
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-contact" href="/contact/">
+             <span>
+              contact
+             </span>
+            </a>
+           </li>
+           <li>
+            <a class="icon-search" href="#search">
+             <span>
+              search
+             </span>
+            </a>
+           </li>
+          </ul>
+         </div>
+         <div class="clear">
+         </div>
+        </div>
+       </nav>
+       <!-- #site-navigation -->
+       <!-- Mashead -->
+       <a href="/">
+        <img class="masthead-image hide-tablet-small" src="/WP/wp-content/themes/lorifoster2017/images/global/masthead.png"/>
+        <img class="masthead-image show-tablet-small" src="/WP/wp-content/themes/lorifoster2017/images/global/mobile-masthead.png"/>
+       </a>
+       <!-- Mashead -->
+       <div class="hamburger">
+        <span>
+        </span>
+        <span>
+        </span>
+        <span>
+        </span>
+       </div>
+       <div class="mobile-navigation">
+        <ul>
+         <li>
+          <a href="/books">
+           All Books
+          </a>
+         </li>
+         <li>
+          <a href="/next">
+           Coming Soon
+          </a>
+         </li>
+         <li>
+          <a href="/news">
+           News &amp; Updates
+          </a>
+         </li>
+        </ul>
+       </div>
+       <nav class="main-navigation" role="navigation">
+        <div class="menu-main-menu-container">
+         <ul class="menu" id="primary-menu">
+          <li class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-4430" id="menu-item-4430">
+           <a href="/">
+            Home
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4434" id="menu-item-4434">
+           <a href="/books/">
+            All Books
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5044" id="menu-item-5044">
+           <a href="/connected">
+            Connected Stories
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4858" id="menu-item-4858">
+           <a href="http://lorifoster.com/new-stories/">
+            New Stories
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4857" id="menu-item-4857">
+           <a href="http://lorifoster.com/reissues/">
+            Reissues
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-custom menu-item-object-custom menu-item-4859" id="menu-item-4859">
+           <a href="/books">
+            Books by Series
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4433" id="menu-item-4433">
+           <a href="http://lorifoster.com/next/">
+            Coming
+            <span class="hide-tablet-large">
+             Soon
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4460" id="menu-item-4460">
+           <a href="http://lorifoster.com/meet/">
+            About
+            <span class="hide-tablet-large">
+             Lori
+            </span>
+           </a>
+          </li>
+          <li class="hide-tablet-large menu-item menu-item-type-custom menu-item-object-custom menu-item-4437" id="menu-item-4437">
+           <a href="/events/">
+            Events
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-custom menu-item-object-custom menu-item-4860" id="menu-item-4860">
+           <a href="http://readerauthorgettogether.com" target="_blank">
+            RAGT
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-post_type menu-item-object-page menu-item-4861" id="menu-item-4861">
+           <a href="http://lorifoster.com/newsletter/">
+            Newsletter
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-custom menu-item-object-custom menu-item-4862" id="menu-item-4862">
+           <a href="/faq">
+            FAQ
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-custom menu-item-object-custom menu-item-4863" id="menu-item-4863">
+           <a href="/headlines/giveaways">
+            Giveaways
+           </a>
+          </li>
+          <li class="show-tablet-small menu-item menu-item-type-custom menu-item-object-custom menu-item-4864" id="menu-item-4864">
+           <a href="#search">
+            Search
+           </a>
+          </li>
+         </ul>
+        </div>
+       </nav>
+       <!-- #site-navigation -->
+       <div class="clear">
+       </div>
+      </header>
+      <!-- #masthead -->
+      <div class="contain" id="main-content">
+       <div class="homepage">
+        <div class="featured-row">
+         <div class="home-featured-books right">
+          <div class="featured1-home">
+           <div class="space-10">
+           </div>
+           <img class="sixty-five-forever" src="/WP/wp-content/themes/lorifoster2017/images/global/new.png"/>
+           <h6 class="ltpurple thin glow-primary text-right caps nomargin">
+            LORI's Newest
+           </h6>
+           <div class="cover-wrapper">
+            <a href="http://lorifoster.com/story/tucker/">
+             <img alt="" class="attachment-thumb-400 size-thumb-400 wp-post-image" height="400" sizes="(max-width: 253px) 100vw, 253px" src="http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-253x400.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-253x400.jpg 253w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-190x300.jpg 190w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-63x100.jpg 63w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-95x150.jpg 95w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-126x200.jpg 126w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-158x250.jpg 158w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-174x275.jpg 174w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-221x350.jpg 221w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-285x450.jpg 285w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-316x500.jpg 316w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-348x550.jpg 348w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-379x600.jpg 379w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2-411x650.jpg 411w, http://lorifoster.com/WP/wp-content/uploads/2017/10/Tucker_450X2.jpg 569w" width="253"/>
+            </a>
+            <div class="text-center ordering-top">
+             <div class="home-order-pennant">
+              <ul class="horizontal-ordering">
+               <li>
+                <a href="https://www.amazon.com/Tucker-Buckhorn-Brothers-ebook/dp/B075QWKLH1" target="_blank">
+                 Am
+                 <span class="hide-tablet-large">
+                  a
+                 </span>
+                 z
+                 <span class="hide-tablet-large">
+                  o
+                 </span>
+                 n
+                </a>
+               </li>
+               <li>
+                <a href="https://www.barnesandnoble.com/w/tucker-lori-foster/1127123920" target="_blank">
+                 B&amp;N
+                </a>
+               </li>
+               <li id="ibooks">
+                <a href="https://itunes.apple.com/us/book/tucker/id1286748764" target="_blank">
+                 iBOOKS
+                </a>
+               </li>
+              </ul>
+              <!-- <div class="show-tablet-small space-30"></div> -->
+              <a class="top-ordering-jump block" href="http://lorifoster.com/story/tucker/#order">
+               more ordering options
+              </a>
+             </div>
+            </div>
+            <h5 class="caps glow thin spaced text-center">
+             <a class="boxed inline-block" href="http://lorifoster.com/story/tucker/#excerpt">
+              read an
+              <br/>
+              excerpt
+             </a>
+            </h5>
+           </div>
+          </div>
+          <div class="featured2-home">
+           <h6 class="ltpurple thin glow-primary text-right caps nomargin">
+            COMING JULY 31
+           </h6>
+           <div class="cover-wrapper">
+            <a href="http://lorifoster.com/story/coopers-charm/">
+             <img alt="" class="attachment-thumb-400 size-thumb-400 wp-post-image" height="400" sizes="(max-width: 267px) 100vw, 267px" src="http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-267x400.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-267x400.jpg 267w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-200x300.jpg 200w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-67x100.jpg 67w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-100x150.jpg 100w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-133x200.jpg 133w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-167x250.jpg 167w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-183x275.jpg 183w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-233x350.jpg 233w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-300x450.jpg 300w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-333x500.jpg 333w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-367x550.jpg 367w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-400x600.jpg 400w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2-433x650.jpg 433w, http://lorifoster.com/WP/wp-content/uploads/2017/11/LORI_CoopersCharmCover_Final_450X2.jpg 600w" width="267"/>
+            </a>
+            <div class="text-center ordering-top">
+             <!-- order links -->
+             <div class="home-order-pennant">
+              <ul class="horizontal-ordering">
+               <li>
+                <a href="http://amzn.to/2hk3r3d" target="_blank">
+                 Am
+                 <span class="hide-tablet-large">
+                  a
+                 </span>
+                 z
+                 <span class="hide-tablet-large">
+                  o
+                 </span>
+                 n
+                </a>
+               </li>
+               <li>
+                <a href="https://www.barnesandnoble.com/w/coopers-charm-lori-foster/1127118157" target="_blank">
+                 B&amp;N
+                </a>
+               </li>
+               <li>
+                <a href="http://www.booksamillion.com/p/Coopers-Charm/Lori-Foster/9781335017529?id=6350183437626" target="_blank">
+                 BAM
+                </a>
+               </li>
+              </ul>
+              <!-- <div class="show-tablet-small space-30"></div> -->
+              <a class="top-ordering-jump block" href="http://lorifoster.com/story/coopers-charm/#order">
+               more ordering options
+              </a>
+             </div>
+            </div>
+            <h5 class="caps glow thin spaced text-center">
+             <a class="boxed inline-block" href="http://lorifoster.com/story/coopers-charm/#excerpt">
+              read an
+              <br/>
+              excerpt
+             </a>
+            </h5>
+           </div>
+          </div>
+          <div class="clear">
+          </div>
+         </div>
+         <div class="space-30 show-tablet-small">
+         </div>
+         <div class="twentyfive left text-center home-reissues">
+          <img class="hide-tablet-small" src="/WP/wp-content/themes/lorifoster2017/images/global/new-again.png"/>
+          <img class="show-tablet-small" src="/WP/wp-content/themes/lorifoster2017/images/global/new-again-mobile.png"/>
+          <div class="clear">
+          </div>
+          <div class="home-reissue">
+           <div class="cover-wrapper">
+            <a href="http://lorifoster.com/story/trapped/">
+             <img alt="" class=" wp-post-image" height="275" sizes="(max-width: 174px) 100vw, 174px" src="http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-174x275.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-174x275.jpg 174w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-190x300.jpg 190w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-63x100.jpg 63w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-95x150.jpg 95w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-126x200.jpg 126w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-158x250.jpg 158w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-221x350.jpg 221w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-253x400.jpg 253w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-284x450.jpg 284w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped.jpg 316w" width="174"/>
+            </a>
+           </div>
+           <h6 class="nomargin-top">
+            <a href="http://lorifoster.com/story/trapped/#order">
+             order yours
+            </a>
+           </h6>
+          </div>
+          <div class="home-reissue">
+           <div class="cover-wrapper">
+            <a href="http://lorifoster.com/story/riley/">
+             <img alt="" class=" wp-post-image" height="275" sizes="(max-width: 174px) 100vw, 174px" src="http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-174x275.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-174x275.jpg 174w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-190x300.jpg 190w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-768x1215.jpg 768w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-647x1024.jpg 647w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-63x100.jpg 63w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-95x150.jpg 95w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-126x200.jpg 126w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-158x250.jpg 158w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-221x350.jpg 221w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-253x400.jpg 253w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-284x450.jpg 284w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-316x500.jpg 316w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-348x550.jpg 348w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-379x600.jpg 379w, http://lorifoster.com/WP/wp-content/uploads/2018/02/Riley-reissue-2018-411x650.jpg 411w" width="174"/>
+            </a>
+           </div>
+           <h6 class="nomargin-top">
+            <a href="http://lorifoster.com/story/riley/#order">
+             order yours
+            </a>
+           </h6>
+          </div>
+         </div>
+         <div class="clear">
+         </div>
+        </div>
+        <div class="clear">
+        </div>
+        <div class="space-30 show-tablet-small">
+        </div>
+        <div class="news-row">
+         <img class="news-header" src="/WP/wp-content/themes/lorifoster2017/images/global/news-header.png"/>
+         <h6 class="ltpink thin caps glow-secondary spaced news-tag">
+          Cover reveals, giveaways, new books, excerpts, events news, and more...
+          <a class="beige" href="#subscribe-header">
+           Subscribe!
+          </a>
+         </h6>
+         <div class="sixty left">
+          <div class="space-10 show-tablet-large">
+          </div>
+          <!-- BEGIN Site News -->
+          <div class="home-news-item">
+           <h3>
+            <a href="http://lorifoster.com/news/a-buckhorn-baby-is-now-available-in-audio/">
+             A Buckhorn Baby is Now Available in Audio
+            </a>
+           </h3>
+           <h6 class="beige">
+            June 15, 2018
+           </h6>
+           <div class="bookaside" style="float: right; margin: 10px; width: 28%; max-width: 102px;">
+            <a href="http://lorifoster.com/books/a-buckhorn-baby-2018-audio/">
+             <img alt="" class="juicy wp-post-image" height="200" sizes="(max-width: 200px) 100vw, 200px" src="http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-200x200.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-200x200.jpg 200w, http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-150x150.jpg 150w, http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-100x100.jpg 100w, http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-250x250.jpg 250w, http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover-275x275.jpg 275w, http://lorifoster.com/WP/wp-content/uploads/2018/01/Babyaudiocover.jpg 300w" width="200"/>
+            </a>
+            <p style="font-size: 14px; text-align: center; margin: 2px 0 0;">
+             <a href="http://amzn.to/2GLLKEP" target="_blank">
+              A
+             </a>
+             |
+             <a href="https://www.audible.com/pd/Romance/A-Buckhorn-Baby-Audiobook/B07BTNB2KX" target="_blank">
+              Aud
+             </a>
+             |
+             <a href="https://www.bookdepository.com/Buckhorn-Baby-Lori-Foster/9781538516409" target="_blank">
+              BD
+             </a>
+            </p>
+            <p class="more-options" style="font-size: 11px; text-align: center; margin: 2px 0 0;">
+             <a href="http://lorifoster.com/books/a-buckhorn-baby-2018-audio/">
+              more options →
+             </a>
+            </p>
+           </div>
+           <p>
+            Do you love audio books? Lori’s
+            <a href="http://lorifoster.com/connected/#buckhorn-brothers-series">
+             Buckhorn Brothers
+            </a>
+            novella,
+            <a href="http://lorifoster.com/story/a-buckhorn-baby/">
+             <em>
+              A Buckhorn Baby
+             </em>
+            </a>
+            , was recently released in
+            <a href="http://lorifoster.com/books/a-buckhorn-baby-2018-audio/">
+             audio format
+            </a>
+            . Check out an
+            <a href="http://lorifoster.com/story/a-buckhorn-baby/#excerpt">
+             excerpt
+            </a>
+            and then
+            <a href="http://lorifoster.com/books/a-buckhorn-baby-2018-audio/">
+             order your copy
+            </a>
+            for your listening enjoyment. Prefer to read?
+            <a href="http://lorifoster.com/story/a-buckhorn-baby/">
+             <em>
+              A Buckhorn Baby
+             </em>
+            </a>
+            was released last year as a
+            <a href="http://lorifoster.com/books/a-buckhorn-baby-2017-digital/">
+             digital novella
+            </a>
+            .
+           </p>
+           <div class="space-20">
+           </div>
+          </div>
+          <div class="home-news-item">
+           <h3>
+            <a href="http://lorifoster.com/news/trapped-is-reissued/">
+             Trapped is Reissued!
+            </a>
+           </h3>
+           <h6 class="beige">
+            June 11, 2018
+           </h6>
+           <div class="bookaside" style="float: right; margin: 10px; width: 28%; max-width: 102px;">
+            <a href="http://lorifoster.com/books/trapped-2018-digital/">
+             <img alt="" class="juicy wp-post-image" height="200" sizes="(max-width: 126px) 100vw, 126px" src="http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-126x200.jpg" srcset="http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-126x200.jpg 126w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-190x300.jpg 190w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-63x100.jpg 63w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-95x150.jpg 95w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-158x250.jpg 158w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-174x275.jpg 174w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-221x350.jpg 221w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-253x400.jpg 253w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped-284x450.jpg 284w, http://lorifoster.com/WP/wp-content/uploads/2018/03/Trapped.jpg 316w" width="126"/>
+            </a>
+            <p style="font-size: 14px; text-align: center; margin: 2px 0 0;">
+             <a href="https://amzn.to/2utGK6K" target="_blank">
+              A
+             </a>
+             |
+             <a href="https://www.barnesandnoble.com/w/trapped-lori-foster/1122344039" target="_blank">
+              BN
+             </a>
+             |
+             <a href="https://itunes.apple.com/us/book/trapped/id1355331967?mt=11" target="_blank">
+              iB
+             </a>
+             |
+             <a href="https://www.kobo.com/us/en/ebook/trapped-167" target="_blank">
+              K
+             </a>
+            </p>
+            <p class="more-options" style="font-size: 11px; text-align: center; margin: 2px 0 0;">
+             <a href="http://lorifoster.com/books/trapped-2018-digital/">
+              more options →
+             </a>
+            </p>
+           </div>
+           <p>
+            Have you read Ethan and Rosie’s story?
+            <a href="http://lorifoster.com/story/trapped/">
+             <em>
+              Trapped
+             </em>
+            </a>
+            is book 1 in Lori’s
+            <a href="http://lorifoster.com/series/men-of-courage/">
+             Men of Courage
+            </a>
+            series and has just been reissued in
+            <a href="http://lorifoster.com/books/trapped-2018-digital/">
+             digital format
+            </a>
+            with a tempting new cover. If you are looking to add
+            <a href="http://lorifoster.com/story/trapped/">
+             <em>
+              Trapped
+             </em>
+            </a>
+            to your collection, you can check out an
+            <a href="http://lorifoster.com/story/trapped/#excerpt">
+             excerpt
+            </a>
+            and then
+            <a href="http://lorifoster.com/books/trapped-2018-digital/">
+             order
+            </a>
+            your copy.
+           </p>
+           <div class="space-20">
+           </div>
+          </div>
+          <div class="home-news-item">
+           <h3>
+            <a href="http://lorifoster.com/news/another-charming-way-to-help-animals-in-need/">
+             Another Charming Way to Help Animals in Need
+            </a>
+           </h3>
+           <h6 class="beige">
+            June 1, 2018
+           </h6>
+           <p>
+            <a href="https://gleam.io/Qr7Hd/lori-foster-animal-adoption-sweeps" rel="noopener" target="_blank">
+             <img alt="Cooper's Charm by Lori Foster Promotion for the Animal Adoption Foundation" class="alignnone wp-image-6270 size-full" height="300" sizes="(max-width: 540px) 100vw, 540px" src="http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2.png" srcset="http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2.png 540w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-300x167.png 300w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-180x100.png 180w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-270x150.png 270w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-360x200.png 360w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-450x250.png 450w, http://lorifoster.com/WP/wp-content/uploads/2018/05/unnamed-2-495x275.png 495w" width="540"/>
+            </a>
+           </p>
+           <p>
+            Are you looking forward to Lori’s next new story,
+            <a href="http://lorifoster.com/story/coopers-charm/">
+             <em>
+              Cooper’s Charm
+             </em>
+            </a>
+            ? It’s the first book in her brand new
+            <a href="http://lorifoster.com/series/love-at-the-resort">
+             Love at the Resort Series
+            </a>
+            , and will be releasing on
+            <strong>
+             July 31st
+            </strong>
+            in
+            <a href="http://lorifoster.com/books/coopers-charm-2018-digital/">
+             digital
+            </a>
+            ,
+            <a href="http://lorifoster.com/books/coopers-charm-2018-print/">
+             paperback
+            </a>
+            ,
+            <a href="http://lorifoster.com/books/coopers-charm-2018-hardcover/">
+             hardcover
+            </a>
+            and
+            <a href="http://lorifoster.com/books/coopers-charm/">
+             audio
+            </a>
+            .
+           </p>
+           <p>
+            Lori is a huge animal lover and one of her favorite charities is the
+            <a href="http://lorifoster.com/extras/animal-adoption-foundation-aaf/">
+             animal adoption foundation
+            </a>
+            . Your
+            <a href="http://lorifoster.com/story/coopers-charm/#order">
+             pre-order
+            </a>
+            can help her reach her goal of raising the maximum of $5000 for this great organization!
+            <a class="more-link" href="http://lorifoster.com/news/another-charming-way-to-help-animals-in-need/#more-6277">
+             <span aria-label="Continue reading Another Charming Way to Help Animals in Need">
+              (more…)
+             </span>
+            </a>
+           </p>
+           <div class="space-20">
+           </div>
+          </div>
+          <p class="sans">
+           <a href="/news">
+            More Site News →
+           </a>
+          </p>
+          <!-- END Site News -->
+          <!-- BEGIN Event Call -->
+          <hr/>
+          <h3 class="caps beige thin">
+           Next Event:
+          </h3>
+          <h5 class="nomargin-top caps">
+           September 28 - 29, 2018
+          </h5>
+          <h5 class="city glow soft nomargin-top">
+           Louisville, KY
+          </h5>
+          <h5 class="event-title nomargin-top">
+           <a href="http://lorifoster.com/events/readers-on-the-river-2018/">
+            Readers on the River 2018
+           </a>
+          </h5>
+          <h6 class="caps spaced nomargin-top">
+           Event
+          </h6>
+          <p class="sans">
+           <a href="http://lorifoster.com/events/readers-on-the-river-2018/">
+            event details →
+           </a>
+          </p>
+          <!-- END Event Call -->
+         </div>
+         <div class="forty right">
+          <!--<h1>Social feeds<br>Featured Video<br>Lori's Corner<br>Etc.</h1>-->
+          <div class="promo">
+           <p class="pink text-center nomargin">
+            <a href="/story/coopers-charm/#order">
+             Pre-Order
+            </a>
+            Cooper's Charm
+           </p>
+           <a href="https://gleam.io/Qr7Hd/lori-foster-animal-adoption-sweeps" target="_blank">
+            <img src="/WP/wp-content/themes/lorifoster2017/images/unnamed-2-2.png"/>
+           </a>
+           <div class="space-20">
+           </div>
+          </div>
+          <!-- Facebook feed -->
+          <div class="fb-page" data-adapt-container-width="true" data-hide-cover="false" data-href="https://www.facebook.com/lorifoster" data-show-facepile="true" data-small-header="false" data-tabs="timeline" data-width="325">
+           <blockquote cite="https://www.facebook.com/lorifoster" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/lorifoster">
+             Lori Foster
+            </a>
+           </blockquote>
+          </div>
+          <!-- END Facebook feed -->
+          <div class="space-20">
+          </div>
+          <!-- Twitter feed -->
+          <a class="twitter-timeline" data-height="500" href="https://twitter.com/LoriLFoster?ref_src=twsrc%5Etfw">
+           Tweets by LoriLFoster
+          </a>
+          <script async="" charset="utf-8" src="https://platform.twitter.com/widgets.js">
+          </script>
+          <!-- END Twitter feed -->
+          <div class="space-20">
+          </div>
+          <h3 class="caps beige thin">
+           Featured Video
+          </h3>
+          <div class="video video-container featured-video-home">
+           <iframe allowfullscreen="" frameborder="0" height="169" src="http://www.youtube.com/embed/eCtvdKLfV44" width="300">
+           </iframe>
+          </div>
+          <!--video-->
+         </div>
+        </div>
+        <div class="clear">
+        </div>
+        <hr/>
+        <h3 class="caps beige thin text-center" id="subscribe-header">
+         Stay Connected:
+        </h3>
+        <div class="row">
+         <div class="contain nopadding-top">
+          <div class="subscribe-row-wrapper">
+           <div class="subscriptions-row center-div">
+            <p class="nomargin">
+             There are two options for direct notification (as opposed to social feeds) for when Lori has news to share: Big News (infrequent
+             <a href="#newsletter">
+              <strong>
+               Newsletter
+              </strong>
+             </a>
+             ) or All News (more frequent
+             <a href="#subscribe">
+              <strong>
+               Site News
+              </strong>
+             </a>
+             ). Subscribe to either or both! They are not the same thing (though each are cool!), and Lori guarantees your
+             <a href="/site/#privacy" target="_blank">
+              privacy
+             </a>
+             on each.
+            </p>
+            <div class="space-10 clear">
+            </div>
+            <div class="fifty right">
+             <div class="signup-header">
+              <h4 class="text-center white nomargin sans nomargin-top caps ">
+               <strong>
+                Lori's Newsletter
+               </strong>
+              </h4>
+             </div>
+             <div class="text-center" id="newsletter">
+              <p class="text-left nomargin">
+               Subscribe to
+               <span class="glow-primary">
+                Lori's Newsletter
+               </span>
+               , which announces her biggest news, like book releases or sales readers won’t want to miss. This is an infrequent mailing—
+               <strong>
+                every other month
+               </strong>
+               —and is
+               <em>
+                different from LoriFoster.com site news, which requires a separate subscription
+               </em>
+               .
+              </p>
+              <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+              <!--<link rel="stylesheet" href="/resources/demos/style.css"-->
+              <script src="https://code.jquery.com/jquery-1.12.4.js">
+              </script>
+              <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js">
+              </script>
+              <script>
+               $( function() {
+ 	var selector = $('.nl.shadow-box input[name="email"]');
+ 	$( selector ).tooltip({
+ 		show: {effect: "clip", duration: 200},
+ 		position: {
+ 			my: "left+10 top-10",
+ 			at: "right top",
+ 			collision: "flipfit",
+ 			using: function( position, feedback ) {
+ 				$( this ).css( position );
+ 				$( "<div>" )
+ 				.addClass( "arrow" )
+ 				.addClass( feedback.vertical )
+ 				.addClass( feedback.horizontal )
+ 				.appendTo( this );
+ 			}
+ 		}
+ 	});
+ 	function toggleTooltip(){
+ 		if($(window).width() <= 480) {
+ 			$( selector ).tooltip( "disable" );
+ 		}
+ 		else {
+ 			$( selector ).tooltip( "enable" );
+ 		}
+ 	}
+ 	$(document).ready(function(){
+ 		toggleTooltip();
+ 	});
+ 	$(window).resize(function(){
+ 		toggleTooltip();
+ 	});
+ 
+ });
+              </script>
+              <!-- Newsletter Signup form -->
+              <div class="nl shadow-box">
+               <form accept-charset="utf-8" action="http://lorifoster.com/list/forms/subscribe.php" method="POST">
+                <p class="">
+                 <!--<input type="text"
+     name="name"
+     id="name"
+     class=""
+     value="Your Name (not required)"
+     onblur="if (this.value == '') {this.value = 'Your Name (not required)';}"
+     onfocus="if (this.value == 'Your Name (not required)') {this.value = '';}"
+     size=""
+     style="box-sizing: content-box !important;"/>
+ <br />-->
+                 <span class="tooltip-handle">
+                  ?
+                 </span>
+                 <span class="tooltip">
+                  Take a look at
+                  <a href="/site/#privacy">
+                   Lori’s privacy policy
+                  </a>
+                  for details on how she protects and manages your data.
+                 </span>
+                 <input class="" id="email" name="email" onblur="if (this.value == '') {this.value = 'Your Email (required)';}" onfocus="if (this.value == 'Your Email (required)') {this.value = '';}" size="" style="box-sizing: content-box !important;" title="Email address is collected in order to be added to Lori’s newsletter list." type="text" value="Your Email (required)"/>
+                </p>
+                <div class="g-recaptcha" data-sitekey="6LdQgSkTAAAAACl7j8LSCoDxoDfwMM-iTtVrO7PW" style="transform:scale(0.666);-webkit-transform:scale(0.666);transform-origin:0 0;-webkit-transform-origin:0 0; margin:0 auto -22px; width: 200px;">
+                </div>
+                <p class="meta nomargin-bottom purple">
+                 I consent to having Lori Foster collect my email address in accordance with her
+                 <a href="/site/#privacy">
+                  privacy policy
+                 </a>
+                 .
+                </p>
+                <input class="" id="submit" name="submit" type="submit" value="Subscribe"/>
+               </form>
+              </div>
+              <!-- Newsletter Signup form --->
+              <script>
+               $( ".tooltip-handle" ).click(function() {
+ 	$( ".tooltip" ).toggleClass( "visible" );
+ });
+              </script>
+              <!--<p class="meta"><a href="/list/unsub-list.php">Change your email or unsubscribe &rarr;</a></p>-->
+             </div>
+             <!--newsletter-->
+            </div>
+            <!-- homepage subscriptions-->
+            <div class="space-20 show-tablet-small">
+            </div>
+            <div class="fifty left" id="site-news">
+             <div class="signup-header">
+              <h4 class="text-center white nomargin sans nomargin-top caps" id="subscribe-header">
+               <strong>
+                News &amp; Content Updates
+               </strong>
+              </h4>
+             </div>
+             <div class="text-center" id="subscribe">
+              <p class="text-left nomargin">
+               Subscribe to
+               <span class="glow-primary">
+                LoriFoster.com Site News &amp; Content Updates
+               </span>
+               to be notified whenever new content becomes available: events, cover reveals, new excerpts, great press... Whenever the home page is updated, you will be, too—
+               <strong>
+                one to three times a month
+               </strong>
+               . This is
+               <em>
+                different from Lori's newsletter, which requires a separate subscription
+               </em>
+               .
+              </p>
+              <div class="space-10">
+              </div>
+              <div class="nl shadow-box">
+               <form action="https://feed.press/e/mailverify" method="post" onsubmit="window.open('https://feed.press/e/mailverify?feed_id=LoriFoster', 'popupwindow', 'scrollbars=yes,width=550,height=400');return true" style="text-align:center;" target="popupwindow">
+                <input class="field" name="email" onblur="if (this.value == '') {this.value = 'Your Email Address, Please';}" onfocus="if (this.value == 'Your Email Address, Please') {this.value = '';}" type="text" value="Your Email Address, Please"/>
+                <input name="feed_id" type="hidden" value="LoriFoster"/>
+                <p class="meta nomargin-bottom purple">
+                 I consent to having Lori Foster collect my email address in accordance with her
+                 <a href="/site/#privacy">
+                  privacy policy
+                 </a>
+                 .
+                </p>
+                <input class="button" type="submit" value="Sign Up!"/>
+               </form>
+               <div class="text-center">
+                <p class="nomargin text-center meta">
+                 <a class="rsswidget" href="http://feedpress.me/LoriFoster" title="Author of Historic Romance Novels">
+                  or subscribe via RSS
+                 </a>
+                 <a class="rsswidget" href="http://feedpress.me/LoriFoster" title="Syndicate this content">
+                  <img alt="RSS" height="14" src="/WP/wp-content/themes/lorifoster2017/images/rss.png" style="border:0" width="14"/>
+                 </a>
+                </p>
+               </div>
+              </div>
+             </div>
+             <!--newsletter-->
+            </div>
+           </div>
+          </div>
+          <!-- Subscribe-wrapper -->
+          <div class="space-20 clear">
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- homepage -->
+       <div class="clear">
+       </div>
+      </div>
+      <!-- contain -->
+      <footer class="site-footer" id="footer" role="contentinfo">
+       <!-- this is the new footer -->
+       <div class="footer-wrapper">
+        <div class="contain">
+         <ul class="caps thin big-footer" id=" ">
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-4384 current_page_item menu-item-5752" id="menu-item-5752">
+           <a href="http://lorifoster.com/">
+            Home
+           </a>
+          </li>
+          <li class="backToTop menu-item menu-item-type-custom menu-item-object-custom menu-item-5755" id="menu-item-5755">
+           <a>
+            Top
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5753" id="menu-item-5753">
+           <a href="/news">
+            News/Updates
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5754" id="menu-item-5754">
+           <a href="/faq/how-do-i-sign-up-for-the-newsletter/">
+            Subscribe
+           </a>
+          </li>
+         </ul>
+         <div id="search">
+          <form action="http://lorifoster.com/" class="searchform group" method="get" role="search">
+           <input class="search-field" name="s" onblur="if (this.value == '') {this.value = 'Search This Site';}" onfocus="if (this.value == 'Search This Site') {this.value = '';}" title="Search for:" type="search" value="Search This Site"/>
+           <input id="searchsubmit" type="submit" value="Find"/>
+          </form>
+         </div>
+         <nav class="footer-navigation" role="navigation">
+          <div class="menu-footer-menu-new-container">
+           <ul class="" id="footer-menu">
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6056" id="menu-item-6056">
+             <a href="/books/">
+              All Books
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6057" id="menu-item-6057">
+             <a href="/meet/#benefit">
+              Benefit Books
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6058" id="menu-item-6058">
+             <a href="/next/">
+              Upcoming Books
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6059" id="menu-item-6059">
+             <a href="/new-stories/">
+              New Stories
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6060" id="menu-item-6060">
+             <a href="/reissues/">
+              Reissues (New-Again!)
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6061" id="menu-item-6061">
+             <a href="/connected/">
+              Connected Stories
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6062" id="menu-item-6062">
+             <a href="/books-by-format/#audiobook">
+              Audio Books
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6063" id="menu-item-6063">
+             <a href="/meet/">
+              Meet Lori
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6064" id="menu-item-6064">
+             <a href="/events/">
+              Lori’s Event Calendar
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6065" id="menu-item-6065">
+             <a href="/media-kit/">
+              Media Kit
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6066" id="menu-item-6066">
+             <a href="/news">
+              New Content Updates
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6067" id="menu-item-6067">
+             <a href="/faq/how-do-i-sign-up-for-the-newsletter/">
+              Subscribe to Newsletter
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6068" id="menu-item-6068">
+             <a href="/faq/how-do-i-sign-up-for-the-newsletter/">
+              Sign Up for News Alerts
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6069" id="menu-item-6069">
+             <a href="/faq/#book-questions">
+              FAQ about Books
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6070" id="menu-item-6070">
+             <a href="/faq">
+              All FAQ
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6071" id="menu-item-6071">
+             <a href="/headlines/giveaways/">
+              Giveaways!
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6072" id="menu-item-6072">
+             <a href="http://readerauthorgettogether.com/" target="_blank">
+              RAGT
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6073" id="menu-item-6073">
+             <a href="/contact/">
+              Contact Lori
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6075" id="menu-item-6075">
+             <a href="/site/#site-problems">
+              Site Issues?
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6076" id="menu-item-6076">
+             <a href="/site/">
+              Site Info &amp; Copyright
+             </a>
+            </li>
+            <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6200" id="menu-item-6200">
+             <a href="/site/#privacy">
+              Privacy
+             </a>
+            </li>
+           </ul>
+          </div>
+         </nav>
+         <!-- #site-navigation -->
+         <div class="space-10 hide-tablet-large">
+         </div>
+         <ul class="social-icons">
+          <li>
+           <a class="icon-facebook" href="https://www.facebook.com/lorifoster" target="_blank">
+            <span>
+             facebook
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-twitter" href="https://twitter.com/lorilfoster" target="_blank">
+            <span>
+             twitter
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-pinterest" href="http://www.pinterest.com/lorilfoster/" target="_blank">
+            <span>
+             pinterest
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-instagram" href="https://www.instagram.com/lorilfoster/" target="_blank">
+            <span>
+             instagram
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-goodreads" href="https://www.goodreads.com/author/show/17597.Lori_Foster" target="_blank">
+            <span>
+             goodreads
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-bookbub" href="https://www.bookbub.com/authors/lori-foster" target="_blank">
+            <span>
+             bookbub
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-rss" href="/contact/#site-news">
+            <span>
+             rss
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-contact" href="/contact/">
+            <span>
+             contact
+            </span>
+           </a>
+          </li>
+          <li>
+           <a class="icon-search" href="#search">
+            <span>
+             search
+            </span>
+           </a>
+          </li>
+         </ul>
+         <script>
+          $('.backToTop').click(function() {
+ 										$("html, body").animate({ scrollTop: 0 }, "500");
+ 										return false;
+ 									});
+         </script>
+        </div>
+        <!-- contain -->
+       </div>
+       <!-- footer-wrapper -->
+      </footer>
+      <!-- #colophon -->
+     </div>
+     <!-- flower -->
+    </main>
+    <!-- wrap -->
+   </div>
+   <!-- page -->
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var wpcf7 = {"apiSettings":{"root":"http:\/\/lorifoster.com\/wp-json\/contact-form-7\/v1","namespace":"contact-form-7\/v1"},"recaptcha":{"messages":{"empty":"Please verify that you are not a robot."}}};
+ /* ]]> */
+   </script>
+   <script src="http://lorifoster.com/WP/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=5.0.2" type="text/javascript">
+   </script>
+   <script src="http://lorifoster.com/WP/wp-includes/js/wp-embed.min.js?ver=4.8.6" type="text/javascript">
+   </script>
+   <!-- BEGIN Send to Kindle -->
+   <!-- JS file Amazon uses: -->
+   <script src="https://d1xnn692s7u6t6.cloudfront.net/widget.js" type="text/javascript">
+   </script>
+   <!-- Function calling out elements to target:  -->
+   <script type="text/javascript">
+    (function k(){window.$SendToKindle&&window.$SendToKindle.Widget?$SendToKindle.Widget.init({"content":".excerpt-content","exclude":"a,.exclude","title":".title","author":""}):setTimeout(k,500);})();
+   </script>
+   <!-- END Send to Kindle -->
+   <!-- AddEvent -->
+   <script src="https://addevent.com/libs/atc/1.6.1/atc.min.js" type="text/javascript">
+   </script>
+   <!-- AddEvent Settings -->
+   <script type="text/javascript">
+    window.addeventasync = function(){
+     addeventatc.settings({
+         license    : "arxlIwHONzsAjPfupmhV24799",
+         mouse      : false,
+         css        : true,
+         outlook    : {show:true, text:"Outlook"},
+         google     : {show:true, text:"Google <em>(online)</em>"},
+         yahoo      : {show:true, text:"Yahoo <em>(online)</em>"},
+         outlookcom : {show:true, text:"Outlook.com <em>(online)</em>"},
+         appleical  : {show:true, text:"Apple Calendar"},
+         facebook   : {show:true, text:"Facebook Event"},
+         dropdown   : {order:"outlook,google,appleical"}
+     });
+ };
+   </script>
+  </body>
+ </html>

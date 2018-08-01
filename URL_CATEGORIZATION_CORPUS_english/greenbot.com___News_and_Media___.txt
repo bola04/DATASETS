@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+ <!--[if lt IE 7]>  <html lang="en" class="lt-ie9 lt-ie8 lt-ie7" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+ <!--[if IE 7]> <html lang="en" class="lt-ie10 lt-ie9 lt-ie8" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+ <!--[if IE 8]> <html lang="en" class="lt-ie10 lt-ie9" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+ <!--[if IE 9]> <html lang="en" class="lt-ie10" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#"> <![endif]-->
+ <!--[if gt IE 9]><!-->
+ <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
+  <!--<![endif]-->
+  <head>
+   <!-- metas -->
+   <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Greenbot - Android news, tips, and reviews
+   </title>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <script>
+    function getQueryVariable(variable) {
+ 		var query = window.location.search.substring(1);
+ 		var vars = query.split("&");
+ 		for (var i=0;i<vars.length;i++) {
+ 			var pair = vars[i].split("=");
+ 			if(pair[0] == variable){return pair[1];}
+ 		}
+ 		return(false);
+ 	}
+   </script>
+   <!-- ad-related js -->
+   <script src="/www/js/jquery/jquery-1.10.2.min.js">
+   </script>
+   <script src="/www/js/jquery/jquery_cookie.js" type="text/javascript">
+   </script>
+   <script>
+    !function(t,o,e){e=t.createElement(o),t=t.getElementsByTagName(o)[0],e.async=1,e.src="https://spiffymachine.com/v2/0/dcnwp0iR8OxtPjoN0V2YdSzdKdRLXMyYKo6JiPhrVgQTRab_3Gg7cgYDJEzkz41j-uH6A",t.parentNode.insertBefore(e,t)}(document,"script"),function(t,o){t[o]=t[o]||function(){(t[o].q=t[o].q||[]).push(arguments)}}(document,window,"script","admiral");!function(t,e,a,n){function o(t){try{return t=localStorage.getItem("v4ac1eiZr0"),t&&t.split(",")[4]>0}catch(e){}return!1}function r(){var n=o();if(n){var r=t[e].pubads();typeof r.setTargeting===a&&r.setTargeting("admiral-engaged","true")}}n=t[e]=t[e]||{},n.cmd=n.cmd||[],typeof n.pubads===a?r():typeof n.cmd.unshift===a?n.cmd.unshift(r):n.cmd.push(r)}(window,"googletag","function");;;;!function(t,e,a,n){function o(){if(!window.frames[n]){var e=t.body;if(e){var a=t.createElement("iframe");a.style="display:none",a.name=n,e.appendChild(a)}else setTimeout(o,5)}}function r(){for(var t=[],a=0;a<arguments.length;a++)t.push(arguments[a]);i.q=i.q||[],"ping"===t[0]?t[2]({gdprAppliesGlobally:e.__cmpGdprAppliesGlobally||!1,cmpLoaded:!1},!0):t.length&&i.q.push(t)}function c(t){try{return JSON.parse(t)}catch(e){}}function s(t){if(t){var e,a="__cmpCall",n="string"==typeof t.data&&t.data.indexOf(a)>=0;e=n?(c(t.data)||{})[a]:(t.data||{})[a],e&&i(e.command,e.parameter,function(a,o){var r={__cmpReturn:{returnValue:a,success:o,callId:e.callId}};t.source.postMessage(n?JSON.stringify(r):r,"*")})}}var i=e[a];o(),"function"!=typeof i&&(i=e[a]=r,e.addEventListener?e.addEventListener("message",s,!1):e.attachEvent&&e.attachEvent("onmessage",s))}(document,window,"__cmp","__cmpLocator");;
+   </script>
+   <script>
+    window.admiral = window.admiral || function() {(admiral.q = admiral.q || []).push(arguments)};
+ /*
+ var checkIfInEU = new Promise((resolve, reject) => {
+     var promiseResolved = false;
+     setTimeout(function(){
+         console.log('GDPR checkIfInEU timeout reached promiseResolved',promiseResolved);
+         if (!promiseResolved){
+             promiseResolved=true;
+             resolve();//in eu
+             console.log('too slow; assuming you are EU');
+         }
+     },10000);
+ 
+     window.admiral('after', 'cmp.loaded', function(e){
+         if(promiseResolved)return;//timeout reached            
+         promiseResolved = true;
+         
+         console.log('GDPR checkIfInEU - cmp.loaded',e);
+         var isEuVisitor = e.euVisitor || false;             
+         if (isEuVisitor)resolve();
+         else reject();    
+     });
+ });
+ */
+ 
+ var consent = consent || {};
+ consent.isEU = consent.isEU || null;
+ consent.personalization = consent.personalization || null;
+ consent.ads = consent.ads || {};
+ consent.ads.queue = consent.ads.queue || [];
+ 
+ window.admiral('addEventListener', 'cmp.loaded', function(e){
+ 	console.log('*****GDPR: EU user?', e);
+ 	consent.isEU = e.euVisitor;
+ 	if (!consent.isEU) {
+ 		console.log('*****GDPR: not EU, run that queue!');
+ 		consent.personalization=true;
+ 		$(window).trigger("runConsent", [consent.ads.queue]);
+ 	}	
+ 	else if (e.consentKnown == true) {
+ 		window.admiral('get', 'cmp.consent', function(e) {
+ 			console.log('*****GDPR: we know your personalization setting (' + e.publisherPurposes['2'] + '), running queue.');
+ 			consent.personalization = e.publisherPurposes['2'];
+ 			$(window).trigger("runConsent", [consent.ads.queue]);
+ 			bindReshowCmp();
+ 		});
+ 	}
+ 	else {
+ 		try {
+ 	    	__cmp('getPublisherConsents',[],function(publisherConsents,success){
+ 	    		if (typeof publisherConsents.standardPurposes['2'] !== 'undefined' && publisherConsents.standardPurposes['2']) {
+ 	    			console.log('*****GDPR: personalization allowed, start running personalized ads');	
+ 	    		}
+ 	    		else if (typeof publisherConsents.standardPurposes['2'] !== 'undefined' && !publisherConsents.standardPurposes['2']) {
+ 	    			console.log('*****GDPR: personalization not allowed, start running non-personalized ads');
+ 	    		}
+ 	    		consent.personalization = publisherConsents.standardPurposes['2'];
+ 	    		$(window).trigger("runConsent", [consent.ads.queue]);
+ 			});
+ 	    		bindReshowCmp();
+ 	    }
+ 	    catch (e) {
+ 	    	console.log(e);
+ 	    }
+ 	}
+ });
+ 
+ window.admiral('addEventListener', 'cmp.updated', function(e){
+ 	__cmp('getPublisherConsents',[],function(publisherConsents,success){	
+ 		console.log('*****GDPR: Consent updated (cmp.updated fired). personalization ok? ',typeof publisherConsents.standardPurposes['2'] !== 'undefined' && publisherConsents.standardPurposes['2'])
+ 	});	
+ 	$(window).trigger("runConsent", [consent.ads.queue]);
+ 	
+ });
+ 
+ $(window).on("runConsent", function(event, queueToRun) {
+ 		watchConsentQueue(queueToRun)
+ });
+ 
+ function runQueue(queue){
+ 	for (var x=0;x<queue.length;x++) {
+ 		var nextFn = queue.shift();
+ 		nextFn();
+ 		console.log('*****GDPR: running queue');
+ 	}	
+ }
+ 
+ function watchConsentQueue(queue){
+ 	setInterval(function() { runQueue(queue); },100);
+ }
+ function bindReshowCmp() {
+ 	var url = document.location.pathname;
+ 	if (url.indexOf("/about/member-preferences") > -1) {
+ 		$(".cmpSettings").show();
+ 		$(".reshowLink").on("click", function(e) {
+ 			e.preventDefault();
+ 			window.admiral('show','cmp.settings');
+ 		});
+ 	}
+ }
+   </script>
+   <script src="/www/js/init_device.js">
+   </script>
+   <script src="/www/js/ads/gpt_includes.js?v=20180621113524" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    if (adLayer==null || adLayer=='undefined') {
+ 		var adLayer=[];
+ 	}
+ 	
+ 		
+ 			adLayer["itemType"]="homepage";
+   </script>
+   <script type="text/javascript">
+    // Set up ad related variables
+ 	try {
+ 		IDG.GPT.unitName = "/8456/IDG.US_CSMB_Greenbot.com";
+ 	}
+ 	catch (exception) {
+ 		console.log ("google_dfp can't use IDG.GPT "+ exception);
+ 	}
+ 
+ 	try {
+ 		IDG.GPT.unitName = IDG.GPT.unitName + "/" + "homepage_door";
+ 	}
+ 	catch (exception) {
+ 		console.log ("google_dfp can't use IDG.GPT "+ exception);
+ 	}
+ 	// global variables
+ 	var global_ShowSuper = true;
+ 	var global_ShowHero = true;
+ 	
+ 	//XFP global targeting, more targeting thm_pre
+ 	var url = window.location.href;
+ 	if(url.indexOf("?")>1){
+ 		url=url.split('?')[0];
+ 	}
+ 	
+ 
+ 	try {
+ 		IDG.GPT.addTarget("URL", encodeURIComponent(url));
+ 	}
+ 	catch (exception) {
+ 		console.log ("google_dfp can't use IDG.GPT "+ exception);
+ 	}
+ 	try {IDG.GPT.addTarget("zone", 'index-home');}	catch (exception) {console.log ("google_dfp can't use IDG.GPT "+ exception);}
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	try {
+ 		if (null != IDG.GPT.getQsVal("env")) {		
+ 			IDG.GPT.addTarget("env", IDG.GPT.getQsVal("env").replace(/\W/g, "") );
+ 		}
+ 	}
+ 	catch (exception) {
+ 		console.log ("google_dfp can't use IDG.GPT "+ exception);
+ 	}	
+ 	
+ 	
+ 	
+ 		
+ 
+ 	try {
+ 		IDG.GPT.addTarget("page_type", '');
+ 	}
+ 	catch (exception) {
+ 		console.log ("google_dfp can't use IDG.GPT "+ exception);
+ 	}
+   </script>
+   <script type="text/javascript">
+   </script>
+   <script src="/www.idge/js/thm_pre.js?v=20180621113524">
+   </script>
+   <script src="/www/js/ads/proximic.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    console.log("PROXIMIC RESPONSE: SITE-LEVEL");
+             var currentUrl = 'https://www.greenbot.com';
+             (function (u) {
+                 var f = "scr";
+                 var e = (u ? ("url=" + u) : "");
+                 document.write("<"+f+"ipt type='text/javascript' src='//t.zqtk.net/c.js?m=1&s=idg_js&"+e.replace(/\'/g, "")+"'></"+f+"ipt>");
+             })((typeof (currentUrl) === "undefined") ? "" : currentUrl);
+   </script>
+   <script>
+    var isMobile = (typeof IDG.DEVICE !== 'undefined') ? IDG.DEVICE.isMobile() : false;
+ 		
+ 		
+ 		
+ 		
+ 		
+ 		
+ 		
+ 
+ 
+ 		
+ 		try {
+ 			// !!!Needed to disable this functionality to fix IDGMPM-15950!!!
+ 			//IDG.GPT.disableInitialLoad = true;
+ 			IDG.GPT.addBiddingParams("yieldbotPsn", (isMobile ? "3e2e" : "07cf"));
+ 			IDG.GPT.addBiddingParams("appnexusPlacementId", (isMobile ? "6451029" : "6352838"));
+ 			
+ 			
+ 				IDG.GPT.addBiddingParams("TriLiftPrefix", "greenbot_ros_");
+ 			
+ 		}
+ 		catch(e) {
+ 			console.log("Error in adding bidding params: "+e);
+ 		}
+   </script>
+   <script src="/www/js/ads/narf_prebid.js?v=20180621113524">
+   </script>
+   <script src="/www/js/ads/gpt_starter.js?1234" type="text/javascript">
+   </script>
+   <script src="/www/js/ads/gpt_launcher.js" type="text/javascript">
+   </script>
+   <link href="https://www.greenbot.com" rel="canonical"/>
+   <meta content="News and tips about the Android ecosystem | Greenbot" name="description"/>
+   <link href="http://www.greenbot.com/index.rss" rel="alternate" title="RSS Feed" type="application/rss+xml"/>
+   <meta content="Greenbot - Android news, tips, and reviews" property="og:title"/>
+   <meta content="News and tips about the Android ecosystem | Greenbot" property="og:description"/>
+   <meta content="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" property="og:image"/>
+   <meta content="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" itemprop="image"/>
+   <meta content="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" itemprop="thumbnailURl"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" rel="image_src"/>
+   <meta content="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" name="twitter:image"/>
+   <meta content="website" property="og:type"/>
+   <meta content="Greenbot" property="og:site_name"/>
+   <meta content="https://www.greenbot.com/" property="og:url"/>
+   <!-- Use Twitter Summary Card with Large Image for articles and videos -->
+   <meta content="summary" name="twitter:card"/>
+   <meta content="@agreenbot" name="twitter:site"/>
+   <meta content="News and tips about the Android ecosystem | Greenbot" name="twitter:description"/>
+   <meta content="General" name="rating"/>
+   <meta content="NOODP,NOYDIR" name="robots"/>
+   <meta content="RsuMNV5JAoG4IpkzPq3MzrklhiMbaLHkUDrcAly27cU" name="google-site-verification"/>
+   <meta content="04917178B598F0648B9BAD693FEC29A3" name="msvalidate.01"/>
+   <!-- pagination -->
+   <link href="/www.idge/css/inline-header-mobile.css?v=20180621113524" id="mobile-size" rel="stylesheet"/>
+   <script>
+    if (window.matchMedia("(min-width: 768px)").matches) {
+ 				document.getElementById('mobile-size').insertAdjacentHTML('afterend', '<link id="desktop-size" rel="stylesheet" href="/www.idge/css/inline-header.css?v=20180621113524" />');
+ 			}
+   </script>
+   <link href="/www.idge.grb/css/inline-header.css?v=20180621113524" rel="stylesheet"/>
+   <!-- css -->
+   <link href="/www.idge/css/normalize.css" rel="stylesheet"/>
+   <link href="/www.idge/css/prettify.css" rel="stylesheet"/>
+   <link href="/www.idge/css/homepage.css?v=20180621113524" rel="stylesheet"/>
+   <link href="/www.idge/css/print.css" media="print" rel="stylesheet"/>
+   <link href="/www.idge.grb/css/homepage.css?v=20180621113524" rel="stylesheet"/>
+   <link href="/www.idge/css/webfonts/ss-social.css" rel="stylesheet"/>
+   <link href="/www.idge/css/webfonts/ss-standard.css" rel="stylesheet"/>
+   <!--[if lte IE 8]>  
+ 		<link href="/www.idge/css/webfonts/ss-ie8.css" rel="stylesheet" />
+ 	<![endif]-->
+   <script src="//fonts.staticworld.net/fuq4mke.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    try{Typekit.load();}catch(e){}
+   </script>
+   <!--  fav and touch icons -->
+   <link href="/www.idge.grb/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-144x144.gif" rel="apple-touch-icon-precomposed" sizes="144x144"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-114x114.gif" rel="apple-touch-icon-precomposed" sizes="114x114"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-72x72.gif" rel="apple-touch-icon-precomposed" sizes="72x72"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-57x57.gif" rel="apple-touch-icon-precomposed" sizes="57x57"/>
+   <link href="https://idge.staticworld.net/grb/greenbot-logo-300x300.png" rel="apple-touch-icon"/>
+   <script type="application/ld+json">
+    {
+ 					"@context": "http://schema.org",
+ 					"@type": "WebSite",
+ 					"url": "https://www.greenbot.com/ ",
+ 					"potentialAction": {
+ 					"@type": "SearchAction",
+ 					"target": "https://www.greenbot.com/search?query={search_term}",
+ 					"query-input": "required name=search_term"
+ 					}
+ 				}
+   </script>
+   <script async="" src="//s.ntv.io/serve/load.js" type="text/javascript">
+   </script>
+   <script src="/www/js/ads/ads.js">
+   </script>
+   <script>
+    var oneRegPlacementID = "";
+   </script>
+   <script>
+    var insiderSignedIn = document.cookie.indexOf("nsdr") > -1; //check if Insider cookie exists
+ 	
+ 	var dlJobFunction = '';
+ 	var dlJobPosition = '';
+ 	var dlIndustry = '';
+ 	
+ 	if (insiderSignedIn) {
+ 		var insiderToken = IDG.insiderReg.readCookie("nsdr");
+ 		var tokens = IDG.insiderReg.readCookieProperty(insiderToken);
+ 		if (!(tokens['jobPosition']===undefined)) {
+ 			dlJobPosition = tokens['jobPosition'];
+ 		}
+ 		if (!(tokens['jobFunction']===undefined)) {
+ 			dlJobFunction = tokens['jobFunction'];
+ 		}
+ 		if (!(tokens['industry']===undefined)) {
+ 			dlIndustry = tokens['industry'];
+ 		}
+ 	}
+ 	
+ 	insiderSignedIn = insiderSignedIn.toString(); //per Infotrust this needs to be a string, not a boolean
+ 	
+ 	var sincePublished = '';
+ 	sincePublished = sincePublished.split(" ")[0];
+ 	
+ 	dataLayer=[{
+ 		'articleId': '',
+ 		'articleDisplayId':'',
+ 		'articleTitle': '',
+ 		'articleType': '',
+ 		'audience':'consumer',
+ 		'author':'',
+ 		'blogName':'',
+ 		'brandpost': 'false',
+ 		'categoryIdList':'',
+ 		'categoryIdPrimary': '',
+ 		'contentStrategy': '',
+ 		'contentType':'home page',
+ 		'datePublished':'',
+ 		'dateUpdated':'',
+ 		'daysSincePublished':sincePublished,
+ 		'daysSinceUpdated':'',
+ 		'displayType':'home page',
+ 		'environment':'production',
+ 		'ga_enabled':'true',
+ 		'gaTrackingId':'UA-46624903-1',
+ 		'geolocEnabled':'true',
+ 		'goldenTaxonomyIdPrimary': '',
+ 		'goldenTaxonomyIdList': '',
+ 		'industry': dlIndustry,
+ 		'insiderSignedIn':insiderSignedIn,
+ 		'isBlog':'false',
+ 		'isInsiderContent':'false',
+ 		'isICN': 'false',
+ 		'jobFunction': dlJobFunction,
+ 		'jobPosition': dlJobPosition,
+ 		'oneRegPlacementID':oneRegPlacementID,
+ 		'pageNumber':'',
+ 		'platform':'Web',
+ 		'podcastSponsored': 'false',
+ 		'primaryCategory': '',
+ 		'primaryCategoryList': '',
+ 		'property': 'greenbot',
+ 		'propertyCountry':'US',
+ 		'purchaseIntent':'',
+ 		'sailthruCustomerId':'b8b2229941e9d736511f2479b6cadf97',
+ 		'skimlinksId':'111346X1569485',
+ 		'source':'',
+ 		'sponsorName':'',
+ 		'tags': '',
+ 		'videoAutoplay':'false',
+ 		'articleHasVideo':''	
+ 	}];
+   </script>
+   <script type="text/javascript">
+    var _sf_async_config={};
+ 
+ 	_sf_async_config.uid = 29363;
+ 
+ 	_sf_async_config.path = "/";
+ 	_sf_async_config.title = "Greenbot - Android news, tips, and reviews";
+ 	_sf_async_config.domain = "greenbot.com";
+ 	if(window.location.href.indexOf("video")&&true) {
+ 		_sf_async_config.playerdomain= _sf_async_config.domain.replace("www.","");
+ 	}
+ 	
+ 	_sf_async_config.useCanonical = true;
+   </script>
+   <script>
+    var dataLayer = window.dataLayer = window.dataLayer || [];
+ 	var adBlockStatus = 'false';
+ 	
+ 	function AdBlockEnabled() {
+ 		var ad = document.createElement('ins');
+ 		ad.className = 'AdSense';
+ 		ad.style.display = 'block';
+ 		ad.style.position = 'absolute';
+ 		ad.style.top = '-1px';
+ 		ad.style.height = '1px';
+ 
+ 		if (document.body != null) {
+ 			document.body.appendChild(ad);
+ 			var isAdBlockEnabled = !ad.clientHeight;
+ 			document.body.removeChild(ad);
+ 		}
+ 
+ 		return isAdBlockEnabled; 
+ 	}
+ 	// AdBlockEnabled() was successful document.body not null
+ 	if (AdBlockEnabled() != undefined) {
+ 		adBlockStatus = AdBlockEnabled().toString();
+ 	}
+ 	// not successful - look for ads.js
+ 	if (document.body == null) {
+ 		if (window.canRunAds === undefined) {
+ 			adBlockStatus = 'true';
+ 		} else {
+ 			adBlockStatus = 'false';
+ 		}
+ 	}
+ 	
+ 	dataLayer.push({
+ 		'adBlockStatus': adBlockStatus
+ 	});
+   </script>
+   <!-- Google Tag Manager -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?GTM-TM76KR" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ 	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ 	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ 	})(window,document,'script','dataLayer','GTM-TM76KR');
+   </script>
+   <!-- End Google Tag Manager -->
+   <script async="" defer="" src="https://www.google.com/recaptcha/api.js">
+   </script>
+   <script async="" src="//js-sec.indexww.com/ht/p/187051-177445165525162.js">
+   </script>
+  </head>
+  <body class="home greenbot" id="homepage">
+   <!-- Begin welcome ad overlay - gpt-overlay position  -->
+   <div class="hidden" id="superadunit">
+    <div class="ad">
+     <div class="ad-header">
+      <div class="brand-logo">
+      </div>
+      <a href="javascript:unhide('superadunit');" id="superstitial-text">
+       Close Ad
+      </a>
+     </div>
+     <div class=" ad-container" id="gpt-overlay">
+      <script type="text/javascript">
+       consent.ads.queue.push(function(){
+ 									IDG.GPT.addDisplayedAd("gpt-overlay", "true");
+ 									IDG.GPT.displayGoogleTagSlot('gpt-overlay');
+ 								});
+      </script>
+     </div>
+    </div>
+   </div>
+   <!--  End welcome ad overlay - gpt-overlay position -->
+   <!-- BEGIN PAGE HEADER -->
+   <header id="banner">
+    <div class="ad">
+     <div class=" ad-container" id="topleaderboard">
+     </div>
+     <script type="text/javascript">
+      consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("topleaderboard", "true");
+ 					$('#topleaderboard').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: topleaderboard - [971 1115]");
+ 				
+ 				});
+     </script>
+    </div>
+    <div class="main-header">
+     <script>
+      if(!$thm.deviceWidthAtLeast($thm.deviceBreakpoints.tablet)){
+ 			$('.main-header').insertBefore($('#banner .ad'));
+     	}
+     </script>
+     <div class="topics-wrap">
+      <section class="topics">
+       <nav id="scrollable">
+        <!-- blx4 #697 blox4.raw_link_list  -->
+        <ul>
+         <li class="header">
+          Hot Topics
+          <span class="colon">
+           :
+          </span>
+         </li>
+         <li>
+          <a href="/news/">
+           News
+          </a>
+         </li>
+         <li>
+          <a href="/video/">
+           Video
+          </a>
+         </li>
+         <li>
+          <a href="/reviews/">
+           Reviews
+          </a>
+         </li>
+         <li>
+          <a href="/category/phones/">
+           Phones
+          </a>
+         </li>
+         <li>
+          <a href="/category/tablets/">
+           Tablets
+          </a>
+         </li>
+         <li>
+          <a href="/tag/android-nougat/">
+           Android Nougat
+          </a>
+         </li>
+         <li>
+          <a href="/category/apps/">
+           Apps
+          </a>
+         </li>
+         <li>
+          <a href="/howto/">
+           How-to
+          </a>
+         </li>
+        </ul>
+       </nav>
+       <div class="fading-gradient">
+       </div>
+      </section>
+     </div>
+     <section class="main" id="">
+      <div class="wrapper">
+       <div class="masthead">
+        <button>
+         <i class="ss-icon ss-rows">
+         </i>
+        </button>
+        <a href="/">
+         <h1 class="ir logo">
+          greenbot
+         </h1>
+        </a>
+        <!--
+ 	            	<img class="print-only" src="/www.idge.grb/images/greenbot-logo-print.png">
+ 	            	-->
+        <img class="print-only" src="//idge.staticworld.net/grb/greenbot-logo-print.png"/>
+       </div>
+       <div id="reading-tools-wrapper">
+        <div class="reading">
+         <div id="reading-selector">
+          <div class="label">
+           Popular Stories
+           <span class="colon">
+            :
+           </span>
+           <i class="ss-icon ss-dropdown tick">
+           </i>
+          </div>
+          <ul>
+           <li>
+            <a href="/article/2359684/a-list-of-all-the-ok-google-voice-commands.html">
+             A list of all the Google Now voice commands
+            </a>
+           </li>
+           <li>
+            <a href="/article/2144800/13-tips-and-tricks-to-master-your-htc-one-m8.html">
+             13 tips and tricks to master your HTC One (M8)
+            </a>
+           </li>
+           <li>
+            <a href="/article/2456288/11-simple-tips-and-tricks-to-get-more-from-your-lg-g3.html">
+             11 simple tips and tricks to get more from your LG G3
+            </a>
+           </li>
+           <li>
+            <a href="/article/2142705/16-tips-to-get-the-most-from-your-samsung-galaxy-s5.html">
+             Get the most from your Samsung Galaxy S5 with these 16 tips and tricks
+            </a>
+           </li>
+           <li>
+            <a href="/article/2151010/back-that-app-up-5-great-backup-utilities-for-android.html">
+             Back that app up: 5 great backup utilities for Android
+            </a>
+           </li>
+           <li>
+            <a href="/article/2455974/cabin-review-track-your-familys-location-send-messages-and-assign-tasks.html">
+             Cabin review: Track your family's location, send messages, and assign tasks
+            </a>
+           </li>
+          </ul>
+         </div>
+        </div>
+        <nav class="tools">
+         <ul class="social">
+          <li>
+           <a href="https://twitter.com/agreenbot" itemprop="sameAs" onclick="brandFollowTrack('Twitter')" rel="nofollow" target="_blank">
+            <i class="ss-icon ss-social-circle ss-twitter">
+            </i>
+           </a>
+          </li>
+          <li>
+           <a href="https://www.facebook.com/agreenbot" itemprop="sameAs" onclick="brandFollowTrack('Facebook')" rel="nofollow" target="_blank">
+            <i class="ss-icon ss-social-circle brand ss-facebook">
+            </i>
+           </a>
+          </li>
+          <li>
+           <a href="https://plus.google.com/b/111839057318649339420/" itemprop="sameAs" onclick="brandFollowTrack('Google+')" rel="publisher" target="_blank">
+            <i class="ss-icon ss-social-circle brand ss-googleplus">
+            </i>
+           </a>
+          </li>
+          <li>
+           <a href="/index.rss" target="_blank">
+            <i class="ss-icon ss-social-circle ss-rss">
+            </i>
+           </a>
+          </li>
+         </ul>
+         <ul class="user">
+          <li>
+           <a href="#search" id="search-btn">
+            <i class="ss-icon">
+             Search
+            </i>
+           </a>
+          </li>
+         </ul>
+        </nav>
+       </div>
+      </div>
+     </section>
+     <section class="tools-expand ">
+      <form action="/search" class="search" id="search-form">
+       <label for="search-box">
+        Search for
+       </label>
+       <input class="searchbox-input-class" id="banner-search-term" name="query" type="text" value=""/>
+       <input id="banner-search-submit" type="submit" value="Go"/>
+       <input name="contentType" type="hidden" value="article,resource"/>
+       <div class="search-suggest">
+        Suggestions for you
+       </div>
+      </form>
+      <div class="user">
+       <form>
+        <label for="login-email">
+         Insider email
+        </label>
+        <input id="login-email" type="text"/>
+       </form>
+      </div>
+     </section>
+     <nav class="main" id="">
+      <ul class="primary">
+       <li>
+        <a class="hasChildren" href="/category/apps/">
+         Apps
+         <span class="ss-icon ss-navigateright">
+         </span>
+        </a>
+        <ul class="">
+         <li>
+          <a href="/category/apps/">
+           All Apps
+          </a>
+         </li>
+         <li>
+          <a href="/category/software-entertainment/">
+           Entertainment Software
+          </a>
+         </li>
+         <li>
+          <a href="/category/software-games/">
+           Games
+          </a>
+         </li>
+         <li>
+          <a href="/category/software-productivity/">
+           Productivity Software
+          </a>
+         </li>
+         <li>
+          <a href="/category/social-media/">
+           Social Media
+          </a>
+         </li>
+         <li>
+          <a href="/category/software-utilities/">
+           Utility Software
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/category/gadgets/">
+         Gadgets
+        </a>
+       </li>
+       <li>
+        <a class="hasChildren" href="/category/google-services/">
+         Google Services
+         <span class="ss-icon ss-navigateright">
+         </span>
+        </a>
+        <ul class="">
+         <li>
+          <a href="/category/google-services/">
+           All Google Services
+          </a>
+         </li>
+         <li>
+          <a href="/category/google-apps/">
+           Google Apps
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/category/carriers/">
+         Mobile Carriers
+        </a>
+       </li>
+       <li>
+        <a href="/category/smartphones/">
+         Phones
+        </a>
+       </li>
+       <li>
+        <a href="/resources/">
+         Resources
+        </a>
+       </li>
+       <li>
+        <a href="/category/tablets/">
+         Tablets
+        </a>
+       </li>
+       <li>
+        <a class="hasChildren" href="/category/tech-events/">
+         Tech Events
+         <span class="ss-icon ss-navigateright">
+         </span>
+        </a>
+        <ul class="">
+         <li>
+          <a href="/category/tech-events/">
+           All Tech Events
+          </a>
+         </li>
+         <li>
+          <a href="/category/back-to-school/">
+           Back to School
+          </a>
+         </li>
+         <li>
+          <a href="/category/holiday/">
+           Holiday Gift Guide
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+      <ul class="secondary">
+       <li>
+        <a href="/news/">
+         News
+        </a>
+       </li>
+       <li>
+        <a href="/tips/">
+         Tips
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+   </header>
+   <!-- END PAGE HEADER -->
+   <div class="page-wrapper" id="page-wrapper">
+    <div id="skinAdTarget">
+    </div>
+    <section role="main">
+     <div class="ticker-ad ad">
+      <div class=" ad-container" id="ticker">
+      </div>
+      <script type="text/javascript">
+       consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("ticker", "true");
+ 					$('#ticker').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: ticker - [971 1115]");
+ 				
+ 				});
+      </script>
+     </div>
+     <!-- Events Header -->
+     <!-- //end Events Header -->
+     <section class="bodee">
+      <script src="/www.idge.grb/js/load_more.js">
+      </script>
+      <div class="home-top-story">
+       <div class="top-story">
+        <figure>
+         <a href="/article/3281018/android/android-messages-web-apple-messages-mac.html">
+          <img alt="android messages for web" class="large.3x2Image imgId100761803 " src="https://images.idgesg.net/images/article/2018/06/android-messages-for-web-100761803-large.3x2.jpg"/>
+         </a>
+        </figure>
+        <div class="overlay">
+         <div class="item-info">
+          <div class="title">
+           <a href="/article/3281018/android/android-messages-web-apple-messages-mac.html">
+            4 ways Android Messages for web is better than Apple Messages on the Mac (and 4 ways it's not)
+           </a>
+          </div>
+          <p>
+           Google has finally launched Android Messages on the web, letting users send and receive texts from their PC. But is it...
+          </p>
+          <div class="read-more-link">
+           <a href="/article/3281018/android/android-messages-web-apple-messages-mac.html">
+            Read more
+            <i class="ss-icon ss-navigateright">
+            </i>
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <section id="home-funnel">
+       <section class="popular-brand-cols">
+        <section class="popular-col">
+         <div class="promo newstips">
+          <div class="hed">
+           <h3>
+            <a href="/article/3282073/android/google-podcasts-app-android.html">
+             Google's new Podcasts app offers the bare-minimum Android listening experience
+            </a>
+           </h3>
+           <figure class="promo-image">
+            <a href="/article/3282073/android/google-podcasts-app-android.html">
+             <img alt="google podcasts app" class="lazy medium.3x2Image imgId100761668 " data-original="https://images.idgesg.net/images/article/2018/06/google-podcasts-app-100761668-medium.3x2.jpg"/>
+            </a>
+           </figure>
+          </div>
+          <!-- /.hed -->
+          <p>
+           Google has finally released a standalone podcasts app, but don't expect it to blow you away with features.
+          </p>
+          <p class="meta">
+           <span class="timeago" content="2018-06-19T11:28-0700" title="2018-06-19T11:28-0700">
+            Jun 19, 2018 11:28 AM
+           </span>
+           | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Michael Simon
+          </p>
+          <span id="articleHiddenId" style="display:none">
+           3282073
+          </span>
+          <script type="text/javascript">
+           IDGE.GRBHomepage.excludeIds.push(3282073);
+          </script>
+         </div>
+         <!-- /.promo newstips -->
+         <div class="promo newstips">
+          <div class="hed">
+           <h3>
+            <a href="/article/3282150/android/all-android-phones-should-run-stock-android.html">
+             There's no excuse: All Android phones (even Samsung's) should run stock Android
+            </a>
+           </h3>
+           <figure class="promo-image">
+            <a href="/article/3282150/android/all-android-phones-should-run-stock-android.html">
+             <img alt="android one nokia" class="lazy medium.3x2Image imgId100761509 " data-original="https://images.idgesg.net/images/article/2018/06/android-one-nokia-100761509-medium.3x2.jpg"/>
+            </a>
+           </figure>
+          </div>
+          <!-- /.hed -->
+          <p>
+           Android One has graduated from a low-end OS to the best version of stock Android you can get on a phone. And it's time for every manufacturer to consider it in their phones.
+          </p>
+          <p class="meta">
+           <span class="timeago" content="2018-06-18T04:22-0700" title="2018-06-18T04:22-0700">
+            Jun 18, 2018 4:22 AM
+           </span>
+           | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Michael Simon
+          </p>
+          <span id="articleHiddenId" style="display:none">
+           3282150
+          </span>
+          <script type="text/javascript">
+           IDGE.GRBHomepage.excludeIds.push(3282150);
+          </script>
+         </div>
+         <!-- /.promo newstips -->
+         <div class="promo newstips">
+          <div class="hed">
+           <h3>
+            <a href="https://www.pcworld.com/article/3236420/mobile/best-power-banks.html">
+             Best power banks of 2018: The top USB portable chargers for your phone
+            </a>
+           </h3>
+           <figure class="promo-image">
+            <a href="https://www.pcworld.com/article/3236420/mobile/best-power-banks.html">
+             <img alt="battery pack hub" class="lazy medium.3x2Image imgId100741604 " data-original="https://images.idgesg.net/images/article/2017/11/battery-pack-hub-100741604-medium.3x2.jpg"/>
+            </a>
+           </figure>
+          </div>
+          <!-- /.hed -->
+          <p>
+           These USB battery packs from Anker, Mophie, Xiaomi, and others will keep your Android or Apple phone charged while you're on the go.
+          </p>
+          <p class="meta">
+           <span class="timeago" content="2018-06-14T15:45-0700" title="2018-06-14T15:45-0700">
+            Jun 14, 2018 3:45 PM
+           </span>
+           | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Jason Cipriani
+          </p>
+          <span id="articleHiddenId" style="display:none">
+           3236420
+          </span>
+          <script type="text/javascript">
+           IDGE.GRBHomepage.excludeIds.push(3236420);
+          </script>
+         </div>
+         <!-- /.promo newstips -->
+         <div class="promo newstips">
+          <div class="hed">
+           <h3>
+            <a href="/article/3281132/wearables/garmin-vivoactive-3-google-wear-os.html">
+             Garmin's $300 Vivoactive 3 Music smartwatch shows why Wear OS desperately needs a leader
+            </a>
+           </h3>
+           <figure class="promo-image">
+            <a href="/article/3281132/wearables/garmin-vivoactive-3-google-wear-os.html">
+             <img alt="apple watch series 3 compare" class="lazy medium.3x2Image imgId100737542 " data-original="https://images.idgesg.net/images/article/2017/10/apple-watch-series-3-compare-100737542-medium.3x2.jpg"/>
+            </a>
+           </figure>
+          </div>
+          <!-- /.hed -->
+          <p>
+           Garmin's new music-centered Vivoactive 3 smartwatch is a perfect example of how far behind Wear OS is.
+          </p>
+          <p class="meta">
+           <span class="timeago" content="2018-06-13T09:02-0700" title="2018-06-13T09:02-0700">
+            Jun 13, 2018 9:02 AM
+           </span>
+           | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Michael Simon
+          </p>
+          <span id="articleHiddenId" style="display:none">
+           3281132
+          </span>
+          <script type="text/javascript">
+           IDGE.GRBHomepage.excludeIds.push(3281132);
+          </script>
+         </div>
+         <!-- /.promo newstips -->
+         <div id="loadMore">
+         </div>
+        </section>
+        <section class="brand-col">
+         <div class="ad" id="iab1">
+          <div class="side-promo side-module side-ad ad-container" id="topimu">
+          </div>
+          <script type="text/javascript">
+           consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("topimu", "true");
+ 					$('#topimu').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: topimu - [971 1115]");
+ 				
+ 				});
+          </script>
+         </div>
+         <div class="ad" id="iab_sponsored" style="display:none">
+          <div class="side-promo side-module side-ad ad-container" id="sponsored-pst">
+          </div>
+          <script type="text/javascript">
+           consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("sponsored-pst", "true");
+ 					$('#sponsored-pst').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: sponsored-pst - [971 1115]");
+ 				
+ 				});
+          </script>
+         </div>
+         <div class="promo apart most-popular" data-placement-id="mostPopularHome">
+          <div class="hed">
+           Popular on Greenbot
+          </div>
+          <ul>
+           <li class="with-image">
+            <a href="/article/2825064/android/how-to-take-a-screenshot-on-your-android-phone.html">
+             <img alt="lg g6 screenshot" class="medium.3x2Image imgId100728814 " itemprop="image" src="https://images.idgesg.net/images/article/2017/07/lg-g6-screenshot-100728814-medium.3x2.jpg"/>
+            </a>
+            <div class="item">
+             <div class="title">
+              <a href="/article/2825064/android/how-to-take-a-screenshot-on-your-android-phone.html">
+               How to take a screenshot on any Android phone
+              </a>
+             </div>
+            </div>
+           </li>
+           <li class="with-image">
+            <a href="/article/3105587/android/best-android-phones.html">
+             <img alt="android phone hub" class="medium.3x2Image imgId100747307 " itemprop="image" src="https://images.idgesg.net/images/article/2018/01/android-phone-hub-100747307-medium.3x2.jpg"/>
+            </a>
+            <div class="item">
+             <div class="title">
+              <a href="/article/3105587/android/best-android-phones.html">
+               Best Android phones 2018: What should you buy?
+              </a>
+             </div>
+            </div>
+           </li>
+           <li class="with-image">
+            <a href="https://www.pcworld.com/article/3236420/mobile/best-power-banks.html">
+             <img alt="battery pack hub" class="medium.3x2Image imgId100741604 " itemprop="image" src="https://images.idgesg.net/images/article/2017/11/battery-pack-hub-100741604-medium.3x2.jpg"/>
+            </a>
+            <div class="item">
+             <div class="title">
+              <a href="https://www.pcworld.com/article/3236420/mobile/best-power-banks.html">
+               Best power banks of 2018: The top USB portable chargers for your phone
+              </a>
+             </div>
+            </div>
+           </li>
+          </ul>
+         </div>
+         <div class="ad" id="iab2">
+          <div class="lazyload_ad">
+           <code type="text/javascript">
+            <!--
+ 				IDG.GPT.IMUCounter = IDG.GPT.IMUCounter + 1;
+ 				var slotName = IDG.GPT.getIMUSlotName();
+                 
+ 				document.write('<div class="ad-container" id="' + slotName + '">');
+ 				consent.ads.queue.push(function(){IDG.GPT.defineGoogleTagSlot(slotName, IDG.GPT.slots["topimu"], false);});
+ 				document.write('</div>');
+ 				consent.ads.queue.push(function(){$('#' + slotName).responsiveAd({screenSize:'971 1115', scriptTags: []});
+ 				if (Object.keys(IDG.GPT.companions).length > 0 || IDG.GPT.disableInitialLoad) {
+ 					IDG.GPT.refreshAd(slotName);
+ 				}
+ 				});
+ 			//-->
+           </code>
+          </div>
+         </div>
+         <div class="promo apart resources" data-placement-id="resourcesModule">
+          <div class="hed">
+           <a href="/resources">
+            Popular Resources
+           </a>
+          </div>
+          <div class="more">
+           <a href="/resources">
+            See All
+           </a>
+          </div>
+          <form action="/resources/search" method="get">
+           <input class="searchbox-input-class" name="query" placeholder="Search Resources" type="text"/>
+           <!--  add additional dto options here -->
+           <input name="rid" type="hidden" value="2"/>
+           <input name="chld" type="hidden" value="true"/>
+           <button class="btn" type="submit">
+            Go
+           </button>
+          </form>
+         </div>
+         <div class="promo newsletter follow-us">
+          <div class="promo-body">
+           <div class="head">
+            Stay Smart
+           </div>
+           <p class="teaser">
+            Get
+            <span class="brandname">
+             Greenbot
+            </span>
+            updates via email, RSS or social media.
+           </p>
+           <div class="links">
+            <p>
+             <a class="btn" href="/newsletters/index">
+              Get Our Weekly Newsletter
+             </a>
+            </p>
+            <p>
+             Follow us on your favorite platforms:
+            </p>
+            <ul class="social">
+             <li>
+              <a href="https://twitter.com/agreenbot" rel="nofollow" target="_blank">
+               <i class="ss-icon ss-social ss-twitter" onclick="brandFollowTrack('Twitter')">
+               </i>
+              </a>
+             </li>
+             <li>
+              <a href="https://www.facebook.com/agreenbot" rel="nofollow" target="_blank">
+               <i class="ss-icon ss-social ss-facebook" onclick="brandFollowTrack('Facebook')">
+               </i>
+              </a>
+             </li>
+             <li>
+              <a href="https://plus.google.com/b/111839057318649339420/" rel="publisher" target="_blank">
+               <i class="ss-icon ss-social ss-googleplus" onclick="brandFollowTrack('Google+')">
+               </i>
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </div>
+         <div class="promo brandposts">
+          <div id="ntvBrandPostHeader">
+           <div class="head">
+            BrandPosts
+           </div>
+           <a class="learn-more" href="#">
+            Learn More
+           </a>
+          </div>
+          <ul id="sponsoredList">
+          </ul>
+         </div>
+         <div id="loadMore">
+         </div>
+        </section>
+       </section>
+       <section class="featured-col">
+        <div class="promo newstips">
+         <div class="hed">
+          <h3>
+           <a href="/article/3281018/android/android-messages-web-apple-messages-mac.html">
+            4 ways Android Messages for web is better than Apple Messages on the Mac (and 4 ways it's not)
+           </a>
+          </h3>
+          <figure class="promo-image">
+           <a href="/article/3281018/android/android-messages-web-apple-messages-mac.html">
+            <img alt="android messages for web" class="lazy medium.3x2Image imgId100761803 " data-original="https://images.idgesg.net/images/article/2018/06/android-messages-for-web-100761803-medium.3x2.jpg"/>
+            <span class="bubble">
+             Tips
+            </span>
+           </a>
+          </figure>
+         </div>
+         <!-- /.hed -->
+         <p>
+          Google has finally launched Android Messages on the web, letting users send and receive texts from their PC. But is it better than Apple's Messages on the Mac?
+         </p>
+         <p class="meta">
+          <span class="timeago" title="2018-06-21T03:06-0700">
+           Jun 21, 2018 3:06 AM
+          </span>
+          | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Michael Simon
+         </p>
+         <span id="articleHiddenId" style="display:none">
+          3281018
+         </span>
+         <script type="text/javascript">
+          IDGE.GRBHomepage.excludeIds.push(3281018);
+         </script>
+        </div>
+        <!-- /.promo newstips -->
+        <div class="promo newstips">
+         <div class="hed">
+          <h3>
+           <a href="/article/3207527/android/google-photos-tips-tricks.html">
+            Google Photos: Awesome new features you need to start using
+           </a>
+          </h3>
+          <figure class="promo-image">
+           <a href="/article/3207527/android/google-photos-tips-tricks.html">
+            <img alt="Google Photos" class="lazy medium.3x2Image imgId100728811 " data-original="https://images.idgesg.net/images/article/2017/07/main-100728811-medium.3x2.jpg"/>
+            <span class="bubble">
+             Tips
+            </span>
+           </a>
+          </figure>
+         </div>
+         <!-- /.hed -->
+         <p>
+          Simple photo back-ups are only the beginning. It's time to unlock all the machine-learning power that Google Photos has within.
+         </p>
+         <p class="meta">
+          <span class="timeago" title="2018-06-13T05:45-0700">
+           Jun 13, 2018 5:45 AM
+          </span>
+          | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Ryan Whitwam
+         </p>
+         <span id="articleHiddenId" style="display:none">
+          3207527
+         </span>
+         <script type="text/javascript">
+          IDGE.GRBHomepage.excludeIds.push(3207527);
+         </script>
+        </div>
+        <!-- /.promo newstips -->
+        <div class="promo newstips">
+         <div class="hed">
+          <h3>
+           <a href="/article/3274555/android/android-messages-best-features.html">
+            5 Android Messages features you should start using
+           </a>
+          </h3>
+          <figure class="promo-image">
+           <a href="/article/3274555/android/android-messages-best-features.html">
+            <img alt="android messages hero" class="lazy medium.3x2Image imgId100758354 " data-original="https://images.idgesg.net/images/article/2018/05/android_messages_hero-100758354-medium.3x2.jpg"/>
+            <span class="bubble">
+             Tips
+            </span>
+           </a>
+          </figure>
+         </div>
+         <!-- /.hed -->
+         <p>
+          You might not even realize all the neat things you can do with Android Messages: Add a subject, archive old threads, attach money and more.
+         </p>
+         <p class="meta">
+          <span class="timeago" title="2018-05-30T03:08-0700">
+           May 30, 2018 3:08 AM
+          </span>
+          | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Ryan Whitwam
+         </p>
+         <span id="articleHiddenId" style="display:none">
+          3274555
+         </span>
+         <script type="text/javascript">
+          IDGE.GRBHomepage.excludeIds.push(3274555);
+         </script>
+        </div>
+        <!-- /.promo newstips -->
+        <div class="promo newstips">
+         <div class="hed">
+          <h3>
+           <a href="/article/3205867/android/google-assistant-tips-tricks.html">
+            Google Assistant: 12 awesome features you should be using
+           </a>
+          </h3>
+          <figure class="promo-image">
+           <a href="/article/3205867/android/google-assistant-tips-tricks.html">
+            <img alt="google assistant lead art" class="lazy medium.3x2Image imgId100728267 " data-original="https://images.idgesg.net/images/article/2017/07/google_assistant_lead_art-100728267-medium.3x2.jpg"/>
+            <span class="bubble">
+             Tips
+            </span>
+           </a>
+          </figure>
+         </div>
+         <!-- /.hed -->
+         <p>
+          Google's A.I. assistant learned some new tricks while you weren't looking.
+         </p>
+         <p class="meta">
+          <span class="timeago" title="2018-05-09T17:53-0700">
+           May 9, 2018 5:53 PM
+          </span>
+          | 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+ 	
+ 		
+ 	
+ 
+ 
+ 
+ Ryan Whitwam
+         </p>
+         <span id="articleHiddenId" style="display:none">
+          3205867
+         </span>
+         <script type="text/javascript">
+          IDGE.GRBHomepage.excludeIds.push(3205867);
+         </script>
+        </div>
+        <!-- /.promo newstips -->
+        <div class="promo newstips nativo-homecrawl">
+         <div class="item-eyebrow">
+          <span class="brandpost">
+           BrandPost
+          </span>
+          <span class="sponsored-by">
+           Sponsored by Sponsor
+          </span>
+         </div>
+         <div class="hed">
+          <h3>
+           <a href="#">
+            Nativo title goes here
+           </a>
+          </h3>
+          <figure class="promo-image">
+           <a href="#">
+            <img src="//idge.staticworld.net/images/nativo-brandposts-fpo300x225.png"/>
+           </a>
+          </figure>
+         </div>
+         <p>
+          Inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+         </p>
+        </div>
+        <div id="loadMore">
+        </div>
+       </section>
+       <a class="load-btn" href="#">
+        Show me more
+       </a>
+       <script type="text/javascript">
+        $( document ).ready(function() {
+ 		$(".load-btn").hide();
+ 		setTimeout("$(\".load-btn\").show();", 5000);
+ 		IDGE.GRBHomepage.init(".load-btn");	
+ 	});
+ 	window.onload = function() {
+ 		$(".load-btn").trigger("click");//IDGMPM-6172 Surface more content on initial load
+ 	};
+       </script>
+      </section>
+     </section>
+     <!-- /.bodee -->
+     <link href="/www.idge/css/sponsored-links.css?v=20180621113524" rel="stylesheet"/>
+     <link href="/www.idge.grb/css/sponsored-links.css?v=20180621113524" rel="stylesheet"/>
+     <section id="resources-sponsored-links">
+      <section class="sponsored-links">
+       <div class="head">
+        Sponsored Links
+       </div>
+      </section>
+     </section>
+    </section>
+    <!-- /role=main -->
+   </div>
+   <!-- /#page-wrapper -->
+   <link href="/www.idge/css/foot.css?v=20180621113524" rel="stylesheet"/>
+   <link href="/www.idge.grb/css/foot.css?v=20180621113524" rel="stylesheet"/>
+   <footer>
+    <section class="brand" itemscope="" itemtype="http://schema.org/Organization">
+     <link href="http://www.greenbot.com" itemprop="url"/>
+     <a href="/">
+      <span class="logo">
+       Greenbot
+      </span>
+     </a>
+     <span class="tagline">
+     </span>
+     <span class="follow">
+      <label>
+       Follow us
+      </label>
+      <ul>
+       <li>
+        <a href="https://twitter.com/agreenbot" itemprop="sameAs" onclick="brandFollowTrack('Twitter')" rel="nofollow" target="_blank">
+         <i class="ss-icon ss-social-circle ss-twitter">
+         </i>
+        </a>
+       </li>
+       <li>
+        <a href="https://www.facebook.com/agreenbot" itemprop="sameAs" onclick="brandFollowTrack('Facebook')" rel="nofollow" target="_blank">
+         <i class="ss-icon ss-social-circle brand ss-facebook">
+         </i>
+        </a>
+       </li>
+       <li>
+        <a href="https://plus.google.com/b/111839057318649339420/" itemprop="sameAs" onclick="brandFollowTrack('Google+')" rel="publisher" target="_blank">
+         <i class="ss-icon ss-social-circle brand ss-googleplus">
+         </i>
+        </a>
+       </li>
+       <li>
+        <a href="/index.rss" target="_blank">
+         <i class="ss-icon ss-social-circle ss-rss">
+         </i>
+        </a>
+       </li>
+      </ul>
+     </span>
+    </section>
+    <section class="topics">
+     <nav id="ft1">
+      <ul>
+       <li>
+        <a href="/category/apps/">
+         Apps
+        </a>
+       </li>
+       <li>
+        <a href="/category/gadgets/">
+         Gadgets
+        </a>
+       </li>
+       <li>
+        <a href="/category/google-services/">
+         Google Services
+        </a>
+       </li>
+       <li>
+        <a href="/category/carriers/">
+         Mobile Carriers
+        </a>
+       </li>
+       <li>
+        <a href="/category/smartphones/">
+         Phones
+        </a>
+       </li>
+       <li>
+        <a href="/resources/">
+         Resources
+        </a>
+       </li>
+       <li>
+        <a href="/category/tablets/">
+         Tablets
+        </a>
+       </li>
+       <li>
+        <a href="/category/tech-events/">
+         Tech Events
+        </a>
+       </li>
+      </ul>
+     </nav>
+     <nav id="ft2">
+      <ul>
+       <li>
+        <a href="/news">
+         News
+        </a>
+       </li>
+       <li>
+        <a href="/tips">
+         Tips
+        </a>
+       </li>
+       <li>
+        <a href="/newsletters/index.html">
+         Newsletters
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </section>
+    <section class="about">
+     <div class="wrapper">
+      <nav class="tertiary" id="ft3">
+       <ul>
+        <li>
+         <a href="/about/about.html">
+          About Us
+         </a>
+        </li>
+        <li>
+         <a href="/about/contactus.html">
+          Contact
+         </a>
+        </li>
+        <li>
+         <a href="/about/privacy.html">
+          Privacy Policy
+         </a>
+        </li>
+        <li>
+         <a href="/about/cookie-policy.html">
+          Cookie Policy
+         </a>
+        </li>
+        <li>
+         <a href="/about/member-preferences.html">
+          Member Preferences
+         </a>
+        </li>
+        <li>
+         <a href="/about/advertise.html">
+          Advertising
+         </a>
+        </li>
+        <li>
+         <a href="https://www.idg.com/work-here/" rel="nofollow" target="_blank">
+          IDG Careers
+         </a>
+        </li>
+        <li>
+         <a href="/about/adchoices.html">
+          Ad Choices
+         </a>
+        </li>
+        <li>
+         <a href="/about/affiliates.html">
+          E-commerce Links
+         </a>
+        </li>
+       </ul>
+      </nav>
+     </div>
+    </section>
+    <section class="copyright">
+     <div class="wrapper">
+      <p>
+       <a href="/about/copyright.html">
+        Copyright
+       </a>
+       © 2018 IDG Communications, Inc.
+       <br/>
+       <span class="disclaimer">
+        The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the
+        <a href="https://creativecommons.org/licenses/by/3.0/us/" rel="nofollow" target="_blank">
+         Creative Commons 3.0 Attribution License
+        </a>
+        . Greenbot is an independent site that is not affiliated with Google Inc.
+       </span>
+      </p>
+      <div class="network">
+       <div id="network-selector">
+        <div class="label">
+         Explore the IDG Network
+         <i class="ss-icon tick">
+          descend
+         </i>
+        </div>
+        <ul>
+         <li>
+          <a href="https://www.cio.com" rel="nofollow" target="_blank">
+           CIO
+          </a>
+         </li>
+         <li>
+          <a href="https://www.cio-asia.com" rel="nofollow" target="_blank">
+           CIO Asia
+          </a>
+         </li>
+         <li>
+          <a href="https://www.computerworld.com" rel="nofollow" target="_blank">
+           Computerworld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.csoonline.com" rel="nofollow" target="_blank">
+           CSO
+          </a>
+         </li>
+         <li>
+          <a href="https://www.gamestar.com" rel="nofollow" target="_blank">
+           GameStar
+          </a>
+         </li>
+         <li>
+          <a href="https://www.greenbot.com" rel="nofollow" target="_blank">
+           Greenbot
+          </a>
+         </li>
+         <li>
+          <a href="https://www.idc.com" rel="nofollow" target="_blank">
+           IDC
+          </a>
+         </li>
+         <li>
+          <a href="https://www.idg.com" rel="nofollow" target="_blank">
+           IDG
+          </a>
+         </li>
+         <li>
+          <a href="https://www.idgconnect.com" rel="nofollow" target="_blank">
+           IDG Connect
+          </a>
+         </li>
+         <li>
+          <a href="https://www.idg.tv" rel="nofollow" target="_blank">
+           IDG.TV
+          </a>
+         </li>
+         <li>
+          <a href="https://www.infoworld.com" rel="nofollow" target="_blank">
+           InfoWorld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.itnews.com" rel="nofollow" target="_blank">
+           IT News
+          </a>
+         </li>
+         <li>
+          <a href="https://www.itwhitepapers.com" rel="nofollow" target="_blank">
+           ITwhitepapers
+          </a>
+         </li>
+         <li>
+          <a href="https://www.itworld.com" rel="nofollow" target="_blank">
+           ITworld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.javaworld.com" rel="nofollow" target="_blank">
+           JavaWorld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.macworld.com" rel="nofollow" target="_blank">
+           Macworld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.networkworld.com" rel="nofollow" target="_blank">
+           Network World
+          </a>
+         </li>
+         <li>
+          <a href="https://www.pcworld.com" rel="nofollow" target="_blank">
+           PCWorld
+          </a>
+         </li>
+         <li>
+          <a href="https://www.techconnect.com" rel="nofollow" target="_blank">
+           TechConnect
+          </a>
+         </li>
+         <li>
+          <a href="https://www.techhive.com" rel="nofollow" target="_blank">
+           TechHive
+          </a>
+         </li>
+         <li>
+          <a href="https://www.thefullnerd.com/" rel="nofollow" target="_blank">
+           The Full Nerd
+          </a>
+         </li>
+        </ul>
+       </div>
+       <!-- /#network-selector -->
+      </div>
+      <!-- /.network -->
+     </div>
+     <!-- /.wrapper -->
+    </section>
+   </footer>
+   <script src="/www/js/analytics/mouse_down.js">
+   </script>
+   <script src="/www/js/jquery/jquery-ui.js">
+   </script>
+   <script src="/www/js/jquery/jquery.dfp.min.js">
+   </script>
+   <script src="/www.idge/js/mule/shortstack_nav.js">
+   </script>
+   <script src="/www/js/jquery/jquery.timeago.js">
+   </script>
+   <script>
+    $(document).ready(function(){
+ 			$(".timeago").timeago();
+ 		});
+   </script>
+   <div class=" ad-container" id="mobilewelcomead">
+   </div>
+   <script type="text/javascript">
+    consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("mobilewelcomead", "true");
+ 					$('#mobilewelcomead').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: mobilewelcomead - [971 1115]");
+ 				
+ 				});
+   </script>
+   <script src="/www/js/analytics/tracking.js">
+   </script>
+   <script src="/www/js/autocomplete.js">
+   </script>
+   <script src="/www/js/jquery/jquery.lazyload.min.js">
+   </script>
+   <script src="/www.idge/js/global.js?v=20180621113524">
+   </script>
+   <script src="/www/js/webfonts/ss-social.js">
+   </script>
+   <script src="/www/js/webfonts/ss-standard.js">
+   </script>
+   <script src="/www/js/analytics/brandAnalytics.js">
+   </script>
+   <!-- Begin BlueKai Tag -->
+   <iframe frameborder="0" height="0" name="__bkframe" src="javascript:void(0)" width="0">
+   </iframe>
+   <script src="https://tags.bkrtx.com/js/bk-coretag.js" type="text/javascript">
+   </script>
+   <!-- CryptoJS -->
+   <script src="/www/js/utils/md5.js">
+   </script>
+   <script src="/www/js/analytics/idg_bk_coreapi.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    bk_allow_multiple_calls=true;
+ var blueKaiId=17640;
+ var blueKaiPort=10;
+ var brandCode = "grb";
+ var regUrl="https://regdev.idge.int/api/"
+ var daysToRefresh=30;
+ var bk_debug_log=false;
+ 
+ 
+ 
+ 	 regUrl="https://reg.idgenterprise.com/api/";
+ 
+ 
+ 
+ 	daysToRefresh=30;
+ 
+ 
+ 	
+ 
+ 
+ 
+ 
+ 	
+ 
+ if ( typeof(s) != 'undefined' ) {
+ 	bk_addPageCtx("pageType", (typeof(s.pageType)!='undefined')?s.pageType:'');
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ bk_addPageCtx("cmpy", "[]");
+ 
+ 
+ bk_addPageCtx('tid', '');
+ 
+ 	
+ 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ // Add the list name and email address hash params to bluekai tracking
+ // If the user came from a newsletter clickthru, also set the isnl pagectx
+ params = getUrlParams('phint');
+ if(Object.keys(params).length > 0)
+ 	{
+ 	bk_addPageCtx("idg_eid", params['idg_eid']);
+ 	bk_addPageCtx("newt", params['newt']);
+ 	bk_addPageCtx("isnl", "1");	
+ 	}
+ 
+ 	try{
+ 		IDG.bkCoreApi.start();
+ 	}
+ 	catch(e){
+ 		//alert("Triggering catch")
+ 		bk_doJSTag(blueKaiId ,blueKaiPort);
+ 		if (window.console && window.console.log){
+ 			window.console.log("Error Occured While Processing Profile Siubmission")
+ 		}
+ 	}
+ 	
+ 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ $('article, #slideshowCarousel').on('click', '.product-list-price, .btn-amazon, .productLink', function(e) {
+ 	var $linkEl = $(e.target);
+ 	var po = $linkEl.data('po');
+ 	if ($.inArray(po, ['amazon', 'vendor', 'other']) >= 0) {
+ 		if (po == 'amazon') {
+ 			var prCat = $linkEl.data('bkc');
+ 			if (typeof prCat != 'undefined') {
+ 				bk_addPageCtx('event', 'AmazonClick'+prCat);
+ 			}
+ 			
+ 		}
+ 		var prMfr = $linkEl.data('bkmfr');
+ 		if (typeof prMfr != 'undefined') {
+ 			bk_addPageCtx('event', 'eCommerceMFR'+prMfr);
+ 		}
+ 		var prVndr = $linkEl.data('bkvndr');
+ 		if (typeof prVndr != 'undefined') {
+ 			bk_addPageCtx('event', 'eCommerceClickVendor'+prVndr);
+ 		}
+ 		bk_doJSTag(34202, 1);
+ 	}
+ });
+   </script>
+   <!-- End BlueKai Tag -->
+   <div class=" ad-container" id="catfish">
+   </div>
+   <script type="text/javascript">
+    consent.ads.queue.push(function(){
+ 				
+ 					IDG.GPT.addDisplayedAd("catfish", "true");
+ 					$('#catfish').responsiveAd({screenSize:'971 1115', scriptTags: []});
+                     IDG.GPT.log("Creating ad: catfish - [971 1115]");
+ 				
+ 				});
+   </script>
+   <!--  Begin gpt-skin/inread -->
+   <div class=" ad-container" id="gpt-skin">
+   </div>
+   <script type="text/javascript">
+    consent.ads.queue.push(function(){
+ 					IDG.GPT.addDisplayedAd("gpt-skin", "true");
+ 					IDG.GPT.displayGoogleTagSlot('gpt-skin');
+ 				});
+   </script>
+   <!--  End gpt-skin/inread -->
+   <script src="/www/js/ads/jquery.lazyload-ad.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    // -- Load Lazy Advertisement placement as deferred
+ $("div.lazyload_ad").lazyLoadAd({
+         threshold    : 500,         // You can set threshold on how close to the edge ad should come before it is loaded. Default is 0 (when it is visible).
+         forceLoad    : false,       // Ad is loaded even if not visible. Default is false.
+         onLoad       : false,       // Callback function on call ad loading
+         onComplete   : false,       // Callback function when load is loaded
+         timeout      : 1500,        // Timeout ad load
+         debug        : false,       // For debug use : draw colors border depends on load status
+         xray         : false        // For debug use : display a complete page view with ad placements
+ }) ;
+   </script>
+   <!-- Begin comScore Tag -->
+   <script>
+    var _comscore = _comscore || [];
+ _comscore.push(
+ { c1: "2", c2: "6035308", c3: "" });
+ (function()
+ {
+ 	var s = document.createElement("script"), el = document.getElementsByTagName("script")[0];
+ 	s.async = true; s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+ 	el.parentNode.insertBefore(s, el);
+ })();
+   </script>
+   <noscript>
+    <img src="https://sb.scorecardresearch.com/p?c1=2&amp;c2=6035308&amp;cv=2.0&amp;cj=1"/>
+   </noscript>
+   <!-- End comScore Tag -->
+   <!-- LiveRamp Sources -->
+   <script async="" src="//storage.googleapis.com/cdn.pippio.com/sdk/pippio.min.js" type="text/javascript">
+   </script>
+   <script src="/www/js/utils/liveRamp.js">
+   </script>
+   <!-- End of LiveRamp -->
+   <div id="loginModal">
+   </div>
+   <div id="logoffModal">
+   </div>
+   <script type="text/javascript">
+    a=top;f=self;if(a!=f){a.location=f.location;}
+   </script>
+  </body>
+ </html>

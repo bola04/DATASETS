@@ -1,0 +1,184 @@
+<html lang="en-US">
+  <head>
+   <script>
+    /*
+ ** Copyright (c) 2008, Oracle and/or its affiliates. All rights reserved.
+ */
+ 
+ /**
+  * This is the loopback script to process the url before the real page loads. It introduces
+  * a separate round trip. During this first roundtrip, we currently do two things: 
+  * - check the url hash portion, this is for the PPR Navigation. 
+  * - do the new window detection
+  * the above two are both controled by parameters in web.xml
+  * 
+  * Since it's very lightweight, so the network latency is the only impact. 
+  * 
+  * here are the list of will-pass-in parameters (these will replace the param in this whole
+  * pattern: 
+  *        viewIdLength                           view Id length (characters), 
+  *        loopbackIdParam                        loopback Id param name, 
+  *        loopbackId                             loopback Id,
+  *        loopbackIdParamMatchExpr               loopback Id match expression, 
+  *        windowModeIdParam                      window mode param name, 
+  *        windowModeParamMatchExpr               window mode match expression, 
+  *        clientWindowIdParam                    client window Id param name, 
+  *        clientWindowIdParamMatchExpr           client window Id match expression, 
+  *        windowId                               window Id, 
+  *        initPageLaunch                         initPageLaunch, 
+  *        enableNewWindowDetect                  whether we want to enable new window detection
+  *        jsessionId                             session Id that needs to be appended to the redirect URL
+  *        enablePPRNav                           whether we want to enable PPR Navigation
+  *
+  */
+ 
+ var id = null; 
+ var query = null; 
+ var href = document.location.href; 
+ var hashIndex = href.indexOf("#"); 
+ var hash = null;
+ 
+ /* process the hash part of the url, split the url */
+ if (hashIndex > 0) 
+ { 
+   hash = href.substring(hashIndex + 1); 
+   /* only analyze hash when pprNav is on (bug 8832771) */
+   if (true && hash && hash.length > 0) 
+   { 
+     hash = decodeURIComponent(hash); 
+     if (hash.charAt(0) == "@") 
+     { 
+       query = hash.substring(1); 
+     } 
+     else 
+     { 
+       var state = hash.split("@"); 
+       id = state[0]; 
+       query = state[1]; 
+     } 
+   } 
+   href = href.substring(0, hashIndex); 
+ } 
+ 
+ /* process the query part */
+ var queryIndex = href.indexOf("?"); 
+ if (queryIndex > 0) 
+ {
+   /* only when pprNav is on, we take in the query from the hash portion */
+   query = (query || (id && id.length>0))? query: href.substring(queryIndex); 
+   href = href.substring(0, queryIndex); 
+ } 
+ 
+ var jsessionIndex = href.indexOf(';');
+ if (jsessionIndex > 0)
+ {
+   href = href.substring(0, jsessionIndex);
+ }
+ 
+ /* we will replace the viewId only when pprNav is turned on (bug 8832771) */
+ if (true) 
+ {
+   if (id != null && id.length > 0) 
+   { 
+     href = href.substring(0, href.length - 6) + id;
+   } 
+ }
+ 
+ var isSet = false; 
+ if (query == null || query.length == 0) 
+ { 
+   query = "?"; 
+ } 
+ else if (query.indexOf("_afrLoop=") >= 0) 
+ { 
+   isSet = true; 
+   query = query.replace(/_afrLoop=[^&]*/, "_afrLoop=1515974248710316"); 
+ } 
+ else 
+ { 
+   query += "&"; 
+ } 
+ if (!isSet) 
+ { 
+   query = query += "_afrLoop=1515974248710316"; 
+ } 
+ 
+ /* below is the new window detection logic */
+ var initWindowName = "_afr_init_"; // temporary window name set to a new window
+ var windowName = window.name;
+ 
+ // if the window name is "_afr_init_", treat it as redirect case of a new window
+ if ((true) && (!windowName || windowName==initWindowName || 
+     windowName!="null"))  
+ { 
+   /* append the _afrWindowMode param */
+   var windowMode;
+   if (true) 
+   {
+     /* this is the initial page launch case, 
+        also this could be that we couldn't detect the real windowId from the server side */
+     windowMode=0;
+   }
+   else if ((href.indexOf("/__ADFvDlg__") > 0) || (query.indexOf("__ADFvDlg__") >= 0))
+   {
+     /* this is the dialog case */
+     windowMode=1;
+   }
+   else 
+   {
+     /* this is the ctrl-N case */
+     windowMode=2;
+   }
+   
+   if (query.indexOf("_afrWindowMode=") >= 0) 
+   { 
+     query = query.replace(/_afrWindowMode=[^&]*/, "_afrWindowMode="+windowMode); 
+   } 
+   else 
+   { 
+     query = query += "&_afrWindowMode="+windowMode; 
+   } 
+ 
+   /* append the _afrWindowId param */
+   var clientWindowId;
+   /* in case we couldn't detect the windowId from the server side */
+   if (!windowName || windowName == initWindowName) 
+   {
+     clientWindowId = "null";
+     
+     // set window name to an initial name so we can figure out whether a page is loaded from
+     // cache when doing Ctrl+N with IE
+     window.name = initWindowName;
+   }
+   else 
+   {
+     clientWindowId = windowName;
+   }  
+   
+   if (query.indexOf("_afrWindowId=") >= 0) 
+   { 
+     query = query.replace(/_afrWindowId=\w*/, "_afrWindowId="+clientWindowId); 
+   } 
+   else 
+   { 
+     query = query += "&_afrWindowId="+clientWindowId; 
+   } 
+   
+ }
+ 
+ var sess = ";jsessionid=HPv2bnPXmVbqqh1R172TYXhQkk74D5MLfVgktsvLqsR2GSPN0yBc!-1265155113";
+ 
+ if (sess.length > 0)
+   href += sess; 
+ 
+ /* if pprNav is on, then the hash portion should have already been processed */
+ if ((true) || (hash == null))
+   document.location.replace(href + query);
+ else 
+   document.location.replace(href + query + "#" + hash);
+   </script>
+   <noscript>
+    This page uses JavaScript and requires a JavaScript enabled browser.Your browser is not JavaScript enabled.
+   </noscript>
+  </head>
+ </html>

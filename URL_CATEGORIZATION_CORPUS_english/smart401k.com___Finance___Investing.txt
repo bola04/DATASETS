@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+ <html class="no-js" lang="en">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <title>
+    401k Advice - Retirement Investing | Smart401k
+   </title>
+   <!-- CSS -->
+   <link href="/assets/css/normalize.css" rel="stylesheet"/>
+   <link href="/assets/css/foundation.min.css" rel="stylesheet"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+   <link href="/assets/css/smart401k.min.css" rel="stylesheet"/>
+   <link href="/lib/revolution/css/settings.css" rel="stylesheet"/>
+   <!-- RS5.0 Layers and Navigation Styles -->
+   <link href="/lib/revolution/css/layers.css" rel="stylesheet"/>
+   <link href="/lib/revolution/css/navigation.css" rel="stylesheet"/>
+   <!-- JS -->
+   <script src="/lib/revolution/js/extensions/revolution.extension.slideanims.min.js" type="text/javascript">
+   </script>
+   <script src="/lib/revolution/js/extensions/revolution.extension.layeranimation.min.js" type="text/javascript">
+   </script>
+   <script src="/lib/revolution/js/extensions/revolution.extension.navigation.min.js" type="text/javascript">
+   </script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js">
+   </script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js" type="text/javascript">
+   </script>
+   <script src="//www.google.com/jsapi" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+   google.setOnLoadCallback(prepareData);
+ 
+   function prepareData() {
+   var data = new google.visualization.DataTable();
+   data.addColumn('number', 'Age');
+   data.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+   data.addColumn('number', 'Advised Balance');
+   data.addColumn('number', 'Non-Advised Balance');
+ 
+ 
+   Papa.parse("data/data.csv", {
+   download: true,
+   header: true,
+   dynamicTyping: true,
+   step: function(results) {
+ 
+   var difference = results.data[0].advised_balance - results.data[0].non_advised_balance;
+   var rateOfReturn = difference / results.data[0].non_advised_balance;
+ 
+   var tooltipHtml = '';
+   tooltipHtml += [
+ // ### TIMELINE TOOLTIP ###
+ '<div class="timeline-tooltip">',
+ '<div class="tooltip-inner">',
+ '<div class="advice">',
+ '<div class="advice-inner">A typical investor who started getting advice at age 25 could have ' + numeral(difference).format('$0,0.00') + ' more in their retirement account by now.<sup>1</sup> <br><small>*FOR ILLUSTRATIVE PURPOSES ONLY; ACTUAL RESULTS MAY VARY. </small></div>',
+ '<div class="text-right">',
+ '<div class="percentage up">' + numeral(rateOfReturn).format('0%') + '</div>',
+ '</div>',
+ '</div><!-- .advice -->',
+ '<a href="https://www2.smart401k.com/registration2014/Default.aspx" class="tooltip-cta">If you’d like to see some extra money in your future, don’t wait a single day longer.</a>',
+ '</div><!--- .tooltip-inner -->',
+ '</div><!-- .timeline-tooltip -->',
+   ].join('');
+ 
+   data.addRow([
+   results.data[0].age,
+   tooltipHtml,
+   results.data[0].advised_balance,
+   results.data[0].non_advised_balance,
+ ]);
+   },
+   complete: function(results) {
+   drawChart(data);
+   }
+   });
+   }
+ 
+   function drawChart(data) {
+ 
+   var options = {
+   isStacked: true,
+   backgroundColor: 'transparent',
+   width: '100%',
+   height: '100%',
+   chartArea: {
+   backgroundColor: 'transparent',
+   width: '100%',
+   height: '90%'
+   },
+   hAxis: {
+   viewWindow : {
+   min: 15,
+   max: 65
+   // This seems to keep the values from overlapping with 'YOUR AGE' on tiny screens.
+   },
+   textPosition: 'in',
+   textStyle: {
+ color: '#FFFFFF',
+ },
+   gridlines: {
+   color: 'transparent',
+   count: 10
+   },
+   },
+   vAxis: {
+   minValue: 0,
+   baselineColor: 'transparent',
+   gridlines: {
+   color: 'transparent'
+   },
+   textStyle: { color: 'transparent' }
+   },
+   focusTarget: 'category',
+   legend: 'none',
+   tooltip: { isHtml: true, trigger: 'focus' },
+   series: {
+   0: {
+   color: '#1D4E90',
+   areaOpacity: '.3'
+   },
+   1: {
+   color: '#97C43A',
+   areaOpacity: '1'
+   }
+   },
+   };
+ 
+   var chart = new google.visualization.AreaChart(document.querySelector('.timeline-chart'));
+   google.visualization.events.addListener(chart, 'select', function () { return; chart.setSelection(); });
+   google.visualization.events.addListener(chart, 'ready', function () {
+   // Change the frist label to be the x axis title
+ var firstLabel = $('svg text').first().attr('text-anchor', 'middle').text('YOUR AGE');
+ // Insert the black x axis backgroun
+ var rect = $('svg rect').first().clone();
+ rect.attr('width', '100%').attr('height', 35).attr('style', 'fill:rgba(0,0,0,0.5);').attr('y', 575);
+           $('.timeline-chart svg g g').first().after(rect);
+   });
+   chart.draw(data, options);
+   }
+   </script>
+   <meta content="Easy-to-use investment advice for your retirement plan at work and Advisors to support your investment strategy." name="my401k"/>
+   <meta content="Sitefinity 8.1.5831.0 SE" name="Generator"/>
+   <link href="https://www.smart401k.com" rel="canonical"/>
+   <meta content="Easy-to-use investment advice for your retirement plan at work and Advisors to support your investment strategy. 403b, Thrift Savings Plan, 457 and small business retirement plans." name="description"/>
+   <meta content="my401k" name="keywords"/>
+  </head>
+  <body>
+   <!-- Google Tag Manager -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-PL23VV" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ })(window,document,'script','dataLayer','GTM-PL23VV');
+   </script>
+   <!-- End Google Tag Manager -->
+   <form action="./" id="aspnetForm" method="post">
+    <input id="ctl11_TSSM" name="ctl11_TSSM" type="hidden" value=""/>
+    <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value="/wEPDwUKMjE0NDY0NzM1OGRkD86BN9Q0BH1elm5+1/mLejPcIX7YVUfhd422vcsX7p8="/>
+    <script src="/ScriptResource.axd?d=mJhxXbWHqMOdqY3WhbUeRHBAZCPcikfARbV9du9BbuY6yeYALEgj3itT20lly-N7mZuxUhiGTjno8gSXblOV4jVwnGC0k_jdLN7kr8c6n-JIyaKLxNUJvv5dhku4K0fo92k20Vr5S6bDONvzg-23JqJnwbUZp9B72j7syih_BnLJaPx55zDLXWaJwAgfeZQ60&amp;t=ffffffffad4b7194" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+     //<![CDATA[
+ if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax client-side framework failed to load.');
+ //]]>
+    </script>
+    <script src="/ScriptResource.axd?d=CP_y1ZvMRuytT7S6hTB_pjCedK51COFSXhWf8gJcUt1ahLtWoM2qNRheSJbEr0HxeSGi0tWsi22LKo6b_dgmVJaw2Y8K4c5E-c0T0-X0q0JbA07gpfh-XJ5d82LA0TDOm9hwh0rPxw4m51tvcGQO7XByOlzXoEjxLBoaEznRbM0pjMyVtG3H2UhbvXfEK4Bs7j1AKeexYgK0B6lgKzzwKQ2&amp;t=ffffffffa4440780" type="text/javascript">
+    </script>
+    <script src="/ScriptResource.axd?d=jrjd5AWqClCEMnERcAnAeV5V8Lc_MjJjwP40TiNKRo1a-tnspI31YPwfZKxXIjo9rfTC2Q_K5CRq58FnVWapkhmR72g0KCeCWbD86NOfAWBoKzvgtosGodRPDfdUituYYXBLkEdF6WtVr4NeIWD7U0SoIXHenow74bwM_67DzQL9Y1_TRh4ldY0eh72szoQbbm7hRPh3S0ahYNtsh3TxKQ2&amp;t=ffffffffa4440780" type="text/javascript">
+    </script>
+    <input id="__VIEWSTATEGENERATOR" name="__VIEWSTATEGENERATOR" type="hidden" value="5BD06EC6"/>
+    <div class="wrapper">
+     <div class="banner designer">
+      <!-- ### STICKY NAV HERE ### -->
+      <div class="magellon-container">
+       <div class="sfContentBlock">
+        <div class="magellon-inner clearfix">
+         <div class="header-logo">
+          <a href="#">
+           <img alt="Smart 401k by The Mutual Fund Store" src="/assets/img/smart401k-website-logo.png"/>
+          </a>
+         </div>
+         <ul class="header-buttons show-for-medium-up inline-list no-bullet right">
+          <li>
+           <a class="button" href="https://app.smart401k.com/registration">
+            Get Started Today
+           </a>
+          </li>
+          <li>
+           <a class="button white-button" href="https://app.smart401k.com/members">
+            Login
+           </a>
+          </li>
+         </ul>
+         <!-- .header-buttons -->
+         <nav class="top-bar" data-options="custom_back_text: true; back_text: &lt;i class='fa fa-bars fa-2x'&gt;&lt;/i&gt;; mobile_show_parent_link: false;" role="navigation">
+          <section class="top-bar-section">
+           <ul class="sub-nav no-bullet">
+            <!-- ### MOBILE NAVIGATION ### -->
+            <li class="has-dropdown hide-for-large-up">
+             <a href="#">
+              <em class="fa fa-bars fa-2x">
+              </em>
+             </a>
+             <ul class="dropdown">
+              <li data-magellan-arrival="whatwedo">
+               <a href="#whatwedo">
+                What We Do
+               </a>
+              </li>
+              <li data-magellan-arrival="whysmart401k">
+               <a href="#whysmart401k">
+                Why Smart401k
+               </a>
+              </li>
+              <li data-magellan-arrival="howitworks">
+               <a href="#howitworks">
+                How It Works
+               </a>
+              </li>
+              <li class="special-drop-buttons hide-for-medium-up">
+               <a>
+                Get Started Today
+               </a>
+              </li>
+              <li class="special-drop-buttons hide-for-medium-up">
+               <a class="button secondary" href="https://app.smart401k.com/members ">
+                Login
+               </a>
+              </li>
+             </ul>
+            </li>
+            <!-- ### SCREEN NAVIGATION ### -->
+            <li class="show-for-large-up" data-magellan-arrival="howitworks">
+             <a href="#howitworks">
+              How It Works
+             </a>
+            </li>
+            <li class="show-for-large-up" data-magellan-arrival="whysmart401k">
+             <a href="#whysmart401k">
+              Why Smart401k
+             </a>
+            </li>
+            <li class="show-for-large-up" data-magellan-arrival="whatwedo">
+             <a href="#whatwedo">
+              What We Do
+             </a>
+            </li>
+           </ul>
+           <!-- sub-nav -->
+          </section>
+         </nav>
+        </div>
+        <!-- .magellon-inner -->
+       </div>
+      </div>
+      <!-- .magellon-container -->
+      <div class="banner-inner clearfix">
+       <div class="sfContentBlock">
+        <div class="rev_slider_wrapper">
+         <div class="rev_slider" data-version="5.0" id="slider1">
+          <ul>
+           <li data-transition="fade">
+            <!-- MAIN IMAGE -->
+            <img alt="Freelancer 401k" height="600" src="/assets/img/banner-image-designer.jpg" width="1200"/>
+            <!-- LAYER NR. 1 -->
+            <div class="tp-caption maincaption text-right" data-hoffset="0" data-start="0" data-transform_idle="o:1;" data-transform_in="o:0" data-transform_out="o:0" data-voffset="0" data-whitespace="normal" data-width="full" data-x="right" data-y="top">
+             <div class="right">
+              <div class="banner-testamony">
+               <p>
+                I love being a
+                <span class="banner-cross-out">
+                 <span class="special-word-top">
+                  visionary
+                 </span>
+                 <span class="special-word-bottom">
+                  <span class="top-line">
+                  </span>
+                  designer
+                  <span class="bottom-line">
+                  </span>
+                 </span>
+                </span>
+                , but I still want to retire some day.
+               </p>
+               <p>
+                That's why I use
+                <span class="s4k-label">
+                 Smart401k
+                 <sup>
+                  ®
+                 </sup>
+                </span>
+               </p>
+              </div>
+              <!-- banner-testamony -->
+              <div class="banner-cta-container">
+               <a class="button next-button banner-cta button-text-right" href="https://app.smart401k.com/registration ">
+                Start Now to Get More Out of Your 401(
+                <span class="text-lowercase">
+                 k
+                </span>
+                )
+               </a>
+              </div>
+              <!-- .banner-cta-container -->
+             </div>
+             <!-- .right -->
+            </div>
+            <!-- .tp-caption -->
+           </li>
+           <li data-transition="fade">
+            <!-- MAIN IMAGE -->
+            <img alt="Teacher 403b" height="600" src="/assets/img/banner-image-teacher.jpg" width="1200"/>
+            <!-- LAYER NR. 1 -->
+            <div class="tp-caption maincaption" data-hoffset="0" data-start="0" data-transform_idle="o:1;" data-transform_in="o:0" data-transform_out="o:0" data-voffset="0" data-whitespace="normal" data-width="full" data-x="left" data-y="top">
+             <div class="banner-testamony">
+              <p>
+               I love being
+               <span class="banner-cross-out">
+                <span class="special-word-top">
+                 an inspiration
+                </span>
+                <span class="special-word-bottom">
+                 <span class="top-line">
+                 </span>
+                 a teacher
+                 <span class="bottom-line">
+                 </span>
+                </span>
+               </span>
+               , but I still want to retire some day.
+              </p>
+              <p>
+               That's why I use
+               <span class="s4k-label">
+                Smart401k
+                <sup>
+                 ®
+                </sup>
+               </span>
+              </p>
+             </div>
+             <!-- banner-testamony -->
+             <div class="banner-cta-container">
+              <a class="button next-button banner-cta button-text-right" href="https://app.smart401k.com/registration ">
+               Start Now to Get More Out of Your 403(
+               <span class="text-lowercase">
+                b
+               </span>
+               )
+              </a>
+             </div>
+             <!-- .banner-cta-container -->
+            </div>
+            <!-- .tp-caption -->
+           </li>
+           <li data-transition="fade">
+            <!-- MAIN IMAGE -->
+            <img alt="Nurse 403b" height="600" src="/assets/img/banner-image-nurse.jpg" width="1200"/>
+            <!-- LAYER NR. 1 -->
+            <div class="tp-caption maincaption" data-hoffset="0" data-start="0" data-transform_idle="o:1;" data-transform_in="o:0" data-transform_out="o:0" data-voffset="0" data-whitespace="normal" data-width="full" data-x="left" data-y="top">
+             <div class="banner-testamony">
+              <p>
+               I love being a
+               <span class="banner-cross-out">
+                <span class="special-word-top">
+                 life saver
+                </span>
+                <span class="special-word-bottom">
+                 <span class="top-line">
+                 </span>
+                 nurse
+                 <span class="bottom-line">
+                 </span>
+                </span>
+               </span>
+               , but I still want to retire some day.
+              </p>
+              <p>
+               That's why I use
+               <span class="s4k-label">
+                Smart401k
+                <sup>
+                 ®
+                </sup>
+               </span>
+              </p>
+             </div>
+             <!-- banner-testamony -->
+             <div class="banner-cta-container">
+              <a class="button next-button banner-cta button-text-right" href="https://app.smart401k.com/registration ">
+               Start Now to Get More Out of Your 403(
+               <span class="text-lowercase">
+                b
+               </span>
+               )
+              </a>
+             </div>
+             <!-- .banner-cta-container -->
+            </div>
+            <!-- .tp-caption -->
+           </li>
+          </ul>
+         </div>
+         <!-- END REVOLUTION SLIDER -->
+        </div>
+        <!-- ### END OF SLIDER WRAPPER ### -->
+        <!-- .banner -->
+       </div>
+      </div>
+      <!-- .banner-inner -->
+     </div>
+     <!-- .banner -->
+     <div class="sfContentBlock">
+      <section>
+       <div class="row">
+        <div class="small-7 columns">
+         <h3 class="section-title" data-magellan-destination="howitworks">
+          How It Works
+         </h3>
+         <a name="howitworks">
+         </a>
+         <h4 class="section-subtitle">
+          <span class="s4k-label">
+           Smart401k
+           <sup>
+            ®
+           </sup>
+          </span>
+          makes it easy.
+         </h4>
+         <ol class="circle-list">
+          <li>
+           <div class="circle-list-item">
+            <p class="circle-list-title">
+             We get to know you
+            </p>
+            <p>
+             We’ll learn about your goals for this account and how you handle risk.
+            </p>
+           </div>
+          </li>
+          <li>
+           <div class="circle-list-item">
+            <p class="circle-list-title">
+             We analyze your investment options
+            </p>
+            <p>
+             We’ll review your retirement plan investments and work with Financial Engines’s Research Center to evaluate each one.
+            </p>
+           </div>
+          </li>
+          <li>
+           <div class="circle-list-item">
+            <p class="circle-list-title">
+             We give you personalized advice
+            </p>
+            <p>
+             We’ll give you specific allocation and investment recommendations, and you make the changes yourself.
+            </p>
+           </div>
+          </li>
+         </ol>
+        </div>
+        <div class="small-5 columns text-center">
+         <img alt="Lightbulb" class="lightbulb show-for-medium-up-custom" src="/images/default-source/homepage/lightbulb.png"/>
+         <a class="button next-button section-cta button-text-right" href="https://app.smart401k.com/registration ">
+          Start Now to Change Your Future
+         </a>
+        </div>
+       </div>
+       <!-- .row -->
+      </section>
+     </div>
+     <div class="sfContentBlock">
+      <section class="timeline">
+       <h3 class="section-title" data-magellan-destination="whysmart401k">
+        Why Smart401k
+       </h3>
+       <a name="whysmart401k">
+       </a>
+       <div class="timeline-testimony">
+        <p>
+         <span class="s4k-label" style="color: white;">
+          Smart401k
+          <sup>
+           ®
+          </sup>
+         </span>
+         gives me freedom to dream.
+        </p>
+        <p>
+         Because a little help can make a big difference.
+        </p>
+       </div>
+       <!-- .timeline-testimony -->
+       <div class="timeline-chart-container">
+        <div class="timeline-chart">
+        </div>
+       </div>
+       <!-- .timeline-chart-container -->
+       <div class="timeline-tooltip-overlay">
+       </div>
+      </section>
+      <!-- .timeline -->
+     </div>
+     <div class="sfContentBlock">
+      <section>
+       <h3 class="section-title" data-magellan-destination="whatwedo">
+        What We Do
+       </h3>
+       <a name="whatwedo">
+       </a>
+       <div class="row">
+        <div class="small-7 columns">
+         <h4 class="section-subtitle">
+          <span class="s4k-label">
+           Smart401k
+           <sup>
+            ®
+           </sup>
+          </span>
+          helps you get more.
+         </h4>
+         <p>
+          Have money in a 401(k), 403(b), 457 or Thrift Savings Plan?  You came to the right place to get more out of it.
+         </p>
+         <p>
+          It’s not easy knowing how to manage your retirement plan – unless you have Smart401k investment advisors telling you exactly what to do.  We’ll create your personalized investment strategy clearly outlining some simple changes you can make to get more out of your plan.  We’ll stay in touch, so you can relax knowing we’re keeping an eye on things.  And if you have any questions about your retirement plan – or even other financial questions – our advisors are just a phone call, email or chat away.
+         </p>
+         <p>
+          <strong>
+           We make it easy to get the help you need.
+          </strong>
+         </p>
+         <a class="button section-cta" href="https://app.smart401k.com/registration ">
+          Get Started Today
+         </a>
+        </div>
+        <div class="app-screenshot small-5 columns">
+         <img alt="ipad-images" data-displaymode="Original" src="/images/default-source/default-album/ipad-images94f29225911e6feb9cb5ff0000344c25.png?sfvrsn=2" title="ipad-images"/>
+        </div>
+       </div>
+       <!-- row -->
+      </section>
+     </div>
+     <div class="sfContentBlock">
+      <section class="stats">
+       <div class="stats-inner">
+        <div class="origin-year stats-item">
+         <div class="origin-year-inner">
+          <p class="origin-year-label">
+           Since
+          </p>
+          <p>
+           2003
+          </p>
+         </div>
+         <!-- .origin-year-inner -->
+         <div class="bracket">
+          {
+         </div>
+        </div>
+        <!-- .origin-year -->
+        <div class="customers stats-item">
+         <p>
+          <span class="s4k-label">
+           Smart401k
+           <sup>
+            ®
+           </sup>
+          </span>
+          has helped more than
+         </p>
+         <p class="customer-number">
+          38,000
+         </p>
+         <p>
+          individuals with their retirement plans.
+         </p>
+        </div>
+        <!-- .cusomters -->
+        <div class="stats-item text-uppercase">
+         and
+        </div>
+        <div class="assets stats-item">
+         <p class="text-left">
+          advised more than
+         </p>
+         <p class="asset-number">
+          $6.2B
+         </p>
+         <p class="text-right">
+          in assets.
+         </p>
+        </div>
+        <!-- assets -->
+       </div>
+       <!-- .stats-inner -->
+      </section>
+     </div>
+     <div class="sfContentBlock">
+      <section class="mentioned-by text-center">
+       <h3 class="section-title">
+        Mentioned By
+       </h3>
+       <ul class="mentioned-by-slider" data-options="slide_number: false; bullets: false; timer_speed: 2500;" data-orbit="data-orbit">
+        <li data-orbit-slide="mention-1">
+         <div class="quote">
+          <span class="quotemark-left">
+           “
+          </span>
+          “I particularly like the suggestion for SMART401K.com, which works with people by phone, email or online to help figure out how to invest in their employer- sponsored retirement plans such as a 401(k) or the federal Thrift Savings Plan.”
+          <span class="quotemark-right">
+           ”
+          </span>
+         </div>
+         <!-- .quote -->
+         <div class="author">
+          <span class="author-inner">
+           Michelle Singletary -
+           <strong>
+            Washington Post
+           </strong>
+          </span>
+         </div>
+        </li>
+       </ul>
+       <!-- .mentioned-by-slider -->
+       <div class="text-center">
+        <img alt="Fox Business, Market Watch, The Wall Street Journal, SmartMoney CNBC and Kiplinger" src="/images/default-source/homepage/mentioned-by-logos.png"/>
+       </div>
+      </section>
+      <!-- .mentioned-by -->
+     </div>
+     <div class="sfContentBlock">
+      <section class="get-started">
+       <h3 class="section-title">
+        Get Started
+       </h3>
+       <p>
+        You have too much at stake to ignore your retirement savings.
+       </p>
+       <p>
+        Try Smart401k for 30 days. Get started today.
+       </p>
+       <div class="text-right">
+        <a class="button section-cta button-text-right" href="https://app.smart401k.com/registration ">
+         Start Your 30-Day Trial | Promo Code FREE30 &gt;&gt;
+        </a>
+       </div>
+       <!-- .row -->
+      </section>
+     </div>
+     <footer>
+      <div class="sfContentBlock">
+       <footer>
+        <div class="row collapse" data-equalizer="true">
+         <div class="footer-nav small-9 columns" data-equalizer-watch="true">
+          <div class="inner-footer-section">
+           <div class="row collapse">
+            <div class="small-3 columns">
+             <p class="footer-headline">
+              About
+             </p>
+             <ul class="no-bullet">
+              <li>
+               <a href="/home">
+                Home
+               </a>
+              </li>
+              <li>
+               <a href="/about-us">
+                About us
+               </a>
+              </li>
+              <li>
+               <a href="/services/pricing">
+                Pricing
+               </a>
+              </li>
+              <li>
+               <a href="/services/smart401k-faqs">
+                FAQ
+               </a>
+              </li>
+              <li>
+               <a href="/about-us/smart401k-careers">
+                Careers
+               </a>
+              </li>
+             </ul>
+            </div>
+            <div class="small-3 columns">
+             <p class="footer-headline">
+              Updates
+             </p>
+             <ul class="no-bullet">
+              <li>
+               <a href="/quarterly-newsletter">
+                Newsletter
+               </a>
+              </li>
+             </ul>
+            </div>
+            <div class="small-3 columns">
+             <p class="footer-headline">
+              Resources
+             </p>
+             <ul class="no-bullet">
+              <li>
+               <a href="/resource-center">
+                Resource center
+               </a>
+              </li>
+              <li>
+               <a href="/resource-center/retirement-investing-basics">
+                Investment basics
+               </a>
+              </li>
+              <li>
+               <a href="/resource-center/advanced-investing">
+                Advance Investing
+               </a>
+              </li>
+              <li>
+               <a href="/resource-center/retirement-strategy">
+                Retirement strategy
+               </a>
+              </li>
+              <li>
+               <a href="/resource-center/financial-outlook">
+                Financial outlook
+               </a>
+              </li>
+              <li>
+               <a href="/resource-center/retirement-calculators">
+                Retirement calculators
+               </a>
+              </li>
+             </ul>
+            </div>
+            <div class="small-3 columns">
+             <p class="footer-headline">
+              Legal
+             </p>
+             <ul class="no-bullet">
+              <li>
+               <a href="/privacy-policy">
+                Privacy policy
+               </a>
+              </li>
+              <li>
+               <a href="/terms-of-use">
+                Terms of use
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+           <div class="copyright text-center">
+            <p>
+             <small>
+              © 2015 Financial Engines
+             </small>
+            </p>
+           </div>
+          </div>
+         </div>
+         <div class="footer-contact small-3 columns" data-equalizer-watch="true">
+          <div class="inner-footer-section">
+           <p class="footer-headline">
+            Contact Us
+           </p>
+           <div class="footer-contact-list">
+            <p>
+             <span class="contact-label">
+              Phone
+             </span>
+             (877) 627-8401
+            </p>
+            <p>
+             <span class="contact-label">
+              Fax
+             </span>
+             (866) 666-5583
+            </p>
+            <p>
+             <span class="contact-label">
+              Email
+             </span>
+             <a href="mailto:info@smart401k.com">
+              info@smart401k.com
+             </a>
+            </p>
+            <div class="contact-address-line">
+             <span class="contact-label">
+              Mail
+             </span>
+             <address>
+              10950 Grandview Dr.
+              <br/>
+              Suite 500
+              <br/>
+              Overland Park, KS 66210
+             </address>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </footer>
+      </div>
+      <div class="sfContentBlock">
+       <div class="disclaimer wrapper main-content-column medium-12 small-12 columns">
+        <br/>
+        <p>
+         <sup>
+          1
+         </sup>
+         1According to a study by Financial Engines® (http://corp.financialengines.com/employer/ FinancialEngines-2014-Help-Report.pdf), Help participants, on average, experienced median annual returns over 3% (332 basis points) higher than Non-Help participants, net of fees, over the period of 2006-2012. Additional retirement savings is a hypothetical calculation based on a beginning salary of $40,000, with an annual salary increase of 2.5%, and a 10% annual retirement contribution of the annual salary. The calculation assumes a 7.5 percent annual return and a 4.5 percent annual return. The hypothetical calculation is for illustrative purposes only. Actual results may vary based on changes to assumptions and investment performance.
+        </p>
+        <h6>
+         Important Information
+        </h6>
+        <p>
+         Smart401k is a registered investment adviser which provides independent investment recommendations for employer sponsored retirement plans. Smart401k is under common ownership with Financial Engines. Financial Engines is a nationwide system of registered investment advisers, which include affiliated companies and independently owned and operated franchises. Individual Stores are SEC or state registered investment advisers. Each Store can offer investment advisory services to prospective and existing clients in the state where the Store is located, while a number of Stores may also offer advisory services in nearby or other states. The adviser may not transact business in states where it is not appropriately registered, excluded or exempted from registration. Financial Engines and Smart401k are separate but affiliated companies. They are not responsible for each other’s services or policies. Each entity is its own separate entity that provides services for its client independent from the other. Prospects or clients may directly retain the services of Financial Engines.
+         <br/>
+         <br/>
+         The Mutual Fund Research Center, an affiliate of Financial Engines and Smart 401k, is an SEC registered investment adviser which provides asset allocation and mutual fund recommendations, as well as market and economic research to each Store in Financial Engines organization and their advisors. This includes the Store that provides you with advisory services. The Research Center does not manage client assets but rather provides non-discretionary investment advisory services to affiliates, including Smart401k. The Research Center provides templates of various asset allocation models for use by Smart401k Advisors. These templates include a range of asset allocation models from the most conservative to the most aggressive. Smart401k is responsible for evaluating and determining the proper asset allocation for a particular client and implementing an investment strategy for that client.
+        </p>
+       </div>
+      </div>
+     </footer>
+    </div>
+   </form>
+   <!-- .wrapper -->
+   <link href="/assets/css/SitefinityOverride.css" rel="stylesheet"/>
+   <!-- JS -->
+   <!-- RS5.0 Core JS Files -->
+   <script src="/lib/revolution/js/jquery.themepunch.tools.min.js?rev=5.0">
+   </script>
+   <script src="/lib/revolution/js/jquery.themepunch.revolution.min.js?rev=5.0">
+   </script>
+   <script src="/js/scripts.js">
+   </script>
+   <script>
+    jQuery(document).ready(function() {
+  
+   jQuery("#slider1").revolution({
+      sliderType:"standard",
+      sliderLayout:"auto",
+      delay:5000,
+      navigation: {
+          arrows:{enable:false}
+  
+      },
+      responsiveLevels:[1200,1150,1100,1050,1000,950,900,850,800,750,700,650,600,550,500,450,400,350,300],
+  
+      minHeight:[600,600,600,600,600,600,600,600,600,600,600,600,600,600,600,600,600,600,600],
+      gridwidth:[1060,1050,1000,950,900,850,800,750,700,650,600,550,500,450,400,350,300,250,200],
+      gridheight:[596,596,596,596,596,596,596,596,596,596,596,596,596,596,596,596,596,596,596]
+  
+    });
+  
+ });
+   </script>
+   <script src="/js/Changeurl.js">
+   </script>
+   <!--<script src="/lib/jquery.js"></script> -->
+   <script src="/js/foundation.min.js">
+   </script>
+   <script src="/js/foundation/foundation.magellan.js">
+   </script>
+   <script>
+    $(document).foundation({
+ "magellan-expedition": {
+ threshold: 135
+ }
+ });
+   </script>
+  </body>
+ </html>

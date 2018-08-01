@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+   <meta content="IE=9" http-equiv="X-UA-Compatible"/>
+   <meta content="Signaling Gateway, Protein Pathways, Pathways Database, Protein Kinase " name="keywords"/>
+   <meta content="Pathways Database, Proteins, molecular pathway, molecule, protein kinase" name="description"/>
+   <!--Tabs:http://jquerytools.org js uses jquery 1.7 and other js for ui-->
+   <!-- The slider http://webdeveloperplus.com/jquery/featured-content-slider-using-jquery-ui/ included jquery 1.3.2 and jqueryui but somehow adding jquery-1.8.0.min from http://jqueryui.com/download which has two js files jquery-ui-1.8.23.custom.min and jquery-1.8.0.min. However just jquery alone works -->
+   <script src="/molecule/jsp/rsc/js/jquery-1.7.2.min.js">
+   </script>
+   <script src="http://craigsworks.com/projects/qtip2/packages/latest/jquery.qtip.min.js" type="text/javascript">
+   </script>
+   <link href="http://craigsworks.com/projects/qtip2/packages/latest/jquery.qtip.min.css" rel="stylesheet" type="text/css"/>
+   <script src="/molecule/jsp/rsc/js/jquery-ui-1.8.23.custom.min.js">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jquery.jtweetsanywhere-1.3.1.js">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jtweetsanywhere-de-1.3.1.js" type="text/javascript">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jquery.tagcanvas.min.js" type="text/javascript">
+   </script>
+   <script src="http://platform.twitter.com/anywhere.js?id=APIKey&amp;v=1" type="text/javascript">
+   </script>
+   <link href="/molecule/jsp/rsc/css/slider.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/molecule/jsp/rsc/css/jquery-ui-blitzer-theme.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/molecule/jsp/rsc/css/jquery.jtweetsanywhere-1.3.1.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <link href="/molecule/jsp/rsc/css/megamenu.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <link href="/molecule/jsp/rsc/css/style.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <!-- Since the meta tag above forces IE 9 to treat this as a IE 8 compatability page, then the if else below is for IE8 and is not included, the meta and below is a short term solution till IE 9 supports compatibility issues. Also, in some cases the compatability view is disabled and enabling it causes the tag cloud to flash and all divs to wrap around on top of eachother. However, browsers where this was an issue had the compatability view button greyed out, one solution is to download a program from Microsoft to fix it. New (Forcing to IE9 makes pages work, and IE9 supports canvas witout excanavs-->
+   <script src="js/excanvas.js" type="text/javascript">
+   </script>
+   <style>
+    #tabs { height: 220px; } 
+ 	.tabs-bottom { position: relative; } 
+ 	.tabs-bottom .ui-tabs-panel { height: 220px; overflow: auto; } 
+ 	.tabs-bottom .ui-tabs-nav { position: absolute !important; left: 0; bottom: 0; right:0; padding: 0 0.2em 0.2em 0; } 
+ 	.tabs-bottom .ui-tabs-nav li { margin-top: -2px !important; margin-bottom: 1px !important; border-top: none; border-bottom-width: 1px; }
+ 	.ui-tabs-selected { margin-top: -3px !important; }
+ 	.ui-selectmenu-menu {
+     z-index:20;}
+     	.ui-tooltip-wiki{
+ 		max-width: 600px;
+ 		min-width: 550px;
+ 		}
+  	.ui-tooltip-wiki .ui-tooltip-content{
+ 		padding: 10px;
+  		line-height: 16px;
+ 	}
+  	.ui-tooltip-wiki h1{
+ 		margin: 0 0 7px;
+  		font-size: 1.5em;
+ 		line-height: 1em;
+ 	}
+  	.ui-tooltip-wiki img{ padding: 0 10px 0 0; }
+  	.ui-tooltip-wiki p{ margin-bottom: 10px; font-family:Arial, Helvetica, sans-serif;
+ 		font-size:12px;
+ 		color: #666666;
+ 		}
+ 	.ui-tooltip-wiki .note{ margin-bottom: 0; font-style: italic; color: #888; }
+   </style>
+   <title>
+    Signaling Gateway
+   </title>
+   <script>
+    $(function() {
+ 		 $( "#tabs" ).tabs(); //Think it initializes the tab, the $( "#tabs" ).tabs('select', 0); doesn't work for initializing, tabs disappear.
+ 		 $( "#tabs" ).tabs('select', 0);	//Select the first tab, for some reason select 2nd tab by default.
+ 		$( ".tabs-bottom > *" )
+ 			.removeClass( "ui-corner-all ui-corner-top" )
+ 			.addClass( "ui-corner-bottom" );
+ 	});
+ 
+ 
+ 	$(document).ready(function(){
+ 		$("#featured").tabs({fx:{opacity: "toggle"}}).tabs("rotate", 4000, true);
+ 	});
+ $(function() {
+ 		function log( message ) {
+ 			$( "<div/>" ).text( message ).prependTo( "#log" );
+ 			$( "#log" ).scrollTop( 0 );
+ 		}
+ 
+ 		$( "#searchSuggest" ).autocomplete({
+ 			source: function( request, response ) {
+ 				$.ajax({
+ 					url: "/molecule/nameSearch",
+ 					dataType: "json",
+ 					data: {
+ 						name: request.term
+ 					},
+ 					success: function( data ) {
+ 						
+ 						response( data);
+ 					}
+ 					
+ 				});
+ 			},
+ 			minLength: 2,
+ 			select: function( event, ui ) {
+ 				log( ui.item ?
+ 					"Selected: " + ui.item.label :
+ 					"Nothing selected, input was " + this.value);
+ 				window.open('/molecule/query?afcsid='+ui.item.value);
+ 			},
+ 			open: function() {
+ 				$( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+ 			},
+ 			close: function() {
+ 				$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+ 			}
+ 		});
+ 	});
+ 
+ 	$(function(){
+         $( "#searchSuggest" ).autocomplete('widget').css('z-index', 9999);
+         return false;
+     });
+ 
+ 	$(document).ready(function(){
+ 	    $('#tweetFeed').jTweetsAnywhere({
+ 	        searchParams: ['q=from:reactome OR from:ImmunityCP OR from:NatRevImmunol OR from:JCellBiol OR from:nigms OR from:AvantiLipids OR from:asmsnews OR from:GlycomicsJourna'],
+ 	        count: 2,
+ 	        showTweetFeed: {
+ 	            showProfileImages: true,
+ 	            showUserScreenNames: true,
+ 	            showUserFullNames: true,
+ 	            showActionReply: true,
+ 	            showActionRetweet: true,
+ 	            showActionFavorite: true
+ 	        },
+ 	        showTweetFeed: {
+ 	        paging: { mode: 'prev-next' }
+ 	    }
+ 	    });
+ 	});
+ 
+ 	   $(document).ready(function() {
+ 	        if(!$('#myCanvas').tagcanvas({
+ 	          textColour: '#ff0000',
+ 			  outlineMethod:'color',
+ 	          outlineColour: '#FF9900',
+ 			  
+ 			  
+ 	          reverse: true,
+ 	          depth: 0.8,
+ 			  initial:[0.2,-0.3],
+ 	          maxSpeed: 0.05,
+ 			  minSpeed:0.01,
+ 			  freezeActive:true,
+ 			  freezeDecel:true,
+ 			  wheelZoom:false,
+ 	        },'tags')) {
+ 	          // something went wrong, hide the canvas container
+ 	          $('#myCanvasContainer').hide();
+ 	        }
+ 	      });
+ 
+ 		  
+ 	   $(document).ready(function()
+ 	   {
+ 	   	// Make sure to only match links to wikipedia with a rel tag
+ 	   	$('#article\\[1\\]').qtip({
+ 	   			content: {
+ 	   				// Set the text to an image HTML string with the correct src URL to the loading image you want to use
+ 	   				text: "<p>We found upregulation of expression of the microRNA miR-155 in primary effector and effector memory CD8-plus  T cells, but low miR-155 expression in naive and central memory cells. Antiviral CD8-plus  T cell responses and viral clearance were impaired in miR-155-deficient mice, and this defect was intrinsic to CD8-plus  T cells, as miR-155-deficient CD8-plus  T cells mounted greatly diminished primary and memory responses. Conversely, miR-155 overexpression augmented antiviral CD8-plus  T cell responses in vivo. Gene-expression profiling showed that miR-155-deficient CD8-plus  T cells had enhanced type I interferon signaling and were more susceptible to interferon's antiproliferative effect. ...</p>",
+ 	   				/*ajax: {
+ 	   					url:$('#article\\[1\\]').attr('rel'),
+ 	   					type: 'GET', // POST or GET
+ 	   			data: {}, // Data to pass along with your request
+ 	   			success: function(data, status) {
+ 	   				// Process the data
+ 	    
+ 	   				// Set the content manually (required!)
+ 	   				this.set('content.text', data);
+ 	   			}},*/
+ 	   				title: {
+ 	   					text: 'Abstract - ' + $('#article\\[1\\]').text(), // Give the tooltip a title using each elements text
+ 	   					button: true}
+ 	   				
+ 	   			},
+ 	   			position: {
+ 	   				at: 'bottom right', // Position the tooltip above the link
+ 	   				my: 'top left',
+ 	   				viewport: $(window), // Keep the tooltip on-screen at all times
+ 	   				effect: false // Disable positioning animation
+ 	   			},
+ 	   			show: {
+ 	   				event: 'mouseenter',
+ 	   				solo: true // Only show one tooltip at a time
+ 	   			},
+ 	   			hide: 'unfocus',
+ 	   			style: {
+ 	   				classes: 'ui-tooltip-wiki ui-tooltip-tipped ui-tooltip-shadow blue'
+ 	   			}
+ 	   		})
+ 
+ 	    
+ 	   	// Make sure it doesn't follow the link when we click it
+ 	   	//.click(function(event) { event.preventDefault(); });
+ 	   	
+ 	   });
+ 	   // Create the tooltips only on document load
+ 	   $(document).ready(function()
+ 	   {
+ 	   	// Make sure to only match links to wikipedia with a rel tag
+ 	   	$('#article\\[2\\]').qtip({
+ 	   			content: {
+ 	   				// Set the text to an image HTML string with the correct src URL to the loading image you want to use
+ 	   				text: "<p>MicroRNAs (miRNAs) are generated by two-step processing to yield small RNAs that negatively regulate target gene expression at the post-transcriptional level. Deregulation of miRNAs has been linked to diverse pathological processes, including cancer. Recent studies have also implicated miRNAs in the regulation of cellular response to a spectrum of stresses, such as hypoxia, which is frequently encountered in the poorly angiogenic core of a solid tumour. However, the upstream regulators of miRNA biogenesis machineries remain obscure, raising the question of how tumour cells efficiently coordinate and impose specificity on miRNA expression and function in response to stresses. Here we show that epidermal growth factor receptor (EGFR)...</p>",
+ 	   				/*ajax: {
+ 	   					url:$('#article\\[1\\]').attr('rel'),
+ 	   					type: 'GET', // POST or GET
+ 	   			data: {}, // Data to pass along with your request
+ 	   			success: function(data, status) {
+ 	   				// Process the data
+ 	    
+ 	   				// Set the content manually (required!)
+ 	   				this.set('content.text', data);
+ 	   			}},*/
+ 	   				title: {
+ 	   					text: 'Abstract - ' + $('#article\\[2\\]').text(), // Give the tooltip a title using each elements text
+ 	   					button: true}
+ 	   				
+ 	   			},
+ 	   			position: {
+ 	   				at: 'bottom right', // Position the tooltip above the link
+ 	   				my: 'top left',
+ 	   				viewport: $(window), // Keep the tooltip on-screen at all times
+ 	   				effect: false // Disable positioning animation
+ 	   			},
+ 	   			show: {
+ 	   				event: 'mouseenter',
+ 	   				solo: true // Only show one tooltip at a time
+ 	   			},
+ 	   			hide: 'unfocus',
+ 	   			style: {
+ 	   				
+ 	   				classes: 'ui-tooltip-wiki ui-tooltip-tipped ui-tooltip-shadow blue'
+ 	   			}
+ 	   		})
+ 
+ 	    
+ 	   	// Make sure it doesn't follow the link when we click it
+ 	   	//.click(function(event) { event.preventDefault(); });
+ 	   	
+ 	   });
+ 
+ 	   // Create the tooltips only on document load
+ 	   $(document).ready(function()
+ 	   {
+ 	   	// Make sure to only match links to wikipedia with a rel tag
+ 	   	$('#article\\[3\\]').qtip({
+ 	   			content: {
+ 	   				// Set the text to an image HTML string with the correct src URL to the loading image you want to use
+ 	   				text: "<p>Mitochondria, the powerhouses of our cells, are remnants of a eubacterial endosymbiont. Notwithstanding the evolutionary time that has passed since the initial endosymbiotic event, mitochondria have retained many hallmarks of their eubacterial origin. Recent studies have indicated that during perturbations of normal homeostasis, such as following acute trauma leading to massive necrosis and release of mitochondria, the immune system might mistake symbiont for enemy and initiate an inappropriate immune response. The innate immune system is the first line of defense against invading microbial pathogens, and as such is the primary suspect in the recognition of mitochondria-derived danger-associated molecular patterns and initiation of an aberrant response. Conversely, innate immune mechanisms are also central to noninflammatory clearance of innocuous agents. Here we investigated the role of a central humoral component of innate immunity, the lectin pathway of complement, in recognition of mitochondria in vitro and in vivo. We found that the soluble pattern recognition molecules, mannan-binding lectin (MBL), L-ficolin, and M-ficolin, were able to recognize mitochondria. Furthermore, MBL in complex with MBL-associated serine protease 2 (MASP-2) was able to activate the lectin pathway and deposit C4 onto mitochondria, suggesting that these molecules are involved either in homeostatic clearance of mitochondria or in induction of untoward inflammatory reactions. We found that following mitochondrial challenge, C3 was consumed in vivo in the absence of overt inflammation, indicating a potential role of complement in noninflammatory clearance of mitochondria. Thus, we report here the first indication of involvement of the lectin pathway in mitochondrial immune handling.</p>",
+ 	   				/*ajax: {
+ 	   					url:$('#article\\[1\\]').attr('rel'),
+ 	   					type: 'GET', // POST or GET
+ 	   			data: {}, // Data to pass along with your request
+ 	   			success: function(data, status) {
+ 	   				// Process the data
+ 	    
+ 	   				// Set the content manually (required!)
+ 	   				this.set('content.text', data);
+ 	   			}},*/
+ 	   				title: {
+ 	   					text: 'Abstract - ' + $('#article\\[3\\]').text(), // Give the tooltip a title using each elements text
+ 	   					button: true}
+ 	   				
+ 	   			},
+ 	   			position: {
+ 	   				at: 'bottom right', // Position the tooltip above the link
+ 	   				my: 'top left',
+ 	   				viewport: $(window), // Keep the tooltip on-screen at all times
+ 	   				effect: false // Disable positioning animation
+ 	   			},
+ 	   			show: {
+ 	   				event: 'mouseenter',
+ 	   				solo: true // Only show one tooltip at a time
+ 	   			},
+ 	   			hide: 'unfocus',
+ 	   			style: {
+ 	   				classes: 'ui-tooltip-wiki ui-tooltip-tipped ui-tooltip-shadow blue'
+ 	   			}
+ 	   		})
+ 
+ 	    
+ 	   	// Make sure it doesn't follow the link when we click it
+ 	   	//.click(function(event) { event.preventDefault(); });
+ 	   	
+ 	   });
+   </script>
+  </head>
+  <body>
+   <script>
+    // perform JavaScript after the document is scriptable.
+ 
+ 	$(function() {
+ 		 $( "#tabs" ).tabs(); //Think it initializes the tab, the $( "#tabs" ).tabs('select', 0); doesn't work for initializing, tabs disappear.
+ 		 $( "#tabs" ).tabs('select', 0);	//Select the first tab, for some reason select 2nd tab by default.
+ 		$( ".tabs-bottom > *" )
+ 			.removeClass( "ui-corner-all ui-corner-top" )
+ 			.addClass( "ui-corner-bottom" );
+ 	});
+ 
+ 
+ 	$(document).ready(function(){
+ 		$("#featured").tabs({fx:{opacity: "toggle"}}).tabs("rotate", 2000, true);
+ 	});
+ 	$(function() {
+ 		function log( message ) {
+ 			$( "<div/>" ).text( message ).prependTo( "#log" );
+ 			$( "#log" ).scrollTop( 0 );
+ 		}
+ 
+ 		$( "#searchSuggest" ).autocomplete({
+ 			source: function( request, response ) {
+ 				$.ajax({
+ 					url: "/molecule/nameSearch",
+ 					dataType: "json",
+ 					data: {
+ 						name: request.term
+ 					},
+ 					success: function( data ) {
+ 						
+ 						response( data);
+ 					}
+ 				});
+ 			},
+ 			minLength: 2,
+ 			select: function( event, ui ) {
+ 				log( ui.item ?
+ 					"Selected: " + ui.item.label :
+ 					"Nothing selected, input was " + this.value);
+ 				window.open('/molecule/query?afcsid='+ui.item.value);
+ 			},
+ 			open: function() {
+ 				$( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+ 			},
+ 			close: function() {
+ 				$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+ 			}
+ 		});
+ 	});
+ 
+ 	$(function(){
+         $( "#searchSuggest" ).autocomplete('widget').css('z-index', 9999);
+         return false;
+     });
+   </script>
+   <table border="0" cellpadding="0" cellspacing="0" height="53" width="100%">
+    <tbody>
+     <tr>
+      <td align="left" height="52" valign="middle" width="200">
+       <a href="/">
+        <img alt="signaling gateway home" border="0" src="/molecule/jsp/rsc/img/logo-new.png"/>
+       </a>
+      </td>
+      <td align="right" cellpadding="100" height="20" valign="middle" width="200">
+       <div class="ui-widget">
+        <img alt="" src="/molecule/jsp/rsc/img/search.png" valign="middle"/>
+        <label for="searchSuggest">
+        </label>
+        <input id="searchSuggest" size="25" type="text"/>
+       </div>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <script src="/molecule/jsp/rsc/js/jquery-1.7.2.min.js">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jquery-ui-1.8.23.custom.min.js">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jquery.jtweetsanywhere-1.3.1.js">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jtweetsanywhere-de-1.3.1.js" type="text/javascript">
+   </script>
+   <script src="/molecule/jsp/rsc/js/jquery.tagcanvas.min.js" type="text/javascript">
+   </script>
+   <script src="http://platform.twitter.com/anywhere.js?id=APIKey&amp;v=1" type="text/javascript">
+   </script>
+   <script src="http://craigsworks.com/projects/qtip2/packages/latest/jquery.qtip.min.js" type="text/javascript">
+   </script>
+   <link href="http://craigsworks.com/projects/qtip2/packages/latest/jquery.qtip.min.css" rel="stylesheet" type="text/css"/>
+   <link href="/molecule/jsp/rsc/css/slider.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/molecule/jsp/rsc/css/jquery-ui-blitzer-theme.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/molecule/jsp/rsc/css/jquery.jtweetsanywhere-1.3.1.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <link href="/molecule/jsp/rsc/css/megamenu.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <link href="/molecule/jsp/rsc/css/style.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!-- Menu -->
+   <div class="wrapper_menu_full menu_light_theme">
+    <!-- BEGIN MENU WRAPPER -->
+    <ul class="menu menu_red">
+     <!-- BEGIN MENU -->
+     <li>
+      <a class="nodrop" href="/molecule/">
+       <strong>
+        Home
+       </strong>
+      </a>
+      <!-- Begin Home Item -->
+     </li>
+     <!-- End Home Item -->
+     <li>
+      <a class="nodrop" href="/molecule/list;jsessionid=a1fc435fded12ec703e763f353c2437051c621ad9ee51bac0c8cb982a8d13212">
+       <strong>
+        Browse
+       </strong>
+      </a>
+      <!-- Begin 5 columns Item -->
+     </li>
+     <!-- End 5 columns Item -->
+     <li>
+      <a class="drop" href="#">
+       <strong>
+        Search
+       </strong>
+      </a>
+      <!-- Begin 4 columns Item -->
+      <div class="dropdown_2columns">
+       <!-- Begin 4 columns container -->
+       <div class="col_2 firstcolumn">
+        <h3>
+         Search Features
+        </h3>
+        <div class="col_2 firstcolumn">
+         <p class="help">
+          <a href="/molecule/search;jsessionid=a1fc435fded12ec703e763f353c2437051c621ad9ee51bac0c8cb982a8d13212">
+           <strong>
+            Basic Search:
+           </strong>
+          </a>
+          Search can be based on name/synonym, Molecule Page IDs or IDs from external databases such as GenBank and UniProt.
+         </p>
+         <p class="help">
+          <a href="/molecule/dataMining;jsessionid=a1fc435fded12ec703e763f353c2437051c621ad9ee51bac0c8cb982a8d13212">
+           <strong>
+            Advanced Search:
+           </strong>
+          </a>
+          Retrieves information from the Molecule Pages database on molecule states, state transitions and functions.
+         </p>
+        </div>
+       </div>
+      </div>
+      <!-- End 4 columns container -->
+     </li>
+     <!-- End 4 columns Item -->
+     <li>
+      <a class="nodrop" href="/molecule/jsp/molpage/aboutus.jsp">
+       <strong>
+        About Us
+       </strong>
+      </a>
+      <!-- Begin Home Item -->
+     </li>
+     <!-- End Home Item -->
+     <li class="right">
+      <a class="nodrop" href="/molecule/login;jsessionid=a1fc435fded12ec703e763f353c2437051c621ad9ee51bac0c8cb982a8d13212">
+       <strong>
+        Login
+       </strong>
+      </a>
+      <!-- Begin 1 column Item -->
+     </li>
+     <li class="right">
+      <a class="drop" href="#">
+       <strong>
+        Contact
+       </strong>
+      </a>
+      <!-- Begin Contact Item -->
+      <div class="dropdown_4columns align_right">
+       <!-- Begin right aligned container -->
+       <div class="col_2 firstcolumn">
+        <h3>
+         Contact Us
+        </h3>
+        <p>
+         Please direct all inquiries to
+         <br/>
+         webmaster@signaling-gateway.org
+        </p>
+        <!--  <p>Please fill in the following form to contact us</p>  <div class="contact_form">
+                     
+                         <div class="message">
+                             <div id="alert"></div>
+                         </div>
+                         
+                         <form method="post" action="js/sendmail.php" id="contactForm">
+                         
+                             <label for="name">Name<span class="required"> *</span></label>
+                             <input name="name" type="text" id="name" size="30" value="" autocomplete="off" /> 
+                             
+                             <br />
+                             <label for="email">Email<span class="required"> *</span></label>
+                             <input name="email" type="text" id="email" size="30" value="" autocomplete="off" />
+                             
+                             <br />
+                             <label for="message">Message<span class="required"> *</span></label>
+                             <textarea name="message" cols="40" rows="3"  id="message"></textarea>
+                                 
+                             <p class="special"><label for="last">Don't fill this in :</label><input type="text" name="last" value="" id="last" /></p>
+                             
+                             <div class="form_buttons">
+                             <input type="submit" class="button" id="submit" value="Submit" />
+                             <input type="reset" class="button" id="reset" value="Reset" />
+                             </div>
+                         
+                         </form>
+                     <h3>Find us on social networks</h3>
+                     <ul class="social">
+                         <li><a href="#"><img src='/molecule/jsp/rsc/img/twitter.png' alt="" /><span>Twitter</span></a></li>
+                         <li><a href="#"><img src='/molecule/jsp/rsc/img/facebook.png' alt="" /><span>Facebook</span></a></li>
+                         <li><a href="#"><img src='/molecule/jsp/rsc/img/rss.png' alt="" /><span>RSS Feed</span></a></li>
+                             </ul></div>-->
+       </div>
+       <!-- 	<div class="col_2">
+                 
+ 					<h3>We are located in the Bioengineering building at UC San Diego Campus</h3>
+                     
+                 
+                     <img class="inline_img" width="300" height="300" src="/molecule/jsp/rsc/img/map.jpg" alt="">
+                    
+                 </div>-->
+      </div>
+      <!-- End right aligned container -->
+     </li>
+     <!-- End Contact Item -->
+     <!-- end if (showLogoutButton) ; if logout button is not there that means you are not logged in 
+        hence don't show menu, also not haivng this gives some weird excpetion with isDeveloper etc-->
+    </ul>
+    <!-- END MENU -->
+   </div>
+   <!-- END MENU WRAPPER -->
+   <div class="content-block constrain-outer" style="width:1100px;height:1050px;">
+    <div class="sci-page" id="sci-bd">
+     <div class="sci-container" id="page">
+      <div class="sci-cn-8">
+       <div class="sci-i-feature">
+        <div id="featured">
+         <ul class="ui-tabs-nav">
+          <li class="ui-tabs-nav-item ui-tabs-selected" id="nav-fragment-1">
+           <a href="#fragment-1">
+            <img alt="" src="/molecule/jsp/rsc/img/image1-small.png"/>
+            <span>
+             Featured Book
+            </span>
+           </a>
+          </li>
+          <li class="ui-tabs-nav-item" id="nav-fragment-2">
+           <a href="#fragment-2">
+            <img alt="" src="/molecule/jsp/rsc/img/image2-small.png"/>
+            <span>
+             Featured Article
+            </span>
+           </a>
+          </li>
+          <li class="ui-tabs-nav-item" id="nav-fragment-3">
+           <a href="#fragment-3">
+            <img alt="" src="/molecule/jsp/rsc/img/image3-small.jpg"/>
+            <span>
+             Featured Database
+            </span>
+           </a>
+          </li>
+          <li class="ui-tabs-nav-item" id="nav-fragment-4">
+           <a href="#fragment-4">
+            <img alt="" src="/molecule/jsp/rsc/img/image4-small.png"/>
+            <span>
+             ATF2 Pathway
+            </span>
+           </a>
+          </li>
+         </ul>
+         <!-- First Content -->
+         <div class="ui-tabs-panel" id="fragment-1" style="">
+          <img alt="" src="/molecule/jsp/rsc/img/image1.png"/>
+          <div class="info">
+           <h2>
+            <a href="http://link.springer.com/book/10.1007/978-1-4614-4370-4/page/1" target="_blank">
+             Book cites Molecule Pages 0ver 130 times
+            </a>
+           </h2>
+           <p>
+            Intracellular Signaling Mediators in the Circulatory and Ventilatory Systems, Authors: Marc Thiriet
+            <a href="http://link.springer.com/book/10.1007/978-1-4614-4370-4/page/1" target="_blank">
+             <font color="FF9900">
+              Read more
+             </font>
+            </a>
+           </p>
+          </div>
+         </div>
+         <!-- Second Content -->
+         <div class="ui-tabs-panel ui-tabs-hide" id="fragment-2" style="">
+          <img alt="" src="/molecule/jsp/rsc/img/image2.png"/>
+          <div class="info">
+           <h2>
+            <a href="http://www.cell.com/abstract/S0092-8674(13)00348-6" target="_blank">
+             Key Regulator of Liver Regeneration
+            </a>
+           </h2>
+           <p>
+            A Direct In Vivo RNAi Screen Identifies MKK4 as a Key Regulator of Liver Regeneration Cell, Volume 153, Issue 2, Pages 389-401
+            <a href="http://www.cell.com/abstract/S0092-8674(13)00348-6">
+             <font color="FF9900">
+              Read more
+             </font>
+            </a>
+           </p>
+          </div>
+         </div>
+         <!-- Third Content -->
+         <div class="ui-tabs-panel ui-tabs-hide" id="fragment-3" style="">
+          <img alt="" src="/molecule/jsp/rsc/img/image3.jpg"/>
+          <div class="info">
+           <h2>
+            CMAP database
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23661693" target="_blank">
+            </a>
+           </h2>
+           <p>
+            With the Complement Map Database (CMAP), we have created a novel and easily accessible research tool
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23661693" target="_blank">
+             <font color="FF9900">
+              Read more
+             </font>
+            </a>
+           </p>
+          </div>
+         </div>
+         <!-- Fourth Content -->
+         <div class="ui-tabs-panel ui-tabs-hide" id="fragment-4" style="">
+          <img alt="" src="/molecule/jsp/rsc/img/image4.png"/>
+          <div class="info">
+           <h2>
+            <a href="/molecule/query?afcsid=A000347" target="_blank">
+             ATF2
+            </a>
+           </h2>
+           <p>
+            Activating transcription factor 2 (ATF2) is a basic leucine zipper-containing transcription factor and DNA damage response protein, member of the activating protein-1 (AP-1) transcription factor superfamily.
+            <a href="/molecule/query?afcsid=A000347" target="_blank">
+             <font color="FF9900">
+              Read more
+             </font>
+            </a>
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="sci-block sci-container">
+        <ul class="home-boxes">
+         <li class="drop-shadow homeboxleft">
+          <ul class="inner-box content-box">
+           <li>
+            <h2 class="sub-heading-home">
+             EVENTS
+            </h2>
+           </li>
+           <ul class="conf-calendar" style="list-style-type:none;">
+            <br/>
+            <li class="">
+             <p>
+              <a href="http://www.grc.org/programs.aspx?year=2013&amp;program=grs_cellco" target="_blank">
+               Gordon Research Seminar: Cell Contact &amp; Adhesion - Intercellular Interactions in Development and Disease
+              </a>
+              <br/>
+              June 1-2, 2013
+              <br/>
+              Lucca, Italy
+             </p>
+            </li>
+            <li class="">
+             <p>
+              <a href="http://www.faseb.org/Science-Research-Conferences/Biology-Conferences/Future-ResearchConferences.aspx" target="_blank">
+               FASEB Science Research Conference: Regulation and Function of Small GTPases
+              </a>
+              <br/>
+              June 2-7, 2013
+              <br/>
+              Steamboat Springs, CO, United Kingdom
+             </p>
+            </li>
+            <li class="more">
+             <p>
+              <a href="http://www.signaling-gateway.org/update/conferences/">
+               more events
+              </a>
+             </p>
+            </li>
+           </ul>
+          </ul>
+         </li>
+        </ul>
+        <ul class="home-boxes">
+         <li class="drop-shadow homeboxright">
+          <ul class="content-box inner-box">
+           <li class="">
+            <h2 class="sub-heading-home">
+             WHAT'S NEW
+            </h2>
+           </li>
+           <ul class="conf-calendar" style="list-style-type:none;">
+            <br/>
+            <li>
+             <p>
+              <a href="#">
+               Citations
+              </a>
+              <br/>
+              Molecule Pages are cited by scientists worldwide
+              <a href="http://scholar.google.com/scholar?start=0&amp;q=UCSD++Nature+%22Molecule+Pages%22&amp;hl=en&amp;as_sdt=1%2C5" target="_blank">
+               (See Google Scholar)
+              </a>
+              . The Pages have been cited over 135 times in a recent book, Intracellular Signaling Mediators in the Circulatory and Ventilatory Systems.
+              <a href="http://link.springer.com/book/10.1007/978-1-4614-4370-4/page/1">
+               Read More
+              </a>
+             </p>
+            </li>
+            <li>
+             <p>
+              <a href="#">
+               Journal listed on e-scholarship
+              </a>
+              <br/>
+              As part of our on-going efforts to reach out to a wider scientific audience, our journal has been recently listed on
+              <a href="http://www.escholarship.org/uc/molecule_pages" target="_blank">
+               eScholarship
+              </a>
+              , hosted by
+              <a href="http://www.cdlib.org/" target="_blank">
+               California Digital Library (CDL)
+              </a>
+             </p>
+            </li>
+           </ul>
+          </ul>
+         </li>
+        </ul>
+       </div>
+       <div class="drop-shadow">
+        <ul class="content-box calendar">
+         <li class="inner-box">
+          <h2 class="sub-heading-home">
+           HIGHLIGHTED ARTICLES
+          </h2>
+          <ul class="links research-highlights">
+           <li>
+            <p class="articles">
+             <img align="left" alt="" class="list-image" height="30" src="/molecule/jsp/rsc/img/research_library.jpg" width="30"/>
+             <a href="http://www.nature.com/ni/journal/vaop/ncurrent/abs/ni.2576.html" id="article[1]" rel="http://localhost/sig/tooltipTest.html" target="_blank">
+              The microRNA miR-155 controls CD8+ T cell ...
+             </a>
+             <br/>
+             Donald T Gracias
+             <em>
+              et al.
+             </em>
+             Nature Immunology.
+            </p>
+           </li>
+           <p class="articles">
+            <img align="left" alt="" class="list-image" height="30" src="/molecule/jsp/rsc/img/research_library.jpg" width="30"/>
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/23636329" id="article[2]" rel="http://localhost/sig/tooltipTest.html" target="_blank">
+             EGFR modulates microRNA maturation in response to ...
+            </a>
+            <br/>
+            Shen J
+            <em>
+             et al.
+            </em>
+            Nature.
+           </p>
+          </ul>
+         </li>
+         <li>
+          <p class="articles">
+           <img align="left" alt="" class="list-image" height="30" src="/molecule/jsp/rsc/img/research_library.jpg" width="30"/>
+           <a href=" http://www.ncbi.nlm.nih.gov/pubmed/23378531" id="article[3]" target="_blank">
+            Mitochondria and the lectin pathway of complement.
+           </a>
+           <br/>
+           Brinkmann CR
+           <em>
+            et al.
+           </em>
+           J Biol Chem.
+          </p>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <!-- sci-cn-8 end-->
+      <div class="sci-gutter">
+      </div>
+      <div class="sci-cn-6">
+       <!--wrap another div here around your content before you add more content-->
+       <div class="sci-block" id="sci-sig">
+        <div tab-list-loud="">
+         <div class="tabs-bottom" id="tabs" style="overflow:hidden">
+          <ul>
+           <li>
+            <a href="#tabs-1">
+             Molecule Pages Journal
+            </a>
+           </li>
+           <li>
+            <a href="#tabs-2">
+             AfCS Data
+            </a>
+           </li>
+           <!-- <li><a href="#tabs-3">AfCS Data Center</a></li>
+ 							<li><a href="#tabs-4">Signaling Update</a></li> -->
+          </ul>
+          <div id="tabs-1">
+           <div class="shadow" style="float: left;overflow:hidden;">
+            <img alt="" src="/molecule/jsp/rsc/img/pdf.png"/>
+           </div>
+           <div class="recntlyPublished" style="float:left; margin-left:10px;">
+            <ul style="list-style-type: none;">
+             <li class="more">
+              <a class="greenlink" href="/molecule/jsp/molpage/advancedaccess.jsp" taget="_blank">
+               Advanced Access
+              </a>
+             </li>
+             <li class="more">
+              <a class="greenlink" href="/molecule/jsp/molpage/volume2Issue2.jsp" taget="_blank">
+               Vol 2, Issue 2, July-Dec 2013
+              </a>
+             </li>
+             <li class="more">
+              <a class="greenlink" href="/molecule/jsp/molpage/volume2Issue1.jsp" taget="_blank">
+               Vol 2, Issue 1, Jan-June 2013
+              </a>
+             </li>
+             <li class="more">
+              <a class="greenlink" href="/molecule/jsp/molpage/volume1Issue2.jsp" taget="_blank">
+               Vol 1, Issue 2, July-Dec 2012
+              </a>
+             </li>
+             <li class="more">
+              <a class="greenlink" href="/molecule/jsp/molpage/volume1Issue1.jsp" taget="_blank">
+               Vol 1, Issue 1, Jan-June 2012
+              </a>
+             </li>
+             <li class="more">
+              <a href="#" style="color:black">
+               Online ISSN:2328-8124
+              </a>
+             </li>
+             <!-- <li class="more">
+ 								<a class="greenlink" taget="_blank" href="http://www.escholarship.org/uc/molecule_pages" >
+ 								 eScholarship (California Digital Library)
+ 								 </a>
+ 								 <img src="/molecule/jsp/rsc/img/escholarship.png" alt="">
+ 								</li> -->
+             <li class="more">
+              <a href="/molecule/jsp/rsc/pdf/Editorial_Vol1_Issue1.pdf" style="color:blue" target="_blank">
+               Editor-In-Chief: John Lambris
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+          <div id="tabs-2">
+           <p>
+            Tab-delimited files relating the Molecule Pages to protein accession and NCBI Gene 
+ 					ID are available for ftp download. 
+ 					We also provide text files with name, synonym, and sequence information.
+           </p>
+           <ul class="recntlyPublished">
+            <li>
+             <a class="greenlink" href="http://www.signalinggateway.org/data/Data.html" target="_blank">
+              AfCS Data Center
+             </a>
+            </li>
+            <li>
+             <a class="greenlink" href="http://www.signalinggateway.org/data/plasmid/Plasmid.cgi" target="_blank">
+              AfCS Plasmid Database
+             </a>
+            </li>
+            <li>
+             <a class="greenlink" href="http://www.signalinggateway.org/molecule/maps" target="_blank">
+              Signaling Maps
+             </a>
+            </li>
+            <li>
+             <a class="greenlink" href="http://www.signalinggateway.org/data/antibody/cgi-bin/targets.cgi" target="_blank">
+              Microscopy Database
+             </a>
+            </li>
+            <li>
+             <a class="greenlink" href="http://www.signalinggateway.org/data/afcs.html">
+              About the AfCS
+             </a>
+            </li>
+            <li>
+             <a class="greenlink" href="ftp://www.signalinggateway.org/pub/" target="_blank">
+              Various Data (ftp download)
+             </a>
+            </li>
+            <ul>
+            </ul>
+           </ul>
+          </div>
+          <!-- 
+ 					<div id="tabs-3">
+ 					<img src="/molecule/jsp/rsc/img/data-center.png" width="50" height="50" class="img_left imgshadow_light" alt="AfCS Data Center">
+ 					<p>This is an archive of data collected by the Alliance for Cellular Signaling from 2000-2005. The Plasmid Database was maintained through 2011.</p>
+ 					<div><img src="/molecule/jsp/rsc/img/yeast.gif" class="shadow img_left" alt="Yeast-2 hybrid">	</div>
+ 					<div  style="float:left; margin-left:1px;">
+ 					<ul class="recntlyPublished">
+ 						<li ><a class="greenlink" href=" http://www.signaling-gateway.org/data/Data.html" >AfCS Data Center </a> </li>
+ 						 <li ><a class="greenlink" href="http://www.signalinggateway.org/data/afcs.html" >About the AfCS </a></li>
+ 						 <li ><a class="greenlink" href="http://www.signaling-gateway.org/data/plasmid/" >AfCS Plasmid Database </a></li>
+ 						 
+ 						 <ul>
+ 					</div>						
+ 					</div>
+ 					<div id="tabs-4">
+ 						<img src="/molecule/jsp/rsc/img/sigupdate.png" width="50" height="50" class="img_left imgshadow_light" alt="Signaling Update">
+ 						<p>An archive of the Signaling Update articles and news provided by Nature Journal, from 2002 through 2011.
+ 						<ul class="recntlyPublished" style="list-style-type: none;">
+ 							<li>&nbsp;&nbsp;&nbsp;&nbsp;
+ 							<a class="greenlink"  href="http://www.signaling-gateway.org/update/updates/updatecurrent.html" >Updates </a></li>
+ 							<li >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 							<a class="greenlink"  href=" http://www.signaling-gateway.org/update/featured/" >Featured Articles </a>
+ 							</li>
+ 						</ul>
+ 						</p>
+ 					</div> -->
+         </div>
+        </div>
+       </div>
+       <!-- End tab container -->
+       <div class="sci-block sci-container">
+        <div class="homePageH2">
+         <a href="">
+          MOLECULE PAGES
+         </a>
+        </div>
+        <div style="float:left;">
+         <p>
+          The UCSD Signaling Gateway Molecule Pages provide essential information on over thousands of proteins involved in 
+ 				cellular signaling. Each Molecule Page contains regularly updated information derived from public data sources as 
+ 				well as sequence analysis, references and links to other databases. Published Molecule Pages contain an 
+ 				expert-authored review article that describes the biological activity, regulation and localization of the 
+ 				protein.
+         </p>
+        </div>
+       </div>
+       <div class="sci-block sci-container">
+        <div class="homePageH2">
+         <a href="#">
+          RECENTLY PUBLISHED
+         </a>
+        </div>
+        <div class="centred" id="myCanvasContainer">
+         <canvas height="200" id="myCanvas" width="400">
+          <p>
+           Anything in here will be replaced on browsers that support the canvas element
+          </p>
+         </canvas>
+        </div>
+        <div id="tags">
+         <ul>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A002549">
+            WAVE2
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004276">
+            Mannose/mannan-binding lectin
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A005186">
+            Leukocyte surface antigen CD47
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A001718">
+            p38 beta MAP kinase
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A002333">
+            Tsh receptor
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004256">
+            Complement factor H
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004240">
+            Complement C5
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004228">
+            Complement C1q
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A003137">
+            Cdc7l1
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004235">
+            Complement C3
+           </a>
+          </li>
+          <li>
+           <a class="greenlink" href="/molecule/query?afcsid=A004266">
+            L-Ficolin
+           </a>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <div id="tweetFeed" style="margin-bottom: 20px;">
+        <div class="tweet-heading">
+         SIGNALING CHATTER
+         <a href="javascript:void(0);">
+          <img alt="signaling gateway home" border="0" height="30" src="/molecule/jsp/rsc/img/chatter-3.gif" width="35"/>
+         </a>
+        </div>
+       </div>
+      </div>
+      <!--End sci-cn-6-->
+     </div>
+     <!--class="sci-container"-->
+    </div>
+    <!--class="sci-page"-->
+   </div>
+   <!--class="content-block constrain-outer"-->
+   <table border="0" cellpadding="0" cellspacing="0" height="48" width="100%">
+    <tbody>
+     <tr>
+      <td align="right" class="supportedBy" height="48" valign="middle" width="200">
+       UCSD Signaling Gateway is supported by:
+       <br/>
+       <img src="/molecule/jsp/rsc/img/NIGMS_logo_fullname_rbg_025.jpg" width="225"/>
+      </td>
+     </tr>
+     <tr>
+      <td align="right" height="18" valign="middle" width="200">
+       <div class="footer" id="ftr">
+        <ul class="journal-details">
+         <li class="last">
+          Signaling Gateway - UCSD Molecule Pages
+         </li>
+        </ul>
+        <ul class="footer-links">
+         <li>
+          <a href="/molecule">
+           Home
+          </a>
+         </li>
+         <li>
+          <a class="greenlink" href="/molecule/jsp/molpage/aboutus.jsp">
+           About Us
+          </a>
+         </li>
+        </ul>
+        <span class="cleardiv">
+         <!-- -->
+        </span>
+       </div>
+      </td>
+     </tr>
+    </tbody>
+   </table>
+  </body>
+ </html>

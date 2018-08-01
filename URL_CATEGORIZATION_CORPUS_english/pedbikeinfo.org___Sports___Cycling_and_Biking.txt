@@ -1,0 +1,1113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Pedestrian &amp; Bicycle Information Center
+   </title>
+   <link href="http://www.pedbikeinfo.org/pbic.css" rel="stylesheet" type="text/css"/>
+   <script src="js/jquery-1.7.2.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function() {      
+      
+     //Execute the slideShow, set 4 seconds for each images
+     slideShow(6000);
+  
+ });
+ 
+ function slideShow(speed) {
+  
+  
+     //append a LI item to the UL list for displaying caption
+     $('ul.slideshow').append('<li id="slideshow-caption" class="caption"><div class="slideshow-caption-container"><h3></h3><p></p></div></li>');
+  
+     //Set the opacity of all images to 0
+     $('ul.slideshow li').css({opacity: 0.0});
+      
+     //Get the first image and display it (set it to full opacity)
+     $('ul.slideshow li:first').css({opacity: 1.0}).addClass('show');
+      
+     //Get the caption of the first image from REL attribute and display it
+     $('#slideshow-caption h3').html($('ul.slideshow li.show').find('img').attr('title'));
+     $('#slideshow-caption p').html($('ul.slideshow li.show').find('img').attr('alt'));
+          
+     //Display the caption
+     $('#slideshow-caption').css({opacity: 1.0, bottom:0});
+ 
+     //Call the gallery function to run the slideshow    
+     var timer = setInterval('gallery("next")',speed);
+      
+    $('ul.slideshow').hover(
+         function () {
+             clearInterval(timer);
+         },     
+         function () {
+             timer = setInterval('gallery("next")',speed);    
+         }
+     );
+      
+ }
+  
+ function gallery(direction) {
+  
+  
+     //if no IMGs have the show class, grab the first image
+     var current = ($('ul.slideshow li.show')?  $('ul.slideshow li.show') : $('#ul.slideshow li:first'));
+  
+     //trying to avoid speed issue
+     if(current.queue('fx').length == 0) {
+  
+         //Get next image, if it reached the end of the slideshow, rotate it back to the first image
+        if (direction == 'next') // select next item
+         var next = ((current.next().length) ? ((current.next().attr('id') == 'slideshow-caption')? $('ul.slideshow li:first') :current.next()) : $('ul.slideshow li:first'));
+     else if (direction == 'prev') // select previous item
+         var next = ((current.prev().length) ? (current.prev()) : $('ul.slideshow li:last').prev());
+     else if (!isNaN(direction)) // if is a number
+         var next = $('ul.slideshow li:eq(' + direction + ')');
+ 		
+         //Get next image caption
+         var title = next.find('img').attr('title'); 
+         var desc = next.find('img').attr('alt');    
+              
+         //Set the fade in effect for the next image, show class has higher z-index
+         next.css({opacity: 0.0}).addClass('show').animate({opacity: 1.0}, 1000);
+          
+         //Hide the caption first, and then set and display the caption
+         $('#slideshow-caption').slideToggle(0, function () { 
+             $('#slideshow-caption h3').html(title); 
+             $('#slideshow-caption p').html(desc); 
+             $('#slideshow-caption').slideToggle(0); 
+         }); 
+      
+         //Hide the current image
+         current.animate({opacity: 0.0}, 1000).removeClass('show');
+  
+     }
+  
+ }
+   </script>
+   <script type="text/javascript">
+    function init() {
+ var defaultSearch = 'Insert search terms here';
+ //add default value to search
+ document.getElementById('sitesearchterm').value=defaultSearch;
+ //when search field gets focus, remove the pre-populated text (if it exists)
+ if (document.addEventListener) { //browser supports addEventListener
+ document.getElementById('sitesearchterm').addEventListener('click',function (e) {
+ if (document.getElementById('sitesearchterm').value==defaultSearch) {
+ document.getElementById('sitesearchterm').value="";
+ }
+ },true);
+ }
+ else if (document.attachEvent) { //browser is IE
+ document.getElementById('sitesearchterm').attachEvent('onclick',function (e) {
+ if (document.getElementById('sitesearchterm').value==defaultSearch)
+ document.getElementById('sitesearchterm').value="";
+ });
+ }
+ }
+ window.onload=init;
+   </script>
+   <script src="/CFIDE/scripts/cfform.js" type="text/javascript">
+   </script>
+   <script src="/CFIDE/scripts/masks.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ 	if (window.ColdFusion) ColdFusion.required['sitesearchterm']=true;
+ /* ]]> */
+   </script>
+   <script type="text/javascript">
+    <!--
+     _CF_checkCFForm_1 = function(_CF_this)
+     {
+         //reset on submit
+         _CF_error_exists = false;
+         _CF_error_messages = new Array();
+         _CF_error_fields = new Object();
+         _CF_FirstErrorField = null;
+ 
+         //form element searchterm required check
+         if( !_CF_hasValue(_CF_this['searchterm'], "TEXT", false ) )
+         {
+             _CF_onError(_CF_this, "searchterm", _CF_this['searchterm'].value, "You must enter a search term or terms.");
+             _CF_error_exists = true;
+         }
+ 
+ 
+         //display error messages and return success
+         if( _CF_error_exists )
+         {
+             if( _CF_error_messages.length > 0 )
+             {
+                 // show alert() message
+                 _CF_onErrorAlert(_CF_error_messages);
+                 // set focus to first form error, if the field supports js focus().
+                 if( _CF_this[_CF_FirstErrorField].type == "text" )
+                 { _CF_this[_CF_FirstErrorField].focus(); }
+ 
+             }
+             return false;
+         }else {
+             return true;
+         }
+     }
+ //-->
+   </script>
+  </head>
+  <body>
+   <div id="outwrap">
+    <div id="wrapper">
+     <script src="http://www.pedbikeinfo.org/js/jquery-1.7.2.min.js" type="text/javascript">
+     </script>
+     <script src="http://www.pedbikeinfo.org/js/PBIC_FAQscript.js" type="text/javascript">
+     </script>
+     <script type="text/javascript">
+      var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-313702-9']);
+   _gaq.push(['_trackPageview']);
+ 
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+     </script>
+     <div id="header">
+      <a href="http://www.pedbikeinfo.org/index.cfm">
+       <span>
+       </span>
+      </a>
+      <!-- <div id="searchbox">Enter search terms...<div id="submitsearch">Search</div></div> -->
+      <div id="headernav">
+       <ul id="headertray">
+        <li>
+         <a href="http://www.pedbikeinfo.org/data/index.cfm">
+          <img border="0" src="http://www.pedbikeinfo.org/images/nav_data.png"/>
+         </a>
+         <ul>
+          <li>
+           <div id="trayboxleft">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/library/library.cfm">
+              Library
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/casestudies.cfm">
+              Case Studies
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/whitepapers.cfm">
+              White Paper Series
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/faq.cfm">
+              Frequently Asked Questions
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/state.cfm">
+              State by State Information
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/international.cfm">
+              International Information
+             </a>
+            </h2>
+           </div>
+           <div id="trayboxright">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/data/factsheet.cfm">
+              Fact Sheets
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_general.cfm">
+              Who's Walking and Bicycling
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/tips.cfm">
+              Safety Guide
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_crash.cfm">
+              Crash Statistics
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_health.cfm">
+              Health Benefits
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_economic.cfm">
+              Economic Benefits
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_environmental.cfm">
+              Environmental Benefits
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/data/factsheet_social.cfm">
+              Social Justice Issues
+             </a>
+            </h3>
+           </div>
+           <div id="traybottomA">
+           </div>
+           <div id="traybottomB">
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <ul id="headertray">
+        <li>
+         <a href="http://www.pedbikeinfo.org/community/index.cfm">
+          <img border="0" src="http://www.pedbikeinfo.org/images/nav_community.png"/>
+         </a>
+         <ul>
+          <li>
+           <div id="trayboxleft">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/walkability.cfm">
+              Rate Your Neighborhood
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/facilities.cfm">
+              Get or Improve Facilities
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/facilities_sidewalks.cfm">
+              Sidewalks
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/facilities_bicycle.cfm">
+              Bicycle Facilities
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/facilities_crossing.cfm">
+              Crossing the Street
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/access.cfm">
+              Improve Access
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/beautify.cfm">
+              Beautify the Neighborhood
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/crime.cfm">
+              Fight Crime
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/drivers.cfm">
+              Deal with Drivers
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/drivers_talkneighbors.cfm">
+              Talk with Your Neighbors
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/drivers_edandenforce.cfm">
+              Educate and Enforce
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/drivers_physicalchange.cfm">
+              Change in Your Streets or Neighborhood
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/whocanhelp.cfm">
+              Who Can Help
+             </a>
+            </h2>
+           </div>
+           <div id="trayboxright">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/organize.cfm">
+              Organizing for Success
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/Organize_coalitions.cfm">
+              Coalitions, Alliances &amp; Partnerships
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/organize_involved.cfm">
+              Get Involved
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/tips.cfm">
+              Safety Tips
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/tips_pedestrian.cfm">
+              Pedestrian Safety
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/tips_bicyclist.cfm">
+              Bicyclist Safety
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/tips_helmet.cfm">
+              Helmets
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/tips_driver.cfm">
+              Driver Safety
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/getstarted.cfm">
+              Start Walking or Biking
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/getstarted_active.cfm">
+              10 Tips for Getting Active
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/getstarted_before.cfm">
+              Before You Start
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/community/getstarted_others.cfm">
+              Get Others Walking
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/to_school.cfm">
+              Bike or Walk to School
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/community/maps.cfm">
+              Walking &amp; Biking Maps
+             </a>
+            </h2>
+           </div>
+           <div id="traybottomA">
+           </div>
+           <div id="traybottomB">
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <ul id="headertray">
+        <li>
+         <a href="http://www.pedbikeinfo.org/planning/index.cfm">
+          <img border="0" src="http://www.pedbikeinfo.org/images/nav_planning.png"/>
+         </a>
+         <ul>
+          <li>
+           <div id="trayboxleft">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/tools.cfm">
+              Planning &amp; Data Collection Tools
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_crashdata.cfm">
+              Crash Data
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_counts.cfm">
+              Counts
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_surveys.cfm">
+              Surveys
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_inventories.cfm">
+              Inventories
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_audits.cfm">
+              Audits
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_secondarydata.cfm">
+              Secondary Data Sources
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/tools_apt.cfm">
+              ActiveTrans Priority Tool
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/analysis.cfm">
+              Performance &amp; Analysis
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/analysis.cfm">
+              Level &amp; Quality of Service
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/analysis.cfm">
+              Intersection Safety Indices
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/pbcat_us/">
+              PBCAT
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/bikecost/">
+              Benefit-Cost Analysis of Bicycle Facilities
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/sample.cfm">
+              Sample Policies &amp; Plans
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/sample_policies.cfm">
+              Sample Policies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/sample_plans.cfm">
+              Sample Plans
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/sample_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/sample_resources.cfm">
+              Resources
+             </a>
+            </h3>
+           </div>
+           <div id="trayboxright">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/funding.cfm">
+              Funding
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/funding_government.cfm">
+              Government
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/funding_non-government.cfm">
+              Non-Government
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/funding_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/funding_resources.cfm">
+              Resources
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/transit.cfm">
+              Linking to Transit
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/transit_access.cfm">
+              Access to Stations/Stops
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/transit_bikes.cfm">
+              Transit Solutions for Bikes
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/transit_planning.cfm">
+              Transit Planning Resources
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/transit_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/transit_resources.cfm">
+              Resources
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Facility Design
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Pedestrian Facilities
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Bicycle Facilities
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Crossings
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Traffic Calming
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities.cfm">
+              Streetscape
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities_designresourceindex.cfm">
+              Design Resource Index
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities_universities.cfm">
+              University Campuses
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/planning/facilities_resources.cfm">
+              Resources
+             </a>
+            </h3>
+           </div>
+           <div id="traybottomA">
+           </div>
+           <div id="traybottomB">
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <ul id="headertray">
+        <li>
+         <a href="http://www.pedbikeinfo.org/training/index.cfm">
+          <img border="0" src="http://www.pedbikeinfo.org/images/nav_training.png"/>
+         </a>
+         <ul>
+          <li>
+           <div id="trayboxleft">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/training/webinars.cfm">
+              Webinars
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/webinars_PBIC_LC.cfm">
+              Livable Communities
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/webinars_FHWA.cfm">
+              Ped Focus Series
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/webinars_PSAP.cfm">
+              PSAP Series
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/webinars_other.cfm">
+              Additional Webinars
+             </a>
+            </h3>
+           </div>
+           <div id="trayboxright">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/training/courses.cfm">
+              University Courses
+             </a>
+            </h2>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/training/gettraining.cfm">
+              In Person Training
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/gettraining_ceu.cfm">
+              CEU &amp; PDH Information
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/gettraining_cost.cfm">
+              Course Costs
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/gettraining_instructors.cfm">
+              Instructors
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/gettraining_references.cfm">
+              Course References
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/training/gettraining_instructorsonly.cfm">
+              For Instructors
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/training/conferences.cfm">
+              Conferences &amp; Events
+             </a>
+            </h2>
+           </div>
+           <div id="traybottomA">
+           </div>
+           <div id="traybottomB">
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+       <ul id="headertray">
+        <li id="rightitem">
+         <a href="http://www.pedbikeinfo.org/programs/index.cfm">
+          <img border="0" src="http://www.pedbikeinfo.org/images/nav_programs.png"/>
+         </a>
+         <ul>
+          <li>
+           <div id="trayboxleft">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement.cfm">
+              Enforcing Laws
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_communityenforce.cfm">
+              What Communities Can Do to Enforce Laws
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_enforcelaws.cfm">
+              What Police Can Do to Enforce Laws
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_modifylaws.cfm">
+              Reviewing and Modifying Laws
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_worklawenforce.cfm">
+              Working with Law Enforcement Officers
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_handleviolators.cfm">
+              Developing Procedures to Handle Violators
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_campaigns.cfm">
+              Implementing Enforcement Campaigns
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_bicyclists.cfm">
+              Aiming Enforcement at Bicyclists
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_motorists.cfm">
+              Aiming Enforcement at Motorists
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_mediarole.cfm">
+              Media's Role in Enforcement
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/enforcement_resources.cfm">
+              Resources
+             </a>
+            </h3>
+           </div>
+           <div id="trayboxright">
+            <h2>
+             <a href="http://www.pedbikeinfo.org/programs/education.cfm">
+              Education
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/education.cfm">
+              Fact Sheets - Pedestrians
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/education.cfm">
+              Fact Sheets - Bikes
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/education_campaigns.cfm">
+              Education Campaigns
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/pedsaferjourney" target="_blank">
+              Ped Safer Journey
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/bicyclesaferjourney" target="_blank">
+              Bicycle Safer Journey
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/education_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/education_resources.cfm">
+              Resources
+             </a>
+            </h3>
+            <h2>
+             <a href="http://www.pedbikeinfo.org/programs/promote.cfm">
+              Promote walking and biking
+             </a>
+            </h2>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_changing.cfm">
+              Changing Values, Perceptions and Behaviors
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_strategies.cfm">
+              Promotion Strategies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_carfree.cfm">
+              Car Free Days
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_bikeshare.cfm">
+              Bike Share Programs
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_casestudies.cfm">
+              Case Studies
+             </a>
+            </h3>
+            <h3>
+             <a href="http://www.pedbikeinfo.org/programs/promote_resources.cfm">
+              Resources
+             </a>
+            </h3>
+           </div>
+           <div id="traybottomA">
+           </div>
+           <div id="traybottomB">
+           </div>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </div>
+     </div>
+     <div id="transitionA">
+     </div>
+     <div id="transitionB">
+     </div>
+     <div id="main">
+      <ul class="slideshow">
+       <li id="ss01">
+        <a href="http://www.pedbikeinfo.org/pdf/PBIC_Brief_AutomatedEnforcement.pdf" target="_blank">
+         <img alt="This new PBIC info brief summarizes the latest research on the safety effects of automated speed and red light enforcement systems." height="320" src="http://www.pedbikeinfo.org/images/slider_AE.jpg" title="Safety effects of automated enforcement systems" width="960"/>
+        </a>
+       </li>
+       <li id="ss02">
+        <a href="http://www.pedbikeinfo.org/pdf/PBIC_AV.pdf" target="_blank">
+         <img alt="Discussion guide provides a framework for discussing key issues surrounding automated and connected vehicles and pedestrian and bicycle safety and mobility." height="320" src="http://www.pedbikeinfo.org/images/slider_AV.jpg" title="Automated vehicles, bicycling, &lt;br /&gt;and walking" width="960"/>
+        </a>
+       </li>
+       <li id="ss03">
+        <a href="http://www.pedbikeinfo.org/pdf/InfoBrief_PBIC_Networks.pdf" target="_blank">
+         <img alt="The latest Info Brief from PBIC and PeopleForBikes defines connected bike networks and explores strategies for improving safety, comfort and access." height="320" src="http://www.pedbikeinfo.org/images/slider_connectedbikenetworks.jpg" title="Info brief&lt;br /&gt;on connected&lt;br /&gt;bike&lt;br /&gt;networks" width="960"/>
+        </a>
+       </li>
+       <!-- <li id="ss05"><a href="https://www.fhwa.dot.gov/environment/bicycle_pedestrian/publications/accessible_shared_streets/fhwahep17096.pdf" target="_blank"><img src="http://www.pedbikeinfo.org/images/slider_FHWAr.jpg" width="960" height="320" title="New guidance for <br />accessible shared streets" alt="This report documents notable <br />practices for planning and designing <br />shared streets with a focus <br />on accessibility."/></a></li> -->
+      </ul>
+      <div class="slideshownavbox">
+       <div class="slideshownav" id="navnext">
+        <a href="javascript:void(0)" onclick="gallery('next')">
+         <span>
+         </span>
+        </a>
+        <p>
+         &gt;&gt;
+        </p>
+       </div>
+       <div class="slideshownav" id="navprev">
+        <a href="javascript:void(0)" onclick="gallery('prev')">
+         <span>
+         </span>
+        </a>
+        <p>
+         &lt;&lt;
+        </p>
+       </div>
+      </div>
+      <form action="site_results.cfm" id="site_search" method="post" onsubmit="return _CF_checkCFForm_1(this)">
+       <div style="width:960px; height: 40px; padding: 0; margin: 20px 0 30px 0; background:#D9FFD9; color:#1d6636; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 1.1em; line-height:2.3em; ">
+        <div style="float: left; width: 320px; height: 40px; text-align: center; padding: 0; margin-right: 5px; color:#f0f0f0; background:#1D6636;">
+         Search the PBIC Website
+        </div>
+        <div style="float: right; width: 90px; text-align: center; height: 40px; padding: 0; color:#f0f0f0; background:#1D6636; ">
+         <input class="sitesearchsubmit" id="submit" name="submit" type="submit" value="Search"/>
+        </div>
+        <input id="sitesearchterm" name="searchterm" onclick="clear" type="text"/>
+       </div>
+      </form>
+      <div id="topics">
+       <p style="text-align: center; color: #1d6636; font-size: 1.2rem; font-weight: 700;">
+        <span style="font-size: 0.8rem; text-transform: uppercase;">
+         Popular Topics
+        </span>
+        <br/>
+        <a href="topics/automatedvehicles.cfm">
+         Automated Vehicles
+        </a>
+        |
+        <a href="topics/bikeshare.cfm">
+         Bike Share
+        </a>
+        |
+        <a href="topics/completestreets.cfm">
+         Complete Streets
+        </a>
+        <br/>
+        <a href="topics/ebikes.cfm">
+         E-Bikes
+        </a>
+        |
+        <a href="topics/equity.cfm">
+         Equity
+        </a>
+        |
+        <a href="topics/lowstress.cfm">
+         Low-Stress Networks
+        </a>
+        |
+        <a href="topics/visionzero.cfm">
+         Vision Zero
+        </a>
+       </p>
+      </div>
+      <div style="float: left; width: 460px; padding: 0 20px 0 0; margin: 10px 0; border-right: 1px outset #cccccc;">
+       <h2>
+        <a href="training/webinars.cfm" style="text-decoration: none;">
+         Join our monthly webinars
+        </a>
+       </h2>
+       <p>
+        PBIC hosts free monthly webinars on a wide range of topics related to walking and bicycling.
+        <a href="training/webinars.cfm">
+         Check out our upcoming schedule and view our archived episodes.
+        </a>
+        <br/>
+        <br/>
+       </p>
+       <h2>
+        <a href="planning/facilities_designresourceindex.cfm" style="text-decoration: none;">
+         Find flexible design guidance
+        </a>
+       </h2>
+       <p>
+        The
+        <a href="planning/facilities_designresourceindex.cfm">
+         Design Resource Index
+        </a>
+        helps agencies navigate different guides, standards and resources for designing walkable, bikeable streets.
+        <br/>
+        <br/>
+       </p>
+      </div>
+      <div style="float: right; width: 460px; padding: 0; margin: 10px 0; ">
+       <!-- <div class="facebookembed" style="float: right; width: 82px; padding-top: 7px;"><iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpedbike&amp;width&amp;layout=button_count&amp;action=like&amp;data-colorscheme=light&amp;data-ref=pbicbox&amp;show_faces=false&amp;share=false&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:21px; width:90px;" allowTransparency="true"></iframe></div>
+ <h2>Latest Facebook updates</h2> -->
+       <div style="width: 460px; height: 320px; margin-top:0px; overflow: hidden;">
+        <div style="position: relative; top: 0px;">
+         <iframe allowtransparency="true" frameborder="0" scrolling="no" src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpedbikeinfo&amp;width=460&amp;height=320&amp;colorscheme=light&amp;show_faces=false&amp;header=false&amp;hide_cover=true&amp;stream=true&amp;show_border=false" style="border:none; overflow:hidden; width:460px; height:320px;">
+         </iframe>
+        </div>
+       </div>
+      </div>
+      <div style="clear:both">
+      </div>
+     </div>
+     <div id="transitionB">
+     </div>
+     <div id="transitionA">
+     </div>
+     <div id="footer">
+      <div id="footmenu">
+       <h3>
+        ABOUT PBIC
+       </h3>
+       <a href="http://www.pedbikeinfo.org/whoweare.cfm">
+        Who we are
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/whatwedo.cfm">
+        What we do
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/newsroom.cfm">
+        Newsroom
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/contact.cfm">
+        Contact
+       </a>
+      </div>
+      <div id="footmenu">
+       <h3>
+        RESOURCES
+       </h3>
+       <a href="http://www.pedbikeinfo.org/training/webinars.cfm">
+        PBIC Webinars
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/data/faq.cfm">
+        FAQs
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/data/library/library.cfm">
+        PBIC Library
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/data/casestudies.cfm">
+        PBIC Case Studies
+       </a>
+      </div>
+      <div id="footmenu">
+       <h3>
+        SHARE WITH US
+       </h3>
+       <a href="http://www.pedbikeimages.org" target="_blank">
+        Share photos
+       </a>
+       <br/>
+       <a href="https://twitter.com/pedbikeinfo" target="blank">
+        Follow us on Twitter
+       </a>
+       <br/>
+       <a href="http://www.facebook.com/pedbikeinfo" target="_blank">
+        Like PBIC on Facebook
+       </a>
+       <br/>
+       <a href="http://www.pedbikeinfo.org/newsletter/signup.cfm">
+        Sign up for our newsletter
+       </a>
+      </div>
+      <div id="footmenu-right">
+       <h3>
+        Please visit these PBIC projects:
+       </h3>
+       <a href="http://www.pedbikeimages.org" target="_blank">
+        <img src="http://www.pedbikeinfo.org/images/PBICimage.png"/>
+       </a>
+       <a href="http://www.walkfriendly.org" target="_blank">
+        <img src="http://www.pedbikeinfo.org/images/WFC.png"/>
+       </a>
+      </div>
+      <div id="footmenu">
+       <img alt="" height="40" src="http://www.pedbikeinfo.org/images/FHWA.png" width="140"/>
+       <img height="41" src="http://www.pedbikeinfo.org/images/HSRC_Logo.png" width="169"/>
+       <p style="margin-top:0;">
+        This site is funded by the
+        <a href="http://www.fhwa.dot.gov/" target="_blank">
+         U.S. Department of Transportation Federal Highway Administration
+        </a>
+        and maintained by the Pedestrian and Bicycle Information Center within the
+        <a href="http://www.hsrc.unc.edu/index.cfm" target="_blank">
+         University of North Carolina Highway Safety Research Center
+        </a>
+        . Please read our
+        <a href="http://www.pedbikeinfo.org/usage.cfm">
+         Usage Guidelines
+        </a>
+        .
+       </p>
+      </div>
+     </div>
+    </div>
+    <div id="footwrap">
+    </div>
+   </div>
+  </body>
+ </html>
