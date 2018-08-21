@@ -1,0 +1,1312 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+ <html lang="en">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <script src="/scripts/jquery-1.3.2.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery-ui-1.7.2.custom.min.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.tools.min.js" type="text/javascript">
+   </script>
+   <script src="/scripts/cookie.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.validate.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.easing.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.dimensions.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.cycle.all.js" type="text/javascript">
+   </script>
+   <script src="/scripts/shadowbox/shadowbox.js" type="text/javascript">
+   </script>
+   <script src="/scripts/pagination/jquery.pagination.js" type="text/javascript">
+   </script>
+   <script src="/scripts/captcha/captcha.js" type="text/javascript">
+   </script>
+   <script src="/scripts/jquery.tabs.pack.js" type="text/javascript">
+   </script>
+   <script src="/audio/audio-player.js" type="text/javascript">
+   </script>
+   <script src="/scripts/swfobject.js" type="text/javascript">
+   </script>
+   <script src="/scripts/tinysort.js" type="text/javascript">
+   </script>
+   <link href="/css/style.css" rel="stylesheet" title="Site css"/>
+   <link href="/css/jquery-ui.css" rel="stylesheet" type="text/css"/>
+   <link href="/css/navigation.css" rel="stylesheet" title="Site css"/>
+   <link href="/css/content.css" rel="stylesheet" title="Site css"/>
+   <link href="/css/news.css" rel="stylesheet" title="Site css"/>
+   <link href="/css/validate.css" rel="stylesheet" title="Site css"/>
+   <link href="/scripts/shadowbox/shadowbox.css" rel="stylesheet" type="text/css"/>
+   <link href="/css/jquery.tabs.css" rel="stylesheet" type="text/css"/>
+   <link href="/css/slide.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!--[if lte IE 7]>
+ 	<link rel="stylesheet" href="/css/jquery.tabs-ie.css" type="text/css" />
+ 	<![endif]-->
+   <link href="/scripts/pagination/style.css" rel="stylesheet" type="text/css"/>
+   <script type="text/javascript">
+    $(document).ready(function(){
+ 			
+ 			
+ 			$("a.tagLink").live("click", function(){
+ 				var data = "term="+$(this).html();
+ 					
+ 					$.ajax({
+ 						type: "POST",
+ 						url: "/php/search.php",
+ 						data: data,
+ 						success: function(response){
+ 							$("#home_panels_wrapper").remove();
+ 							$('#rezultati').html(response);
+ 							
+ 							$('.s-tabs .tabs-selected').removeClass('tabs-selected');
+ 							$('.s-tabs .rezultati').addClass('tabs-selected').show();
+ 							$('.tab_cont_top').addClass('tabs-hide');
+ 							$('.tab_cont_top').attr('style', '');
+ 							$('#rezultati').removeClass('tabs-hide');
+ 							$('.s-tabs .tabs-nav').show();
+ 							$('.s-tabs .tab_cont').show();
+ 							$('.s-tabs .iks').text('-');
+ 						}
+ 					});
+ 			});
+ 			
+ 			
+ 		/*	$('a.goToElement').live("click", function(e){
+ 				var el_href;
+ 				var id;
+ 				var off;
+ 			//	e.preventDefault();
+ 				el_href= $(this).attr('href').split('#');
+ 				id= $(this).attr('name');
+ 			//	window.location=window.location;
+ 			//	window.location= el_href[0];
+ 			//	window.location= el_href[0]+"#"+el_href[1];
+ 			});
+ 		*/
+ 		    //suggestions
+ 		    var datterm=document.getElementById('term');
+             var iks = " <div id='close'></div>"
+ 
+ 		    $('#term').focus(function()  {
+ 				
+ 				var xomb = $('#suggestBox').text();
+ 				if (xomb != "") { $('#suggestBox').show(); }
+ 			});
+ 			$('#term').keyup(function (e) {
+ 				dat=datterm.value;
+ 				if (dat!='' && e.which!=27 && e.which!=13 && e.which!=9) {  
+ 				$.ajax({
+ 							type: "POST",
+ 							url: "/php/suggest.php",
+ 							data: 'query='+dat,
+ 							success: function(response){
+ 								$('#suggestBox').html(response+iks);
+ 								$('#suggestBox').show();
+ 								if(response == "") { 
+ 								$('#close').hide();
+ 								}
+ 							}
+ 						});
+ 				} else $('#suggestBox').hide();
+ 			});
+ 			$('#suggestBox p').live('click',function() {
+ 					datterm.value=this.innerHTML.replace(/<\/?[^>]+>/gi, '');
+ 					$('#suggestBox').hide();
+ 			});
+ 			$('#close').live('click',function() {
+ 					$('#suggestBox').hide();
+ 			});
+ 		    //
+ 		    //search
+ 		    $('#search .form-search').submit(function(event){
+ 				event.preventDefault();	
+ 				$('#suggestBox').hide();
+ 				if( document.getElementById('term').value=='') {
+ 			    	alert('Lozinka i ponovljena lozinka se ne podudaraju');
+ 			    	return false;	
+ 				}
+ 				var data = $(".form-search").serialize();
+ 					$.ajax({
+ 						type: "POST",
+ 						url: "/php/search.php",
+ 						data: data,
+ 						success: function(response){
+ 							$("#home_panels_wrapper").remove();
+ 							$('#rezultati').html(response);
+ 							
+ 							$('.s-tabs .tabs-selected').removeClass('tabs-selected');
+ 							$('.s-tabs .rezultati').addClass('tabs-selected').show();
+ 							$('.tab_cont_top').addClass('tabs-hide');
+ 							$('.tab_cont_top').attr('style', '');
+ 							$('#rezultati').removeClass('tabs-hide');
+ 							$('.s-tabs .tabs-nav').show();
+ 							$('.s-tabs .tab_cont').show();
+ 							$('.s-tabs .iks').text('-');
+ 						}
+ 					});
+ 			});
+ 		    //search end
+ 		    
+ /*			//banner
+ 			$('#slider').s3Slider({
+ 				timeOut: 9000
+ 			});*/
+ 			//tagovi poredavanje po abecedi
+ 			$(".navigation #tags ul li").tsort({order:"asc"});
+ 			//tagovi end
+             $(function() {
+                 $('#button a').stop().animate({'marginLeft':'-148px'},1000);
+ 
+                 $('#button > li').hover(
+                     function () {
+                         $('a',$(this)).stop().animate({'marginLeft':'-2px'},200);
+                     },
+                     function () {
+                         $('a',$(this)).stop().animate({'marginLeft':'-148px'},200);
+                     }
+                 );
+             });
+ 			//banner end
+ 			/*$('#flashlink').click(function() {
+ 				thisMovie('ssp').sspPause();
+ 			});
+ 			$('#sb-nav-close').live('click',function() {
+ 				thisMovie('ssp').sspPlay();
+ 			});*/
+ 			//tabovi
+ 			$('.s-tabs').tabs({ 
+ 				fxFade: true, 
+ 				fxSpeed: 'fast' 
+ 			});
+ 			$('.s-tabs .iks').click(function()
+             {
+             $('.s-tabs .tabs-nav').toggle();
+             $('.s-tabs .tab_cont').toggle();
+             $(this).text($(this).text() == '+' ? '-' : '+');
+             var status= "status="+1;
+             if($(this).text() == '+')
+             {
+             	status= "status="+0;
+             }
+            
+             $.ajax({
+ 						type: "POST",
+ 						url: "/php/search.php",
+ 						data: "action=setXbutton&"+status,
+ 						success: function(response){
+ 						}
+ 					});
+             
+ 			});
+ 
+ 			//tabovi
+ 				$('#tabs').tabs({ 
+ 				fxFade: true, 
+ 				fxSpeed: 'fast' 
+ 			});
+ 			//top navig
+ 			$("#top_navig").find("ul").hide(); //init the 0 level
+ 			$("#top_navig li").hover(
+ 				function(){
+ 					$(this).find("ul:first").fadeIn(300, function(){});
+ 				},
+ 				function(){
+ 					$(this).find("ul:first").fadeOut(300, function(){});
+ 			});
+ 			//top navig end
+ 			//left navig
+ 			$(".navigation #left_navig").find("ul").hide(); //init the 0 level
+ 			$(".navigation #left_navig .active").slideToggle("slow", function(){
+ 				if($(this).parent().find("span").hasClass("collapsed")){
+ 					$(this).parent().children("span").removeClass("collapsed").addClass("expand");
+ 				}
+ 			});
+ 			$(".navigation #left_navig li span").click(function(){
+ 				var index = 0;
+ 				if($(this).hasClass("expand") && index == 0){
+ 					$(this).removeClass("expand").addClass("collapsed");
+ 					index++;
+ 				}
+ 				if($(this).hasClass("collapsed") && index == 0){
+ 					$(this).removeClass("collapsed").addClass("expand");
+ 					index++;
+ 				}
+ 				$(this).parent().children("ul").slideToggle();
+ 			});
+ 			//left navig end
+ 			//search
+ 			$("#open").click(function(){
+ 				$("div#panel").slideDown("slow");
+ 			});	
+ 			$("#close").click(function(){
+ 				$("div#panel").slideUp("slow");	
+ 			});	
+ 			$("#toggle a").click(function(){
+ 				$("#toggle a").toggle();
+ 			});
+ 			$('#toppanel #tabs').tabs({ 
+ 				fxFade: true, 
+ 				fxSpeed: 'fast' 
+ 			});
+ 			
+ 			//denis
+ 		
+ 			$("#news-cycle").cycle({
+ 			fx:      'scrollHorz',
+ 			speed: 1000,
+ 			pause: true,
+ 			timeout:  8000,
+ 			next:   '#next-news',
+ 			prev:   '#prev-news'
+ 			});
+ 
+ 			$(".cycle-logos").cycle({
+ 			speed: 1500,
+ 			pause: true,
+ 			timeout:  6000,
+ 			next:   '.logos #dolje',
+ 			prev:   '.logos #gore'
+ 			});
+ 			//top_akcije hover start
+ 			$(".top_akcije .akcija").mouseenter(function() {
+ 				$(this).find('.opis').fadeIn(500);
+ 			});
+ 			$(".top_akcije .akcija").mouseleave(function() {
+ 				$(this).find('.opis').fadeOut(500);
+ 			});
+ 			//top_akcije hover end
+ 			//login tabovi
+ 			$("#goto1").click(function(){
+ 			$("#goto2").removeClass("aktiv");
+ 			$("#goto1").addClass("aktiv");
+ 			$("div#tab2").hide();
+ 			$("div#tab1").show();
+ 			});
+ 			$("#goto2").click(function(){
+ 			$("#goto1").removeClass("aktiv");
+ 			$("#goto2").addClass("aktiv");
+ 			$("div#tab1").hide();
+ 			$("div#tab2").show();
+ 			});
+ 			//login tabovi
+ 			$('#tabs2 li:first-child').addClass("aktiv");
+ 			$('#tabs_container div:first-child').show();
+ 			$("#goto_novosti").click(function(){
+ 			$("#goto_akcije").removeClass("aktiv");
+ 			$("#goto_novosti").addClass("aktiv");
+ 			$("div#tab_akcije").hide();
+ 			$("div#tab_novosti").show();
+ 			});
+ 			$("#goto_akcije").click(function(){
+ 			$("#goto_novosti").removeClass("aktiv");
+ 			$("#goto_akcije").addClass("aktiv");
+ 			$("div#tab_novosti").hide();
+ 			$("div#tab_akcije").show();
+ 			});
+ 			//denis start
+ 			$(function () {
+         $('.bubbleInfo').each(function () {
+             var distance = 10;
+             var time = 250;
+             var hideDelay = 500;
+ 
+             var hideDelayTimer = null;
+ 
+             var beingShown = false;
+             var shown = false;
+             var trigger = $('.trigger', this);
+             var info = $('.popup', this).css('opacity', 0);
+ 
+             $([trigger.get(0), info.get(0)]).mouseover(function () {
+                 if (hideDelayTimer) clearTimeout(hideDelayTimer);
+                 if (beingShown || shown) {
+                     // don't trigger the animation again
+                     return;
+                 } else {
+                     // reset position of info box
+                     beingShown = true;
+ 
+                     info.css({
+                         top: -45,
+                         left: -35,
+                         display: 'block'
+                     }).animate({
+                         top: '-=' + distance + 'px',
+                         opacity: 1
+                     }, time, 'swing', function() {
+                         beingShown = false;
+                         shown = true;
+                     });
+                 }
+ 
+                 return false;
+             }).mouseout(function () {
+                 if (hideDelayTimer) clearTimeout(hideDelayTimer);
+                 hideDelayTimer = setTimeout(function () {
+                     hideDelayTimer = null;
+                     info.animate({
+                         top: '-=' + distance + 'px',
+                         opacity: 0
+                     }, time, 'swing', function () {
+                         shown = false;
+                         info.css('display', 'none');
+                     });
+ 					info.hide();
+                 }, hideDelay);
+ 
+                 return false;
+             });
+         });
+     });  
+     
+     		$(".cycle-kategorije").cycle({
+ 			fx:      'scrollHorz',
+ 			speed: 1000,
+ 			pause: true,
+ 			timeout:  8000,
+ 			next:   '.cycle-kat-cont #desno',
+ 			prev:   '.cycle-kat-cont #lijevo'
+ 			});
+ 			
+    			//denis end 
+ 			$('.parent #action-cycle').cycle({
+ 				fx: 'scrollVert', 
+ 				timeout:  15000,
+ 				next: '#next-action',
+ 				prev: '#prev-action'
+ 			});
+ 			$('.parent #news-cycle').cycle({
+ 				fx: 'scrollVert', 
+ 				timeout:  15000,
+ 				next: '#next-news',
+ 				prev: '#prev-news'
+ 			});
+ 			$('#gallery-cycle').cycle({
+ 				fx: 'scrollHorz', 
+ 				timeout:  15000,
+ 				next: '#next-img',
+ 				prev: '#prev-img'
+ 			});
+ 			$('.top_akcije #action-cycle').cycle({
+ 				fx: 'fade', 
+ 				timeout:  15000,
+ 				next: '#next-action',
+ 				prev: '#prev-action'
+ 			});
+ 			$('#slider #news-cycle').cycle({
+ 				fx: 'scrollVert', 
+ 				timeout:  15000,
+ 				next: '#ne-news',
+ 				prev: '#pr-news'
+ 			});
+ 			$(".slideshow").each(function(){
+ 				$.ajax({
+ 					type: "POST",
+ 					url: "/php/slideshow.php",
+ 					data: "cnt_ID=1",
+ 					success: function(response){
+ 						$(".slideshow").replaceWith('<div class="content-cycle">'+response+'</div>');
+ 						$(".content-cycle").cycle({
+ 							fx: 'fade', 
+ 							timeout:  4000,
+ 							next: '#next-content',
+ 							prev: '#prev-content'
+ 						});
+ 					}
+ 				});
+ 			});
+ 			$("#sign_up_form").validate({
+ 				rules: {
+ 					username: {
+ 						required: true,
+ 						minlength: 2
+ 					},
+ 					password: {
+ 						required: true,
+ 						minlength: 5
+ 					},
+ 					conf_pass: {
+ 						required: true,
+ 						minlength: 5,
+ 						equalTo: "#password"
+ 					},
+ 					name: "required",
+ 					surname: "required",
+ 					email: {
+ 						required: true,
+ 						email: true
+ 					},
+ 					captcha: {
+ 						required: true,
+ 						remote: "/scripts/captcha/process.php"
+ 					}
+ 				},
+ 				messages: {
+ 					username: {
+ 						required: "Username je obavezno polje.",
+ 						minlength: "Vaš username je pre kretak, mora biti duži od 2 znaka."
+ 					},
+ 					password: {
+ 						required: "Password je obavezno polje.",
+ 						minlength: "Password je prekratak."
+ 					},
+ 					conf_pass: {
+ 						required: "Retype Password je obavezno polje.",
+ 						minlength: "Ponovljeni password je prekratak.",
+ 						equalTo: "Ponovljeni password nije isti kao password."
+ 					},
+ 					name: "Ime je obavezno polje.",
+ 					surname: "Prezime je obavezno polje.",
+ 					email: "E-mail adresa nije validna",
+ 					captcha: "Sigurnosni kod nije ispravan!"
+ 				}
+ 			});
+ 			$("#contact_form").validate({
+ 				rules: {
+ 					name: "required",
+ 					email: {
+ 						required: true,
+ 						email: true
+ 					},
+ 					captcha: {
+ 						required: true,
+ 						remote: "/scripts/captcha/process.php"
+ 					},
+ 					query: "required"
+ 				},
+ 				messages: {
+ 					name: "Ime je obavezno polje.",
+ 					email: "E-mail adresa nije ispravna",
+ 					captcha: "Sigurnosni kod nije ispravan!",
+ 					query: "Niste unijeli upit"
+ 				}
+ 			});
+ 			$("#sign_up_form").submit(function(event){
+ 				event.preventDefault();
+ 				if($("#sign_up_form").valid()){
+ 					var data = $("#sign_up_form").serialize();
+ 					$.ajax({
+ 						type: "POST",
+ 						url: "/php/register.php",
+ 						data: data,
+ 						success: function(response){
+ 							if(response == 'success')
+ 								alert("Uspješno ste se registrirali, pogledajte E-mail za daljnje korake!");
+ 							if(response == 'exsists')
+ 								alert("Korisnik sa istim usernamom već postoji!");
+ 							if(response == 'error')
+ 								alert("Došlo je do greške, pokušajte ponovo ili kontaktirajte administratora!");
+ 							if(response == 'mail_error')
+ 								alert("Došlo je do greške pri slanju podataka na E-mail, obavijestite administratora!");
+ 						}
+ 					});
+ 				}
+ 			});
+ 			
+ /*  ie6 debugger    */			
+ 			$("#logo h1").click(function(){
+ 			alert(  ".tabs-nav " + $('.s-tabs .tabs-nav').css('display') + " " + $('.s-tabs .tabs-nav').css('position') );
+ 			});
+ /*                  */		
+ 
+ 			$("#contact_form").submit(function(event){
+ 				event.preventDefault();
+ 				if($("#contact_form").valid()){
+ 					var data = $("#contact_form").serialize();
+ 					$.ajax({
+ 						type: "POST",
+ 						url: "/php/global_contact.php",
+ 						data: data,
+ 						success: function(response){
+ 							if(response == 'success')
+ 								alert("Uspješno ste poslali upit");
+ 							if(response == 'error')
+ 								alert("Došlo je do greške, pokušajte ponovo ili kontaktirajte administratora!");
+ 							if(response == 'mail_error')
+ 								alert("Došlo je do greške pri slanju podataka na mail, obavijestite administratora ili pokušajte ponovo!");
+ 						}
+ 					});
+ 				}
+ 			});
+ 			$("#refreshimg").click(function(){
+ 				$("#captchaimage").load('/scripts/captcha/refresh.php');
+ 				$("#captchaimage").load('/scripts/captcha/images/image.php');
+ 				return false;
+ 			});
+ 			$(".content #add_to_wishlist").click(function(){
+ 				var id = $(this).attr("class");
+ 				$.ajax({
+ 					type: "POST",
+ 					url: "/php/wishlist.php",
+ 					data: "action=add&ID="+id,
+ 					success: function(response){
+ 						$("#wishlist_short").empty();
+ 						$("#wishlist_short").html(response);
+ 					}
+ 				});
+ 				return false;
+ 			});
+ 			$("#wish_list #del_from_wishlist").click(function(){
+ 				var id = $(this).attr("class");
+ 				$.ajax({
+ 					type: "POST",
+ 					url: "/php/wishlist.php",
+ 					data: "action=del&ID="+id,
+ 					success: function(response){
+ 						$("#wish_item_"+id).empty();
+ 						$("#wishlist_short").empty();
+ 						$("#wishlist_short").html(response);
+ 					}
+ 				});
+ 				return false;
+ 			});
+ 			$("#wish_list #add_count_wishlist").click(function(event){
+ 				event.preventDefault();
+ 				var id = $(this).attr("class");
+ 				$.ajax({
+ 					type: "POST",
+ 					url: "/php/wishlist.php",
+ 					data: "action=add_count&ID="+id,
+ 					success: function(){
+ 						var count = $("#wish_item_"+id).find(".cart_count").attr("id");
+ 						count++;
+ 						$("#wish_item_"+id).find(".cart_count").replaceWith('<span id='+count+' class="cart_count">'+count+'</span>');
+ 					}
+ 				});
+ 				return false;
+ 			});
+ 			$("#wish_list #substract_count_wishlist").click(function(event){
+ 				event.preventDefault();
+ 				var id = $(this).attr("class");
+ 				$.ajax({
+ 					type: "POST",
+ 					url: "/php/wishlist.php",
+ 					data: "action=substract_count&ID="+id,
+ 					success: function(){
+ 						var count = $("#wish_item_"+id).find(".cart_count").attr("id");
+ 						if(count > 1)
+ 							count--;
+ 						else
+ 							count = 1;
+ 						$("#wish_item_"+id).find(".cart_count").replaceWith('<span id='+count+' class="cart_count">'+count+'</span>');
+ 					}
+ 				});
+ 				return false;
+ 			});
+ 			$("#payment input:radio").click(function(){	
+ 				if($(this).attr("id") == "virman")
+ 					$("#virman_info").show();
+ 				else
+ 					$("#virman_info").hide();					
+ 			});
+ 
+ 		//left navigation menu
+ 		$(document).ready(function() {
+   var toggle = function(direction, display) {
+     return function() {
+       var self = this;
+       var ul = $("ul", this);
+       if( ul.css("display") == display && !self["block" + direction] ) {
+         self["block" + direction] = true;
+         ul["slide" + direction]("slow", function() {
+           self["block" + direction] = false;
+         });
+       }
+     };
+   }
+   $("li.menu").hover(toggle("Down", "none"), toggle("Up", "block"));
+   $("li.menu ul").hide();
+ });
+ 	//left navigation menu END
+ 
+ 	//wishlist items toggle +/-
+ 	$(".st_toggle_cont").hide();
+ 
+ 	$(".st_toggle").toggle(function(){
+ 		$(this).css('background', ' url(/dizajn/toggle.png) no-repeat 0 0');
+ 		}, function () {
+ 		$(this).css('background', ' url(/dizajn/toggle.png) no-repeat 0 -18px');
+ 	});
+ 
+ 	$(".st_toggle").click(function(){
+ 			$(this).parent().find("div.st_toggle_cont").toggle("slow");
+ 	});
+ 	
+ 	//checkout menu
+ 	$(".toggle_cont").hide(); 
+ 	$(".active_cont").show(); 
+ 
+ 	$(".toggle").toggle(function(){
+ 		$(this).addClass("active");
+ 		$(this).removeClass("toggle");
+ 		}, function () {
+ 		$(this).removeClass("active");
+ 	});
+ 
+ 	//Slide up and down on click
+ 	$(".toggle").click(function(){
+ 		$(".active_cont").slideToggle("slow");
+ 		$(".active_cont").removeClass("active_cont");
+ 		$(this).next(".toggle_cont").slideToggle("slow");
+ 		$(this).next(".toggle_cont").addClass("active_cont");
+ 	});
+ 	//checkout menu end
+ 	
+ 	//uključuje'isključuje elemente
+ 			$(".showSwitch").each(function(){
+ 			    var classA=this.className.split(' ');
+ 			    var i=0;
+ 			    while (classA[i]!='showSwitch') i++;
+ 			    i++;
+ 			    var target='#'+classA[i];			    
+ 			    if (this.checked) $(target).show(); else $(target).hide();
+ 			});
+ 			$(".showSwitch").click(function(){
+ 			    var classA=this.className.split(' ');
+ 			    var i=0;
+ 			    while (classA[i]!='showSwitch') i++;
+ 			    i++;
+ 			    var target='#'+classA[i];			    
+ 			    if (this.checked) $(target).show(); else $(target).hide();
+ 			});
+ 			
+ 		
+ 		});
+   </script>
+   <meta content="gradnja kuće, adaptacija kupaonice, sanacija podruma, gradnja kuće,adaptacija stana, sanacija fasade, građevinarstvo" name="keywords"/>
+   <meta content="Adaptacija stana, nadogradnja kuće. Gradimo obiteljske kuće i gospodarske objekte, po sistemu ključ u ruke ili po fazama. Nadogradnja postojećih stambenih jedinica" name="description"/>
+   <title>
+    Gradnja Cvetko | građevinski radovi | adaptacije | sanacije | adaptacija stana
+   </title>
+   <script>
+    Shadowbox.init({
+ 			players:  ['iframe']
+ 		});
+ 		
+ 		function skok() {
+ 			Shadowbox.open({
+        		player: 'iframe',
+        		content: '/cms/fe_include/php/kuponi.php',
+        		height: 530,
+        		width: 800
+       		});
+ 	    }
+   </script>
+  </head>
+  <body class="site" onload="">
+   <div id="fb-root">
+   </div>
+   <script>
+    (function(d, s, id) {
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) return;
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+         fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+   </script>
+   <div class="wrapper_pdl">
+   </div>
+   <div id="wrapper">
+    <div id="header">
+     <div id="logo">
+      <h1 class="hr">
+       Gradnja Cvetko
+      </h1>
+     </div>
+     <div class="s-tabs" id="">
+      <div class="iks">
+       -
+      </div>
+      <ul class="tabs-nav">
+       <li class="">
+        <a href="#novosti">
+         <span>
+          novosti
+         </span>
+        </a>
+       </li>
+       <li class="rezultati">
+        <a href="#rezultati">
+         <span>
+          rezultati pretrage
+         </span>
+        </a>
+       </li>
+      </ul>
+      <div class="tab_cont">
+       <div class="tabs-container tab_cont_top tabs-hide" id="novosti">
+        <div class="n-tabs">
+         <a href="#" id="prev-news">
+          Prethodna
+         </a>
+         <a href="http://www.gradnja-cvetko.hr/news/all/">
+          Sve novosti
+         </a>
+         <a href="http://www.gradnja-cvetko.hr/news/archive/">
+          Arhiva novosti
+         </a>
+         <a href="#" id="next-news">
+          Slijedeća
+         </a>
+        </div>
+        <div id="news-cycle">
+         <div id="action">
+          <div class="act">
+           <h2>
+            Adaptacija ili gradnja uz potrošački kredit do 60 rata
+           </h2>
+           <span id="date">
+            01.09.11
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/adaptacija-ili-gradnja-uz-potrosacki-kredit-do-60-rata/">
+             <img alt="Adaptacija uz kredit" height="75" src="/thumb/adaptacija-uz-kredit.jpg" title="Adaptacija uz kredit" width="110"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Ponovo u ponudi imamo i mogućnost financiranja adaptacije ili manje gradnje putem kreditnih kartica DINERS ili AMERICAN EXPRESS. U ponudi je mogućnost financiranja do 60 rata. Za sve detalje oko financiranja adaptacije ili gradnje putem kreditnih kartica nazovite na 098 863 714!!!
+             </p>
+             <p>
+             </p>
+             <p>
+             </p>
+            </div>
+           </div>
+          </div>
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/soboslikar-licilac-zagreb/">
+             Soboslikarsko ličilački radovi
+            </a>
+           </h2>
+           <span id="date">
+            13.11.12
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/soboslikar-licilac-zagreb/">
+             <img alt="teaser_design_3Dsystem" height="104" src="/thumb/teaser-design-3dsystem.jpg" title="teaser_design_3Dsystem" width="110"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Soboslikar i ličilac Zagreb, licencirana tvrtka za obavljenje ličilačkih radova u gradu Zagrebu. Gradnja Cvetko stoji na raspolaganju za sve vrste soboslikarsko ličilačkih radova.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/soboslikar-licilac-zagreb/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="action">
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/kamini-termotehnika/">
+             Kamini Termotehnika
+            </a>
+           </h2>
+           <span id="date">
+            02.10.11
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/kamini-termotehnika/">
+             <img alt="kamin-nikola-s-bocnim-staklom--krupno" height="110" src="/thumb/kamin-nikola-s-bocnim-staklom--krupno.jpg" title="kamin-nikola-s-bocnim-staklom--krupno" width="83"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Sezona grijanja uskoro počinje! Razmišljate kako uštedjeti! Rješenje je tu. Kamini Termotehnika. Kamini koji se spajaju u sustav centralnog grijanja.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/kamini-termotehnika/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/fasada-stiropor-fasada/">
+             Fasada (stiropor fasada)
+            </a>
+           </h2>
+           <span id="date">
+            26.03.12
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/fasada-stiropor-fasada/">
+             <img alt="Stiropor-fasade-Gradnja-Cvetko-Zagreb" height="110" src="/thumb/stiropor-fasade-gradnja-cvetko-zagreb.png" title="Stiropor-fasade-Gradnja-Cvetko-Zagreb" width="92"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Proljeće je idealno vrijeme za radove na kući.  Osim samog izgleda fasade, potrebno je razmišljati i o uštedi energije. Razmišljate li o ugradnji stiropor fasade na Vašu kuću?
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/fasada-stiropor-fasada/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="action">
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/povoljna-adaptacija-stana/">
+             Preuređenje (adaptacija) stana
+            </a>
+           </h2>
+           <span id="date">
+            12.04.12
+           </span>
+           <div id="news_text">
+            <div class="short_news">
+             <p>
+              Važna obavijest za investitore kod adaptacije stana. Kod odabira najpovoljnijeg izvođača radova, vrlo važno je da pazite na vrstu i kvalitetu materijala koji se ugrađuju.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/povoljna-adaptacija-stana/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/gradnja-kuce-iskop-podruma/">
+             Gradnja kuće
+            </a>
+           </h2>
+           <span id="date">
+            20.09.10
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/gradnja-kuce-iskop-podruma/">
+             <img alt="gradnja kuće" height="83" src="/thumb/gradnja-kuce22.jpg" title="Gradnja kuće - iskop jame - vrijeme velikuh kiša" width="110"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Gradnja kuće s podrumom na ravnom terenu često zna biti jako zahtjevna na područjima, kao što je okolica Zagreba. Gradnja podruma kuće podrazumijeva kopanje jame za podrum, a ta jama se može vrlo lako napuniti vodom zbog kiše ili zbog podzemnih voda.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/gradnja-kuce-iskop-podruma/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="action">
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/krovista-izbor-pokrova/">
+             Krovišta
+            </a>
+           </h2>
+           <span id="date">
+            21.09.10
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/krovista-izbor-pokrova/">
+             <img alt="Rekonstrukcija kuće i pokrivanje kuće crijepom" height="110" src="/thumb/rekonstrukcija-kuce-i-pokrivanje-kuce-crijepom.jpg" title="Rekonstrukcija kuće i pokrivanje kuće crijepom" width="67"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Krovišta u modernoj arhitekturi zahtjevna su i traže da krovopokrivač bude "pravi majstor", jer nove tehnologije ne mogu nadomjestiti pravi ručni rad kao što je postavljanje krova na obiteljsku kuću. No nove tehnologije i novi materijali omogućuju nam da krovovi budu lijepi, te kvalitetno napravljeni, i pripremljeni za (eventualni) život u potkrovlju.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/krovista-izbor-pokrova/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/adaptacija-kupaonice-zagreb/">
+             Adaptacija kupaonice
+            </a>
+           </h2>
+           <span id="date">
+            22.07.10
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/adaptacija-kupaonice-zagreb/">
+             <img alt="Kupaonica prije adaptacije" height="75" src="/thumb/kupaonica-prije-adaptacije-1.jpg" title="Kupaonica prije adaptacije" width="110"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Korak po korak. Novinski članak o adaptaciji kupaonice i izvedbi   "Građevinarstvo Cvetko". Članak prati cijel ipostupak od početka, izbora   materijala za adaptaciju kupaonice do završnog sjaja u renovoranoj   kupaonici! Detaljno pogledajte u PDF prilogu!
+             </p>
+             <p>
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/adaptacija-kupaonice-zagreb/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="action">
+          <div class="act">
+           <h2>
+            <a href="http://www.gradnja-cvetko.hr/news/adaptacija-stana/">
+             Adaptacija stana
+            </a>
+           </h2>
+           <span id="date">
+            22.07.10
+           </span>
+           <div id="news_text">
+            <a href="http://www.gradnja-cvetko.hr/news/adaptacija-stana/">
+             <img alt="Adaptacija stana u centru Zagreba" height="77" src="/thumb/adaptacija-stana-u-centru-zagreba.jpg" title="Adaptacija stana u centru Zagreba" width="110"/>
+            </a>
+            <div class="short_news">
+             <p>
+              Kuća ili stan su postali premali ili preveliki, više ne odgovaraju   potrebama Vas i vaše obitelji, ili svom životnom prostoru jednostavno   želite dati novi sjaj, tu smo za izvršiti adaptaciju željenog prostora i   realizirati Vaše zamisli.
+             </p>
+             <a href="http://www.gradnja-cvetko.hr/news/adaptacija-stana/">
+              Opširnije
+             </a>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="tabs-container tab_cont_top tabs-hide" id="rezultati">
+        rezultati pretrage
+       </div>
+      </div>
+     </div>
+     <div id="language_bar">
+      <p id="layoutdims">
+       Lokacija: Gradnja Cvetko Zagreb
+      </p>
+     </div>
+     <div class="cont-top">
+     </div>
+    </div>
+    <div class="colmask blogstyle">
+     <div class="colmid">
+      <div class="colleft quirks">
+       <div class="contentwrap">
+        <div class="content">
+         <div class="cycle-kat-cont">
+          <span id="lijevo">
+          </span>
+          <div class="cycle-kategorije">
+           <div class="kontejner_kategorija">
+            <a href="http://www.gradnja-cvetko.hr/gradnja-kuce/">
+             <div class="kat" style="background: url(cms/fe_include/images/gradnja-kuce-zagreb.jpg) no-repeat;">
+              <h4>
+               Gradnja kuće
+              </h4>
+              <div class="tekst">
+               <p>
+                Građevinski radovi pri izgradnji kuće. Gradimo  sa svim poznatim klasičnim građevnim materijalima na tržištu (crijep  Tondach, Bramac; opeka Unipor, Wienerberger- Porotherm; Ytong, Katran,  žbuke Samoborka, Roefix, i dr.
+               </p>
+              </div>
+             </div>
+            </a>
+            <a href="http://www.gradnja-cvetko.hr/rekonstrukcija-kuce/">
+             <div class="kat" style="background: url(cms/fe_include/images/rekonstrukcija-kuce-i-pokrivanje-kuce-crijepom.jpg) no-repeat;">
+              <h4>
+               Rekonstrukcije
+              </h4>
+              <div class="tekst">
+               <p>
+                Rekonstrukcija krova zamjena crijepa i građe. Izmjena oblika krova. Rekonstrukcije vanjskih gabarita kuće.
+               </p>
+              </div>
+             </div>
+            </a>
+            <a href="http://www.gradnja-cvetko.hr/adaptacije/">
+             <div class="kat" style="background: url(cms/fe_include/images/adaptacija-kuce.jpg) no-repeat;">
+              <h4>
+               Adaptacije
+              </h4>
+              <div class="tekst">
+               <p>
+                Adaptacija kuće, stana ili kupaonice. Kompletna rješenja za adaptacije nudi Gradnja Cvetko Zagreb.
+               </p>
+              </div>
+             </div>
+            </a>
+           </div>
+           <!-- kontejner_kategorija -->
+          </div>
+          <span id="desno">
+          </span>
+         </div>
+         <div class="homeopis">
+          <h1>
+           Gradnja Cvetko
+          </h1>
+          <div>
+           <p>
+            <strong>
+             Gradnja kuća
+            </strong>
+            i poslovnih objekata po sistemu
+            <strong>
+             ključ u ruke
+            </strong>
+            ili po fazama. Adaptacija stana, kuće i poslovnih objekata. Izvedba svih građevinskih radova od zemljanih radova, konstruktivnih radova (zidarski i krovopokrivački radovi) do završnih radova u graditeljstvu.
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="navigation hr">
+        <div class="box" id="search">
+         <form action="" class="form-search" method="post">
+          <input autocomplete="off" class="text" id="term" name="term" type="text" value=""/>
+          <input class="gumb" name="trazi" type="submit" value="Pretraga"/>
+          <br/>
+         </form>
+         <div id="suggestBox" style="">
+         </div>
+         <!-- search -->
+        </div>
+        <ul id="left_navig">
+         <li>
+          <span>
+          </span>
+         </li>
+         <li>
+          <span class="collapsed">
+          </span>
+          <a class="main_item nav_15" href="http://www.gradnja-cvetko.hr/gradnja-cvetko-zagreb/">
+           Gradnja Cvetko
+          </a>
+          <ul>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/gradnja-cvetko-zagreb/gradevinski-radovi/">
+             Građevinski radovi
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <span class="collapsed">
+          </span>
+          <a class="main_item nav_2" href="http://www.gradnja-cvetko.hr/gradnja-kuce/">
+           Gradnja kuće
+          </a>
+          <ul>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/gradnja-kuce/izgradnja-kuce/">
+             Gradnja nove kuće
+            </a>
+           </li>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/gradnja-kuce/gradnja-garaze-i-gospodarskih-objekata/">
+             Gradnja garaže i gospodarskih objekata
+            </a>
+           </li>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/gradnja-kuce/uredenje-okucnice/">
+             Uređenje okućnice
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <span class="collapsed">
+          </span>
+          <a class="main_item nav_3" href="http://www.gradnja-cvetko.hr/rekonstrukcija-kuce/">
+           Rekonstrukcije
+          </a>
+          <ul>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/rekonstrukcija-kuce/sanacija-krovista/">
+             Sanacija krovišta i uređenje potkrovlja
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <span class="collapsed">
+          </span>
+          <a class="main_item nav_7" href="http://www.gradnja-cvetko.hr/adaptacije/">
+           Adaptacije
+          </a>
+          <ul>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/adaptacije/adaptacija-kuce/">
+             Adaptacija kuće
+            </a>
+           </li>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/adaptacije/adaptacija-stana-uredenje-stana/">
+             Adaptacija stana
+            </a>
+           </li>
+           <li>
+            <span>
+            </span>
+            <a href="http://www.gradnja-cvetko.hr/adaptacije/adaptacija-kupaonice/">
+             Adaptacija kupaonice
+            </a>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <span>
+          </span>
+          <a class="main_item nav_8" href="http://www.gradnja-cvetko.hr/kontakt/">
+           Kontakt
+          </a>
+         </li>
+        </ul>
+        <div class="box" id="tags">
+         <span class="naslov">
+          <b>
+           Spremi
+          </b>
+         </span>
+         <ul>
+          <li class="tag1">
+           <a class="tagLink" href="javascript: void(0)">
+            gradnja kuće
+           </a>
+          </li>
+          <li class="tag2">
+           <a class="tagLink" href="javascript: void(0)">
+            adaptacija kupaonice
+           </a>
+          </li>
+          <li class="tag3">
+           <a class="tagLink" href="javascript: void(0)">
+            sanacija podruma
+           </a>
+          </li>
+          <li class="tag4">
+           <a class="tagLink" href="javascript: void(0)">
+            adaptacija stana
+           </a>
+          </li>
+          <li class="tag5">
+           <a class="tagLink" href="javascript: void(0)">
+            sanacija fasade
+           </a>
+          </li>
+          <li class="tag5">
+           <a class="tagLink" href="javascript: void(0)">
+            građevinarstvo
+           </a>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <div class="col3">
+        <div class="fb-like-box" data-background-color="#ffffff" data-border-color="#ffffff" data-header="false" data-height="170" data-href="http://www.facebook.com/pages/Gradnja-Cvetko-Zagreb/382337045183812" data-show-faces="true" data-stream="false" data-width="170">
+        </div>
+        <br/>
+        <br/>
+        <img src="/dizajn/kreditibanercvetko.gif"/>
+        <br/>
+        <br/>
+        <div class="box2">
+         <a href="http://www.kamini-termotehnika.com" target="newwin">
+          <img src="/dizajn/Kamini-Termotehnika.jpg"/>
+         </a>
+         <br/>
+         <span class="naslov">
+          <b>
+           Kamini Termotehnika
+          </b>
+         </span>
+         <p>
+          Moderni, kvalitetni kamini.
+          <a href="http://www.kamini-termotehnika.com" target="newwin">
+           Kamini
+          </a>
+          koji se spajaju na sustav centralnog grijanja.
+         </p>
+         <br/>
+        </div>
+        <div class="box2">
+         <p>
+          Kompletna rješenja u izgradnji i adaptaciji kuća i stanova!
+         </p>
+         <br/>
+        </div>
+        <div class="box">
+         <span class="naslov">
+          <b>
+           Građevinarstvo Cvetko
+          </b>
+         </span>
+         <p>
+          Vrbje 34a
+          <br/>
+          HR-10000 Zagreb
+          <br/>
+          <br/>
+          Tel.: +385 (0)1 3885 227
+          <br/>
+          Fax: +385 (0)1 3873 730
+          <br/>
+          Mob.: 098 863 714
+          <br/>
+          <br/>
+          <a href="mailto:info@gradnja-cvetko.hr">
+           info@gradnja-cvetko.hr
+          </a>
+         </p>
+         <br/>
+        </div>
+        <div class="box2">
+         <h2>
+          Gdje sa stvarima kod adaptacije?
+         </h2>
+         <p>
+          Prilikom adaptacije najčešće pitanje je gdje sa stvarima iz stana? Prepustite o stvarima brigu nama. Adaptacija može početi u bilo koje vrijeme, jer Vam nudimo sigurno skladište za Vaše stvari iz stana!
+         </p>
+         <br/>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div id="footer">
+    <div id="footer_wrapper">
+     <div id="footer_top">
+      <p>
+       Copyright © Gradnja CVETKO | Vrbje 34a | HR-10000 Zagreb
+       <br/>
+       <a href="http://www.unicolor.hr">
+        Dizajn i izrada Unicolor d.o.o.
+       </a>
+      </p>
+     </div>
+     <div id="footer_main">
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-4508606-52']);
+   _gaq.push(['_trackPageview']);
+ 
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+   </script>
+  </body>
+ </html>

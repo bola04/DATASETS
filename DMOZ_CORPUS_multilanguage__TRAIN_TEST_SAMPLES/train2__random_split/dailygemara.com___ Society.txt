@@ -1,0 +1,1270 @@
+<html>
+  <head>
+   <title>
+    Daily Gemara by Rabbi Eli Mansour
+   </title>
+   <script language="javaScript">
+    function print(i)
+ 	{
+ 		window.open ('Print.asp?ImageID='+i, 'mywin' ,"height=500,width=800,menu=no align=middle,scrollbars=yes"); 
+ 	}
+ 	function NoFile()
+ 	{
+ 		//alert("Today's shiur is not posted yet. It is available via the dial-in option. The shiur will be posted by 2:00 pm on the day that it is recorded. All prior days' shiurim are available now, please select the daf to listen. Thank you.DailyGemara.com");
+ 		alert("The Shiur has not been posted yet. Please check back soon. The shiur is normally posted by 9:15 AM (New York time) on the day it is recorded (for Sundays and weekdays), and 1 hour after Shabbat for Saturdays. Audio files for all prior Shiurim are available by browsing back to prior Dafs.");
+ 		
+ 	}
+   </script>
+   <script language="JavaScript">
+    <!--
+ function MM_jumpMenu(targ,selObj,restore){ //v3.0	
+   eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+   if (restore) selObj.selectedIndex=0;
+ }
+ //-->
+   </script>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <link href="GemaraStyles.css" rel="stylesheet" type="text/css"/>
+   <link href="/Common/styles/jquery-ui.css" rel="stylesheet" type="text/css"/>
+   <link href="/Common/styles/jquery.scroller-left.css" rel="stylesheet" type="text/css"/>
+   <script src="/Common/scripts/jquery.js" type="text/javascript">
+   </script>
+   <script src="/Common/scripts/jquery-ui.js" type="text/javascript">
+   </script>
+   <script src="/Common/scripts/jquery.scroller-left.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    <!--
+   jQuery(document).ready(function() {
+     jQuery('ul#scrollingMessages').ScrollLeft();
+   });
+ //-->
+   </script>
+  </head>
+  <body bgcolor="#ffffff" leftmargin="0" marginheight="0" marginwidth="0" text="#000000" topmargin="0">
+   <script language="JavaScript" type="text/javascript">
+    <!-- to hide script contents from old browsers
+ 	
+ 	
+ 	/*
+ 	 *	This script was adapted from C sources written by
+ 	 *	Scott E. Lee, which contain the following copyright notice:
+ 	 *	
+ 	 *	Copyright 1993-1995, Scott E. Lee, all rights reserved.
+ 	 *	Permission granted to use, copy, modify, distribute and sell so long as
+ 	 *	the above copyright and this permission statement are retained in all
+ 	 *	copies.  THERE IS NO WARRANTY - USE AT YOUR OWN RISK.
+ 	 *	
+ 	 *	Bill Hastings
+ 	 *	RBI Software Systems
+ 	 *	bhastings@rbi.com
+ 	 */
+ 
+ 	var GREG_SDN_OFFSET = 32045,
+ 		DAYS_PER_5_MONTHS = 153,
+ 		DAYS_PER_4_YEARS = 1461,
+ 		DAYS_PER_400_YEARS = 146097;
+ 
+ 	var HALAKIM_PER_HOUR = 1080,
+ 		HALAKIM_PER_DAY = 25920,
+ 		HALAKIM_PER_LUNAR_CYCLE = ((29 * HALAKIM_PER_DAY) + 13753),
+ 		HALAKIM_PER_METONIC_CYCLE = (HALAKIM_PER_LUNAR_CYCLE * (12 * 19 + 7));
+ 
+ 	var HEB_SDN_OFFSET = 347997,
+ 		NEW_MOON_OF_CREATION = 31524,
+ 
+ 		NOON = (18 * HALAKIM_PER_HOUR),
+ 		AM3_11_20 = ((9 * HALAKIM_PER_HOUR) + 204),
+ 		AM9_32_43 = ((15 * HALAKIM_PER_HOUR) + 589);
+ 
+ 	var SUN = 0,
+ 		MON = 1,
+ 		TUES = 2,
+ 		WED = 3,
+ 		THUR = 4,
+ 		FRI = 5,
+ 		SAT = 6;
+ 
+ 	var today = null,
+ 		afterSundown = false,
+ 		hebrewMonth = 0,
+ 		hebrewDate = 0,
+ 		hebrewYear = 0,
+ 		metonicCycle = 0,
+ 		metonicYear = 0,
+ 		moladDay = 0,
+ 		moladHalakim = 0;
+ 
+ 	var gWeekday = new weekdayarr("Sun","Mon","Tues","Wednes","Thurs","Fri","Satur");
+ 	var gMonth = new gregmontharr("January","February","March","April","May","June","July","August","September","October","November","December");
+ 	var hMonth = new hebrewmontharr("Tishri","Heshvan","Kislev","Tevet","Shevat","Adar I","Adar II","Nisan","Iyyar","Sivan","Tammuz","Av","Elul");
+ 	var mpy = new monthsperyeararr(12,12,13,12,12,13,12,13,12,12,13,12,12,13,12,12,13,12,13);
+    
+ 	function weekdayarr(d0,d1,d2,d3,d4,d5,d6)
+ 	{
+ 		this[0] = d0; this[1] = d1; this[2] = d2; this[3] = d3;
+ 		this[4] = d4; this[5] = d5; this[6] = d6;
+ 	}
+    
+ 	function gregmontharr(m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11)
+ 	{
+ 		this[0] = m0; this[1] = m1; this[2] = m2; this[3] = m3;
+ 		this[4] = m4; this[5] = m5; this[6] = m6; this[7] = m7;
+ 		this[8] = m8; this[9] = m9; this[10] = m10; this[11] = m11;
+ 	}
+    
+ 	function hebrewmontharr(m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13)
+ 	{
+ 		this[0] = m0; this[1] = m1; this[2] = m2; this[3] = m3;
+ 		this[4] = m4; this[5] = m5; this[6] = m6; this[7] = m7;
+ 		this[8] = m8; this[9] = m9; this[10] = m10; this[11] = m11;
+ 		this[12] = m12; this[13] = m13;
+ 	}
+    
+ 	function monthsperyeararr(m0,m1,m2,m3,m4,m5,m6,m7,m8,m9,
+ 							  m10,m11,m12,m13,m14,m15,m16,m17,m18)
+ 	{
+ 		this[0] = m0; this[1] = m1; this[2] = m2; this[3] = m3;
+ 		this[4] = m4; this[5] = m5; this[6] = m6; this[7] = m7;
+ 		this[8] = m8; this[9] = m9; this[10] = m10; this[11] = m11;
+ 		this[12] = m8; this[13] = m13; this[14] = m14; this[15] = m15;
+ 		this[16] = m16; this[17] = m17; this[18] = m18;
+ 	}
+ 
+ 	function getToday(clipDate)
+ 	{
+ 		if(today == null) {
+ 
+ 			today = new Date(clipDate);
+ 			
+ 			afterSundown = (today.getHours() >= 19);
+ 		}
+ 	}
+ 
+ 	function displayWeekday()
+ 	{
+ 		document.writeln(gWeekday[today.getDay()] + "day");
+ 	}
+ 
+ 	function getFullYear(d)
+ 	{
+ 	    var y = d.getYear();
+ 	    
+ 	    if (y < 1000)
+ 	    	y += 1900;
+ 	   
+ 	    return y;
+ 	}	
+ 	
+ 	function displayGregorianDate()
+ 	{
+ 		document.writeln(gMonth[today.getMonth()] + " " + today.getDate() + ", " + getFullYear(today));
+ 	}
+ 
+ 	function displayHebrewDate()
+ 	{
+ 		if(hebrewDate != 0 && hebrewMonth != 0 && hebrewYear != 0)
+ 			document.writeln(hebrewDate + " " + hMonth[hebrewMonth-1] + " " + hebrewYear);
+ 	}
+ 
+ 	function GregorianToSdn(inputYear,inputMonth,inputDay)
+ 	{
+ 		var year = 0,
+ 			month = 0,
+ 			sdn;
+ 
+ 		// Make year a positive number
+ 		if (inputYear < 0)
+ 			year = inputYear + 4801;
+ 		else
+ 			year = inputYear + 4800;
+ 
+ 		// Adjust the start of the year
+ 		if (inputMonth > 2) {
+ 			month = inputMonth - 3;
+ 		}
+ 		else {
+ 			month = inputMonth + 9;
+ 			year--;
+ 		}
+ 
+ 		sdn	 = Math.floor((Math.floor(year / 100) * DAYS_PER_400_YEARS) / 4);
+ 		sdn += Math.floor(((year % 100) * DAYS_PER_4_YEARS) / 4);
+ 		sdn += Math.floor((month * DAYS_PER_5_MONTHS + 2) / 5);
+ 		sdn += inputDay - GREG_SDN_OFFSET;
+ 		
+ 		if(afterSundown) {
+ 			sdn++;
+ 		}
+ 
+ 		return sdn;
+ 	}
+ 
+ 	function SdnToHebrew(sdn)
+ 	{
+ 		var inputDay,
+ 			tishri1 = 0,
+ 			tishri1After = 0,
+ 			yearLength = 0,
+ 
+ 		inputDay = sdn - HEB_SDN_OFFSET;
+ 
+ 		FindTishriMolad(inputDay);
+ 		tishri1 = Tishri1(metonicYear,moladDay,moladHalakim);
+ 
+ 		if (inputDay >= tishri1) {
+ 			// It found Tishri 1 at the start of the year. 
+ 			hebrewYear = metonicCycle * 19 + metonicYear + 1;
+ 			if (inputDay < tishri1 + 59) {
+ 				if (inputDay < tishri1 + 30) {
+ 					hebrewMonth = 1;
+ 					hebrewDate = inputDay - tishri1 + 1;
+ 				}
+ 				else {
+ 					hebrewMonth = 2;
+ 					hebrewDate = inputDay - tishri1 - 29;
+ 				}
+ 				return;
+ 			}
+ 
+ 			// We need the length of the year to figure this out,so find Tishri 1 of the next year.
+ 			moladHalakim += HALAKIM_PER_LUNAR_CYCLE * mpy[metonicYear];
+ 			moladDay += Math.floor(moladHalakim / HALAKIM_PER_DAY);
+ 			moladHalakim = moladHalakim % HALAKIM_PER_DAY;
+ 			tishri1After = Tishri1((metonicYear + 1) % 19,moladDay,moladHalakim);
+ 		}
+ 		else {
+ 			// It found Tishri 1 at the end of the year. 
+ 			hebrewYear = metonicCycle * 19 + metonicYear;
+ 			if (inputDay >= tishri1 - 177) {
+ 				// It is one of the last 6 months of the year. 
+ 				if (inputDay > tishri1 - 30) {
+ 					hebrewMonth = 13;
+ 					hebrewDate = inputDay - tishri1 + 30;
+ 				}
+ 				else if (inputDay > tishri1 - 60) {
+ 					hebrewMonth = 12;
+ 					hebrewDate = inputDay - tishri1 + 60;
+ 				}
+ 				else if (inputDay > tishri1 - 89) {
+ 					hebrewMonth = 11;
+ 					hebrewDate = inputDay - tishri1 + 89;
+ 				}
+ 				else if (inputDay > tishri1 - 119) {
+ 					hebrewMonth = 10;
+ 					hebrewDate = inputDay - tishri1 + 119;
+ 				}
+ 				else if (inputDay > tishri1 - 148) {
+ 					hebrewMonth = 9;
+ 					hebrewDate = inputDay - tishri1 + 148;
+ 				}
+ 				else {
+ 					hebrewMonth = 8;
+ 					hebrewDate = inputDay - tishri1 + 178;
+ 				}
+ 				return;
+ 			}
+ 			else {
+ 				if (mpy[(hebrewYear - 1) % 19] == 13) {
+ 					hebrewMonth = 7;
+ 					hebrewDate = inputDay - tishri1 + 207;
+ 					if (hebrewDate > 0)
+ 						return;
+ 
+ 					hebrewMonth--;
+ 					hebrewDate += 30;
+ 					if (hebrewDate > 0)
+ 						return;
+ 
+ 					hebrewMonth--;
+ 					hebrewDate += 30;
+ 				}
+ 				else {
+ 					hebrewMonth = 6;
+ 					hebrewDate = inputDay - tishri1 + 207;
+ 					if (hebrewDate > 0)
+ 						return;
+ 
+ 					hebrewMonth--;
+ 					hebrewDate += 30;
+ 				}
+ 				if (hebrewDate > 0)
+ 					return;
+ 
+ 				hebrewMonth--;
+ 				hebrewDate += 29;
+ 				if (hebrewDate > 0)
+ 					return;
+ 
+ 				// We need the length of the year to figure this out,so find Tishri 1 of this year. 
+ 				tishri1After = tishri1;
+ 				FindTishriMolad(moladDay - 365);
+ 				tishri1 = Tishri1(metonicYear,moladDay,moladHalakim);
+ 			}
+ 		}
+ 
+ 		yearLength = tishri1After - tishri1;
+ 		moladDay = inputDay - tishri1 - 29;
+ 		if (yearLength == 355 || yearLength == 385) {
+ 			// Heshvan has 30 days 
+ 			if (moladDay <= 30) {
+ 				hebrewMonth = 2;
+ 				hebrewDate = moladDay;
+ 				return;
+ 			}
+ 			moladDay -= 30;
+ 		}
+ 		else {
+ 			// Heshvan has 29 days 
+ 			if (moladDay <= 29) {
+ 				hebrewMonth = 2;
+ 				hebrewDate = moladDay;
+ 				return;
+ 			}
+ 			moladDay -= 29;
+ 		}
+ 
+ 		// It has to be Kislev. 
+ 		hebrewMonth = 3;
+ 		hebrewDate = moladDay;
+ 	}
+ 
+ 	function FindTishriMolad(inputDay)
+ 	{
+ 		// Estimate the metonic cycle number.  Note that this may be an under
+ 		// estimate because there are 6939.6896 days in a metonic cycle not
+ 		// 6940,but it will never be an over estimate.	 The loop below will
+ 		// correct for any error in this estimate.
+ 		metonicCycle = Math.floor((inputDay + 310) / 6940);
+ 
+ 		// Calculate the time of the starting molad for this metonic cycle.
+ 		MoladOfMetonicCycle();
+ 
+ 		// If the above was an under estimate,increment the cycle number until
+ 		// the correct one is found.  For modern dates this loop is about 98.6%
+ 		// likely to not execute,even once,because the above estimate is
+ 		// really quite close.
+ 		while (moladDay < inputDay - 6940 + 310) {
+ 			metonicCycle++;
+ 			moladHalakim += HALAKIM_PER_METONIC_CYCLE;
+ 			moladDay += Math.floor(moladHalakim / HALAKIM_PER_DAY);
+ 			moladHalakim = moladHalakim % HALAKIM_PER_DAY;
+ 		}
+ 
+ 		// Find the molad of Tishri closest to this date.
+ 		for (metonicYear = 0; metonicYear < 18; metonicYear++) {
+ 			if (moladDay > inputDay - 74)
+ 				break;
+ 
+ 			moladHalakim += HALAKIM_PER_LUNAR_CYCLE * mpy[metonicYear];
+ 			moladDay += Math.floor(moladHalakim / HALAKIM_PER_DAY);
+ 			moladHalakim = moladHalakim % HALAKIM_PER_DAY;
+ 		}
+ 	}
+ 
+ 	function MoladOfMetonicCycle()
+ 	{
+ 		var r1,r2,d1,d2;
+ 
+ 		// Start with the time of the first molad after creation.
+ 		r1 = NEW_MOON_OF_CREATION;
+ 
+ 		// Calculate gMetonicCycle * HALAKIM_PER_METONIC_CYCLE.	 The upper 32
+ 		// bits of the result will be in r2 and the lower 16 bits will be in r1.
+ 		r1 += metonicCycle * (HALAKIM_PER_METONIC_CYCLE & 0xFFFF);
+ 		r2 = r1 >> 16;
+ 		r2 += metonicCycle * ((HALAKIM_PER_METONIC_CYCLE >> 16) & 0xFFFF);
+ 
+ 		// Calculate r2r1 / HALAKIM_PER_DAY.  The remainder will be in r1,the
+ 		// upper 16 bits of the quotient will be in d2 and the lower 16 bits
+ 		// will be in d1.
+ 		d2 = Math.floor(r2 / HALAKIM_PER_DAY);
+ 		r2 -= d2 * HALAKIM_PER_DAY;
+ 		r1 = (r2 << 16) | (r1 & 0xFFFF);
+ 		d1 = Math.floor(r1 / HALAKIM_PER_DAY);
+ 		r1 -= d1 * HALAKIM_PER_DAY;
+ 
+ 		moladDay = (d2 << 16) | d1;
+ 		moladHalakim = r1;
+ 	}
+ 
+ 	function Tishri1(metonicYear,moladDay,moladHalakim)
+ 	{
+ 		var tishri1 = moladDay;
+ 		var dow = tishri1 % 7;
+ 
+ 		var leapYear =	metonicYear == 2 || metonicYear == 5 || metonicYear == 7 || metonicYear == 10 ||
+ 						metonicYear == 13 || metonicYear == 16 || metonicYear == 18;
+ 
+ 		var lastWasLeapYear =	metonicYear == 3 || metonicYear == 6 || metonicYear == 8 || metonicYear == 11 ||
+ 								metonicYear == 14 || metonicYear == 17 || metonicYear == 0;
+ 
+ 		// Apply rules 2,3 and 4
+ 		if ((moladHalakim >= NOON) ||
+ 			((!leapYear) && dow == TUES && moladHalakim >= AM3_11_20) ||
+ 			(lastWasLeapYear && dow == MON && moladHalakim >= AM9_32_43))
+ 		{
+ 			tishri1++;
+ 			dow++;
+ 			if (dow == 7)
+ 				dow = 0;
+ 		}
+ 
+ 		// Apply rule 1 after the others because it can cause an additional delay of one day.
+ 		if (dow == WED || dow == FRI || dow == SUN) {
+ 			tishri1++;
+ 		}
+ 
+ 		return tishri1;
+ 	}
+ 	//	end hiding contents from old browsers  -->
+   </script>
+   <div id="header">
+    <h1 id="site-header">
+     <a href="/">
+      DailyHalacha.com
+     </a>
+    </h1>
+    <div id="topbar">
+     <span class="topbar-links">
+      Also Visit:
+      <a href="http://www.learntorah.com" rel="external">
+       LearnTorah.com
+      </a>
+      <a href="http://www.dailyhalacha.com" rel="external">
+       DailyHalacha.com
+      </a>
+      <a href="http://www.dailytehillim.com" rel="external">
+       DailyTehillim.com
+      </a>
+      <a href="http://www.PeleYoetz.com" rel="external">
+       PeleYoetz.com
+      </a>
+      <a href="http://www.dailyhok.com" rel="external">
+       DailyHok.com
+      </a>
+      <a href="http://www.mishnaberura.com" rel="external">
+       MishnaBerura.com
+      </a>
+     </span>
+    </div>
+   </div>
+   <table border="0" cellpadding="1" cellspacing="0" id="Table6" width="100%">
+    <tr>
+     <td bgcolor="#3e7ebe" height="3">
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#267ee8">
+      <span class="textRegLight" id="Span1" style="padding:0 5em 0 1em; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; color:#FFFFFF;">
+       Saturday, July 28, 2018 /
+       <strong>
+        <script language="JavaScript" type="text/javascript">
+         getToday('7/28/2018');
+ 		   SdnToHebrew(GregorianToSdn(getFullYear(today),today.getMonth()+1,today.getDate()));
+ 		   JavaScript:displayHebrewDate();
+        </script>
+       </strong>
+      </span>
+      <span style="font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; color:#FFFFFF;">
+       Brought to you under the direction of
+       <a href="http://www.ejss.org" rel="external" style="color:#FFFFCC;">
+        The Edmond J Safra Synagogue
+       </a>
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#3e7ebe" height="3">
+     </td>
+    </tr>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" width="1000">
+    <tr>
+     <td align="center" class="textRegDark">
+      <a class="linkGray" href="Subscribe.asp">
+       Subscribe to Mailing list
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="AboutUs.asp?Show=Schedule">
+       Prayer &amp; Classes Schedule
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="video.asp">
+       Siyumim Videos
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="AboutUs.asp?Show=CallInInstructions">
+       Live Call-In
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="Photos.asp">
+       Photos
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="AboutUs.asp">
+       About Us
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="JavaScript:ContactUs();">
+       Contact Us
+      </a>
+      <span class="textReg">
+       |
+      </span>
+      <a class="linkGray" href="AboutUs.asp?Show=RabbiInfo">
+       About Rabbi Mansour
+      </a>
+      <script language="javascript">
+       function ContactUs()
+                 {
+                     window.open ('Http://www.DailyHalacha.com/ContactUs.aspx?Site=DailyGemara', 'mywin' ,"height=530,width=600,menu=no align=middle,scrollbars=no"); 
+                 }
+      </script>
+     </td>
+    </tr>
+    <tr height="5">
+     <td>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#FFFFFF" valign="top">
+      <div class="scroller DailyGemara">
+       <ul id="scrollingMessages">
+        <li>
+         <span>
+          ** 347-LEARNTORAH **  Halacha, Mishna Berura, Parasha, and Gemara Via Phone  *** 347-LEARNTORAH **
+         </span>
+        </li>
+       </ul>
+      </div>
+     </td>
+    </tr>
+   </table>
+   <table border="0" cellpadding="2" cellspacing="2" width="1000">
+    <tr valign="top">
+     <td height="70" width="33%">
+      <table bgcolor="#5780bd" border="0" cellpadding="3" cellspacing="1" height="110" width="100%">
+       <tr>
+        <td bgcolor="#ffffff" height="2">
+         <p align="center">
+          <span class="textRegSmall">
+           Select Daf by Masachet 
+               and Page#
+           <br/>
+          </span>
+          <select class="boxes" name="SelectMasechetID" onchange="MM_jumpMenu('parent',this,0)">
+           <option value="Default.asp?MasechetID=1">
+            Berachot
+           </option>
+           <option value="Default.asp?MasechetID=6">
+            Shabbat
+           </option>
+           <option value="Default.asp?MasechetID=7">
+            Eruvin
+           </option>
+           <option value="Default.asp?MasechetID=8">
+            Pesachim
+           </option>
+           <option value="Default.asp?MasechetID=9">
+            Shekalim
+           </option>
+           <option value="Default.asp?MasechetID=10">
+            Yoma
+           </option>
+           <option value="Default.asp?MasechetID=11">
+            Succah
+           </option>
+           <option value="Default.asp?MasechetID=12">
+            Beitza
+           </option>
+           <option value="Default.asp?MasechetID=13">
+            Rosh Hashana
+           </option>
+           <option value="Default.asp?MasechetID=15">
+            Taanit
+           </option>
+           <option value="Default.asp?MasechetID=16">
+            Megilah
+           </option>
+           <option value="Default.asp?MasechetID=17">
+            Moed Kattan
+           </option>
+           <option value="Default.asp?MasechetID=18">
+            Chagiga
+           </option>
+           <option value="Default.asp?MasechetID=19">
+            Yevamot
+           </option>
+           <option value="Default.asp?MasechetID=20">
+            Ketuvot
+           </option>
+           <option value="Default.asp?MasechetID=21">
+            Nedarim
+           </option>
+           <option value="Default.asp?MasechetID=22">
+            Nazir
+           </option>
+           <option value="Default.asp?MasechetID=23">
+            Sota
+           </option>
+           <option value="Default.asp?MasechetID=24">
+            Gittin
+           </option>
+           <option value="Default.asp?MasechetID=25">
+            Kiddushin
+           </option>
+           <option value="Default.asp?MasechetID=26">
+            Bava Kama
+           </option>
+           <option value="Default.asp?MasechetID=27">
+            Bava Mesia
+           </option>
+           <option value="Default.asp?MasechetID=30">
+            Bava Batra
+           </option>
+           <option value="Default.asp?MasechetID=31">
+            Sanhedrin
+           </option>
+           <option value="Default.asp?MasechetID=32">
+            Makot
+           </option>
+           <option value="Default.asp?MasechetID=33">
+            Shevuot
+           </option>
+           <option value="Default.asp?MasechetID=34">
+            Avoda Zara
+           </option>
+           <option value="Default.asp?MasechetID=35">
+            Horayot
+           </option>
+           <option selected="" value="Default.asp?MasechetID=36">
+            Zevachim
+           </option>
+           <option value="Default.asp?MasechetID=37">
+            Menachot
+           </option>
+           <option value="Default.asp?MasechetID=38">
+            Hulin
+           </option>
+           <option value="Default.asp?MasechetID=39">
+            Bechorot
+           </option>
+           <option value="Default.asp?MasechetID=40">
+            Erchin
+           </option>
+           <option value="Default.asp?MasechetID=41">
+            Temurah
+           </option>
+           <option value="Default.asp?MasechetID=44">
+            Meilah
+           </option>
+           <option value="Default.asp?MasechetID=43">
+            Keritut
+           </option>
+           <option value="Default.asp?MasechetID=45">
+            Kinnim
+           </option>
+           <option value="Default.asp?MasechetID=46">
+            Tamid
+           </option>
+           <option value="Default.asp?MasechetID=47">
+            Midot
+           </option>
+           <option value="Default.asp?MasechetID=48">
+            Nida
+           </option>
+          </select>
+          <select class="boxes" name="DayInCycle" onchange="MM_jumpMenu('parent',this,0)">
+           <option value="Default.asp?DayInCycle=2082">
+            2A - 2B
+           </option>
+           <option value="Default.asp?DayInCycle=2083">
+            3A - 3B
+           </option>
+           <option value="Default.asp?DayInCycle=2084">
+            4A - 4B
+           </option>
+           <option value="Default.asp?DayInCycle=2085">
+            5A - 5B
+           </option>
+           <option value="Default.asp?DayInCycle=2086">
+            6A - 6B
+           </option>
+           <option value="Default.asp?DayInCycle=2087">
+            7A - 7B
+           </option>
+           <option value="Default.asp?DayInCycle=2088">
+            8A - 8B
+           </option>
+           <option value="Default.asp?DayInCycle=2089">
+            9A - 9B
+           </option>
+           <option value="Default.asp?DayInCycle=2090">
+            10A - 10B
+           </option>
+           <option value="Default.asp?DayInCycle=2091">
+            11A - 11B
+           </option>
+           <option value="Default.asp?DayInCycle=2092">
+            12A - 12B
+           </option>
+           <option value="Default.asp?DayInCycle=2093">
+            13A - 13B
+           </option>
+           <option value="Default.asp?DayInCycle=2094">
+            14A - 14B
+           </option>
+           <option value="Default.asp?DayInCycle=2095">
+            15A - 15B
+           </option>
+           <option value="Default.asp?DayInCycle=2096">
+            16A - 16B
+           </option>
+           <option value="Default.asp?DayInCycle=2097">
+            17A - 17B
+           </option>
+           <option value="Default.asp?DayInCycle=2098">
+            18A - 18B
+           </option>
+           <option value="Default.asp?DayInCycle=2099">
+            19A - 19B
+           </option>
+           <option value="Default.asp?DayInCycle=2100">
+            20A - 20B
+           </option>
+           <option value="Default.asp?DayInCycle=2101">
+            21A - 21B
+           </option>
+           <option value="Default.asp?DayInCycle=2102">
+            22A - 22B
+           </option>
+           <option value="Default.asp?DayInCycle=2103">
+            23A - 23B
+           </option>
+           <option value="Default.asp?DayInCycle=2104">
+            24A - 24B
+           </option>
+           <option value="Default.asp?DayInCycle=2105">
+            25A - 25B
+           </option>
+           <option value="Default.asp?DayInCycle=2106">
+            26A - 26B
+           </option>
+           <option value="Default.asp?DayInCycle=2107">
+            27A - 27B
+           </option>
+           <option value="Default.asp?DayInCycle=2108">
+            28A - 28B
+           </option>
+           <option value="Default.asp?DayInCycle=2109">
+            29A - 29B
+           </option>
+           <option value="Default.asp?DayInCycle=2110">
+            30A - 30B
+           </option>
+           <option value="Default.asp?DayInCycle=2111">
+            31A - 31B
+           </option>
+           <option value="Default.asp?DayInCycle=2112">
+            32A - 32B
+           </option>
+           <option value="Default.asp?DayInCycle=2113">
+            33A - 33B
+           </option>
+           <option value="Default.asp?DayInCycle=2114">
+            34A - 34B
+           </option>
+           <option value="Default.asp?DayInCycle=2115">
+            35A - 35B
+           </option>
+           <option value="Default.asp?DayInCycle=2116">
+            36A - 36B
+           </option>
+           <option value="Default.asp?DayInCycle=2117">
+            37A - 37B
+           </option>
+           <option value="Default.asp?DayInCycle=2118">
+            38A - 38B
+           </option>
+           <option value="Default.asp?DayInCycle=2119">
+            39A - 39B
+           </option>
+           <option value="Default.asp?DayInCycle=2120">
+            40A - 40B
+           </option>
+           <option value="Default.asp?DayInCycle=2121">
+            41A - 41B
+           </option>
+           <option value="Default.asp?DayInCycle=2122">
+            42A - 42B
+           </option>
+           <option value="Default.asp?DayInCycle=2123">
+            43A - 43B
+           </option>
+           <option value="Default.asp?DayInCycle=2124">
+            44A - 44B
+           </option>
+           <option value="Default.asp?DayInCycle=2125">
+            45A - 45B
+           </option>
+           <option value="Default.asp?DayInCycle=2126">
+            46A - 46B
+           </option>
+           <option value="Default.asp?DayInCycle=2127">
+            47A - 47B
+           </option>
+           <option value="Default.asp?DayInCycle=2128">
+            48A - 48B
+           </option>
+           <option value="Default.asp?DayInCycle=2129">
+            49A - 49B
+           </option>
+           <option value="Default.asp?DayInCycle=2130">
+            50A - 50B
+           </option>
+           <option value="Default.asp?DayInCycle=2131">
+            51A - 51B
+           </option>
+           <option value="Default.asp?DayInCycle=2132">
+            52A - 52B
+           </option>
+           <option value="Default.asp?DayInCycle=2133">
+            53A - 53B
+           </option>
+           <option value="Default.asp?DayInCycle=2134">
+            54A - 54B
+           </option>
+           <option value="Default.asp?DayInCycle=2135">
+            55A - 55B
+           </option>
+           <option value="Default.asp?DayInCycle=2136">
+            56A - 56B
+           </option>
+           <option value="Default.asp?DayInCycle=2137">
+            57A - 57B
+           </option>
+           <option value="Default.asp?DayInCycle=2138">
+            58A - 58B
+           </option>
+           <option value="Default.asp?DayInCycle=2139">
+            59A - 59B
+           </option>
+           <option value="Default.asp?DayInCycle=2140">
+            60A - 60B
+           </option>
+           <option value="Default.asp?DayInCycle=2141">
+            61A - 61B
+           </option>
+           <option value="Default.asp?DayInCycle=2142">
+            62A - 62B
+           </option>
+           <option value="Default.asp?DayInCycle=2143">
+            63A - 63B
+           </option>
+           <option value="Default.asp?DayInCycle=2144">
+            64A - 64B
+           </option>
+           <option value="Default.asp?DayInCycle=2145">
+            65A - 65B
+           </option>
+           <option value="Default.asp?DayInCycle=2146">
+            66A - 66B
+           </option>
+           <option value="Default.asp?DayInCycle=2147">
+            67A - 67B
+           </option>
+           <option value="Default.asp?DayInCycle=2148">
+            68A - 68B
+           </option>
+           <option value="Default.asp?DayInCycle=2149">
+            69A - 69B
+           </option>
+           <option value="Default.asp?DayInCycle=2150">
+            70A - 70B
+           </option>
+           <option value="Default.asp?DayInCycle=2151">
+            71A - 71B
+           </option>
+           <option value="Default.asp?DayInCycle=2152">
+            72A - 72B
+           </option>
+           <option value="Default.asp?DayInCycle=2153">
+            73A - 73B
+           </option>
+           <option value="Default.asp?DayInCycle=2154">
+            74A - 74B
+           </option>
+           <option value="Default.asp?DayInCycle=2155">
+            75A - 75B
+           </option>
+           <option value="Default.asp?DayInCycle=2156">
+            76A - 76B
+           </option>
+           <option value="Default.asp?DayInCycle=2157">
+            77A - 77B
+           </option>
+           <option value="Default.asp?DayInCycle=2158">
+            78A - 78B
+           </option>
+           <option value="Default.asp?DayInCycle=2159">
+            79A - 79B
+           </option>
+           <option value="Default.asp?DayInCycle=2160">
+            80A - 80B
+           </option>
+           <option value="Default.asp?DayInCycle=2161">
+            81A - 81B
+           </option>
+           <option value="Default.asp?DayInCycle=2162">
+            82A - 82B
+           </option>
+           <option value="Default.asp?DayInCycle=2163">
+            83A - 83B
+           </option>
+           <option value="Default.asp?DayInCycle=2164">
+            84A - 84B
+           </option>
+           <option value="Default.asp?DayInCycle=2165">
+            85A - 85B
+           </option>
+           <option value="Default.asp?DayInCycle=2166">
+            86A - 86B
+           </option>
+           <option value="Default.asp?DayInCycle=2167">
+            87A - 87B
+           </option>
+           <option value="Default.asp?DayInCycle=2168">
+            88A - 88B
+           </option>
+           <option value="Default.asp?DayInCycle=2169">
+            89A - 89B
+           </option>
+           <option value="Default.asp?DayInCycle=2170">
+            90A - 90B
+           </option>
+           <option value="Default.asp?DayInCycle=2171">
+            91A - 91B
+           </option>
+           <option value="Default.asp?DayInCycle=2172">
+            92A - 92B
+           </option>
+           <option value="Default.asp?DayInCycle=2173">
+            93A - 93B
+           </option>
+           <option value="Default.asp?DayInCycle=2174">
+            94A - 94B
+           </option>
+           <option value="Default.asp?DayInCycle=2175">
+            95A - 95B
+           </option>
+           <option value="Default.asp?DayInCycle=2176">
+            96A - 96B
+           </option>
+           <option value="Default.asp?DayInCycle=2177">
+            97A - 97B
+           </option>
+           <option value="Default.asp?DayInCycle=2178">
+            98A - 98B
+           </option>
+           <option value="Default.asp?DayInCycle=2179">
+            99A - 99B
+           </option>
+           <option value="Default.asp?DayInCycle=2180">
+            100A - 100B
+           </option>
+           <option value="Default.asp?DayInCycle=2181">
+            101A - 101B
+           </option>
+           <option value="Default.asp?DayInCycle=2182">
+            102A - 102B
+           </option>
+           <option value="Default.asp?DayInCycle=2183">
+            103A - 103B
+           </option>
+           <option value="Default.asp?DayInCycle=2184">
+            104A - 104B
+           </option>
+           <option value="Default.asp?DayInCycle=2185">
+            105A - 105B
+           </option>
+           <option selected="" value="Default.asp?DayInCycle=2186">
+            106A - 106B
+           </option>
+           <option value="Default.asp?DayInCycle=2187">
+            107A - 107B
+           </option>
+           <option value="Default.asp?DayInCycle=2188">
+            108A - 108B
+           </option>
+           <option value="Default.asp?DayInCycle=2189">
+            109A - 109B
+           </option>
+           <option value="Default.asp?DayInCycle=2190">
+            110A - 110B
+           </option>
+           <option value="Default.asp?DayInCycle=2191">
+            111A - 111B
+           </option>
+           <option value="Default.asp?DayInCycle=2192">
+            112A - 112B
+           </option>
+           <option value="Default.asp?DayInCycle=2193">
+            113A - 113B
+           </option>
+           <option value="Default.asp?DayInCycle=2194">
+            114A - 114B
+           </option>
+           <option value="Default.asp?DayInCycle=2195">
+            115A - 115B
+           </option>
+           <option value="Default.asp?DayInCycle=2196">
+            116A - 116B
+           </option>
+           <option value="Default.asp?DayInCycle=2197">
+            117A - 117B
+           </option>
+           <option value="Default.asp?DayInCycle=2198">
+            118A - 118B
+           </option>
+           <option value="Default.asp?DayInCycle=2199">
+            119A - 119B
+           </option>
+          </select>
+          <br/>
+          <br/>
+          <span class="textRegSmall">
+           Or by date:
+           <br/>
+          </span>
+          <input class="inputCalendar" id="PageDate" name="PageDate" onchange="location.href='Default.asp?PageDate='+ this.value " type="text" value="7/28/2018"/>
+          <script>
+           $(function() {
+                   $("#PageDate").datepicker({'changeYear' : true, 'changeMonth' : true});
+                 });
+          </script>
+         </p>
+        </td>
+       </tr>
+      </table>
+     </td>
+     <!--<td width="33%" height="70"> 
+       <table width="100%" border="0" cellspacing="1" cellpadding="3" bgcolor="#ffffff" height="110" class="fancyBorder">
+         
+         <tr> 
+           <td bgcolor="#ffffff" height="100%" valign="center"> 
+             <div align="center" class="textRegDark"> 
+               <p><a href="SponsorShip.aspx" Class="linkDark"><B>Click here to Sponsor 
+                 a Daf</a><br>
+               </p>
+             </div>
+           </td>
+         </tr>
+         
+ 		  <tr>
+ 			<td align=middle class="textRegDark">
+ 			</Font>
+ 			Also In Memory of Avraham ben Esther
+ 			</td>
+ 		  </tr>
+ 		
+       </table>
+     </td>
+     <td width="33%" height="70"> 
+       <table width="100%" border="0" cellspacing="1" cellpadding="3" bgcolor="#5780bd" height="110">
+         <tr> 
+           <td bgcolor="#ffffff" height="100%" valign="center"> 
+             <div align="center" class="textRegDark"> 
+               
+               <P> Masechet&nbsp;Zevachim&nbsp;In Honor  Of
+                 <br>
+                 <span class="textRegDarkB"> 
+                 &nbsp;Rabbi Eli J Mansour
+                 </span> </p>
+ 				
+ 				<p> Dedicated By<br>
+ 				  <span class="textRegDarkB"> Benny 'C' Cohen </span> 
+ 				</p>
+ 				
+             </div>
+           </td>
+         </tr>
+       </table>
+     </td>
+   </tr><tr>-->
+     <td>
+      <img border="0" height="106" src="Media/Podcast.gif" usemap="#Podcast" width="335"/>
+     </td>
+     <!--<td></td>-->
+     <td>
+      <table bgcolor="#5780bd" border="0" cellpadding="3" cellspacing="1" height="110" width="100%">
+       <tr valign="top">
+        <td bgcolor="#ffffff" height="100%">
+         <div class="textRegDark">
+          <span class="textRegDarkB">
+           Useful links:
+          </span>
+          <br/>
+          <a class="linkGray" href="http://www.DailyHalacha.com/Link.aspx?LinkID=2" target="_blank">
+           Daf Yomi Calendar
+          </a>
+          <br/>
+          <a class="linkGray" href="http://www.DailyHalacha.com/Link.aspx?LinkID=3" target="_blank">
+           Daf Yomi Study And Review Resources
+          </a>
+          <br/>
+         </div>
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+   </table>
+   <map name="Podcast">
+    <area alt="Subscribe to DailyGemara podcast" coords="50,7,322,70" href="itpc://DailyGemara.com/Podcast.asp" shape="rect">
+    </area>
+    <area coords="78,81,319,101" href="http://www.apple.com/uk/itunes/download/" shape="rect" target="_blank">
+    </area>
+   </map>
+   <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    _uacct = "UA-445880-2";
+ urchinTracker();
+   </script>
+   <table border="0" cellpadding="0" cellspacing="0" width="1000">
+    <tr>
+     <td width="14%">
+      <a href="?DayInCycle=2185">
+       <img border="0" height="39" src="media/page_previous.gif" width="154"/>
+      </a>
+     </td>
+     <td align="middle" width="72%">
+      <!--<a HREF="javascript:print(4669)"><img src="media/b_print.gif" width="47" height="20" border="0"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+      <div style="float: left; width: 45%; margin: 2%">
+       <table border="0" cellpadding="0" cellspacing="0" class="textreg" id="Table5" width="100%">
+        <tr>
+         <td class="textTitle" colspan="2" nowrap="">
+          12th Cycle Daf Yomi Shiur (2/24/2011)
+         </td>
+        </tr>
+        <tr>
+         <td colspan="2" width="150">
+          <audio controls="controls" src="/Gemara/2240.mp3">
+           Play...
+          </audio>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="http://www.dailygemara.com/Save.aspx?t=m&amp;ID=2240">
+           <img border="0" height="20" src="media/b_downloadMP3.gif" width="110"/>
+          </a>
+         </td>
+         <td nowrap="">
+          7.63 MB
+         </td>
+        </tr>
+        <!--<tr>
+ 					    <td>
+ 						    <a href="http://www.dailygemara.com/Save.aspx?t=w&ID=2240"><img src="media/b_downloadWMA.gif" width="114" height="20" border="0"></a>
+ 						  </td> 
+ 						  <td nowrap>30.71 MB</td>
+ 					  </tr>-->
+       </table>
+      </div>
+     </td>
+     <td align="right" width="14%">
+      <a href="?DayInCycle=2187">
+       <img border="0" height="39" src="media/page_next.gif" width="129"/>
+      </a>
+     </td>
+    </tr>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" width="1000">
+    <tr>
+     <td>
+      <div align="center">
+       <img src="/Gemara/Images/4669.gif" width="780"/>
+       <br/>
+       <img src="/Gemara/Images/4670.gif" width="780"/>
+      </div>
+     </td>
+     <td style="vertical-align:top;">
+      <h3>
+       Tosafot
+      </h3>
+     </td>
+    </tr>
+   </table>
+   <table border="0" cellpadding="0" cellspacing="0" width="1000">
+    <tr>
+     <td>
+      <div align="center" class="textReg">
+       © 2018 Daily Gemara. All rights 
+         reserved.
+      </div>
+     </td>
+    </tr>
+   </table>
+   <script type="text/javascript">
+    //<![CDATA[
+   if (typeof(jQuery) == "undefined") {
+     document.write("<scr" + "ipt type='text/javascript' src='/Common/scripts/jquery-1.6.1.min.js'></scr" + "ipt>")
+   }
+ //]]>
+   </script>
+   <script src="/Common/scripts/jquery.cookie.js" type="text/javascript">
+   </script>
+   <script src="/Common/scripts/jquery.fancybox/jquery.fancybox-1.2.1.pack.js" type="text/javascript">
+   </script>
+   <link href="/Common/styles/popup.css" rel="stylesheet" type="text/css"/>
+   <link href="/Common/scripts/jquery.fancybox/jquery.fancybox.css" rel="stylesheet" type="text/css"/>
+   <a href="#chinese-auction" id="fancybox-disabled" style="display:none;">
+    Chinese Auction
+   </a>
+   <div id="chinese-auction" style="display:none;">
+    <!--<div id="chinese-auction-popup-topbar">
+     <a href="https://www.learntorah.com/Auction.aspx" title="Buy Auction Package">
+       <img src="popup/AuctionButton.gif" alt="Sponsor a Shiur" class="link-button"/>
+     </a>
+     <a onclick="jQuery('#fancybox').fancybox.close(); return false;" href="#" title="Continue to LearnTorah.com">
+       <img src="popup/exit-and-proceed-to-website.gif" alt="Continue to LearnTorah.com" class="link-button"/>
+     </a>
+   </div>-->
+    <div id="chinese-auction-popup-auction" onclick="location.href='https://shop.learntorah.com'">
+     <!--<div style="float:left;">
+       <a href="https://www.learntorah.com/Auction.aspx" title="Sponsor a Shiur" class="left"></a>
+     </div>-->
+    </div>
+   </div>
+   <script type="text/javascript">
+    //<![CDATA[
+   jQuery(document).ready(function() {
+     jQuery('#fancybox').fancybox({
+       hideOnContentClick: false,
+       frameWidth: 463,
+       frameHeight: 600
+     });
+ 
+     if (jQuery.cookie('run-once') != "1") {
+       jQuery('#fancybox').trigger('click');
+       jQuery.cookie('run-once', '1', { expires: 1 });
+     }
+   });
+ //]]>
+   </script>
+  </body>
+ </html>

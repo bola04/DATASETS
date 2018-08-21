@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+ <html lang="ru-RU" prefix="og: http://ogp.me/ns#">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+   <title>
+    Автотех - Автоцентр Рязань - ГАЗ, Hower, Changan: продажа, обслуживание.
+   </title>
+   <style>
+    .wpcf7-submit{
+ 			display:none;
+ 		}
+ 		.recaptcha-btn{
+ 			display:block;
+ 		}
+ 		.grecaptcha-badge {display: none;}
+   </style>
+   <script type="text/javascript">
+    var contactform = [];
+ 		var checkIfCalled = true;
+ 		var renderGoogleInvisibleRecaptchaFront = function() {
+ 			//jQuery(document).ready(function(){
+ 				// prevent form submit from enter key
+ 				jQuery("input[name=_wpcf7]").attr("class","formid");
+ 					jQuery('.wpcf7-form').on('keyup keypress', "input", function(e) {
+ 					  var keyCode = e.keyCode || e.which;
+ 					  if (keyCode === 13) {
+ 						e.preventDefault();
+ 						return false;
+ 					  }
+ 					});
+ 
+ 				jQuery('.wpcf7-submit').each(function(index){
+ 
+ 					var checkexclude = 0;
+ 					var form = jQuery(this).closest('.wpcf7-form');
+ 					var value = jQuery(form).find(".formid").val();
+ 					// check form exclude from invisible recaptcha
+ 										if(checkexclude == 0){
+ 						// Hide the form orig submit button
+ 						form.find('.wpcf7-submit').hide();
+ 
+ 						// Fetch class and value of orig submit button
+ 						btnClasses = form.find('.wpcf7-submit').attr('class');
+ 						btnValue = form.find('.wpcf7-submit').attr('value');
+ 
+ 						// Add custom button and recaptcha holder
+ 
+ 						form.find('.wpcf7-submit').after('<input type="button" id="wpcf-custom-btn-'+index+'" class="'+btnClasses+'  recaptcha-btn recaptcha-btn-type-css" value="'+btnValue+'" title="'+btnValue+'" >');
+ 						form.append('<div class="recaptcha-holder" id="recaptcha-holder-'+index+'"></div>');
+ 						// Recaptcha rendenr from here
+ 						var holderId = grecaptcha.render('recaptcha-holder-'+index,{
+ 									'sitekey':'6LfsU2IUAAAAAIY3H_H6aENULElCh5zb4zku5oJQ',
+ 									'size': 'invisible',
+ 									'badge' : 'bottomright', // possible values: bottomright, bottomleft, inline
+ 									'callback' : function (recaptchaToken) {
+ 										//console.log(recaptchaToken);
+ 										var response=jQuery('#recaptcha-holder-'+index).find('.g-recaptcha-response').val();
+ 										//console.log(response);
+ 										//Remove old response and store new respone
+ 										jQuery('#recaptcha-holder-'+index).parent().find(".respose_post").remove();
+ 										jQuery('#recaptcha-holder-'+index).after('<input type="hidden" name="g-recaptcha-response"  value="'+response+'" class="respose_post">')
+ 										grecaptcha.reset(holderId);
+ 
+ 										if(typeof customCF7Validator !== 'undefined'){
+ 											if(!customCF7Validator(form)){
+ 												return;
+ 											}
+ 										}
+ 										// Call default Validator function
+ 										else if(contactFormDefaultValidator(form)){
+ 											return;
+ 										}
+ 										else{
+ 											// hide the custom button and show orig submit button again and submit the form
+ 											jQuery('#wpcf-custom-btn-'+index).hide();
+ 											form.find('input[type=submit]').show();
+ 											form.find("input[type=submit]").click();
+ 											form.find('input[type=submit]').hide();
+ 											jQuery('#wpcf-custom-btn-'+index).attr('style','');
+ 										}
+ 									}
+ 							},false);
+ 
+ 						// action call when click on custom button
+ 						jQuery('#wpcf-custom-btn-'+index).click(function(event){
+ 							event.preventDefault();
+ 							// Call custom validator function
+ 							if(typeof customCF7Validator == 'function'){
+ 								if(!customCF7Validator(form)){
+ 									return false;
+ 								}
+ 							}
+ 							// Call default Validator function
+ 							else if(contactFormDefaultValidator(form)){
+ 								return false;
+ 							}
+ 							else if(grecaptcha.getResponse(holderId) != ''){
+ 								grecaptcha.reset(holderId);
+ 							}
+ 							else{
+ 								// execute the recaptcha challenge
+ 								grecaptcha.execute(holderId);
+ 							}
+ 						});
+ 					}
+ 				});
+ 			//});
+ 
+ 		};
+ 
+ 		/*
+ 			*** This function is to get all the messages related to  contact form
+ 				You need to pass form id and message key and this function will return contact form message.
+ 			*** Since: 1.3.0
+ 			*** @params:
+ 						1) form id
+ 						2) message key
+ 			*** return:
+ 					Contact form message
+ 		*/
+ 		function getContactFormMessage(formid,key){
+ 			if(contactform == ""){
+ 				return "";
+ 			}
+ 			else{
+ 				for (var i=0; i<contactform.length; i++){
+ 					var checkId = contactform[i][0];
+ 					var checkKey = contactform[i][1];
+ 					var returnMsg = contactform[i][2];
+ 
+ 					if(formid == checkId && checkKey == key){
+ 						return returnMsg;
+ 						break;
+ 					}
+ 				}
+ 			}
+ 		}
+ 
+ 		// Default validator function
+ 		function contactFormDefaultValidator(objForm){
+ 
+ 			var formid=jQuery(objForm).find(".formid").val();
+ 			var havingError = false;
+ 
+ 			// Fetch each validation field one by one
+ 			objForm.find('.wpcf7-validates-as-required').each(function(){
+ 				jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 				// Check if empty or checkbox checked or not
+ 				if(!jQuery(this).hasClass('wpcf7-checkbox')){
+ 					// For GDPR
+ 					if(jQuery(this).hasClass('wpcf7-wpgdprc')){
+ 						var checkselected = 0;
+ 						jQuery(this).find('input').each(function(){
+ 							if(jQuery(this).prop('checked') == true){
+ 								checkselected++;
+ 							}
+ 						});
+ 						if(checkselected == 0){
+ 							jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 							jQuery(this).after('<span class="wpcf7-not-valid-tip" role="alert">'+getContactFormMessage(formid,'gdpr')+'</span>');
+ 							havingError = true;
+ 						}
+ 					}
+ 					else if(!jQuery(this).val()){
+ 						jQuery(this).val('');
+ 						jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(this).after('<span class="wpcf7-not-valid-tip" role="alert">'+getContactFormMessage(formid,'invalid_required')+'</span>');
+ 						havingError = true;
+ 					}
+ 					// Check if not valid email address entered
+ 					else{
+ 						if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-email") >= 0){
+ 							var emailField = jQuery(this).val();
+ 							if(!validateCustomFormEmail(emailField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_email')+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid url entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-url") >= 0){
+ 							var urlField = jQuery(this).val();
+ 							if(!validateCustomFormurl(urlField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_url')+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid telephone entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-tel") >= 0){
+ 							var telField = jQuery(this).val();
+ 							if(!validateCustomFormtel(telField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_tel')+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid number entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-number") >= 0){
+ 							var numField = jQuery(this).val();
+ 							var min = jQuery(this).attr('min');
+ 							var max = jQuery(this).attr('max');
+ 							var testnum = validateCustomFormnum(numField,min,max);
+ 							if(testnum != 0){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								if(testnum ==1){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_number')+'</span>');
+ 								}
+ 								if(testnum ==2){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_too_long')+'</span>');
+ 								}
+ 								if(testnum ==3){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_too_short')+'</span>');
+ 								}
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid date entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-date") >= 0){
+ 							var date = jQuery(this).val();
+ 							if(!validateCustomFordate(date)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+getContactFormMessage(formid,'invalid_date')+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 					}
+ 				}
+ 				else{
+ 					var checkselected = 0;
+ 					jQuery(this).find('input').each(function(){
+ 						if(jQuery(this).prop('checked') == true){
+ 							checkselected++;
+ 						}
+ 					});
+ 					if(checkselected == 0){
+ 						jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(this).after('<span class="wpcf7-not-valid-tip" role="alert">'+getContactFormMessage(formid,'invalid_required')+'</span>');
+ 						havingError = true;
+ 					}
+ 				}
+ 			});
+ 			//for acceptance validation
+ 			if(jQuery(objForm).find('.wpcf7-acceptance').length > 0){
+ 				if(jQuery(objForm).find('.wpcf7-acceptance').hasClass('wpcf7-invert')){
+ 					if(jQuery(objForm).find('.wpcf7-acceptance').prop('checked') == true){
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(objForm).find('.wpcf7-acceptance').after('<span class="wpcf7-not-valid-tip" role="alert">'+getContactFormMessage(formid,'accept_terms')+'</span>');
+ 						havingError = true;
+ 					}
+ 					else{
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 					}
+ 				}
+ 				else{
+ 					if(jQuery(objForm).find('.wpcf7-acceptance').prop('checked') == false){
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(objForm).find('.wpcf7-acceptance').after('<span class="wpcf7-not-valid-tip" role="alert">'+getContactFormMessage(formid,'accept_terms')+'</span>');
+ 						havingError = true;
+ 					}
+ 					else{
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 					}
+ 				}
+ 			}
+ 
+ 			return havingError;
+ 		}
+ 		//email validation function
+ 		function validateCustomFormEmail(email) {
+ 			var expr = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,10}|[0-9]{1,3})(\]?)$/;
+ 			return expr.test(email);
+ 		}
+ 		//url validation function
+ 		function validateCustomFormurl(url) {
+ 			if(url){
+ 				return true;
+ 			}
+ 			else{
+ 				return false;
+ 			}
+ 		}
+ 		//telephone validation function
+ 		function validateCustomFormtel(number){
+ 			var phoneno = /[a-zA-Z]/;
+ 			if(number.match(phoneno)) {
+ 				return false;
+ 			}
+ 			else {
+ 				return true;
+ 			}
+ 		}
+ 		//number filed validation function
+ 		function validateCustomFormnum(number,min,max){
+ 			if (isNaN(number) ) {
+ 				return 1;
+ 			}
+ 			else {
+ 				if(min){
+ 					if(number < min){
+ 						return 3;
+ 					}
+ 				}
+ 				if(max){
+ 					if(number > max){
+ 						return 2;
+ 					}
+ 				}
+ 				return 0;
+ 			}
+ 		}
+ 		//date filed validation function
+ 		function validateCustomFordate(input) {
+ 			var status = false;
+ 			if (!input || input.length <= 0) {
+ 			  status = false;
+ 			}
+ 			else {
+ 			  var result = new Date(input);
+ 			  if (result == 'Invalid Date') {
+ 				status = false;
+ 			  }
+ 			  else {
+ 				status = true;
+ 			  }
+ 			}
+ 			return status;
+ 		}
+   </script>
+   <script async="" defer="" src="https://www.google.com/recaptcha/api.js?onload=renderGoogleInvisibleRecaptchaFront&amp;render=explicit">
+   </script>
+   <!-- This site is optimized with the Yoast SEO plugin v7.7 - https://yoast.com/wordpress/plugins/seo/ -->
+   <meta content="ООО «Автотех» является мультибрендовым салоном и является официальным дилером Горьковского автомобильного завода «ГАЗ», «GW HOWER» и «CHANGAN»" name="description"/>
+   <link href="http://avt-t.ru/" rel="canonical"/>
+   <meta content="ru_RU" property="og:locale"/>
+   <meta content="website" property="og:type"/>
+   <meta content="Автотех - Автоцентр Рязань - ГАЗ, Hower, Changan: продажа, обслуживание." property="og:title"/>
+   <meta content="ООО «Автотех» является мультибрендовым салоном и является официальным дилером Горьковского автомобильного завода «ГАЗ», «GW HOWER» и «CHANGAN»" property="og:description"/>
+   <meta content="http://avt-t.ru/" property="og:url"/>
+   <meta content="Автотех" property="og:site_name"/>
+   <meta content="summary_large_image" name="twitter:card"/>
+   <meta content="ООО «Автотех» является мультибрендовым салоном и является официальным дилером Горьковского автомобильного завода «ГАЗ», «GW HOWER» и «CHANGAN»" name="twitter:description"/>
+   <meta content="Автотех - Автоцентр Рязань - ГАЗ, Hower, Changan: продажа, обслуживание." name="twitter:title"/>
+   <script type="application/ld+json">
+    {"@context":"https:\/\/schema.org","@type":"WebSite","@id":"#website","url":"http:\/\/avt-t.ru\/","name":"\u0410\u0432\u0442\u043e\u0442\u0435\u0445","potentialAction":{"@type":"SearchAction","target":"http:\/\/avt-t.ru\/?s={search_term_string}","query-input":"required name=search_term_string"}}
+   </script>
+   <!-- / Yoast SEO plugin. -->
+   <link href="//s.w.org" rel="dns-prefetch"/>
+   <script type="text/javascript">
+    window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/avt-t.ru\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.7"}};
+ 			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56692,8205,9792,65039],[55357,56692,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+   </script>
+   <style type="text/css">
+    img.wp-smiley,
+ img.emoji {
+ 	display: inline !important;
+ 	border: none !important;
+ 	box-shadow: none !important;
+ 	height: 1em !important;
+ 	width: 1em !important;
+ 	margin: 0 .07em !important;
+ 	vertical-align: -0.1em !important;
+ 	background: none !important;
+ 	padding: 0 !important;
+ }
+   </style>
+   <link href="http://avt-t.ru/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.0.2" id="contact-form-7-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://avt-t.ru/wp-content/themes/autotech/css/bootstrap.min.css?ver=4.9.7" id="bs-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://avt-t.ru/wp-content/themes/autotech/style.css?ver=4.9.7" id="main-css" media="all" rel="stylesheet" type="text/css"/>
+   <script src="http://avt-t.ru/wp-includes/js/jquery/jquery.js?ver=1.12.4" type="text/javascript">
+   </script>
+   <script src="http://avt-t.ru/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1" type="text/javascript">
+   </script>
+   <link href="http://avt-t.ru/wp-json/" rel="https://api.w.org/"/>
+   <link href="http://avt-t.ru/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml"/>
+   <link href="http://avt-t.ru/wp-includes/wlwmanifest.xml" rel="wlwmanifest" type="application/wlwmanifest+xml"/>
+   <meta content="WordPress 4.9.7" name="generator"/>
+   <link href="http://avt-t.ru/" rel="shortlink"/>
+   <link href="http://avt-t.ru/wp-json/oembed/1.0/embed?url=http%3A%2F%2Favt-t.ru%2F" rel="alternate" type="application/json+oembed"/>
+   <link href="http://avt-t.ru/wp-json/oembed/1.0/embed?url=http%3A%2F%2Favt-t.ru%2F&amp;format=xml" rel="alternate" type="text/xml+oembed"/>
+   <style type="text/css">
+    .recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}
+   </style>
+   <link href="http://avt-t.ru/wp-content/uploads/2018/06/cropped-favicon-32x32.png" rel="icon" sizes="32x32"/>
+   <link href="http://avt-t.ru/wp-content/uploads/2018/06/cropped-favicon-192x192.png" rel="icon" sizes="192x192"/>
+   <link href="http://avt-t.ru/wp-content/uploads/2018/06/cropped-favicon-180x180.png" rel="apple-touch-icon-precomposed"/>
+   <meta content="http://avt-t.ru/wp-content/uploads/2018/06/cropped-favicon-270x270.png" name="msapplication-TileImage"/>
+  </head>
+  <body class="home page-template page-template-page-home page-template-page-home-php page page-id-2">
+   <header class="header">
+    <!-- begin header-top-line -->
+    <div class="header-top-line">
+     <div class="container">
+      <div class="header-logo">
+       <a href="http://avt-t.ru">
+        <img alt="" src="http://avt-t.ru/wp-content/themes/autotech/img/header-logo.png"/>
+       </a>
+      </div>
+      <div class="header-lineup-nav">
+       <ul>
+        <li>
+         <a href="http://avt-t.ru/gaz/">
+          ГАЗ
+          <i class="fa fa-angle-down">
+          </i>
+         </a>
+         <ul id="top-nav-gaz">
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-109" id="menu-item-109">
+           <a href="http://avt-t.ru/gaz/gazel-next/">
+            ГАЗЕЛЬ NEXT
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-108" id="menu-item-108">
+           <a href="http://avt-t.ru/gaz/gazon-next/">
+            ГАЗОН NEXT
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-215" id="menu-item-215">
+           <a href="http://avt-t.ru/gaz/gaz-4wd/">
+            4WD
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-213" id="menu-item-213">
+           <a href="http://avt-t.ru/gaz/gazel-biznes/">
+            ГАЗЕЛЬ БИЗНЕС
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-214" id="menu-item-214">
+           <a href="http://avt-t.ru/gaz/sobol-biznes/">
+            СОБОЛЬ БИЗНЕС
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-hower/">
+          Hower
+          <i class="fa fa-angle-down">
+          </i>
+         </a>
+         <ul id="top-nav-hower">
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-212" id="menu-item-212">
+           <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-hower/hower-h3/">
+            Hower H3
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-211" id="menu-item-211">
+           <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-hower/hower-h5/">
+            Hower H5
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-changan/">
+          changan
+          <i class="fa fa-angle-down">
+          </i>
+         </a>
+         <ul id="top-nav-changan">
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-132" id="menu-item-132">
+           <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-changan/changan-cs35/">
+            CHANGAN CS35
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-131" id="menu-item-131">
+           <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-changan/changan-cs75/">
+            CHANGAN CS75
+           </a>
+          </li>
+         </ul>
+        </li>
+       </ul>
+      </div>
+      <!-- begin header-contacts -->
+      <div class="header-contacts">
+       <div class="header-contact">
+        <div class="header-contact-title">
+         Продажа. Сервис. Запчасти.
+        </div>
+        <div class="header-contact-text">
+         ул. Солнечная, д. 3
+        </div>
+        <div class="header-contact-link">
+         <a href="tel:84912242454">
+          +7 (4912) 24-24-54
+         </a>
+        </div>
+       </div>
+       <div class="header-contact">
+        <div class="header-contact-title">
+         Сервис. Запчасти.
+        </div>
+        <div class="header-contact-text">
+         Борки, 8 район, 189
+        </div>
+        <div class="header-contact-link">
+         <a href="tel:84912241330">
+          +7 (4912) 24-13-30
+         </a>
+        </div>
+       </div>
+       <div class="header-contacts-time">
+        <p>
+         пн-пт: 9
+         <sup>
+          00
+         </sup>
+         - 19
+         <sup>
+          00
+         </sup>
+         <span>
+          |
+         </span>
+         сб-вс: 9
+         <sup>
+          00
+         </sup>
+         -18
+         <sup>
+          00
+         </sup>
+        </p>
+       </div>
+       <div class="header-contacts-callback">
+        <a class="popup-link callback" data-popup="popup-callback" href="#">
+         заказать звонок
+        </a>
+       </div>
+      </div>
+      <!-- end header-contacts -->
+     </div>
+    </div>
+    <!-- end header-top-line -->
+    <!-- begin header-menu -->
+    <div class="header-menu">
+     <div class="container">
+      <div class="mobile-menu" id="menu-btn">
+       <span>
+       </span>
+      </div>
+      <div class="w-100">
+      </div>
+      <div class="mobile-contacts" id="contacts-btn">
+       <i class="fa fa-phone">
+       </i>
+       <span>
+       </span>
+      </div>
+      <div class="header-nav">
+       <nav>
+        <!-- <ul>
+ 							<li><a href="#">О компании</a></li>
+ 							<li><a href="#">Спецпредложения</a></li>
+ 							<li><a href="#">Финансовые программы</a></li>
+ 							<li><a href="#">Обслуживание и ремонт</a></li>
+ 							<li><a href="#">Контакты</a></li>
+ 							<li><a href="#">Новости</a></li>
+ 						</ul> -->
+        <ul id="top-nav-ul">
+         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16" id="menu-item-16">
+          <a href="http://avt-t.ru/o-kompanii/">
+           О КОМПАНИИ
+          </a>
+         </li>
+         <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-17" id="menu-item-17">
+          <a href="http://avt-t.ru/specpredlozhenija/">
+           СПЕЦПРЕДЛОЖЕНИЯ
+          </a>
+         </li>
+         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33" id="menu-item-33">
+          <a href="http://avt-t.ru/finansovye-programmy/">
+           Финансовые программы
+          </a>
+         </li>
+         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-20" id="menu-item-20">
+          <a href="http://avt-t.ru/obsluzhivanie-i-remont/">
+           ОБСЛУЖИВАНИЕ И РЕМОНТ
+          </a>
+         </li>
+         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-15" id="menu-item-15">
+          <a href="http://avt-t.ru/kontakty/">
+           Контакты
+          </a>
+         </li>
+         <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-24" id="menu-item-24">
+          <a href="http://avt-t.ru/novosti/">
+           НОВОСТИ
+          </a>
+         </li>
+        </ul>
+       </nav>
+      </div>
+      <div class="header-time">
+       <p>
+        пн-пт: 9
+        <sup>
+         00
+        </sup>
+        - 19
+        <sup>
+         00
+        </sup>
+       </p>
+       <p>
+        сб-вс: 9
+        <sup>
+         00
+        </sup>
+        -18
+        <sup>
+         00
+        </sup>
+       </p>
+      </div>
+      <div class="header-menu-links">
+       <div class="header-menu-link">
+        <a class="popup-link test" data-popup="popup-test" href="#">
+         записаться на Test-Truck
+        </a>
+       </div>
+       <div class="header-menu-link">
+        <a class="popup-link callback" data-popup="popup-callback" href="#">
+         записаться на тест-драйв ГАЗ, HOWER, CHANGAN
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- end header-menu -->
+   </header>
+   <div class="wrapper-content">
+    <!-- begin autos -->
+    <div class="autos">
+     <div class="container">
+      <div class="autos-item gaz">
+       <a href="http://avt-t.ru/gaz/">
+       </a>
+       <h2 class="autos-title">
+        Газ
+       </h2>
+       <div class="autos-logo">
+        <img alt="" src="http://avt-t.ru/wp-content/themes/autotech/pic/autos-logo-1.jpg"/>
+       </div>
+       <div class="autos-link">
+        <a href="#">
+         смотреть
+         <i class="fa fa-caret-right">
+         </i>
+        </a>
+       </div>
+      </div>
+      <div class="autos-item hower">
+       <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-hower/">
+       </a>
+       <h2 class="autos-title">
+        HOWER
+       </h2>
+       <div class="autos-link">
+        <a href="#">
+         смотреть
+         <i class="fa fa-caret-right">
+         </i>
+        </a>
+       </div>
+      </div>
+      <div class="autos-item changan">
+       <a href="http://avt-t.ru/modelnyj-rjad-avtomobilej-changan/">
+       </a>
+       <h2 class="autos-title">
+        Changan
+       </h2>
+       <div class="autos-link">
+        <a href="#">
+         смотреть
+         <i class="fa fa-caret-right">
+         </i>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- end autos -->
+    <!-- begin section home-slider -->
+    <section class="home-slider owl-carousel owl-theme">
+     <div class="home-slider-item">
+      <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat/">
+       <img alt="" src="http://avt-t.ru/wp-content/uploads/2018/06/GAZ_CMF_Championship.jpg"/>
+      </a>
+      <div class="home-slider-link">
+       <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat/">
+        ПОДРОБНЕЕ
+       </a>
+      </div>
+     </div>
+     <div class="home-slider-item">
+      <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat-bortovaja-gazel-next/">
+       <img alt="" src="http://avt-t.ru/wp-content/uploads/2018/06/GAZel_bort_Championship.jpg"/>
+      </a>
+      <div class="home-slider-link">
+       <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat-bortovaja-gazel-next/">
+        ПОДРОБНЕЕ
+       </a>
+      </div>
+     </div>
+     <div class="home-slider-item">
+      <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat-gazon-next/">
+       <img alt="" src="http://avt-t.ru/wp-content/uploads/2018/06/GAZon_Championship.jpg"/>
+      </a>
+      <div class="home-slider-link">
+       <a href="http://avt-t.ru/2018/06/19/rabotaem-na-rezultat-gazon-next/">
+        ПОДРОБНЕЕ
+       </a>
+      </div>
+     </div>
+     <div class="home-slider-item">
+      <a href="http://avt-t.ru/2018/06/19/s-14-ijunja-po-15-ijulja-festivali-ulichnoj-edy/">
+       <img alt="" src="http://avt-t.ru/wp-content/uploads/2018/06/gastro_2000.jpg"/>
+      </a>
+      <div class="home-slider-link">
+       <a href="http://avt-t.ru/2018/06/19/s-14-ijunja-po-15-ijulja-festivali-ulichnoj-edy/">
+        ПОДРОБНЕЕ
+       </a>
+      </div>
+     </div>
+     <div class="home-slider-item">
+      <a href="http://avt-t.ru/gaz/gaz-4wd/">
+       <img alt="" src="http://avt-t.ru/wp-content/uploads/2018/06/Sobol_4x4_2018_v2_2ceny_6000x3000_608000.jpg"/>
+      </a>
+      <div class="home-slider-link">
+       <a href="http://avt-t.ru/gaz/gaz-4wd/">
+        ПОДРОБНЕЕ
+       </a>
+      </div>
+     </div>
+    </section>
+    <!-- end section home-slider -->
+    <!-- begin section service -->
+    <section class="service">
+     <h2 class="service-title">
+      СЕРВИСное обслуживание
+     </h2>
+     <!-- begin service-content -->
+     <div class="service-content">
+      <div class="container">
+       <!-- begin service-list -->
+       <div class="service-list">
+        <div class="service-item">
+         <div class="service-icon icon-1">
+         </div>
+         <div class="service-text">
+          <p>
+           Возможность записаться на удобное для вас
+           <br/>
+           время
+          </p>
+         </div>
+        </div>
+        <div class="service-item">
+         <div class="service-icon icon-2">
+         </div>
+         <div class="service-text">
+          <p>
+           Персонал и оборудование, специализированы
+           <br/>
+           для работы с представленными брендами
+          </p>
+         </div>
+        </div>
+        <div class="service-item">
+         <div class="service-icon icon-3">
+         </div>
+         <div class="service-text">
+          <p>
+           Все виды работ по автомобилям ГАЗ, HOWER,
+           <br/>
+           CHANGAN
+          </p>
+         </div>
+        </div>
+        <div class="service-item">
+         <div class="service-icon icon-4">
+         </div>
+         <div class="service-text">
+          <p>
+           Срочный приоритет при заказе
+           <br/>
+           комплектующих
+          </p>
+         </div>
+        </div>
+        <div class="service-item">
+         <div class="service-icon icon-5">
+         </div>
+         <div class="service-text">
+          <p>
+           Более 40 000 позиций запасных
+           <br/>
+           частей на складе
+          </p>
+         </div>
+        </div>
+        <div class="service-form">
+         <p>
+          Оставьте заявку на сервисное обслуживание сейчас!
+         </p>
+         <a href="/obsluzhivanie-i-remont/#formservice">
+          Записаться на сервис
+         </a>
+        </div>
+       </div>
+       <!-- end service-list -->
+      </div>
+     </div>
+     <!-- end service-content -->
+    </section>
+    <!-- end section service -->
+    <!-- begin section other -->
+    <section class="other">
+     <div class="container">
+      <div class="left-col">
+       <!-- begin news -->
+       <div class="news">
+        <h2 class="other-title">
+         Новости
+        </h2>
+        <div class="news-item">
+         <div class="news-img">
+          <a href="http://avt-t.ru/2018/07/23/avtomobili-gaz-snova-brosajut-vyzov-tysjacham-kilometrov-bezdorozhja/">
+           <img alt="" class="attachment- size- wp-post-image" height="732" sizes="(max-width: 1280px) 100vw, 1280px" src="http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07.jpg" srcset="http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07.jpg 1280w, http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07-300x172.jpg 300w, http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07-768x439.jpg 768w, http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07-1024x586.jpg 1024w, http://avt-t.ru/wp-content/uploads/2018/07/foto-23.07-250x143.jpg 250w" width="1280"/>
+          </a>
+         </div>
+         <div class="news-content">
+          <div class="news-info">
+           <div class="news-date">
+            <span class="num">
+             23
+            </span>
+            <span>
+             Июль
+             <span class="year">
+              2018
+             </span>
+            </span>
+           </div>
+           <h3 class="news-title">
+            <a href="http://avt-t.ru/2018/07/23/avtomobili-gaz-snova-brosajut-vyzov-tysjacham-kilometrov-bezdorozhja/">
+             Автомобили ГАЗ снова бросают вызов тысячам километров бездорожья!
+            </a>
+           </h3>
+          </div>
+          <div class="news-text">
+           <p>
+           </p>
+           <p>
+            20 июля поздно вечером в Астрахани торжественно стартовал долгожданный ралли-рейд «Шелковый Путь-2018». За 6 дней участники гонки преодолеют около 2…
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+       <!-- end news -->
+       <!-- begin social -->
+       <div class="social">
+        <h2 class="other-title">
+         Мы в соцсетях
+        </h2>
+        <div class="social-links">
+         <a class="vk" href="https://vk.com/avtoteh62" target="_blank">
+          <i class="fa fa-vk">
+          </i>
+         </a>
+        </div>
+       </div>
+       <!-- end social -->
+      </div>
+      <!-- begin callback -->
+      <div class="callback">
+       <h2 class="other-title">
+        Обратная связь
+       </h2>
+       <!-- begin callback-form -->
+       <div class="callback-form">
+        <div class="wpcf7" dir="ltr" id="wpcf7-f297-o1" lang="ru-RU" role="form">
+         <div class="screen-reader-response">
+         </div>
+         <form action="/#wpcf7-f297-o1" class="wpcf7-form" method="post" novalidate="novalidate">
+          <div style="display: none;">
+           <input name="_wpcf7" type="hidden" value="297"/>
+           <input name="_wpcf7_version" type="hidden" value="5.0.2"/>
+           <input name="_wpcf7_locale" type="hidden" value="ru_RU"/>
+           <input name="_wpcf7_unit_tag" type="hidden" value="wpcf7-f297-o1"/>
+           <input name="_wpcf7_container_post" type="hidden" value="0"/>
+          </div>
+          <p>
+           <span class="wpcf7-form-control-wrap your-name">
+            <input aria-invalid="false" aria-required="true" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" name="your-name" placeholder="ФИО" size="40" type="text" value=""/>
+           </span>
+           <span class="wpcf7-form-control-wrap tel-480">
+            <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" name="tel-480" placeholder="Контактный телефон" size="40" type="tel" value=""/>
+           </span>
+           <span class="wpcf7-form-control-wrap email-349">
+            <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" name="email-349" placeholder="E-mail" size="40" type="email" value=""/>
+           </span>
+           <span class="wpcf7-form-control-wrap your-name">
+            <input aria-invalid="false" class="wpcf7-form-control wpcf7-text" name="your-name" placeholder="Тема обращения" size="40" type="text" value=""/>
+           </span>
+           <br/>
+           <span class="wpcf7-form-control-wrap textarea-477">
+            <textarea aria-invalid="false" class="wpcf7-form-control wpcf7-textarea" cols="40" name="textarea-477" placeholder="Ваше обращение" rows="4">
+            </textarea>
+           </span>
+          </p>
+          <div class="checkbox-wrapper">
+           <span class="wpcf7-form-control-wrap acceptance-827">
+            <span class="wpcf7-form-control wpcf7-acceptance">
+             <span class="wpcf7-list-item">
+              <input aria-invalid="false" id="policy-2" name="acceptance-827" type="checkbox" value="1"/>
+             </span>
+            </span>
+           </span>
+           <div class="policy">
+            Согласие на обработку персональных данных в соответствии с
+            <a href="/policy">
+             Политикой конфиденциальности
+            </a>
+           </div>
+          </div>
+          <div class="button-wrapper">
+           <input class="wpcf7-form-control wpcf7-submit" type="submit" value="Отправить"/>
+          </div>
+          <noscript>
+           <div class="wpcf7-response-output wpcf7-spam-blocked">
+            Your browser does not support JavaScript!. Please enable javascript in your browser in order to get form work properly.
+           </div>
+          </noscript>
+          <script type="text/javascript">
+           if(contactform === undefined){
+ 							var contactform = [];
+ 						}
+ 						var innerVal = [297,'mail_sent_ok','Спасибо за Ваше сообщение. Оно успешно отправлено.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'mail_sent_ng','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'validation_error','Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'spam','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'accept_terms','Вы должны принять условия и положения перед отправкой вашего сообщения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_required','Поле обязательно для заполнения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_too_long','Поле слишком длинное.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_too_short','Поле слишком короткое.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_date','Формат даты некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'date_too_early','Введённая дата слишком далеко в прошлом.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'date_too_late','Введённая дата слишком далеко в будущем.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'upload_failed','При загрузке файла произошла неизвестная ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'upload_file_type_invalid','Вам не разрешено загружать файлы этого типа.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'upload_file_too_large','Файл слишком большой.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'upload_failed_php_error','При загрузке файла произошла ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_number','Формат числа некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'number_too_small','Число меньше минимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'number_too_large','Число больше максимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'quiz_answer_not_correct','Неверный ответ на проверочный вопрос.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'captcha_not_match','Код введен неверно.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_email','Неверно введён электронный адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_url','Введён некорректный URL адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'invalid_tel','Введён некорректный телефонный номер.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [297,'gdpr',''];
+ 						contactform.push(innerVal);
+          </script>
+          <div class="wpcf7-response-output wpcf7-display-none">
+          </div>
+         </form>
+        </div>
+       </div>
+       <!-- end callback-form -->
+      </div>
+      <!-- end callback -->
+     </div>
+    </section>
+    <!-- end section other -->
+   </div>
+   <footer class="footer">
+    <div class="container">
+     <div class="footer-map">
+      <iframe frameborder="0" height="100%" src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab6840e02a8b04bd6c71461181d9f03330377371a47f4f4dc7eef9b3ed6b984f2&amp;source=constructor" width="100%">
+      </iframe>
+     </div>
+     <!-- begin footer-content -->
+     <div class="footer-content">
+      <div class="footer-left-col">
+       <div class="footer-contact">
+        <h4 class="footer-title">
+         Продажа. Сервис. Запчасти.
+        </h4>
+        <div class="footer-text">
+         <p>
+          <i class="fa fa-map-marker">
+          </i>
+          390000, г. Рязань, ул. Солнечная д.3
+         </p>
+         <p>
+          <i class="fa fa-phone">
+          </i>
+          <a href="tel:84912242454">
+           +7 (4912) 24-24-54
+          </a>
+          ,
+          <a href="tel:84912242455">
+           24-24-55
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="footer-contact">
+        <h4 class="footer-title">
+         Сервис. Запчасти.
+        </h4>
+        <div class="footer-text">
+         <p>
+          <i class="fa fa-map-marker">
+          </i>
+          390000, Россия, Рязань, Борки, 8 район, 189
+         </p>
+         <p>
+          <i class="fa fa-phone">
+          </i>
+          <a href="tel:84912241330">
+           +7 (4912) 24-13-30
+          </a>
+          ,
+          <a href="tel:84912241329">
+           24-13-29
+          </a>
+         </p>
+        </div>
+       </div>
+      </div>
+      <div class="footer-right-col">
+       <div class="footer-social">
+        <h4 class="footer-title">
+         «АВТОТЕХ» в социальных сетях:
+        </h4>
+        <div class="social-list">
+         <a class="vk" href="https://vk.com/avtoteh62" target="_blank">
+          <i class="fa fa-vk">
+          </i>
+         </a>
+        </div>
+        <div class="footer-logo">
+         <img alt="" src="http://avt-t.ru/wp-content/themes/autotech/img/footer-logo.png"/>
+        </div>
+       </div>
+       <div class="footer-copyright">
+        2018 © Автотех. Официальный дилер ГАЗ, HOWER, CHANGAN
+       </div>
+       <div class="footer-text">
+        Сайт носит исключительно информационный характер и не является публичной офертой, определяемой положениями Статьи 437 (2) Гражданского кодекса Российской Федерации
+       </div>
+       <div class="footer-links">
+        <a href="http://avt-t.ru/policy">
+         Политика конфиденциальности
+        </a>
+        <span>
+         |
+        </span>
+        <a href="http://adyn.ru">
+         Разработка сайта
+        </a>
+        — Динамика
+       </div>
+      </div>
+     </div>
+     <!-- end footer-content -->
+    </div>
+   </footer>
+   <div class="popup-wrapper" id="popup-callback">
+    <div class="overlay">
+    </div>
+    <div class="popup popup-callback">
+     <div class="popup-close">
+     </div>
+     <h2 class="popup-title">
+      Записаться на тест-драйв
+     </h2>
+     <div class="popup-form">
+      <div class="wpcf7" dir="ltr" id="wpcf7-f280-o2" lang="ru-RU" role="form">
+       <div class="screen-reader-response">
+       </div>
+       <form action="/#wpcf7-f280-o2" class="wpcf7-form" method="post" novalidate="novalidate">
+        <div style="display: none;">
+         <input name="_wpcf7" type="hidden" value="280"/>
+         <input name="_wpcf7_version" type="hidden" value="5.0.2"/>
+         <input name="_wpcf7_locale" type="hidden" value="ru_RU"/>
+         <input name="_wpcf7_unit_tag" type="hidden" value="wpcf7-f280-o2"/>
+         <input name="_wpcf7_container_post" type="hidden" value="0"/>
+        </div>
+        <div class="popup-input">
+         <label>
+          Представьтесь пожалуйста:
+         </label>
+         <br/>
+         <span class="wpcf7-form-control-wrap your-name">
+          <input aria-invalid="false" aria-required="true" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" name="your-name" size="40" type="text" value=""/>
+         </span>
+        </div>
+        <div class="popup-input">
+         <label>
+          Контактный телефон:
+         </label>
+         <br/>
+         <span class="wpcf7-form-control-wrap tel-480">
+          <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" name="tel-480" size="40" type="tel" value=""/>
+         </span>
+        </div>
+        <div class="popup-input">
+         <label>
+          Модель Т/C:
+         </label>
+         <br/>
+         <span class="wpcf7-form-control-wrap text-368">
+          <input aria-invalid="false" class="wpcf7-form-control wpcf7-text" name="text-368" size="40" type="text" value=""/>
+         </span>
+        </div>
+        <div class="checkbox-wrapper">
+         <span class="wpcf7-form-control-wrap acceptance-827">
+          <span class="wpcf7-form-control wpcf7-acceptance">
+           <span class="wpcf7-list-item">
+            <input aria-invalid="false" id="policy-2" name="acceptance-827" type="checkbox" value="1"/>
+           </span>
+          </span>
+         </span>
+         <div class="policy">
+          Согласие на обработку персональных данных в соответствии с
+          <a href="/policy">
+           Политикой конфиденциальности
+          </a>
+         </div>
+        </div>
+        <div class="popup-button">
+         <input class="wpcf7-form-control wpcf7-submit" type="submit" value="Отправить"/>
+        </div>
+        <noscript>
+         <div class="wpcf7-response-output wpcf7-spam-blocked">
+          Your browser does not support JavaScript!. Please enable javascript in your browser in order to get form work properly.
+         </div>
+        </noscript>
+        <script type="text/javascript">
+         if(contactform === undefined){
+ 							var contactform = [];
+ 						}
+ 						var innerVal = [280,'mail_sent_ok','Спасибо за Ваше сообщение. Оно успешно отправлено.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'mail_sent_ng','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'validation_error','Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'spam','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'accept_terms','Вы должны принять условия и положения перед отправкой вашего сообщения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_required','Поле обязательно для заполнения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_too_long','Поле слишком длинное.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_too_short','Поле слишком короткое.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_date','Формат даты некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'date_too_early','Введённая дата слишком далеко в прошлом.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'date_too_late','Введённая дата слишком далеко в будущем.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'upload_failed','При загрузке файла произошла неизвестная ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'upload_file_type_invalid','Вам не разрешено загружать файлы этого типа.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'upload_file_too_large','Файл слишком большой.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'upload_failed_php_error','При загрузке файла произошла ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_number','Формат числа некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'number_too_small','Число меньше минимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'number_too_large','Число больше максимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'quiz_answer_not_correct','Неверный ответ на проверочный вопрос.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'captcha_not_match','Код введен неверно.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_email','Неверно введён электронный адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_url','Введён некорректный URL адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'invalid_tel','Введён некорректный телефонный номер.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [280,'gdpr',''];
+ 						contactform.push(innerVal);
+        </script>
+        <div class="wpcf7-response-output wpcf7-display-none">
+        </div>
+       </form>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="popup-wrapper" id="popup-spec">
+    <div class="overlay">
+    </div>
+    <div class="popup popup-callback">
+     <div class="popup-close">
+     </div>
+     <h2 class="popup-title">
+      Получить спецпредложение
+     </h2>
+     <div class="popup-form">
+      <div class="wpcf7" dir="ltr" id="wpcf7-f303-o3" lang="ru-RU" role="form">
+       <div class="screen-reader-response">
+       </div>
+       <form action="/#wpcf7-f303-o3" class="wpcf7-form" method="post" novalidate="novalidate">
+        <div style="display: none;">
+         <input name="_wpcf7" type="hidden" value="303"/>
+         <input name="_wpcf7_version" type="hidden" value="5.0.2"/>
+         <input name="_wpcf7_locale" type="hidden" value="ru_RU"/>
+         <input name="_wpcf7_unit_tag" type="hidden" value="wpcf7-f303-o3"/>
+         <input name="_wpcf7_container_post" type="hidden" value="0"/>
+        </div>
+        <div class="popup-input">
+         <label>
+          Представьтесь пожалуйста:
+         </label>
+         <br/>
+         <span class="wpcf7-form-control-wrap your-name">
+          <input aria-invalid="false" aria-required="true" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" name="your-name" size="40" type="text" value=""/>
+         </span>
+        </div>
+        <div class="popup-input">
+         <label>
+          Контактный телефон:
+         </label>
+         <br/>
+         <span class="wpcf7-form-control-wrap tel-480">
+          <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" name="tel-480" size="40" type="tel" value=""/>
+         </span>
+        </div>
+        <div class="checkbox-wrapper">
+         <span class="wpcf7-form-control-wrap acceptance-827">
+          <span class="wpcf7-form-control wpcf7-acceptance">
+           <span class="wpcf7-list-item">
+            <input aria-invalid="false" id="policy-2" name="acceptance-827" type="checkbox" value="1"/>
+           </span>
+          </span>
+         </span>
+         <div class="policy">
+          Согласие на обработку персональных данных в соответствии с
+          <a href="/policy">
+           Политикой конфиденциальности
+          </a>
+         </div>
+        </div>
+        <div class="popup-button">
+         <input class="wpcf7-form-control wpcf7-submit" type="submit" value="Отправить"/>
+        </div>
+        <noscript>
+         <div class="wpcf7-response-output wpcf7-spam-blocked">
+          Your browser does not support JavaScript!. Please enable javascript in your browser in order to get form work properly.
+         </div>
+        </noscript>
+        <script type="text/javascript">
+         if(contactform === undefined){
+ 							var contactform = [];
+ 						}
+ 						var innerVal = [303,'mail_sent_ok','Спасибо за Ваше сообщение. Оно успешно отправлено.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'mail_sent_ng','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'validation_error','Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'spam','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'accept_terms','Вы должны принять условия и положения перед отправкой вашего сообщения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_required','Поле обязательно для заполнения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_too_long','Поле слишком длинное.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_too_short','Поле слишком короткое.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_date','Формат даты некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'date_too_early','Введённая дата слишком далеко в прошлом.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'date_too_late','Введённая дата слишком далеко в будущем.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'upload_failed','При загрузке файла произошла неизвестная ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'upload_file_type_invalid','Вам не разрешено загружать файлы этого типа.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'upload_file_too_large','Файл слишком большой.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'upload_failed_php_error','При загрузке файла произошла ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_number','Формат числа некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'number_too_small','Число меньше минимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'number_too_large','Число больше максимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'quiz_answer_not_correct','Неверный ответ на проверочный вопрос.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'captcha_not_match','Код введен неверно.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_email','Неверно введён электронный адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_url','Введён некорректный URL адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'invalid_tel','Введён некорректный телефонный номер.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [303,'gdpr',''];
+ 						contactform.push(innerVal);
+        </script>
+        <div class="wpcf7-response-output wpcf7-display-none">
+        </div>
+       </form>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="popup-wrapper" id="popup-test">
+    <div class="overlay">
+    </div>
+    <div class="popup popup-test">
+     <div class="popup-close">
+     </div>
+     <h2 class="popup-title">
+      Записаться на TEST-TRUCK
+     </h2>
+     <div class="popup-form">
+      <div class="wpcf7" dir="ltr" id="wpcf7-f281-o4" lang="ru-RU" role="form">
+       <div class="screen-reader-response">
+       </div>
+       <form action="/#wpcf7-f281-o4" class="wpcf7-form" method="post" novalidate="novalidate">
+        <div style="display: none;">
+         <input name="_wpcf7" type="hidden" value="281"/>
+         <input name="_wpcf7_version" type="hidden" value="5.0.2"/>
+         <input name="_wpcf7_locale" type="hidden" value="ru_RU"/>
+         <input name="_wpcf7_unit_tag" type="hidden" value="wpcf7-f281-o4"/>
+         <input name="_wpcf7_container_post" type="hidden" value="0"/>
+        </div>
+        <div class="popup-left">
+         <div class="popup-input">
+          <label>
+           ФИО:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap your-name">
+           <input aria-invalid="false" aria-required="true" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" name="your-name" size="40" type="text" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           E-mail:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap email-349">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" name="email-349" size="40" type="email" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           Контактный телефон:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap tel-480">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" name="tel-480" size="40" type="tel" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           Модель Т/C:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap text-550">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text" name="text-550" size="40" type="text" value=""/>
+          </span>
+         </div>
+        </div>
+        <div class="popup-right">
+         <div class="popup-input">
+          <label>
+           Желаемая дата:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap text-954">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text" name="text-954" size="40" type="text" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           Комментарий
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap textarea-477">
+           <textarea aria-invalid="false" class="wpcf7-form-control wpcf7-textarea" cols="40" name="textarea-477" rows="4">
+           </textarea>
+          </span>
+         </div>
+        </div>
+        <div class="checkbox-wrapper">
+         <span class="wpcf7-form-control-wrap acceptance-827">
+          <span class="wpcf7-form-control wpcf7-acceptance">
+           <span class="wpcf7-list-item">
+            <input aria-invalid="false" id="policy-2" name="acceptance-827" type="checkbox" value="1"/>
+           </span>
+          </span>
+         </span>
+         <div class="policy">
+          Согласие на обработку персональных данных в соответствии с
+          <a href="/policy">
+           Политикой конфиденциальности
+          </a>
+         </div>
+        </div>
+        <div class="popup-button">
+         <input class="wpcf7-form-control wpcf7-submit" type="submit" value="Отправить"/>
+        </div>
+        <noscript>
+         <div class="wpcf7-response-output wpcf7-spam-blocked">
+          Your browser does not support JavaScript!. Please enable javascript in your browser in order to get form work properly.
+         </div>
+        </noscript>
+        <script type="text/javascript">
+         if(contactform === undefined){
+ 							var contactform = [];
+ 						}
+ 						var innerVal = [281,'mail_sent_ok','Спасибо за Ваше сообщение. Оно успешно отправлено.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'mail_sent_ng','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'validation_error','Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'spam','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'accept_terms','Вы должны принять условия и положения перед отправкой вашего сообщения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_required','Поле обязательно для заполнения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_too_long','Поле слишком длинное.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_too_short','Поле слишком короткое.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_date','Формат даты некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'date_too_early','Введённая дата слишком далеко в прошлом.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'date_too_late','Введённая дата слишком далеко в будущем.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'upload_failed','При загрузке файла произошла неизвестная ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'upload_file_type_invalid','Вам не разрешено загружать файлы этого типа.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'upload_file_too_large','Файл слишком большой.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'upload_failed_php_error','При загрузке файла произошла ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_number','Формат числа некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'number_too_small','Число меньше минимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'number_too_large','Число больше максимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'quiz_answer_not_correct','Неверный ответ на проверочный вопрос.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'captcha_not_match','Код введен неверно.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_email','Неверно введён электронный адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_url','Введён некорректный URL адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'invalid_tel','Введён некорректный телефонный номер.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [281,'gdpr',''];
+ 						contactform.push(innerVal);
+        </script>
+        <div class="wpcf7-response-output wpcf7-display-none">
+        </div>
+       </form>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="popup-wrapper" id="popup-service">
+    <div class="overlay">
+    </div>
+    <div class="popup popup-test">
+     <div class="popup-close">
+     </div>
+     <h2 class="popup-title">
+      Заказать запчасти
+     </h2>
+     <div class="popup-form">
+      <div class="wpcf7" dir="ltr" id="wpcf7-f899-o5" lang="ru-RU" role="form">
+       <div class="screen-reader-response">
+       </div>
+       <form action="/#wpcf7-f899-o5" class="wpcf7-form" method="post" novalidate="novalidate">
+        <div style="display: none;">
+         <input name="_wpcf7" type="hidden" value="899"/>
+         <input name="_wpcf7_version" type="hidden" value="5.0.2"/>
+         <input name="_wpcf7_locale" type="hidden" value="ru_RU"/>
+         <input name="_wpcf7_unit_tag" type="hidden" value="wpcf7-f899-o5"/>
+         <input name="_wpcf7_container_post" type="hidden" value="0"/>
+        </div>
+        <div class="popup-left">
+         <div class="popup-input">
+          <label>
+           ФИО:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap your-name">
+           <input aria-invalid="false" aria-required="true" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" name="your-name" size="40" type="text" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           E-mail:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap email-349">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" name="email-349" size="40" type="email" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           Контактный телефон:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap tel-480">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" name="tel-480" size="40" type="tel" value=""/>
+          </span>
+         </div>
+        </div>
+        <div class="popup-right">
+         <div class="popup-input">
+          <label>
+           Модель Т/C:
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap text-550">
+           <input aria-invalid="false" class="wpcf7-form-control wpcf7-text" name="text-550" size="40" type="text" value=""/>
+          </span>
+         </div>
+         <div class="popup-input">
+          <label>
+           Какие запчасти необходимы?
+          </label>
+          <br/>
+          <span class="wpcf7-form-control-wrap textarea-477">
+           <textarea aria-invalid="false" class="wpcf7-form-control wpcf7-textarea" cols="40" name="textarea-477" rows="3">
+           </textarea>
+          </span>
+         </div>
+        </div>
+        <div class="checkbox-wrapper">
+         <span class="wpcf7-form-control-wrap acceptance-827">
+          <span class="wpcf7-form-control wpcf7-acceptance">
+           <span class="wpcf7-list-item">
+            <input aria-invalid="false" id="policy-2" name="acceptance-827" type="checkbox" value="1"/>
+           </span>
+          </span>
+         </span>
+         <div class="policy">
+          Согласие на обработку персональных данных в соответствии с
+          <a href="/policy">
+           Политикой конфиденциальности
+          </a>
+         </div>
+        </div>
+        <div class="popup-button">
+         <input class="wpcf7-form-control wpcf7-submit" type="submit" value="Отправить"/>
+        </div>
+        <noscript>
+         <div class="wpcf7-response-output wpcf7-spam-blocked">
+          Your browser does not support JavaScript!. Please enable javascript in your browser in order to get form work properly.
+         </div>
+        </noscript>
+        <script type="text/javascript">
+         if(contactform === undefined){
+ 							var contactform = [];
+ 						}
+ 						var innerVal = [899,'mail_sent_ok','Спасибо за Ваше сообщение. Оно успешно отправлено.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'mail_sent_ng','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'validation_error','Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'spam','При отправке сообщения произошла ошибка. Пожалуйста, попробуйте ещё раз позже.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'accept_terms','Вы должны принять условия и положения перед отправкой вашего сообщения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_required','Поле обязательно для заполнения.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_too_long','Поле слишком длинное.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_too_short','Поле слишком короткое.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_date','Формат даты некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'date_too_early','Введённая дата слишком далеко в прошлом.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'date_too_late','Введённая дата слишком далеко в будущем.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'upload_failed','При загрузке файла произошла неизвестная ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'upload_file_type_invalid','Вам не разрешено загружать файлы этого типа.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'upload_file_too_large','Файл слишком большой.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'upload_failed_php_error','При загрузке файла произошла ошибка.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_number','Формат числа некорректен.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'number_too_small','Число меньше минимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'number_too_large','Число больше максимально допустимого.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'quiz_answer_not_correct','Неверный ответ на проверочный вопрос.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'captcha_not_match','Код введен неверно.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_email','Неверно введён электронный адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_url','Введён некорректный URL адрес.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'invalid_tel','Введён некорректный телефонный номер.'];
+ 						contactform.push(innerVal);
+ 						var innerVal = [899,'gdpr',''];
+ 						contactform.push(innerVal);
+        </script>
+        <div class="wpcf7-response-output wpcf7-display-none">
+        </div>
+       </form>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var wpcf7 = {"apiSettings":{"root":"http:\/\/avt-t.ru\/wp-json\/contact-form-7\/v1","namespace":"contact-form-7\/v1"},"recaptcha":{"messages":{"empty":"\u041f\u043e\u0436\u0430\u043b\u0443\u0439\u0441\u0442\u0430, \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435, \u0447\u0442\u043e \u0432\u044b \u043d\u0435 \u0440\u043e\u0431\u043e\u0442."}}};
+ /* ]]> */
+   </script>
+   <script src="http://avt-t.ru/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=5.0.2" type="text/javascript">
+   </script>
+   <script src="http://avt-t.ru/wp-includes/js/wp-embed.min.js?ver=4.9.7" type="text/javascript">
+   </script>
+   <script src="http://avt-t.ru/wp-content/themes/autotech/js/bootstrap.min.js?ver=4.9.7" type="text/javascript">
+   </script>
+   <script src="http://avt-t.ru/wp-content/themes/autotech/js/main.js?ver=4.9.7" type="text/javascript">
+   </script>
+   <!-- Yandex.Metrika counter -->
+   <script type="text/javascript">
+    (function (d, w, c) {
+         (w[c] = w[c] || []).push(function() {
+             try {
+                 w.yaCounter49456033 = new Ya.Metrika2({
+                     id:49456033,
+                     clickmap:true,
+                     trackLinks:true,
+                     accurateTrackBounce:true,
+                     webvisor:true
+                 });
+             } catch(e) { }
+         });
+ 
+         var n = d.getElementsByTagName("script")[0],
+             s = d.createElement("script"),
+             f = function () { n.parentNode.insertBefore(s, n); };
+         s.type = "text/javascript";
+         s.async = true;
+         s.src = "https://mc.yandex.ru/metrika/tag.js";
+ 
+         if (w.opera == "[object Opera]") {
+             d.addEventListener("DOMContentLoaded", f, false);
+         } else { f(); }
+     })(document, window, "yandex_metrika_callbacks2");
+   </script>
+   <noscript>
+    <div>
+     <img alt="" src="https://mc.yandex.ru/watch/49456033" style="position:absolute; left:-9999px;"/>
+    </div>
+   </noscript>
+   <!-- /Yandex.Metrika counter -->
+  </body>
+ </html>

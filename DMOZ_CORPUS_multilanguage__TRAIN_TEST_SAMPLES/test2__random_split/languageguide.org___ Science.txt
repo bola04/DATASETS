@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+ <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="http://www.languageguide.org/images/category_index/earth_big.png" property="og:image"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport"/>
+   <title>
+    Learn a Language - Share a Language	 - LanguageGuide.org
+   </title>
+   <script>
+    var message = "<a href=\"https://www.flickr.com/photos/aigle_dore/16042925878/\">Japan</a> Photo by Moyan_Brenn";
+ var messageDiv = null;
+ function toggleDisplayInfo() {
+     //if (!messageDisplayed) {
+ 	if (messageDiv == null){
+         messageDiv = document.createElement("div");
+         messageDiv.setAttribute("id", "message");
+         document.body.appendChild(messageDiv);
+         messageDisplayed = true;
+ 		messageDiv.innerHTML = message;
+ 	    messageDiv.style.visibility = "visible";
+ 		//event.preventDefault();
+ 		event.stopPropagation()
+ 	}
+ 	else{
+ 		document.body.removeChild(messageDiv);
+ 		messageDiv = null;
+ 	}
+     //}
+     //else {
+       //  messageDiv = document.getElementById("message");
+     //}
+     
+     //setTimeout(hideMessage, time);
+ }
+ /*
+ function showInterfaceMenu(e){
+ 	var showInterfaceDropDown = document.getElementById("showInterfaceDropDown");
+ 	var interfaceOptions = document.getElementById("interfaceOptions");
+ 	interfaceOptions.style.top = 20 + showInterfaceDropDown.clientHeight + "px";
+ 	interfaceOptions.style.right = 0;
+ 	interfaceOptions.style.display = "block";
+ 		var evt = e ? e:window.event;
+ 	 if (evt.stopPropagation)    evt.stopPropagation();
+ 	 if (evt.cancelBubble!=null) evt.cancelBubble = true;
+ }*/
+ var text;
+ var langDisplay;
+ 
+ var array = [];
+ function add(langCode, origName, name, url){
+ 	var obj = {code: langCode, name: name, nameSearcheable: name.toLowerCase(),loaded:false, url: url}
+ 	if (origName != null){
+ 		obj.origName = origName
+ 		obj.origNameSearcheable = origName.toLowerCase();
+ 	}
+ 	array.push(obj);
+ }
+ /*
+ add("ar", "arabic", "arabic", "/arabic/");
+ add("fr", "french", "francais", "/french/");
+ add("es", "spanish", "español", "/spanish/vocabulary/");
+ add("sp", "spadrazo", "española","/spanisho/");*/
+ 
+ //var loadedLangs = [];
+ 
+ var displayAllOn = false;
+ function displayAll(event){
+ 	//console.log("displayAll");
+ 	
+ 	//if (largeScreen){	
+ 		if (!displayAllOn){
+ 			displayAllOn = true;
+ 			activeLangDisplay = langDisplay;
+ 			//for (var i =0; i < array.length; i++){
+ 			//	var obj = array[i];
+ 			//	addToDisplay(obj);
+ 			//}
+ 			//alert(event);
+ 			event.stopPropagation()
+ 			langDisplay.style.visibility = "visible";
+ 			setDimensions(langDisplay);
+ 			resetSubLang();
+ 			//event.cancelBubble = true
+ 	
+ 		}
+ 		else{
+ 			turnOffDisplayAll();
+ 		}
+ 	//}
+ 	/*else{
+ 		var outerText = document.getElementById("outer-text");
+ 		outerText.style.position = "absolute";
+ 		outerText.style.top =0;
+ 		outerText.style.left =0;
+ 		outerText.style.width = "100%";
+ 		var screenWidth = document.documentElement.clientWidth;
+ 		var textWidth = screenWidth - 50;
+ 		text.style.width= textWidth + "px";
+ 	}*/
+ }
+ 
+ 
+ function turnOffDisplayAll(){
+ 	var langDisplay = document.getElementById("lang_display");
+ 	for (var i = 0; i < array.length; i++){
+ 		var lang = array[i];
+ 		if (lang.loaded){
+ 			var div = document.getElementById(lang.url);
+ 			lang.loaded = false;
+ 			langDisplay.removeChild(div);
+ 		}
+ 	}
+ 	langDisplay.style.visibility = "hidden";
+ 	
+ 	displayAllOn = false;
+ 	if (largeScreen){
+ 		text.focus();
+ 	}
+ }
+ 
+ 
+ function addToDisplay(lang){
+ 	var div = document.createElement("div");
+ 	div.innerHTML=lang.name + " " + lang.origName;
+ 	div.id=lang.url;
+ 	div.className = "option";
+ 	langDisplay.appendChild(div);
+ 	lang.loaded = true;
+ 
+ 	div.addEventListener("click", function(){goTo(div.id)}, false);
+ 	//div.addEventListener("mouseenter", function() {select(div)}, false);
+ 	//div.addEventListener("mouseexit", function() {deselect(div)}, false);
+ 	langDisplay.style.visibility="visible";
+ }
+ function select(div){
+  if (selectedDiv != null){
+  	selectedDiv.className = "option";
+  }
+  selectedDiv = div;
+ selectedDiv.className += " selected";
+ }
+ function deselect(div){
+ //if (selectedDiv != null){
+  	div.className = "option";
+ 	selectedDiv = null;
+  //}
+ }
+ 
+ function resetSubLang(){
+ 	for (var z = 0; z < array.length; z++){
+ 		var lang = array[z];
+ 		if (lang.loaded){
+ 			lang.div.parentNode.removeChild(lang.div);
+ 			lang.loaded = false;
+ 		}
+ 	}
+ 	subLangDisplay.style.visibility = "hidden";
+ }
+ function test(){
+ 	
+ 	
+ 	
+ 	
+ 	var value = text.value.toLowerCase();
+ 	if (value === ''){
+ 		//while (lang_display.firstChild) {
+ 			//.removeChild(lang_display.firstChild);
+ 		//}
+ 		resetSubLang()
+ 		
+ 		return;
+ 	}
+ 	
+ 	// if everything displayed simply remove what shouldn't be displayed
+ 	
+ 	if (displayAllOn){
+ 		langDisplay.style.visibility = "hidden";
+ 		displayAllOn = false;
+ 	}
+ 	
+ 	
+ 	/*if (displayAllOn){
+ 		for (var i = 0; i < array.length; i++){
+ 			var lang = array[i];
+ 			if (lang.name.startsWith(value) || lang.origName.startsWith(value)){
+ 				
+ 			}
+ 			else if (lang.loaded){
+ 				var div = document.getElementById(lang.url);
+ 				lang.loaded = false;
+ 				langDisplay.removeChild(div);
+ 			}
+ 		}
+ 		displayAllOn = false;
+ 	}
+ 	else{*/
+ 		var hasDiv = false;
+ 		for (var i = 0; i < array.length; i++){
+ 			var lang = array[i];
+ 			if (lang.nameSearcheable.startsWith(value) || lang.origNameSearcheable.startsWith(value)){
+ 				if (!lang.loaded){
+ 					show(lang);
+ 				}
+ 				hasDiv = true;
+ 			}
+ 			else if (lang.loaded){
+ 				hide(lang);
+ 				//var div = document.getElementById(lang.url);
+ 				//lang.loaded = false;
+ 				//langDisplay.removeChild(div);
+ 			}
+ 		}
+ 		if (hasDiv){
+ 			subLangDisplay.style.visibility = "visible";
+ 			activeLangDisplay = subLangDisplay;
+ 			subLangDisplayActive = true;
+ 			setDimensions(subLangDisplay);
+ 		}
+ 		else{
+ 			subLangDisplay.style.visibility = "hidden";
+ 			subLangDisplayActive = false;
+ 		}
+ 	//}
+ }
+ var subLangDisplayActive = false;
+ var activeLangDisplay = null;
+ function show(lang){
+ 	var a = document.createElement("a");
+ 	var div = document.createElement("div");
+ 	a.href=lang.url;
+ 	div.innerHTML = lang.origName + " (" + lang.name + ")";
+ 	div.className = "option";
+ 	a.appendChild(div);
+ 	lang.loaded = true;
+ 	lang.div = a;
+ 	subLangDisplay.appendChild(a);
+ 	//subLangDisplay.style.visibility = "visible"
+ 	//lang.div = a;
+ 	//var div = document.getElementById(lang.code);
+ 	//
+ 	// 
+ }
+ 
+ function hide(lang){
+ 	lang.div.parentNode.removeChild(lang.div);
+ 	//var div = document.getElementById(lang.code);
+ 	//div.className = div.className + " hidden";
+ 	lang.loaded = false; 
+ }
+ var selectedDiv = null;
+ function keyListener(evt)
+ {
+    // if (ie) evt = window.event;
+     //write any code here that you want
+     //to perform when a key is pressed.
+ // alert(evt.keyCode);
+     //here is one example for de-activating the 'esc'
+ // keyPressInfo += evt.keyCode;
+    // alert(evt.keyCode);
+ 	if(evt.keyCode == 40) {
+        if (selectedDiv == null){
+ 			var selectedParentDiv = activeLangDisplay.firstChild;
+ 			while (selectedParentDiv.nodeType == 3){
+ 				 selectedParentDiv = selectedParentDiv.nextSibling;
+ 		   }
+ 		   selectedDiv = selectedParentDiv.firstChild;
+ 	   }
+ 	   else{
+ 		   selectedDiv.className = "option";
+ 		   selectedDiv = selectedDiv.parentNode.nextSibling.firstChild; 
+ 		   if (selectedDiv == null){
+ 			   return;
+ 		   }
+ 	   }
+ 	   selectedDiv.className += " selected";
+ 	   var topPos = selectedDiv.offsetTop;
+ 	   if (topPos > 400){
+ 	   	activeLangDisplay.scrollTop = 30;
+ 	   }
+ 
+     }
+ 	else if(evt.keyCode == 38) {
+        if (selectedDiv == null){
+ 	   	selectedDiv = activeLangDisplay.lastChild.firstChild;
+ 	   }
+ 	   else{
+ 		   selectedDiv.className = "option";
+ 		   selectedDiv = selectedDiv.parentNode.previousSibling.firstChild;
+ 	   }
+ 	   if (selectedDiv != null){
+ 	   		selectedDiv.className += " selected";
+ 	   }
+ 		event.preventDefault();
+     }
+ 	else if(evt.keyCode == 13) {
+ 		if (selectedDiv != null){
+ 			goTo(selectedDiv.parentNode.href);
+ 		}
+ 	}
+ }
+ function goTo(id){
+ window.location = id;
+ }
+ function ready(){
+ init();
+ text = document.getElementById("text");
+ text.value="";
+ text.focus();
+ }
+ 
+ function setDimensions(div){
+ 	//alert(document.body.height);
+ 	var sHeight = document.documentElement.clientHeight;
+ 	var sWidth = document.documentElement.clientWidth;
+ 	var rHeight = parseInt(sHeight/2);
+ 	//div.style.maxHeight = rHeight + "px";
+ 	 //= rHeight + 40 + "px";
+ 	
+ 	var computed;
+ 	if (largeScreen){
+ 		var center = document.getElementById("center");
+ 		computed = getComputedStyle(center);
+ 		div.style.left = (sWidth / 2) - 250 + "px";
+ 		var top = parseInt(computed.top, 10);
+ 		var height = parseInt(computed.height, 10);
+ 		div.style.top = (top + 15)  +"px";
+ 		var heightDropdown = (sHeight - top) - 25;
+ 		div.style.maxHeight = heightDropdown + "px";
+ 	}
+ 	else{
+ 		var outer = document.getElementById("outer-text");
+ 		computed = getComputedStyle(outer);
+ 		div.style.left = 0;
+ 		div.style.top = "54px";
+ 		var heightSmallScreen = sHeight - 54;
+ 		div.style.maxHeight = heightSmallScreen + "px";
+ 	}
+ }
+ 
+ document.addEventListener( "DOMContentLoaded", ready, false )
+ var subLangDisplay;
+ function documentClick(){
+ 	if (displayAllOn){
+ 		turnOffDisplayAll();
+ 	}
+ 	if (messageDiv != null){
+ 		document.body.removeChild(messageDiv);
+ 		messageDiv = null;
+ 	}
+ 	//var interfaceOptions = document.getElementById("interfaceOptions");
+ 	//interfaceOptions.style.visibility = "collapse";
+ 	//interfaceOptions.style.display = "none";
+ }
+ var largeScreen;
+ function init(){
+ 	if (text == null){
+ 		text = document.getElementById("text");
+ 	}
+ 	var mq = window.matchMedia( "(min-width: 600px)" );
+ 	largeScreen = mq.matches;
+ 	
+ 	if (largeScreen){
+ 		var outerText = document.getElementById("outer-text");
+ 		outerText.addEventListener("click", function(event){displayAll(event)}, false);
+ 	}
+ 	else{
+ 		var outerText = document.getElementById("carrot");
+ 		outerText.addEventListener("click", function(event){displayAll(event)}, false);
+ 	}
+ 	var centerDiv = document.getElementById("center");
+ 	//alert(centerDiv.style.width);
+ 	document.addEventListener("click", documentClick, false);
+ 	langDisplay = document.getElementById("lang_display");
+ 	document.addEventListener("keydown", function(event) {keyListener(event)}, false);
+ 	subLangDisplay = document.getElementById("sub_lang_display");
+ }
+ if (typeof String.prototype.startsWith != 'function') {
+   String.prototype.startsWith = function (str){
+     return this.slice(0, str.length) == str;
+   };
+ }
+   </script>
+   <style>
+    * {
+ 	font-family: 'Montserrat', arial, sans-serif;
+ }
+ body{
+ text-align:center;
+ color:white;
+ background-color:black;
+ }
+ 
+ 
+ 
+ 
+ @media all and (min-width: 600px) {
+ 	#text{
+ border: 0px;
+ outline: none;
+ -webkit-appearance: none;
+ padding:11px;
+ width:400px;
+ margin-left:5px;
+ font-size:110%;
+ }
+ 
+ #learn_more{
+ 	position:absolute;
+ 	right:10px;
+ 	top:10px;
+ 	z-index:30;
+ 	background-color:white;
+ 	padding: 10px;
+ }
+ 
+ 	#content { 
+ 	 background: url(/images/main/16042925878_1d4d445146_b.jpg) no-repeat center center fixed; 
+ 	  /*background: url(14257434455_752619b33c_h.jpg) no-repeat center center fixed; */
+ 	  -webkit-background-size: cover;
+ 	  -moz-background-size: cover;
+ 	  -o-background-size: cover;
+ 	  background-size: cover;
+ 	width:100%;
+ 	bottom:0;
+ 	left:0;
+ 	top:0px;
+ 	position:absolute;
+ 	}
+ 	#center{
+ 	position: fixed;
+ 	  top: 50%;
+ 	  left: 50%;
+ 	  display:inline-block;
+ 	/* background-color:pink;*/
+ 	 width:500px;
+ 	 margin-top:-70px;
+ 	 -webkit-transform: translate(-50%, -50%);
+ 	 transform: translate(-50%, -50%);
+ 	}
+ 	#logo{
+ 		color:white;
+ 		font-size:200%;
+ 		font-weight:bold;
+ 		text-shadow: 1px 1px black;
+ 		}
+ 		#slogan{
+ 		display:inline-block;
+ 		color:lightgrey;
+ 		padding:10px;
+ 		margin-bottom:15px;
+ 		text-shadow: 1px 1px black;
+ 		}
+ 		#outer-text{
+ margin: 0 auto;
+ 	position: relative;
+   margin-left: auto;
+   margin-right: auto;
+   opacity: 1;
+   padding: 0px;
+   background-color:white; 
+   height:44px;
+   margin:auto;
+   text-align:left;
+   border-radius:6px;
+ }
+ #lang_display, #sub_lang_display{
+ 	border: 1px solid #DDD;
+ 	width:500px;
+ 	margin: auto;
+ 	background-color:white;
+ 	text-align:left;
+ 	clear:both;
+ 	visibility:hidden;
+ 	opacity: 0.8;
+ 	overflow-y:auto; 
+ 	max-height:300px;
+ 	position:absolute;
+ 	z-index:32;
+ }
+ }
+ @media not all and (min-width: 600px) {
+ #learn_more{
+ 	position:absolute;
+ 	right:10px;
+ 	top:80px;
+ 	z-index:30;
+ 	background-color:white;
+ 	padding: 10px;
+ }
+ 
+ 		#text{
+ border: 0px;
+ outline: none;
+ -webkit-appearance: none;
+ padding:11px;
+ width:259px;
+ margin-left:5px;
+ font-size:80%;
+ }
+ 	#outer-text{
+ margin: 0 auto;
+   opacity: 1;
+   padding: 0px;
+   margin: 10px;
+   background-color:white; 
+   height:44px;
+   text-align:left;
+   border-radius:6px;
+   z-index:20;
+  display:inline-block;
+  position:absolute;
+  right:2px;
+  top:2px;
+  left:2px;
+ }
+ #lang_display, #sub_lang_display{
+ 	border: 1px solid #DDD;
+ 	width:100%;
+ 	background-color:white;
+ 	text-align:left;
+ 	visibility:hidden;
+ 	opacity: 0.8;
+ 	overflow-y:auto; 
+ 	position:absolute;
+ 	z-index:32;
+ 	max-height:200px;
+ }
+ #content { 
+  background: url(/images/main/16042925878_1d4d445146_z.jpg) no-repeat center center fixed; 
+ 	  /*background: url(14257434455_752619b33c_h.jpg) no-repeat center center fixed; */
+ 	  -webkit-background-size: cover;
+ 	  -moz-background-size: cover;
+ 	  -o-background-size: cover;
+ 	  background-size: cover;
+   
+ width:100%;
+ bottom:0;
+ left:0;
+ top:0;
+ position:absolute;
+ }
+ #slogan{
+ 	display:none;
+ }
+ #center{
+ 	padding:0;
+ 	margin:0;
+ }
+ 	#logo{
+ 		display:none;
+ 	}
+ }
+ .option{
+ padding:10px;
+ border-top: 1px solid #DDD;
+ cursor:pointer;
+ }
+ .selected{
+ background-color:grey;
+ }
+ 
+ #message{
+ position:absolute;
+ right:0;
+ bottom:40px;
+ background-color:white;
+ z-index:24;
+ }
+ 
+ 
+ #description{
+ color:white;
+ padding:10px;
+ 
+ }
+ #carrot{
+  position: absolute;
+  
+  width:28px;
+  height:15px;    
+  right: 12px;
+  top: 16px;;
+  background-image: url("/images/wiki/triangle.png");
+ }
+ a{
+ 	color:black;
+ 	text-decoration:none;
+ }
+ #info{
+ 	content:url(/images/wiki/info.png);
+ 	display:inline-block;
+ 	margin-right:16px;
+ }
+ #translate{
+ float:left;
+ }
+ 
+ 
+ .btn {
+   display: inline-block;
+   position:relative;
+   padding: 6px 12px;
+   margin-top: 4px;
+   font-size: 14px;
+   font-weight: 400;
+   line-height: 1.42857143;
+   text-align: center;
+   white-space: nowrap;
+   vertical-align: middle;
+   -ms-touch-action: manipulation;
+   touch-action: manipulation;
+   cursor: pointer;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+   background-image: none;
+   border: 1px solid transparent;
+   border-radius: 4px;
+ }
+ 
+ 
+ .btn:active:focus,
+ .btn:focus {
+   outline: thin dotted;
+   outline: 5px auto -webkit-focus-ring-color;
+   outline-offset: -2px;
+ }
+ 
+ .btn:focus,
+ .btn:hover {
+   color: #333;
+   text-decoration: none;
+ }
+ 
+ .btn:active {
+   background-image: none;
+   outline: 0;
+   -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+   box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+ }
+ 
+ .btn-primary {
+   color: #fff;
+   background-color: #337ab7;
+   border-color: #2e6da4;
+ }
+   </style>
+  </head>
+  <body>
+   <a href="learn_more.html">
+    <div id="learn_more">
+     Learn More
+    </div>
+   </a>
+   <!--
+ <div id="header2" >
+ <span>Share your Language</span> <span>Blog</span> <span>Contact</span>  <span>Contact</span>
+ -->
+   <!--
+ <div id="showInterfaceDropDown" onclick="showInterfaceMenu()" style="position:absolute;right:10px;top:12px;font-size:90%;color:white;text-decoration:none;z-index:20">
+ <a href="/page/about.jsp?en">Learn more</a>
+ </div>-->
+   <div id="content">
+    <div id="center">
+     <div id="logo">
+      <img align="absmiddle" class="img" height="64" src="/images/wiki/globe.png" style="z-index:20;margin-bottom:10px" width="64"/>
+      LanguageGuide.org
+     </div>
+     <div id="slogan">
+      Learn a Language - Share a Language
+     </div>
+     <div id="outer-text">
+      <input autocomplete="off" id="text" oninput="test()" placeholder="Type here to search for the language to learn." type="text"/>
+      <div id="carrot">
+      </div>
+     </div>
+    </div>
+    <div id="sub_lang_display">
+    </div>
+    <div id="lang_display">
+     <a href="/english/vocabulary/">
+      <div class="option" id="en">
+       English (English)
+      </div>
+     </a>
+     <a href="/english-uk/vocabulary/">
+      <div class="option" id="en-GB">
+       <span lang="en-GB">
+        English (UK)
+       </span>
+       (British English)
+      </div>
+     </a>
+     <a href="/french/vocabulary/">
+      <div class="option" id="fr">
+       <span lang="fr">
+        français
+       </span>
+       (French)
+      </div>
+     </a>
+     <a href="/german/vocabulary/">
+      <div class="option" id="de">
+       <span lang="de">
+        Deutsch
+       </span>
+       (German)
+      </div>
+     </a>
+     <a href="/spanish/vocabulary/">
+      <div class="option" id="es">
+       <span lang="es">
+        Español
+       </span>
+       (Spanish)
+      </div>
+     </a>
+     <a href="/esperanto/vocabulary/">
+      <div class="option" id="eo">
+       <span lang="eo">
+       </span>
+       (Esperanto)
+      </div>
+     </a>
+     <a href="/spanish-mexico/vocabulary/">
+      <div class="option" id="es-mx">
+       <span lang="es-mx">
+        Español (México)
+       </span>
+       (Spanish (Mexico))
+      </div>
+     </a>
+     <a href="/mandarin/vocabulary/">
+      <div class="option" id="zh">
+       <span lang="zh">
+        汉语（普通话）
+       </span>
+       (Mandarin)
+      </div>
+     </a>
+     <a href="/italian/vocabulary/">
+      <div class="option" id="it">
+       <span lang="it">
+        Italiano
+       </span>
+       (Italian)
+      </div>
+     </a>
+     <a href="/turkish/vocabulary/">
+      <div class="option" id="tr">
+       <span lang="tr">
+        Türkçe
+       </span>
+       (Turkish)
+      </div>
+     </a>
+     <a href="/arabic/vocabulary/">
+      <div class="option" id="ar">
+       <span lang="ar">
+        العربية
+       </span>
+       (Arabic)
+      </div>
+     </a>
+     <a href="/japanese/vocabulary/">
+      <div class="option" id="ja">
+       <span lang="ja">
+        日本語
+       </span>
+       (Japanese)
+      </div>
+     </a>
+     <a href="/dutch/vocabulary/">
+      <div class="option" id="nl">
+       <span lang="nl">
+        Nederlands
+       </span>
+       (Dutch)
+      </div>
+     </a>
+     <a href="/portuguese/vocabulary/">
+      <div class="option" id="pt">
+       <span lang="pt">
+        Português
+       </span>
+       (Portuguese)
+      </div>
+     </a>
+     <a href="/korean/vocabulary/">
+      <div class="option" id="ko">
+       <span lang="ko">
+        한국어(=한글)
+       </span>
+       (Korean)
+      </div>
+     </a>
+     <a href="/hungarian/vocabulary/">
+      <div class="option" id="hu">
+       <span lang="hu">
+        magyar
+       </span>
+       (Hungarian)
+      </div>
+     </a>
+     <a href="/hindi/vocabulary/">
+      <div class="option" id="hi">
+       <span lang="hi">
+        हिन्दी
+       </span>
+       (Hindi)
+      </div>
+     </a>
+     <a href="/polish/vocabulary/">
+      <div class="option" id="pl">
+       <span lang="pl">
+        polski
+       </span>
+       (Polish)
+      </div>
+     </a>
+     <a href="/russian/vocabulary/">
+      <div class="option" id="ru">
+       <span lang="ru">
+        русский
+       </span>
+       (Russian)
+      </div>
+     </a>
+    </div>
+   </div>
+   <div style="width:100%;position:fixed; bottom:0; left:0;padding:2px; z-index:1">
+    <div style="text-align:right;">
+     <a href="/japanese/vocabulary/">
+      <div style="color: #F433FF; z-index:3; display:inline-block;padding:10px;text-shadow: 1px 1px black;">
+       <span lang="ja">
+        こんにちは - koNnichiha
+       </span>
+      </div>
+     </a>
+     <div id="info" onclick="toggleDisplayInfo()">
+     </div>
+    </div>
+    <div style="padding:10px;background: rgba(0, 0, 0, 0.8);text-shadow: 1px 1px black; color:lightgrey;">
+     <div style="color:#AAA">
+      Show Interface In	:
+     </div>
+     <strong style="color: #F433FF;">
+      English
+     </strong>
+     -
+     <a href="/fr/" lang="fr" style="color:lightgrey;">
+      Français
+     </a>
+     -
+     <a href="/esp/" lang="es" style="color:lightgrey;">
+      Español
+     </a>
+     -
+     <a href="/de/" lang="de" style="color:lightgrey;">
+      Deutsch
+     </a>
+     -
+     <a href="/nl/" lang="nl" style="color:lightgrey;">
+      Nederlands
+     </a>
+     -
+     <a href="/br/" lang="pt-pt" style="color:lightgrey;">
+      Português
+     </a>
+     -
+     <a href="/ru/" lang="ru" style="color:lightgrey;">
+      Русский
+     </a>
+     -
+     <a href="/it/" lang="it" style="color:lightgrey;">
+      Italiano
+     </a>
+     -
+     <a href="/ca/" lang="ca" style="color:lightgrey;">
+      català
+     </a>
+     -
+     <a href="/pl/" lang="pl" style="color:lightgrey;">
+      Polska
+     </a>
+     -
+     <a href="/cs/" lang="cs" style="color:lightgrey;">
+      Čeština
+     </a>
+     -
+     <a href="/ro/" lang="ro" style="color:lightgrey;">
+      Română
+     </a>
+     -
+     <a href="/sk/" lang="sk" style="color:lightgrey;">
+      Slovak
+     </a>
+     -
+     <a href="/hu/" lang="hu" style="color:lightgrey;">
+      Magyar
+     </a>
+     -
+     <a href="/gr/" lang="el" style="color:lightgrey;">
+      Ελληνικά
+     </a>
+     -
+     <a href="/tr/" lang="tr" style="color:lightgrey;">
+      Türkçe
+     </a>
+     -
+     <a href="/ar/" lang="ar" style="color:lightgrey;">
+      عربي
+     </a>
+     -
+     <a href="/ar-eg/" lang="ar-eg" style="color:lightgrey;">
+      اللغة المصرية العامية
+     </a>
+     -
+     <a href="/fa/" lang="fa" style="color:lightgrey;">
+      فارسی
+     </a>
+     -
+     <a href="/cn/" lang="zh" style="color:lightgrey;">
+      简体中文
+     </a>
+     -
+     <a href="/tw/" lang="zh-tw" style="color:lightgrey;">
+      繁體中文
+     </a>
+     -
+     <a href="/jp/" lang="ja" style="color:lightgrey;">
+      日本語
+     </a>
+     -
+     <a href="/ko/" lang="ko" style="color:lightgrey;">
+      한국어
+     </a>
+     -
+     <a href="/vi/" lang="vi" style="color:lightgrey;">
+      Tiếng Việt
+     </a>
+     -
+     <a href="/to/" lang="to" style="color:lightgrey;">
+      ไทย
+     </a>
+     -
+     <a href="/id/" lang="id" style="color:lightgrey;">
+      Indonesian
+     </a>
+     -
+     <a href="/hi/" lang="hi" style="color:lightgrey;">
+      हिन्दी
+     </a>
+     <!--          -<a style="color:white;" onMouseOver="displayMsg(event, 'Set the interface to Hebrew.')" onMouseOut="popDown('')" href="/he/">&#1506;&#1489;&#1512;&#1497;&#1514;</a> -->
+    </div>
+   </div>
+   <script>
+    add("en", "English", "English", "/english/vocabulary/");
+ add("en-GB", "English (UK)", "British English", "/english-uk/vocabulary/");
+ add("fr", "français", "French", "/french/vocabulary/");
+ add("de", "Deutsch", "German", "/german/vocabulary/");
+ add("es", "Español", "Spanish", "/spanish/vocabulary/");
+ add("eo", "", "Esperanto", "/esperanto/vocabulary/");
+ add("es-mx", "Español (México)", "Spanish (Mexico)", "/spanish-mexico/vocabulary/");
+ add("zh", "汉语（普通话）", "Mandarin", "/mandarin/vocabulary/");
+ add("it", "Italiano", "Italian", "/italian/vocabulary/");
+ add("tr", "Türkçe", "Turkish", "/turkish/vocabulary/");
+ add("ar", "العربية", "Arabic", "/arabic/vocabulary/");
+ add("ja", "日本語", "Japanese", "/japanese/vocabulary/");
+ add("nl", "Nederlands", "Dutch", "/dutch/vocabulary/");
+ add("pt", "Português", "Portuguese", "/portuguese/vocabulary/");
+ add("ko", "한국어(=한글)", "Korean", "/korean/vocabulary/");
+ add("hu", "magyar", "Hungarian", "/hungarian/vocabulary/");
+ add("hi", "हिन्दी", "Hindi", "/hindi/vocabulary/");
+ add("pl", "polski", "Polish", "/polish/vocabulary/");
+ add("ru", "русский", "Russian", "/russian/vocabulary/");
+   </script>
+  </body>
+ </html>

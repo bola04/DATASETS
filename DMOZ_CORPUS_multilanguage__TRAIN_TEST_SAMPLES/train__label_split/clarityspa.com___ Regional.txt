@@ -1,0 +1,401 @@
+<html>
+  <head>
+   <title>
+    Clarity: Skin Care for Men and Women
+   </title>
+   <meta content="Maria Bodz" name="Author"/>
+   <meta content="July 16, 2003" name="date_updated"/>
+   <style type="text/css">
+    body { scrollbar-face-color:#F2F9FB; scrollbar-shadow-color: #E1ECED;
+  scrollbar-highlight-color: #ffffff; scrollbar-3dlight-color:#ffffff; scrollbar-darkshadow-color:#C7CEDE;
+  scrollbar-track-color: #F2F9FB; scrollbar-arrow-color: #A3B1CC}
+   </style>
+   <style type="text/css">
+    #buttons   {position:absolute; left:170px; top:190px;}
+ #divScrollTextCont {
+ 	position:absolute;
+ 	left:296px;
+ 	top:252px;
+ 	width:392px;
+ 	height:245px;
+ 	clip:rect(0px 352px 245px 0px);
+ 	overflow:hidden;
+ 	visibility:hidden;
+ }
+ #divText {position:absolute; left:0px; top:0px;}
+   </style>
+   <script src="Scripts/swfobject_modified.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" type="text/javascript">
+    <!--
+ /**********************************************************************************
+ ScrollText
+ *   Copyright (C) 2001 <a href="/dhtmlcentral/thomas_brattli.asp">Thomas Brattli</a>
+ *   This script was released at DHTMLCentral.com
+ *   Visit for more great scripts!
+ *   This may be used and changed freely as long as this msg is intact!
+ *   We will also appreciate any links you could give us.
+ *
+ *   Made by <a href="/dhtmlcentral/thomas_brattli.asp">Thomas Brattli</a>
+ *********************************************************************************/
+ 
+ function lib_bwcheck(){ //Browsercheck (needed)
+ 	this.ver=navigator.appVersion
+ 	this.agent=navigator.userAgent
+ 	this.dom=document.getElementById?1:0
+ 	this.opera5=this.agent.indexOf("Opera 5")>-1
+ 	this.ie5=(this.ver.indexOf("MSIE 5")>-1 && this.dom && !this.opera5)?1:0;
+ 	this.ie6=(this.ver.indexOf("MSIE 6")>-1 && this.dom && !this.opera5)?1:0;
+ 	this.ie4=(document.all && !this.dom && !this.opera5)?1:0;
+ 	this.ie=this.ie4||this.ie5||this.ie6
+ 	this.mac=this.agent.indexOf("Mac")>-1
+ 	this.ns6=(this.dom && parseInt(this.ver) >= 5) ?1:0;
+ 	this.ns4=(document.layers && !this.dom)?1:0;
+ 	this.bw=(this.ie6 || this.ie5 || this.ie4 || this.ns4 || this.ns6 || this.opera5)
+ 	return this
+ }
+ var bw=new lib_bwcheck()
+ 
+ 
+ /*****************
+ 
+ You set the width and height of the divs inside the style tag, you only have to
+ change the divScrollTextCont, Remember to set the clip the same as the width and height.
+ You can remove the divUp and divDown layers if you want.
+ This script should also work if you make the divScrollTextCont position:relative.
+ Then you should be able to place this inside a table or something. Just remember
+ that Netscape crash very easily with relative positioned divs and tables.
+ 
+ Updated with a fix for error if moving over layer before pageload.
+ 
+ ****************/
+ 
+ 
+ //If you want it to move faster you can set this lower, it's the timeout:
+ var speed = 30
+ 
+ //Sets variables to keep track of what's happening
+ var loop, timer
+ 
+ //Object constructor
+ function makeObj(obj,nest){
+     nest=(!nest) ? "":'document.'+nest+'.'
+ 	this.el=bw.dom?document.getElementById(obj):bw.ie4?document.all[obj]:bw.ns4?eval(nest+'document.'+obj):0;
+   	this.css=bw.dom?document.getElementById(obj).style:bw.ie4?document.all[obj].style:bw.ns4?eval(nest+'document.'+obj):0;
+ 	this.scrollHeight=bw.ns4?this.css.document.height:this.el.offsetHeight
+ 	this.clipHeight=bw.ns4?this.css.clip.height:this.el.offsetHeight
+ 	this.up=goUp;this.down=goDown;
+ 	this.moveIt=moveIt; this.x=0; this.y=0;
+     this.obj = obj + "Object"
+     eval(this.obj + "=this")
+     return this
+ }
+ 
+ // A unit of measure that will be added when setting the position of a layer.
+ var px = bw.ns4||window.opera?"":"px";
+ 
+ function moveIt(x,y){
+ 	this.x = x
+ 	this.y = y
+ 	this.css.left = this.x+px
+ 	this.css.top = this.y+px
+ }
+ 
+ //Makes the object go up
+ function goDown(move){
+ 	if (this.y>-this.scrollHeight+oCont.clipHeight){
+ 		this.moveIt(0,this.y-move)
+ 			if (loop) setTimeout(this.obj+".down("+move+")",speed)
+ 	}
+ }
+ //Makes the object go down
+ function goUp(move){
+ 	if (this.y<0){
+ 		this.moveIt(0,this.y-move)
+ 		if (loop) setTimeout(this.obj+".up("+move+")",speed)
+ 	}
+ }
+ 
+ //Calls the scrolling functions. Also checks whether the page is loaded or not.
+ function scroll(speed){
+ 	if (scrolltextLoaded){
+ 		loop = true;
+ 		if (speed>0) oScroll.down(speed)
+ 		else oScroll.up(speed)
+ 	}
+ }
+ 
+ //Stops the scrolling (called on mouseout)
+ function noScroll(){
+ 	loop = false
+ 	if (timer) clearTimeout(timer)
+ }
+ //Makes the object
+ var scrolltextLoaded = false
+ function scrolltextInit(){
+ 	oCont = new makeObj('divScrollTextCont')
+ 	oScroll = new makeObj('divText','divScrollTextCont')
+ 	oScroll.moveIt(0,0)
+ 	oCont.css.visibility = "visible"
+ 	scrolltextLoaded = true
+ }
+ //Call the init on page load if the browser is ok...
+ //if (bw.bw) onload = scrolltextInit
+ 
+ /***************
+ Multiple Scripts
+ If you have two or more scripts that use the onload event, probably only one will run (the last one).
+ Here is a solution for starting multiple scripts onload:
+    1. Delete or comment out all the onload assignments, onload=initScroll and things like that.
+    2. Put the onload assignments in the body tag like in this example, note that they must have braces ().
+    Example: <body onload="initScroll(); initTooltips(); initMenu();">
+ **************/
+ 
+ function MM_preloadImages() { //v3.0
+   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+ }
+ 
+ function MM_swapImgRestore() { //v3.0
+   var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+ }
+ 
+ function MM_swapImage() { //v3.0
+   var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+    if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+ }
+ function MM_openBrWindow(theURL,winName,features) { //v2.0
+ var  new_window = window.open(theURL,winName,features);
+ 	  new_window.focus()
+ }
+ 
+ function MM_findObj(n, d) { //v4.01
+   var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+     d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+   if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+   for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+   if(!x && d.getElementById) x=d.getElementById(n); return x;
+ }
+ //-->
+   </script>
+   <link href="styles.css" rel="stylesheet" type="text/css"/>
+   <script src="Scripts/AC_RunActiveContent.js" type="text/javascript">
+   </script>
+  </head>
+  <body background="images/background.jpg" leftmargin="0" marginheight="0" marginleft="0" marginwidth="0" onload="scrolltextInit();MM_preloadImages('images/nav_products_on.gif','images/nav_photos_on.gif','images/nav_promotions_on.gif','images/nav_map_on.gif','images/sub_slim_on.gif','images/nav_services_on.gif')" text="#0f3a37" topmargin="0">
+   <!---<bgsound src="sounds/clarity_sound_short.mp3" loop="infinite">--->
+   <div class="bodytext" id="body" style="position:absolute; width:370px; height:354px; z-index:20; left: 295px; top: 210px">
+    <p>
+     Clarity's purpose is to offer the most advanced
+ treatments and skincare therapies in a relaxing
+ atmosphere that is impeccably clear,
+ warm and inviting.
+    </p>
+    <p>
+     Our commitment is to provide an exceptionally
+ well-trained staff
+     <br/>
+     that caters to the need of today's
+ over-worked, time-pressured professional.
+ We specialize in a state-of-the-art process that helps
+ eliminate excess fluids in the tissues that can cause
+ unwanted symptoms.
+    </p>
+    <p>
+     Whether you struggle with an occasional breakout,
+ suffer with clogged pores and acne, deal with brown
+ spots or just want to maintain healthy skin, we at
+ Clarity have a multitude of treatments
+     <br/>
+     to suit your
+ specific needs.
+    </p>
+    <p>
+     <a href="contact.html">
+      Schedule your appointment today!
+     </a>
+     <br/>
+    </p>
+    <img border="0" height="103" onclick="MM_openBrWindow('coupon_homepage.html','coupon','status=yes,resizable=yes,width=400,height=500')" src="images/homepage/promo_offer.gif" width="405"/>
+   </div>
+   <div id="photos" style="position:absolute; width:500px; height:410px; z-index:21; left: 725px; top: 161px">
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" height="410" id="FlashID" width="400">
+     <param name="movie" value="petals.swf">
+     </param>
+     <param name="quality" value="high">
+     </param>
+     <param name="wmode" value="opaque">
+     </param>
+     <param name="swfversion" value="8.0.35.0">
+     </param>
+     <!-- This param tag prompts users with Flash Player 6.0 r65 and higher to download the latest version of Flash Player. Delete it if you dont want users to see the prompt. -->
+     <param name="expressinstall" value="Scripts/expressInstall.swf">
+     </param>
+     <!-- Next object tag is for non-IE browsers. So hide it from IE using IECC. -->
+     <!--[if !IE]>-->
+     <object data="petals.swf" height="410" type="application/x-shockwave-flash" width="400">
+      <!--<![endif]-->
+      <param name="quality" value="high">
+      </param>
+      <param name="wmode" value="opaque">
+      </param>
+      <param name="swfversion" value="8.0.35.0">
+      </param>
+      <param name="expressinstall" value="Scripts/expressInstall.swf">
+      </param>
+      <!-- The browser displays the following alternative content for users with Flash Player 6.0 and older. -->
+      <div>
+       <h4>
+        Content on this page requires a newer version of Adobe Flash Player.
+       </h4>
+       <p>
+        <a href="http://www.adobe.com/go/getflashplayer">
+         <img alt="Get Adobe Flash player" height="33" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" width="112"/>
+        </a>
+       </p>
+      </div>
+      <!--[if !IE]>-->
+     </object>
+     <!--<![endif]-->
+    </object>
+   </div>
+   <div id="giftcert" style="position:absolute; width:157px; height:88px; z-index:22; left: 4px; top: 471px">
+    <a href="https://clarityspa.boomtime.com/lgift">
+     <img border="0" height="82" src="images/homepage/gift_cets.gif" width="141"/>
+    </a>
+   </div>
+   <div id="address" style="position:absolute; width:603px; height:18px; z-index:0; left: 295px; top: 587px">
+    <span class="adress">
+     40000 Fremont Blvd., Suite D, Fremont, CA 94538 | Phone:
+   510-656-2100 | Fax: 510-656-1300 |
+    </span>
+   </div>
+   <div id="fb-root">
+   </div>
+   <script src="http://connect.facebook.net/en_US/all.js#appId=227265730640021&amp;xfbml=1">
+   </script>
+   <fb:like font="arial" href="http://clarityspa.com" send="false" show_faces="false" style="position:absolute;  left: 770px; top: 578px;" width="450">
+   </fb:like>
+   <div id="flash" style="position:absolute; width:307; height: 22; z-index:7; top: 51px; left: 299px">
+    <embed height="22" src="tagline_2.swf" width="307">
+    </embed>
+   </div>
+   <table border="0" cellpadding="0" cellspacing="0" valign="top" width="100%">
+    <tr>
+     <td rowspan="11" valign="top" width="308">
+      <img height="326" src="images/homepage/floer_home.jpg" width="308"/>
+      <img height="164" src="images/homepage/home_menu1.jpg" width="308"/>
+      <br/>
+      <img border="0" height="110" src="images/homepage/home_menu2.jpg" usemap="#Map" width="308"/>
+     </td>
+     <td align="right" bgcolor="#C6CEDD" valign="top" width="174">
+     </td>
+     <td align="right" bgcolor="#C6CEDD" valign="top" width="194">
+      <a href="index2.html">
+       <img border="0" height="87" src="images/top_arch_v2.gif" width="50"/>
+      </a>
+     </td>
+     <td align="center" bgcolor="#DEE3EB" valign="top" width="100%">
+      <a href="index.html">
+       <img alt="Clarity Skin Care" border="0" height="88" src="images/logo3.gif" width="153"/>
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td align="right" bgcolor="#C6CEDD" colspan="2" rowspan="2" valign="top">
+      <img height="22" src="images/top_arch1_2.gif" width="368"/>
+     </td>
+     <td bgcolor="#DEE3EB" valign="top" width="100%">
+      <img height="12" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td align="right" bgcolor="#A2B1CC" valign="top" width="100%">
+      <img height="10" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td align="right" bgcolor="#C6CEDD" valign="top" width="174">
+      <img height="36" src="images/top_arch2_2.gif" width="174"/>
+     </td>
+     <td align="right" bgcolor="#A2B1CC" valign="top" width="174">
+     </td>
+     <td align="right" bgcolor="#A2B1CC" colspan="2" valign="top">
+      <a href="services_new.html">
+       <img border="0" height="27" name="Image1" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image1','','images/nav_services_on.gif',1)" src="images/nav_services.gif" width="72"/>
+      </a>
+      <a href="products3.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image21','','images/nav_products_on.gif',1)">
+       <img border="0" height="27" name="Image21" src="images/nav_products.gif" width="70"/>
+      </a>
+      <a href="photos.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image31','','images/nav_photos_on.gif',1)">
+       <img border="0" height="27" name="Image31" src="images/nav_photos.gif" width="60"/>
+      </a>
+      <a href="promos.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image41','','images/nav_promotions_on.gif',1)">
+       <img border="0" height="27" name="Image41" src="images/nav_promotions.gif" width="85"/>
+      </a>
+      <a href="articles.html">
+       <img alt="Skincare Articles" border="0" height="27" id="Image10" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image10','','images/nav_articles_on.gif',1)" src="images/nav_articles.gif" width="121"/>
+      </a>
+      <a href="contact.html" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('Image51','','images/nav_contact_on.gif',1)">
+       <img border="0" height="27" name="Image51" src="images/nav_contact.gif" width="104"/>
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td colspan="2" rowspan="5" valign="top">
+      <img height="37" src="images/top_arch3_2.jpg" width="368"/>
+     </td>
+     <td bgcolor="#A2B1CC" valign="top" width="100%">
+      <img height="1" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#99A4BE" valign="top" width="100%">
+      <img height="2" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#ACB4C6" valign="top" width="100%">
+      <img height="2" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#C0C6D4" valign="top" width="100%">
+      <img height="1" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td valign="top" width="100%">
+      <img height="17" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td class="subtitle" colspan="3" valign="bottom">
+      <img height="340" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td class="subtitle" colspan="3" valign="top">
+      <img height="70" src="images/spacer.gif" width="1"/>
+      <br/>
+      <img height="11" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+    <tr>
+     <td bgcolor="#A2B1CC" colspan="4" valign="top">
+      <img height="1" src="images/spacer.gif" width="1"/>
+     </td>
+    </tr>
+   </table>
+   <map name="Map">
+    <area alt="Maria Tyomkina" coords="35,78,199,110" href="http://urbanabsurd.com" shape="rect" target="_blank">
+    </area>
+   </map>
+   <script type="text/javascript">
+    <!--
+ swfobject.registerObject("FlashID");
+ //-->
+   </script>
+  </body>
+ </html>

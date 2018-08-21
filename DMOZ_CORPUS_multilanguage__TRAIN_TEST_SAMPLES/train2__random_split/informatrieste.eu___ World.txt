@@ -1,0 +1,699 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+ <html>
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="informatrieste - Eventi Notizie Ricette Meteo Personaggi di Trieste e provincia" name="Description"/>
+   <meta content="Trieste | visitare | turismo | informazioni | eventi" name="title"/>
+   <meta content="Trieste, triestine, triestini" name="Keywords"/>
+   <meta content="Redazione di informaTrieste!" name="author"/>
+   <meta content="Proprietà informaTrieste! diritti riservati" name="copyright"/>
+   <meta content="info@informatrieste.eu" http-equiv="Reply-to"/>
+   <meta content="IT" http-equiv="content-language"/>
+   <meta content="INDEX,FOLLOW" name="ROBOTS"/>
+   <meta content="08/16/2008" name="creation_Date"/>
+   <meta content="1 days" name="revisit-after"/>
+   <meta content="6e20e6a1b4a4410a" name="y_key"/>
+   <meta content="initial-scale=1.0, user-scalable=no" name="viewport"/>
+   <script src="http://maps.google.com/maps/api/js?sensor=true&amp;language=it" type="text/javascript">
+   </script>
+   <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <link href="http://www.informatrieste.eu/blog/favicon.ico" rel="shortcut icon"/>
+   <link href="http://www.informatrieste.eu/ts/feed/" rel="alternate" title="informaTrieste!" type="application/rss+xml"/>
+   <!-- ukey="1E55D2CE" -->
+   <title>
+    Trieste | visitare | turismo | informazioni | eventi
+   </title>
+   <script src="http://www.informatrieste.eu/blog/js/js_quicktags.js" type="text/javascript">
+   </script>
+   <script src="http://www.informatrieste.eu/blog/js/external.js" type="text/javascript">
+   </script>
+   <script src="//ajax.googleapis.com/ajax/libs/dojo/1.7.2/dojo/dojo.js" type="text/javascript">
+   </script>
+   <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <script type="text/javascript">
+    function initialize(){ // a
+    var latlng = new google.maps.LatLng(45.6800, 13.7400); // b
+    var myOptions = { // c
+       zoom: 10,
+       center: latlng,
+       mapTypeId: google.maps.MapTypeId.HYBRID,
+       mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR}
+    }
+    mymap = new google.maps.Map(document.getElementById("map"), myOptions); // d 
+ }
+   </script>
+   <script type="text/javascript">
+    dojo.addOnLoad(function() {
+ 	  var resultPanelID = "news1";
+ 	  
+ 	  // Parse Rss Feed
+ 	  dojo.xhrGet({
+ 	     url: "http://www.informatrieste.eu/ts/feed/",
+ 	     preventCache: true,
+ 	     handleAs: "xml",
+ 	     load: function(xmlDoc, ioArgs){		 
+ 	         var i = 0;
+ 	         var output = "";
+ 	      
+ 	         var node = xmlDoc.getElementsByTagName("channel").item(0);
+ 	     
+ 	         if (node == null) {
+ 		         console.debug("RSS XML format is corrupted ...");	  		    	     
+ 	    	     return;
+ 	         }
+ 	     
+ 	         var entriesLength = node.getElementsByTagName("item").length;
+ 			 
+ 			 for (i = 0; i < entriesLength; ++i) {
+ 				var entry = node.getElementsByTagName('item').item(i);
+ 			 	
+ 				var title = entry.getElementsByTagName('title').item(0).firstChild.data;
+ 			 	var published = entry.getElementsByTagName('pubDate').item(0).firstChild.data;			
+ 			 	var description = entry.getElementsByTagName('description').item(0).firstChild.data;
+ 			 	var link = entry.getElementsByTagName('link').item(0).firstChild.data;
+ 			 	
+ 				output += '<a style="color:#EEE;font-size:18px;line-height:40px;" target="_self" href="' + link +'">' + title + '</a><br />';
+ 			 }
+ 			 	
+ 		     document.getElementById(resultPanelID).innerHTML = output; 	    	
+        },
+        error: function(error, ioArgs){	         
+ 	         dojo.byId(resultPanelID).innerHTML = "Error loading Rss feed";
+ 	         console.debug("failed xhrGet for Rss URL: ", error, ioArgs);	  	         
+   	   }	  
+ 	});
+ });
+   </script>
+   <style type="text/css">
+    <!--
+ 
+ #container {
+ 	position: relative;
+ 	margin: 0 auto;
+ 	padding: 0;
+ 	width: 100%;
+ 	background: #FFF;
+ 	color: #000;
+ 	text-align: center;
+ 	background-color: #FFF;
+ 	font-size: 12px;
+ 	text-align: center;
+ 	float:none;
+ }
+ 	
+ #header {
+ 	float: none;
+ 	position: relative;
+ 	margin: 0 auto;
+ 	padding: 0;
+ 	width: 100%;
+ 	background: #FCF;
+ 	color: #000;
+ 	text-align: center;
+ 	background-color: #FFF;
+ 	font-size: 12px;
+ 	text-align: center;
+ }
+ #news {
+ 
+ 	height: 40px;
+ 	margin: 0 auto;
+ 	margin-top: 10px auto;
+ 	position:relative;
+ 	text-align: center;
+ 	min-height: 40px;
+ 	z-index: 255;
+ 	/*background-color:#789BB5;*/
+ 	background-color:#999;
+ 	overflow:hidden;
+ 	border-bottom-style: solid;
+ 	border-bottom-width: 0px;
+ 	border-top-style: solid;
+ 	border-top-width: 1px;
+ 	border-top-color: #999;
+ }
+ #spazio {
+ 	float: none;
+ 	position: relative;
+ 	margin: 0 auto;
+ 	width: 1190px;
+ 	background: #DDD;
+ 	color: #000;
+ 	text-align: center;
+ 	background-color: #DDD;
+ 	font-size: 10px;
+ 	text-align: center;
+ 	height: 15px;
+ 	padding-top: 3px;
+ 	padding-bottom: 3px;
+ 	padding-left: 5px;
+ 	padding-right: 5px;  
+     border-top:solid thin #555555;
+ }
+ 
+ 
+ #contentmain {
+ 	float: none;
+ 	margin: 0 auto;
+ 	padding: 10px;
+ 	width: 100%;
+ 	padding-top:30px;
+ 	background: #999;
+ 	font-size: 12px;
+ 	text-align: justify;
+ 	color:#FFF;
+ }
+ 
+ #contentleft {
+ 	float: none;
+ 	color: #333;
+ 	padding-top:30px;
+ 	padding: 10px;
+ 	width: 45%;
+ 	background: #FFF;
+ 	text-align: left;
+ 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+ }
+ 
+ #menus {
+ 	position: relative;
+ 	border: 0; 
+ 	float: left;
+ 	color: #333;
+ 	margin: 0;
+ 	padding: 0px;
+ 	width: 100%;
+ 	background: #FFF;
+ 	text-align: left;
+ 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+ 	font-size: 18px;
+ 	visibility: hidden;
+ }
+ 
+ body,td,th {
+ 	font-family: Verdana, Geneva, sans-serif;
+ 	color: #000;
+ }
+ body {
+ 	background-color: #999;
+ 	margin-left: 0px;
+ 	margin-top: 0px;
+ 	margin-right: 0px;
+ 	margin-bottom: 10px;
+ }
+ 
+ div.NM {
+ 	position: relative;
+ 	height: 156;
+ 	width: 100%;
+ 	left: 0px;
+ 	top: 0px;
+ } 
+ #banner {
+ 	position: relative;
+ 	height: auto; 
+ 	/*background: url('immagini/riquadro_lungo3.jpg') no-repeat;*/
+ 	width:95%;
+ 	color:#333;
+ 	float:none;
+ } 
+ .titolo {
+ 	font-size: 18px;
+ 	line-height: 18px;
+ 	text-align:center;
+ }
+ #footer {
+ 	float: none;
+ 	width: 100%;
+ 	background: #DDD;
+ 	color: #000;
+ 	text-align: center;
+ 	background-color: #DDD;
+ 	font-size: 10px;
+ 	padding-bottom:10px;
+ 	padding-top:10px;
+ }
+ .scrolla {
+ 	font-size: 14px;
+ 	line-height: 40px;
+ 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+ 	color:#789BB5;
+ }
+ .scrolla a{
+ 	color:#789BB5;
+ 	text-decoration: none;
+ }
+ .scrolla a:hover{
+ 	color:#F00;
+ }
+ .scrolla visited{
+ 	color:#789BB5;
+ }
+ .tag {
+ 	font-size: 12px;
+ 	line-height: 18px;
+ 	font-family: Tahoma, Verdana, Geneva, Arial, Helvetica, sans-serif;
+ 	color:#FFF;
+ }
+ .tag a{
+ 	color:#555;
+ 	text-decoration: none;
+ }
+ .tag a:hover{
+ 	color:#F00;
+ }
+ .tag a:visited{
+ 	color:#555;
+ }
+ .evidenziato {
+ 	color: #399;
+ 	font-size: 14px;
+ }
+ .evidenziato a{
+ 	color: #399;
+ 	font-size: 14px;
+ }
+ .evidenziato a:hover{
+ 	color: #F00;
+ 	font-size: 14px;
+ }
+ .evidenziato2 {
+ 	color: #399;
+ }
+ .evidenziato2 a{
+ 	color: #900;
+ }
+ .evidenziato2 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato3 {
+ 	color: #990;
+ }
+ .evidenziato3 a{
+ 	color: #990;
+ }
+ .evidenziato3 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato4 {
+ 	color: #C60;
+ }
+ .evidenziato4 a{
+ 	color: #C60;
+ }
+ .evidenziato4 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato5 {
+ 	color: #3C0;
+ }
+ .evidenziato5 a{
+ 	color: #3C0;
+ }
+ .evidenziato5 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato6 {
+ 	color: #63F;
+ }
+ .evidenziato6 a{
+ 	color: #63F;
+ }
+ .evidenziato6 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato7 {
+ 	color: #633;
+ }
+ .evidenziato7 a{
+ 	color: #633;
+ }
+ .evidenziato7 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato8 {
+ 	color: #39F;
+ }
+ .evidenziato8 a{
+ 	color: #39F;
+ }
+ .evidenziato8 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato9 {
+ 	color: #F0C;
+ }
+ .evidenziato9 a{
+ 	color: #F0C;
+ }
+ .evidenziato9 a:hover{
+ 	color: #F00;
+ }
+ .evidenziato10 {
+ 	color: #696;
+ }
+ .evidenziato10 a{
+ 	color: #696;
+ }
+ .evidenziato10 a:hover{
+ 	color: #F00;
+ }
+ .riq {
+ float:left;
+ background-repeat:no-repeat; 
+ background-position:center; 
+ margin: 0 auto; 
+ min-height:105px; 
+ max-height:105px;
+ width:160px; 
+ background-image: url(immagini/riquadro.png);
+ }
+ -->
+   </style>
+   <script type="text/javascript">
+    function popupPicture(pictureURL, width, height, justPicture) {
+ height=height+20;
+   if (justPicture) {
+ var myDiv1 = document.getElementById("popz");
+ myDiv1.style.width= width+'px';
+ myDiv1.style.height= height+'px';
+ myDiv1.innerHTML = '<img src="'+pictureURL+'" alt="'+pictureURL+'" /><br /><a href="javascript:sera();">Chiudi</a>';
+ document.getElementById('popz').style.visibility='visible';
+ 	
+     return true;
+   } else {
+     document.open(pictureURL, '', 'width='+width+',height='+height+',scrollbars=1,location=0,menubar=0,resizable=1');
+   }
+ }
+ 
+ function sera() {
+ 	document.getElementById('popz').style.visibility='hidden';
+ 	}
+ 
+ function toggleDisplay() {
+    var obj = document.getElementById("el"),
+         disp = obj.style.display;
+    obj.style.display = !disp || disp == "none"
+        ? "block"
+        : "none";
+ }
+ 
+ function sera2() {
+ 	document.getElementById('el').style.visibility='hidden';
+ 	}
+ 
+ //document.onload = setTimeout(sera2, 6000);
+ function MM_swapImgRestore() { //v3.0
+   var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+ }
+ function MM_preloadImages() { //v3.0
+   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+     var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+ }
+ 
+ function MM_findObj(n, d) { //v4.01
+   var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+     d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+   if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+   for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+   if(!x && d.getElementById) x=d.getElementById(n); return x;
+ }
+ 
+ function MM_swapImage() { //v3.0
+   var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+    if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+ }
+ 
+ function changeImage(d) {
+         newImage = "url(immagini/riquadro2.png)";
+         document.getElementById('riq'+d).style.backgroundImage = newImage;
+       }
+ 	  
+ function backImage(d) {
+         newImage = "url(immagini/riquadro.png)";
+         document.getElementById('riq'+d).style.backgroundImage = newImage;
+       }	  
+ 	  
+ 
+     function toggle() {
+             document.getElementById('cook').style.display='none';
+     }
+   </script>
+  </head>
+  <body onload="MM_preloadImages('testa-informatrieste-home-2018.jpg'); initialize(); obla();">
+   <div align="center" id="cook" style="width:100%;text-align:center;">
+    Questo sito utilizza i cookie terze parti. Se decidi di continuare la navigazione consideriamo che accetti il loro uso.
+    <a href="http://www.informatrieste.eu/articoli/?page=accettacookies" style="color:#F00;">
+     Piú informazioni »
+    </a>
+    <a href="javascript:toggle();">
+     chiudi
+    </a>
+   </div>
+   <div id="header">
+    <a href="http://www.informatrieste.eu/articoli/">
+     <img alt="www.informatrieste.eu" border="0" name="header" src="testa-informatrieste-home-2018.jpg" style="width:100%"/>
+    </a>
+   </div>
+   <!-- FINE HEADER -->
+   <div id="container">
+    <div align="center" id="news">
+     <marquee align="middle" direction="up" height="40" scrollamount="1" scrolldelay="150" style="text-align:center;" width="100%">
+      <h1 align="center" background="#999" class="scrolla" id="news1">
+      </h1>
+     </marquee>
+    </div>
+    <div id="contentmain">
+     <a name="menu">
+     </a>
+     <table align="center" background="#999" border="0" cellpadding="5" cellspacing="0" width="96%">
+      <tr>
+       <td align="center" class="riq" id="riq1" onmouseout="backImage(1);" onmouseover="changeImage(1);" valign="top">
+        <a href="articoli/?x=cat:3">
+         <img alt="da visitare" border="0" src="immagini/visitare.png" vspace="4"/>
+        </a>
+        Visitare la città
+       </td>
+       <td align="center" class="riq" id="riq2" onmouseout="backImage(2);" onmouseover="changeImage(2);" valign="top">
+        <a href="articoli/?x=cat:12">
+         <img alt="storia" border="0" src="immagini/storia.png" vspace="4"/>
+        </a>
+        <br/>
+        La Storia
+       </td>
+       <td align="center" class="riq" id="riq3" onmouseout="backImage(3);" onmouseover="changeImage(3);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/cosa-succede/eventi/">
+         <img alt="eventi" border="0" src="immagini/eventi.png" vspace="4"/>
+        </a>
+        Eventi
+       </td>
+       <td align="center" class="riq" id="riq4" onmouseout="backImage(4);" onmouseover="changeImage(4);" valign="top">
+        <a href="articoli/index.php?page=foto">
+         <img alt="foto di Trieste" border="0" src="immagini/fotografie.png" vspace="4"/>
+        </a>
+        Fotografie
+       </td>
+       <td align="center" class="riq" id="riq5" onmouseout="backImage(5);" onmouseover="changeImage(5);" valign="top">
+        <a href="articoli/index.php?page=ricette_indice">
+         <img alt="ricette triestine" border="0" src="immagini/ricette.png" vspace="4"/>
+        </a>
+        Ricette triestine
+       </td>
+       <td align="center" class="riq" id="riq6" onmouseout="backImage(6);" onmouseover="changeImage(6);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/cosa-succede/notizie/">
+         <img alt="notizie" border="0" src="immagini/notizie.png" vspace="4"/>
+        </a>
+        Rassegna stampa
+       </td>
+       <td align="center" class="riq" id="riq7" onmouseout="backImage(7);" onmouseover="changeImage(7);" valign="top">
+        <a href="articoli/?x=cat:7">
+         <img alt="dialetto triestino" border="0" src="immagini/dialetto.png" vspace="4"/>
+        </a>
+        Dialetto triestino
+       </td>
+       <td align="center" class="riq" id="riq8" onmouseout="backImage(8);" onmouseover="changeImage(8);" valign="top">
+        <a href="ts/category/cosa-succede/comunicati/">
+         <img alt="lettere" border="0" src="immagini/lettere.png" vspace="4"/>
+        </a>
+        Vostre lettere
+       </td>
+       <td align="center" class="riq" id="riq9" onmouseout="backImage(9);" onmouseover="changeImage(9);" valign="top">
+        <a href="ts/category/cosa-succede/sport/">
+         <img alt="sport" border="0" src="immagini/sport.png" vspace="4"/>
+        </a>
+        Sport
+       </td>
+       <td align="center" class="riq" id="riq10" onmouseout="backImage(10);" onmouseover="changeImage(10);" valign="top">
+        <a href="articoli/?x=cat:24">
+         <img alt="interviste" border="0" src="http://www.informatrieste.eu/articoli/fp-content/images/intervista_logo.png" vspace="4"/>
+        </a>
+        Interviste
+       </td>
+       <td align="center" class="riq" id="riq11" onmouseout="backImage(11);" onmouseover="changeImage(11);" valign="top">
+        <a href="articoli/?x=cat:9">
+         <img alt="triestini famosi" border="0" src="immagini/famosi.png" vspace="4"/>
+        </a>
+        Triestini famosi
+       </td>
+       <td align="center" class="riq" id="riq12" onmouseout="backImage(12);" onmouseover="changeImage(12);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/canzoni-triestine-ascoltare/">
+         <img alt="canzoni triestine" border="0" src="immagini/canzoni.png" vspace="4"/>
+        </a>
+        Canzoni triestine
+       </td>
+       <td align="center" class="riq" id="riq13" onmouseout="backImage(13);" onmouseover="changeImage(13);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/cosa-succede/meteo/">
+         <img alt="previsioni meteo Trieste" border="0" src="immagini/meteo2.png" vspace="4"/>
+        </a>
+        Meteo TS e FVG
+       </td>
+       <td align="center" class="riq" id="riq14" onmouseout="backImage(14);" onmouseover="changeImage(14);" valign="top">
+        <a href="articoli/?x=cat:19">
+         <img alt="download file - scarica" border="0" src="immagini/download.png" vspace="4"/>
+        </a>
+        Download-scarica file
+       </td>
+       <td align="center" class="riq" id="riq15" onmouseout="backImage(15);" onmouseover="changeImage(15);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/visitare-trieste/ristoranti/">
+         <img alt="Ristoranti" border="0" src="immagini/ristorante.png" vspace="4"/>
+        </a>
+        Ristoranti
+       </td>
+       <td align="center" class="riq" id="riq16" onmouseout="backImage(16);" onmouseover="changeImage(16);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/trovare/associazioni/">
+         <img alt="associazioni" border="0" src="immagini/associazioni.png" vspace="4"/>
+        </a>
+        Associazioni
+       </td>
+       <td align="center" class="riq" id="riq17" onmouseout="backImage(17);" onmouseover="changeImage(17);" valign="top">
+        <a href="articoli/?x=cat:5">
+         <img alt="filastrocche triestine" border="0" src="immagini/filastrocche.png" vspace="4"/>
+        </a>
+        Filastrocche
+       </td>
+       <td align="center" class="riq" id="riq18" onmouseout="backImage(18);" onmouseover="changeImage(18);" valign="top">
+        <a href="articoli/?x=cat:23">
+         <img alt="cantanti e gruppi" border="0" src="immagini/cantanti.png" vspace="4"/>
+        </a>
+        Cantanti e gruppi
+       </td>
+       <td align="center" class="riq" id="riq19" onmouseout="backImage(19);" onmouseover="changeImage(19);" valign="top">
+        <a href="http://www.informatrieste.eu/ts/blog/category/trovare/negozi-imprese/">
+         <img alt="negozi e imprese" border="0" src="immagini/shopping.png" vspace="4"/>
+        </a>
+        Shopping
+       </td>
+       <td align="center" class="riq" id="riq20" onmouseout="backImage(20);" onmouseover="changeImage(20);" valign="top">
+        <a href="articoli/?x=cat:18">
+         <img alt="Autobus e tram" border="0" src="immagini/tram.png" vspace="4"/>
+        </a>
+        <br/>
+        Bus e Tram
+       </td>
+      </tr>
+     </table>
+    </div>
+    <!-- FINE CONTENTMAIN -->
+    <div id="banner">
+     <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+     </script>
+     <!-- responsive -->
+     <ins class="adsbygoogle" data-ad-client="ca-pub-5733352966623711" data-ad-format="auto" data-ad-slot="6727105563" style="display:block">
+     </ins>
+     <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+    </div>
+    <!-- FINE BANNER -->
+   </div>
+   <!-- FINE CONTAINER -->
+   <div align="center" id="footer">
+    <span class="evidenziato">
+     <a href="index.php">
+      informaTrieste!
+     </a>
+    </span>
+    - il blog e il forum dei triestini nel mondo |
+    <a href="articoli/?page=static1331849674">
+     Chi siamo
+    </a>
+    |
+    <a href="articoli/index.php?page=static1332093179">
+     Disclaimer
+    </a>
+    |
+    <a href="articoli/index.php?page=static1332093179">
+     Privacy
+    </a>
+    |
+    <a href="ts/">
+     Ultimi articoli
+    </a>
+    |
+    <a href="articoli/index.php?page=foto">
+     Photogallery
+    </a>
+    |
+    <a href="http://www.informatrieste.eu/ts/feed/">
+     Feed
+    </a>
+    |
+    <a href="https://www.facebook.com/informatrieste.eu">
+     Facebook
+    </a>
+    |
+    <a href="ts/">
+     Blog
+    </a>
+    |
+    <a href="https://plus.google.com/107450176669234528049" rel="publisher">
+     Google+
+    </a>
+    <p>
+    </p>
+    <p>
+    </p>
+    <p>
+    </p>
+    <p>
+     <!-- Inizio Codice Shinystat -->
+     <script language="JavaScript" src="http://codice.shinystat.com/cgi-bin/getcod.cgi?USER=informatrieste" type="text/javascript">
+     </script>
+    </p>
+    <noscript>
+     <a href="http://www.shinystat.com/it" target="_top">
+      <img alt="Contatore accessi gratuito" border="0" src="http://www.shinystat.com/cgi-bin/shinystat.cgi?USER=informatrieste"/>
+     </a>
+    </noscript>
+    <!-- Fine Codice Shinystat -->
+   </div>
+   <!-- FINE FOOTER -->
+   <script>
+    function sposta(finu) {
+ document.getElementById('NW').style.left=finu+'px';
+ if (finu<700){
+ fina=finu+10;
+ setTimeout('sposta(fina)',100);
+ } else{
+ finu=-700;
+ fina=-700;
+ setTimeout('sposta(fina)',-700);
+ }
+ }
+ 
+ $('#news')[0].innerHTML = aDocumentFragmentOfAllEntries.innerHTML;
+   </script>
+   <!-- QUI PUBBLICITA analicts-------------------------------------------------------------------- //-->
+   <script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+   </script>
+   <script type="text/javascript">
+    try {
+ var pageTracker = _gat._getTracker("UA-9426752-1");
+ pageTracker._trackPageview();
+ } catch(err) {}
+   </script>
+  </body>
+ </html>

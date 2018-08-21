@@ -1,0 +1,565 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+ <html>
+  <head>
+   <meta content="0" http-equiv="expires"/>
+   <meta content="no-cache" http-equiv="cache-control"/>
+   <meta content="no-cache" http-equiv="pragma"/>
+   <meta content="no-cache" http-equiv="ext-cache"/>
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <meta content="de" http-equiv="content-language"/>
+   <meta content="Thomas Menges" http-equiv="author"/>
+   <meta content="Homepage des Baseballclubs Baldham Boars e.V. - Baseball in München" http-equiv="description"/>
+   <meta content="Baseball,Softball,Baldham,München,Muenchen,Vaterstetten,BBQ,Boars" http-equiv="keywords" lang="de"/>
+   <meta content="index" http-equiv="robots"/>
+   <link href="http://www.boars.de/favicon.ico" rel="shortcut icon"/>
+   <title>
+    The Baldham Boars Internet Ballpark - Baseball in München
+   </title>
+   <link href="./css/main.css" rel="stylesheet" type="text/css"/>
+   <script src="./js/main.js" type="text/javascript">
+   </script>
+   <script src="./js/BannerFader.js" type="text/javascript">
+   </script>
+   <script src="./js/FlashAreas.js" type="text/javascript">
+   </script>
+   <script src="./js/iv.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    // ---------------------------
+   // globale Website - Parameter
+   // ---------------------------
+   var jahrgang_matches  = "" ;
+   var jahrgang_reports  = "" ;
+   var display_se_grafik = "" ;
+   var display_wn_grafik = "" ;
+ 
+   // ---------------------
+   // Variablen - allgemein
+   // ---------------------
+   var pcThread ;
+   var minimumSpaceFromTopOfBody = 52 ;  /* statt 30 */    /* Minimalabstand des "InnerArea"-Bereichs vom oberen "body"-Rand */
+   var positionContainerInProgress = false ;
+   var LA_targetTop = 1 ;
+   var LA_stepValue = 2 ;
+   var globalContent = "" ;
+   var swaInnerHtmlString = "" ;
+   var reportTypeString = "" ;
+   var activeContent = "" ;
+   var cookieString = document.cookie ;
+ 
+   var flashAvailable = true ;
+   var playFlash      = true ;
+   var playSound      = true ;
+ 
+   var nextMatchArea, additionalDataArea, popupContentArea, popupContentAreaS, contentArea8 ;
+   var contentArea6S, contentArea7S, contentArea8S ;
+   var contentArea6_MI, contentArea7_MI, contentArea8_MI ;
+   var nextMatchAreaHTML, additionalDataAreaHTML ;
+   var reportSelectionArea, volumeSelectionArea ;
+ 
+   // -----------------------
+   // BannerFader - Variablen
+   // -----------------------
+   // required:
+   // ---------
+   bf_fadingContainerID = "BannerArea2" ;
+   bf_bannerGraphicsID  = "BannerGraphics" ;
+   bf_bannerUrlID       = "BannerURL" ;
+   bf_bannerPath        = "/sponsoren/" ;
+   // optional:
+   // ---------
+   bf_opacityStep       = 6 ;              /* in px (3)   */
+   bf_faderRefresh      = 100 ;            /* in ms (200) */
+ 
+   // ============================================
+   // Predefine banners
+   // -----------------
+   // <graphics>, <url>, <display duration in sec>
+   // ============================================
+   // NewBanner("FieldersChoice2006.gif",                 "http://www.fielders-choice.de",     0) ;
+   // NewBanner("getraenke-haussmann_neu_285x128.jpg",    "http://www.getraenke-haussmann.de", 0) ;
+   // NewBanner("techem.jpg",                             "http://www.techem.de",              5) ;
+   // NewBanner("macro4_285x128.jpg",                     "http://www.macro4.de",              3) ;
+   // NewBanner("ncte_285x128.jpg",                       "http://www.ncte.de",                3) ;
+   // NewBanner("button_fanshopSSV2.gif",                 "http://www.boars.de/fanshop",       5) ;
+   // NewBanner("shop_banner_nov2009de.jpg",                 "http://www.boars.de/fanshop",      10) ;
+   // NewBanner("homersports_285x128.jpg",                "http://www.homersports.de",         5) ;
+   NewBanner("kieswerke_ebenhoeh_285x128.jpg",         "https://kieswerke-ebenhoeh.de",          3) ;
+   NewBanner("dugout24_285x128.jpg",                   "https://www.dugout24.de",                3) ;
+   NewBanner("fitastic_285x128.jpg",                   "http://www.fitastic.de",                 3) ;
+   NewBanner("vaterstetten_fm_285x128.jpg",            "http://www.vaterstettenfm.de",           3) ;
+   NewBanner("soccer_golf_285x128.jpg",                "http://www.soccergolf-muenchen.de",      3) ;
+   NewBanner("vat_285x128.jpg",                        "https://www.carsharing-vaterstetten.de", 3) ;
+   NewBanner("UniformsExpress_285x128.jpg",            "http://www.uesports.com",                3) ;
+   NewBanner("bens-sports_285x128.png",                "https://bens-sports.com",                3) ;
+   NewBanner("fitnessecke_285x128.jpg",                "http://www.fitnessecke.de",              3) ;
+   // NewBanner("just_285x128.jpg",                       "http://www.junese.de",              3) ;
+   // NewBanner("techem.jpg",                             "http://www.techem.de",              5) ;
+   // NewBanner("codebox_285x128.jpg",                    "http://www.codebox.de",             3) ;
+   NewBanner("pro-aurum_285x128_neu.gif",              "http://www.proaurum.de",                 3) ;
+   // NewBanner("metorit_285x128.gif",                    "http://www.metorit.de",             3) ;
+ 
+ 
+   function PositionContainer()
+   {
+     var LA_div   = document.getElementById("LogoArea") ;
+     var AOA_div  = document.getElementById("AddOnArea") ;
+     var IA_div   = document.getElementById("InnerArea") ;
+     var BT_div   = document.getElementById("ButtonTeams") ;
+     var PCA_div  = document.getElementById("PopupContentArea") ;
+     var PCAS_div = document.getElementById("PopupContentAreaS") ;
+     // alert("\npositionContainerInProgress >" + positionContainerInProgress + "<") ;
+     if (!positionContainerInProgress)
+     {
+       IA_div.style.left           = (document.body.clientWidth - IA_div.offsetWidth) / 2 ;
+       // alert("\ndocument.body.offsetHeight [" + document.body.offsetHeight + "]\ndocument.body.clientHeight [" + document.body.clientHeight + "]\nIA_div.offsetHeight [" + IA_div.offsetHeight + "]\nminimumSpaceFromTopOfBody [" + minimumSpaceFromTopOfBody + "]") ;
+       IA_div.style.top            = (document.body.clientHeight - IA_div.offsetHeight) / 2 ;
+       if (IA_div.offsetTop < minimumSpaceFromTopOfBody)
+         IA_div.style.top = minimumSpaceFromTopOfBody ;
+       IA_div.style.visibility     = "visible" ;
+ 
+       AOA_div.style.left          = IA_div.offsetLeft + IA_div.offsetWidth - AOA_div.offsetWidth ;
+       AOA_div.style.top           = IA_div.offsetTop - AOA_div.offsetHeight - 3 ;
+       AOA_div.style.visibility    = "visible" ;
+ 
+       PCA_div.style.left          = IA_div.offsetLeft + 50 ;
+       // PCA_div.style.top           = IA_div.offsetTop + 88 ;
+       PCA_div.style.top           = IA_div.offsetTop + 116 ;     /* neu: Menges, 14.10.2008 */
+       // PCA_div.style.visibility    = "visible" ;
+       PCAS_div.style.left         = PCA_div.offsetLeft - 3 ;
+       PCAS_div.style.top          = PCA_div.offsetTop - 3 ;
+       // PCAS_div.style.visibility   = "visible" ;
+ 
+       // LA_div.style.left           = IA_div.offsetLeft + BT_div.offsetLeft + BT_div.offsetWidth + 15 ;
+       LA_div.style.left           = IA_div.offsetLeft + BT_div.offsetLeft + BT_div.offsetWidth + 18 ;    /* NEW LOGO !!! */
+       LA_div.style.visibility     = "visible" ;
+       // LA_targetTop                = IA_div.offsetTop + BT_div.offsetTop  + BT_div.offsetHeight - LA_div.offsetHeight - 10 ;
+       LA_targetTop                = IA_div.offsetTop + BT_div.offsetTop  + BT_div.offsetHeight - LA_div.offsetHeight - 5 ;
+       positionContainerInProgress = true ;
+     }
+     // alert("\nLA_div.offsetTop [" + LA_div.offsetTop + "] < LA_targetTop [" + LA_targetTop + "] ???") ;
+     if (LA_div.offsetTop < LA_targetTop)
+     {
+       LA_div.style.top = ((LA_div.offsetTop + LA_stepValue) < LA_targetTop) ? LA_div.offsetTop + LA_stepValue : LA_targetTop ;
+       // alert("\nLA_div.offsetTop - um LA_stepValue erhöht [" + LA_div.offsetTop + "]") ;
+       pcThread = setTimeout('PositionContainer()',10) ;
+       return ;
+     }
+     else
+     {
+       positionContainerInProgress = false ;
+       clearTimeout(pcThread) ;
+     }
+     // -----------------------------------------------------------------------
+     // Container "NextMatchArea" und "AdditionalDataArea" global bekanntmachen
+     // (zusaetzlich auch die zugehoerigen Schattencontainer)
+     // -----------------------------------------------------------------------
+     nextMatchArea          = document.getElementById("NextMatchArea") ;
+     additionalDataArea     = document.getElementById("AdditionalDataArea") ;
+     popupContentArea       = document.getElementById("PopupContentArea") ;
+     popupContentAreaS      = document.getElementById("PopupContentAreaS") ;
+     contentArea8           = document.getElementById("ContentArea8") ;
+     nextMatchAreaHTML      = nextMatchArea.innerHTML ;
+     additionalDataAreaHTML = additionalDataArea.innerHTML ;
+     contentArea6S          = document.getElementById("ContentArea6S") ;
+     contentArea6_MI        = document.getElementById("ContentArea6_MI") ;
+     contentArea7S          = document.getElementById("ContentArea7S") ;
+     contentArea7_MI        = document.getElementById("ContentArea7_MI") ;
+     contentArea8S          = document.getElementById("ContentArea8S") ;
+     contentArea8_MI        = document.getElementById("ContentArea8_MI") ;
+ 
+     // ----------------------------------------------------------------------
+     // Startseite (home.htm) explizit noch mal laden, damit nicht stattdessen
+     // eine Themenseite aus dem Cache gezogen und angezeigt wird
+     // ----------------------------------------------------------------------
+     var CA_div  = document.getElementById("ContentArea") ;
+     // CA_div.innerHTML = "<iframe src=\"./home.htm\" name=\"ContentAreaFrame\" width=\"843\" height=\"407\" frameborder=\"0\" scrolling=\"no\" style=\"border:0px solid #800000;\"></iframe>" ;
+     CA_div.innerHTML = "<iframe src=\"./home.php\" name=\"ContentAreaFrame\" width=\"843\" height=\"407\" frameborder=\"0\" scrolling=\"no\" style=\"border:0px solid #800000;\"></iframe>" ;
+     DisplayContainer(IA_div, AOA_div) ;
+   }
+ 
+ 
+   function SwitchToStartsite()
+   {
+     if (activeContent != "home")
+     {
+       var ia = document.getElementById("IntroArea") ;
+       ia.style.top        = 0 ;
+       ia.style.left       = 0 ;
+       ia.style.width      = 1 ;
+       ia.style.height     = 1 ;
+       ia.style.display    = "none" ;
+       ia.style.visibility = "hidden" ;
+       PositionContainer() ;
+       // -----------------------------------------------
+       // aktuellen Content-Bereich anmelden (um erneuten
+       // Reload durch "SwitchToStartsite" zu vermeiden)
+       // -----------------------------------------------	
+       activeContent = "home" ;
+     }
+   }
+ 
+   
+ 
+   function DisplayContainer(IA_div, AOA_div)
+   {
+     IA_div.style.visibility     = "visible" ;
+     AOA_div.style.visibility    = "visible" ;
+     document.getElementById("ButtonNews").style.visibility    = "visible" ;
+     document.getElementById("ButtonTeams").style.visibility   = "visible" ;
+     document.getElementById("ButtonVerein").style.visibility  = "visible" ;
+     document.getElementById("ButtonKontakt").style.visibility = "visible" ;
+     document.getElementById("ContentArea").style.visibility   = "visible" ;
+     document.getElementById("BannerArea1").style.visibility   = "visible" ;
+     document.getElementById("BannerArea2").style.visibility   = "visible" ;
+     document.getElementById("NextMatchArea").style.visibility = "visible" ;
+     document.getElementById("AdditionalDataArea").style.visibility = "visible" ;
+     PosIV() ;
+     BannerFader() ;
+   }
+ 
+   function RepositionContainer()
+   {
+     // alert("\nFunktion \"RepositionContainer\" ist angelaufen...") ;
+     var LA_div  = document.getElementById("LogoArea") ;
+     var AOA_div = document.getElementById("AddOnArea") ;
+     var IA_div  = document.getElementById("InnerArea") ;
+     var BT_div  = document.getElementById("ButtonTeams") ;
+     IA_div.style.left       = (document.body.offsetWidth - IA_div.offsetWidth) / 2 ;
+     IA_div.style.top        = (document.body.offsetHeight - IA_div.offsetHeight) / 2 ;
+     if (IA_div.offsetTop < minimumSpaceFromTopOfBody)
+       IA_div.style.top = minimumSpaceFromTopOfBody ;
+     LA_div.style.left       = IA_div.offsetLeft + BT_div.offsetLeft + BT_div.offsetWidth + 15 ;
+     LA_div.style.top        = IA_div.offsetTop + BT_div.offsetTop  + BT_div.offsetHeight - LA_div.offsetHeight - 10 ;
+     AOA_div.style.left      = IA_div.offsetLeft + IA_div.offsetWidth - AOA_div.offsetWidth ;
+     AOA_div.style.top       = IA_div.offsetTop - AOA_div.offsetHeight - 3 ;
+   }
+ 
+   function ShowMouseCoords()
+   {
+     document.getElementById("mouseCoords").innerHTML = "<span style=\"font-family:Verdana,Arial; font-size:12px;\">"
+                                                      + "&nbsp;&nbsp;&nbsp;" + "X:" + event.x + " Y:" + event.y
+                                                      + "&nbsp;&nbsp;&nbsp;" + "clientX:" + event.clientX + " clientY:" + event.clientY
+                                                      + "&nbsp;&nbsp;&nbsp;" + "offsetX:" + event.offsetX + " offsetY:" + event.offsetY
+                                                      + "<br>&nbsp;&nbsp;&nbsp;" + "InnerArea.offsetTop:" + document.getElementById("InnerArea").offsetTop
+                                                      + "</" + "span>" ;
+   }
+ 
+ 
+   function SwitchFlash()
+   {
+     cookieString = document.cookie ;
+     if (playFlash || cookieString.indexOf("NOFLASH") > -1)
+     {
+       playFlash = false ;
+       document.getElementById("flashText").innerHTML = "Flash on/<b>off</b>" ;
+       cookieString = cookieString.replace(/\[NOFLASH\]/, "") ;
+       cookieString = cookieString.replace(/\[FLASH\]/, "") ;
+       cookieString += "[NOFLASH]" ;
+     }
+     else
+     {
+       if (flashAvailable)
+       {
+         playFlash = true ;
+         document.getElementById("flashText").innerHTML = "Flash <b>on</b>/off" ;
+         cookieString = cookieString.replace(/\[NOFLASH\]/, "") ;
+         cookieString = cookieString.replace(/\[FLASH\]/, "") ;
+         cookieString += "[FLASH]" ;
+       }
+     }
+     document.cookie = cookieString ;
+   }
+ 
+ 
+   function SwitchSound()
+   {
+     cookieString = document.cookie ;
+     var sa = document.getElementById("SoundArea") ;
+     if (playSound || cookieString.indexOf("NOSOUND") > -1)
+     {
+       playSound = false ;
+       sa.innerHTML = "&nbsp;" ;
+       document.getElementById("soundText").innerHTML = "Sound on/<b>off</b>" ;
+       cookieString = cookieString.replace(/\[NOSOUND\]/, "") ;
+       cookieString = cookieString.replace(/\[SOUND\]/, "") ;
+       cookieString += "[NOSOUND]" ;
+     }
+     else
+     {
+       if (flashAvailable)
+       {
+         playSound = true ;
+         document.getElementById("soundText").innerHTML = "Sound <b>on</b>/off" ;
+         sa.innerHTML = "<pre><object data=\"./swf/webplayer.swf\" type=\"application/x-shockwave-flash\" width=\"1\" height=\"1\"><param name=\"movie\" value=\"./swf/webplayer.swf\"><param name=\"menu\" value=\"false\"><param name=\"scale\" value=\"noscale\"><param name=\"bgcolor\" value=\"#FFFFFF\"><param name=\"flashvars\" value=\"src=./sound/132_32kbit_stereo.mp3&amp;amp;autostart=yes&amp;amp;loop=no\"></object></pre>" ;
+         cookieString = cookieString.replace(/\[NOSOUND\]/, "") ;
+         cookieString = cookieString.replace(/\[SOUND\]/, "") ;
+         cookieString += "[SOUND]" ;
+       }
+     }
+     document.cookie = cookieString ;
+   }
+   </script>
+  </head>
+  <body id="main_body" leftmargin="0" marginheight="0" marginwidth="0" onload="ActivateFlashAreas(); SwitchSound();" style="background-image:url(./images/bg_outerarea.jpg); background-repeat:repeat-x;" topmargin="0">
+   <!-- ------------------------------------------------- -->
+   <!-- Pseudotabelle zur Integration des "onMove"-Events -->
+   <!-- ------------------------------------------------- -->
+   <center>
+    <table border="0" cellpadding="0" cellspacing="0" onmove="RepositionContainer();" width="10%">
+     <tr>
+      <td width="100%">
+      </td>
+     </tr>
+    </table>
+   </center>
+   <!-- =========================================================== -->
+   <!-- =========================================================== -->
+   <div id="InnerArea" style="position:absolute; left:0px; top:0px; overflow:hidden; visibility:hidden;">
+    <!-- --------------- -->
+    <!--  B u t t o n s  -->
+    <!-- --------------- -->
+    <div id="ButtonNews" style="position:absolute; left:30px; visibility:hidden;">
+     <a href='javascript:RequestContent("news");'>
+      <img alt="" border="0" name="button_news" onmouseout='SetHoverAttributes(this,"out");' onmouseover='SetHoverAttributes(this,"over");' src="./images/buttons/ButtonNews_out.gif"/>
+     </a>
+    </div>
+    <div id="ButtonTeams" style="position:absolute; left:181px; visibility:hidden;">
+     <a href='javascript:RequestContent("teams");'>
+      <img alt="" border="0" name="button_teams" onmouseout='SetHoverAttributes(this,"out");' onmouseover='SetHoverAttributes(this,"over");' src="./images/buttons/ButtonTeams_out.gif"/>
+     </a>
+    </div>
+    <div id="ButtonVerein" style="position:absolute; left:585px; visibility:hidden;">
+     <a href='javascript:RequestContent("verein");'>
+      <img alt="" border="0" name="button_verein" onmouseout='SetHoverAttributes(this,"out");' onmouseover='SetHoverAttributes(this,"over");' src="./images/buttons/ButtonVerein_out.gif"/>
+     </a>
+    </div>
+    <div id="ButtonKontakt" style="position:absolute; left:736px; visibility:hidden;">
+     <a href='javascript:RequestContent("kontakt");'>
+      <img alt="" border="0" name="button_kontakt" onmouseout='SetHoverAttributes(this,"out");' onmouseover='SetHoverAttributes(this,"over");' src="./images/buttons/ButtonKontakt_out.gif"/>
+     </a>
+    </div>
+    <!-- ------------------------- -->
+    <!--  S e r v i c e P a n e l  -->
+    <!-- ------------------------- -->
+    <div id="ServicePanel" style="position:absolute;">
+     <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+      <th width="10%">
+      </th>
+      <!-- <th width="10%"></th> -->
+      <th width="10%">
+      </th>
+      <th width="10%">
+      </th>
+      <!-- th width="10%"></th -->
+      <th width="70%">
+      </th>
+      <tr>
+       <td style="padding:3px; padding-left:10px; vertical-align:top;">
+        <a class="sp" href='javascript:SetPopupContent("D","download");' id="download">
+         Download
+        </a>
+       </td>
+       <!-- <td style="padding:3px; padding-left:10px; vertical-align:top;">
+           <a id="impressum" class="sp" href='javascript:SetPopupContent("I","impressum");'>Impressum</a></td> -->
+       <td style="padding:3px; vertical-align:top; padding-left:18px;">
+        <a class="sp" href='javascript:SetPopupContent("G","galerie");' id="galerie">
+         Galerie
+        </a>
+       </td>
+       <!--td style="padding:3px; vertical-align:top; padding-left:4px;">
+           <a id="bestellung" class="sp" href='javascript:SetPopupContent("B","bestellung");'>Bestellung</a></td -->
+       <td style="padding:3px; vertical-align:top; padding-left:8px;">
+        <a class="sp" href='javascript:SetPopupContent("K","kalender");' id="bestellung">
+         Termine
+        </a>
+       </td>
+       <td style="padding:3px; padding-right:10px; vertical-align:top; text-align:right;">
+        <a class="sp" href="http://www.baseball-softball.de/baseball-regeln" id="rulesText" target="not_here">
+         Baseball-Regeln schnell erklärt
+        </a>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <!-- --------------------- -->
+    <!--  C  o  n  t  e  n  t  -->
+    <!-- --------------------- -->
+    <div id="ContentArea" style="position:absolute; left:30px; top:90px; width:843px; height:407px; visibility:hidden;">
+     <iframe frameborder="0" height="407" name="ContentAreaFrame" scrolling="no" src="./home.php" style="border:0px solid #800000;" width="843">
+     </iframe>
+    </div>
+    <!-- --------------------- -->
+    <!--  F o o t e r A r e a  -->
+    <!-- --------------------- -->
+    <div id="BannerArea1" style="position:absolute; left:30px; top:510px; width:287px; height:129px; overflow:hidden; visibility:hidden;">
+     <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+      <tr>
+       <td align="middle" height="100%" valign="middle" width="100%">
+        <img alt="" border="0" id="BannerGraphics" src=""/>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <div id="BannerArea2" style="position:absolute; left:30px; top:509px; width:287px; height:130px; overflow:hidden; visibility:hidden;">
+     <a href="#" id="BannerURL" target="_new">
+      <script type="text/javascript">
+       document.writeln("<img src=\"" + bf_bannerPath + "banner_href.gif\" alt=\"\" border=\"0\">") ;
+      </script>
+     </a>
+    </div>
+    <div id="NextMatchArea" style="position:absolute; left:332px; top:509px; width:236px; height:130px; visibility:hidden;">
+     <iframe frameborder="0" height="130" name="NextMatch" scrolling="no" src="/cgi-bin/NextMatch.pl?TEAM=next" width="236">
+     </iframe>
+    </div>
+    <div id="ContentArea6_MI" style="position:absolute; left:491px; top:619px; width:60px; height:20px; z-index:10; display:none; visibility:hidden;">
+    </div>
+    <div id="ContentArea6S" style="left:335px; top:512px; width:236px; height:130px; display:none; visibility:hidden;">
+     <script type="text/javascript">
+      DrawShadow();
+     </script>
+    </div>
+    <!--
+   <div id="AdditionalDataArea" style="position:absolute; left:583px; top:509px; width:287px; height:130px; background-color:#969696; overflow:hidden; visibility:hidden;">
+     <! a href="http://www.epresso.com/myshop/Boars" target="not_here">
+     <! img src="/images/fanshop2_283x126.jpg" alt="zum Baldham Boars Fanshop" border="0">
+     <! /a>
+     <img src="/images/shoplogo_285x128.jpg" alt="" border="0" usemap="#Shoparea">
+     <map name="Shoparea">
+       <area shape="poly" coords="0,0,284,0,284,127"
+             href="http://www.boars.de/fanshop" target="not_here"
+             alt="For the real FAN - the Boars Shop" title="For the real FAN - the Boars Shop" />
+       <area shape="poly" coords="0,0,284,127,0,127" target="not_here"
+             href="http://www.amazon.de/exec/obidos/redirect-home?tag=thebalboaintb-21&site=home"
+             alt="Baseball & mehr bei Amazon" title="Baseball & mehr bei Amazon" />
+     </map>
+   </div>
+   //-->
+    <div id="AdditionalDataArea" style="position:absolute; left:583px; top:509px; width:287px; height:130px; background-color:#969696; border:0px solid #D9D9D9; overflow:hidden; visibility:hidden;">
+     <!-- <a href="http://www.boars.de/fanshop" target="not_here" alt="For the real FAN - the Boars Shop" title="For the real FAN - the Boars Shop"><img src="/images/button_fanshop.gif" alt="" border="0"></a><br> -->
+     <a alt="For the real FAN - the Boars Shop" href="http://boars.skill-sports.com" target="not_here" title="For the real FAN - the Boars Shop">
+      <img alt="" border="0" src="/images/button_fanshop.gif"/>
+     </a>
+     <br/>
+     <a alt="Baseball &amp; mehr bei Amazon" href="http://www.amazon.de/exec/obidos/redirect-home?tag=thebalboaintb-21&amp;site=home" target="not_here" title="Baseball &amp; mehr bei Amazon">
+      <img alt="" border="0" src="/images/button_amazon.gif" style="margin-top:8px;"/>
+     </a>
+    </div>
+    <div id="ContentArea7_MI" style="position:absolute; left:593px; top:615px; width:267px; height:20px; z-index:10; display:none; visibility:hidden;">
+    </div>
+    <div id="ContentArea7S" style="left:586px; top:512px; width:287px; height:130px; display:none; visibility:hidden;">
+     <script type="text/javascript">
+      DrawShadow();
+     </script>
+    </div>
+    <div id="ContentArea8" style="position:absolute; left:30px; top:509px; width:287px; height:130px; z-index:10; display:none; visibility:hidden;">
+    </div>
+    <div id="ContentArea8_MI" style="position:absolute; left:30px; top:612px; width:287px; height:20px; z-index:10; display:none; visibility:hidden;">
+    </div>
+    <div id="ContentArea8S" style="left:33px; top:512px; width:287px; height:130px; display:none; visibility:hidden;">
+     <script type="text/javascript">
+      DrawShadow();
+     </script>
+    </div>
+   </div>
+   <!-- --------- -->
+   <!--  L o g o  -->
+   <!-- --------- -->
+   <div id="LogoArea" style="position:absolute; overflow:hidden; visibility:hidden; display:block;">
+    <a href='javascript:RequestContent("home");'>
+     <img alt="" border="0" src="/images/logo_home_2010.png"/>
+    </a>
+   </div>
+   <!-- ------------------- -->
+   <!--  A d d O n A r e a  -->
+   <!-- ------------------- -->
+   <div id="AddOnArea" style="position:absolute; overflow:hidden; visibility:hidden; display:block;">
+    <table border="0" cellpadding="0" cellspacing="0" width="900">
+     <tr>
+      <td style="text-align:left; color:#FFFFFF;" width="450">
+       <a class="aoa" href="/intern/verwaltung.htm" id="intern" target="verwaltung">
+        Intern
+       </a>
+       <a class="aoa" href='javascript:SetPopupContent("I","impressum");' id="impressum">
+        Impressum
+       </a>
+       <a class="aoa" href='javascript:SetPopupContent("DSGVO","datenschutz");' id="datenschutz">
+        Datenschutz
+       </a>
+      </td>
+      <td style="text-align:right; color:#FFFFFF;" width="450">
+       <a class="aoa" href="javascript:SwitchFlash();" id="flashText">
+        Flash
+        <b>
+         on
+        </b>
+        /off
+       </a>
+       |
+       <a class="aoa" href="javascript:SwitchSound();" id="soundText">
+        Sound
+        <b>
+         on
+        </b>
+        /off
+       </a>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <!-- --------------------------------- -->
+   <!--  P o p u p C o n t e n t A r e a  -->
+   <!-- --------------------------------- -->
+   <div id="PopupContentArea" style="position:absolute; overflow:auto; visibility:hidden;">
+   </div>
+   <div id="PopupContentAreaS" style="position:absolute; overflow:auto; visibility:hidden;">
+   </div>
+   <!-- --------------------------------- -->
+   <!-- M o u s e - K o o r d i n a t e n -->
+   <!-- --------------------------------- -->
+   <div id="mouseCoords" style="position:absolute; top:0px; left:0px; width:450px; background:#ffffff; visibility:hidden;">
+   </div>
+   <!-- ----------------------------- -->
+   <!-- I m a g e - P r e l o a d e r -->
+   <!-- ----------------------------- -->
+   <div id="ImagePreloader" style="position:absolute; top:0px; left:0px; height:0px; display:none; visibility:hidden;">
+    <img src="/images/buttons/ButtonNews_out.gif"/>
+    <img src="/images/buttons/ButtonTeams_out.gif"/>
+    <img src="/images/buttons/ButtonVerein_out.gif"/>
+    <img src="/images/buttons/ButtonKontakt_out.gif"/>
+    <img src="/images/buttons/ButtonNews_over.gif"/>
+    <img src="/images/buttons/ButtonTeams_over.gif"/>
+    <img src="/images/buttons/ButtonVerein_over.gif"/>
+    <img src="/images/buttons/ButtonKontakt_over.gif"/>
+    <script type="text/javascript">
+     for (i=0; i<bf_TabBANNER.length; i++)
+       document.writeln("<img src=\"" + bf_TabBANNER[i].image.src + "\">") ;
+    </script>
+   </div>
+   <!-- ----------- -->
+   <!-- Flash-Intro -->
+   <!-- ----------- -->
+   <div id="IntroArea" style="position:absolute; left:0px; top:0px; width:1px; height:1px; display:block; overflow:hidden; visibility:visible;">
+   </div>
+   <!-- ----------- -->
+   <!-- Intro-Musik -->
+   <!-- ----------- -->
+   <div id="SoundArea" style="position:absolute; left:0px; top:0px; width:1px; height:1px; z-index:1; display:block; visibility:visible;">
+   </div>
+   <!-- ------------ -->
+   <!-- Flash-Switch -->
+   <!-- ------------ -->
+   <div id="SwitchArea" style="position:absolute; left:0px; top:0px; width:1px; height:1px; z-index:1; display:block; visibility:visible;">
+   </div>
+   <div id="iv" style="position:absolute; left:0px; top:0px; width:5px; height:5px; z-index:10; visibility:visible;">
+   </div>
+   <!--  =================================  -->
+   <!-- -->
+   <!--  S P E C I A L  I M A G E  A R E A  -->
+   <!-- -->
+   <!--  =================================  -->
+   <div id="SpecialImageArea1" style="position:absolute; left:450px; top:230px; width:220px; height:275px; padding-left:0px; padding-top:0px; filter:alpha(opacity=90); opacity:0.9; z-index:10; display:none; visibility:hidden;">
+    <img alt="" src="/images/DM_JUGEND_2007.jpg" title=""/>
+   </div>
+  </body>
+ </html>

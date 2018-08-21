@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+ <!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="fr"> <![endif]-->
+ <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8 ie7" lang="fr"> <![endif]-->
+ <!--[if IE 8]>    <html class="no-js lt-ie9 ie8" lang="fr"> <![endif]-->
+ <!--[if gt IE 8]><!-->
+ <html class="no-js" lang="fr">
+  <!--<![endif]-->
+  <head>
+   <meta charset="utf-8"/>
+   <title>
+    Mon herboristerie
+   </title>
+   <meta content="Boutique propulsée par PrestaShop" name="description"/>
+   <meta content="boutique, prestashop" name="keywords"/>
+   <meta content="width=device-width" name="viewport"/>
+   <meta content="application/xhtml+xml; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="fr" http-equiv="content-language"/>
+   <meta content="PrestaShop" name="generator"/>
+   <meta content="index,follow" name="robots"/>
+   <link href="/img/favicon.ico?1374655162" rel="icon" type="image/vnd.microsoft.icon"/>
+   <link href="/img/favicon.ico?1374655162" rel="shortcut icon" type="image/x-icon"/>
+   <script type="text/javascript">
+    var baseDir = 'https://www.mon-herboristerie.com/';
+ 			var baseUri = 'https://www.mon-herboristerie.com/';
+ 			var static_token = 'fe70b1a7a4aa4ae9b1d1adf685b571de';
+ 			var token = '09e6f077bd337431aa2147b70454b337';
+ 			var priceDisplayPrecision = 2;
+ 			var priceDisplayMethod = 0;
+ 			var roundMode = 2;
+   </script>
+   <link href="https://www.mon-herboristerie.com/themes/herboristerie/cache/1191797e399bdaa3df13675e7881e9e4_all.css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="https://www.mon-herboristerie.com/themes/herboristerie/css/mediumscreen.css" media="screen and (max-width: 1200px)" rel="stylesheet" type="text/css"/>
+   <script src="https://www.mon-herboristerie.com/themes/herboristerie/cache/5b941cc78810ada65a418e3539b3b955.js" type="text/javascript">
+   </script>
+   <script src="https://www.mon-herboristerie.com/themes/herboristerie/js/script.js" type="text/javascript">
+   </script>
+   <script async="" defer="" src="https://www.google.com/recaptcha/api.js?hl=fr">
+   </script>
+   <script type="text/javascript">
+    (function(H){ H.className=H.className.replace(/\bno-js\b/,'js') })(document.documentElement)
+   </script>
+   <!--[if IE]>
+ 		<meta http-equiv="imagetoolbar" content="no" />
+ 		<![endif]-->
+   <!--[if gte IE 9]>
+ 		<style type="text/css">
+ 			.gradient { filter: none; }
+ 		</style>
+ 		<![endif]-->
+   <link href="/modules/atos/atos.css" rel="stylesheet" type="text/css"/>
+   <script type="text/javascript">
+    /*
+ * 2007-2017 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ *  @author    PrestaShop SA <contact@prestashop.com>
+ *  @copyright 2007-2017 PrestaShop SA
+ *  @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ *  International Registered Trademark & Property of PrestaShop SA
+ */
+ 
+ 
+ 
+ function updateFormDatas()
+ {
+ 	var nb = $('#quantity_wanted').val();
+ 	var id = $('#idCombination').val();
+ 
+ 	$('.paypal_payment_form input[name=quantity]').val(nb);
+ 	$('.paypal_payment_form input[name=id_p_attr]').val(id);
+ }
+ 	
+ $(document).ready( function() {
+ 
+ 	if($('#in_context_checkout_enabled').val() != 1)
+ 	{
+ 		$('#payment_paypal_express_checkout').click(function() {
+ 			$('#paypal_payment_form_cart').submit();
+ 			return false;
+ 		});
+ 	}
+ 
+ 
+ 	var jquery_version = $.fn.jquery.split('.');
+ 	if(jquery_version[0]>=1 && jquery_version[1] >= 7)
+ 	{
+ 		$('body').on('submit',".paypal_payment_form", function () {
+ 			updateFormDatas();
+ 		});
+ 	}
+ 	else {
+ 		$('.paypal_payment_form').live('submit', function () {
+ 			updateFormDatas();
+ 		});
+ 	}
+ 
+ 	function displayExpressCheckoutShortcut() {
+ 		var id_product = $('input[name="id_product"]').val();
+ 		var id_product_attribute = $('input[name="id_product_attribute"]').val();
+ 		$.ajax({
+ 			type: "GET",
+ 			url: baseDir+'/modules/paypal/express_checkout/ajax.php',
+ 			data: { get_qty: "1", id_product: id_product, id_product_attribute: id_product_attribute },
+ 			cache: false,
+ 			success: function(result) {
+ 				if (result == '1') {
+ 					$('#container_express_checkout').slideDown();
+ 				} else {
+ 					$('#container_express_checkout').slideUp();
+ 				}
+ 				return true;
+ 			}
+ 		});
+ 	}
+ 
+ 	$('select[name^="group_"]').change(function () {
+ 		setTimeout(function(){displayExpressCheckoutShortcut()}, 500);
+ 	});
+ 
+ 	$('.color_pick').click(function () {
+ 		setTimeout(function(){displayExpressCheckoutShortcut()}, 500);
+ 	});
+ 
+ 	if($('body#product').length > 0)
+ 		setTimeout(function(){displayExpressCheckoutShortcut()}, 500);
+ 	
+ 	
+ 			
+ 
+ 	var modulePath = 'modules/paypal';
+ 	var subFolder = '/integral_evolution';
+ 	
+ 			var baseDirPP = baseDir.replace('http:', 'https:');
+ 		
+ 	var fullPath = baseDirPP + modulePath + subFolder;
+ 	var confirmTimer = false;
+ 		
+ 	if ($('form[target="hss_iframe"]').length == 0) {
+ 		if ($('select[name^="group_"]').length > 0)
+ 			displayExpressCheckoutShortcut();
+ 		return false;
+ 	} else {
+ 		checkOrder();
+ 	}
+ 
+ 	function checkOrder() {
+ 		if(confirmTimer == false)
+ 			confirmTimer = setInterval(getOrdersCount, 1000);
+ 	}
+ 
+ 	});
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */var favorite_products_url_add='https://www.mon-herboristerie.com/module/favoriteproducts/actions?process=add';var favorite_products_url_remove='https://www.mon-herboristerie.com/module/favoriteproducts/actions?process=remove';/* ]]> */
+   </script>
+   <script src="https://maps.google.com/maps/api/js?key=AIzaSyCbRB3zQ81yljLRmJuvl1SdwoP7flTUXiU" type="text/javascript">
+    /* <![CDATA[ *//* ]]> */
+   </script>
+   <!-- START OF DOOFINDER SCRIPT -->
+   <!-- END OF DOOFINDER SCRIPT -->
+   <!-- START OF DOOFINDER CSS -->
+   <!-- END OF DOOFINDER CSS -->
+   <style>
+    /* CSS for versions >= 1.5 and < 1.6 */
+ 	.lgcookieslaw_banner {
+ 		display: table;
+ 		width:100%;
+ 		position:fixed;
+ 		left:0;
+ 		repeat-x scroll left top;
+ 		background: #272727;
+ 		border-color: #272727;
+ 		border-left: 1px solid #272727;
+ 		border-radius: 3px 3px 3px 3px;
+ 		border-right: 1px solid #272727;
+ 		color: #FFFFFF !important;
+ 		z-index: 99999;
+ 		border-style: solid;
+ 		border-width: 1px;
+ 		margin: 0;
+ 		outline: medium none;
+ 		text-align: center;
+ 		vertical-align: middle;
+ 		text-shadow: 0 0 0 0;
+ 		-webkit-box-shadow: 0px 1px 5px 0px #000000;
+ 		-moz-box-shadow:    0px 1px 5px 0px #000000;
+ 		box-shadow:         0px 1px 5px 0px #000000;
+ 		font-size: 12px;
+ 	
+ 		top:0;;
+ 		opacity:1;
+ 	
+ 	}
+ 
+ 	.lgcookieslaw_banner > form
+ 	{
+ 		position:relative;
+ 	}
+ 
+ 	.lgcookieslaw_banner span.lgcookieslaw_btn
+ 	{
+ 		border-color: #8BC954 !important;
+ 		background: #8BC954 !important;
+ 		color: #FFFFFF !important;
+ 		text-align: center;
+ 		margin: 0;
+ 		padding: 0 5px;
+ 		display: inline-block;
+ 		border: 0;
+ 		font-weight: bold;
+ 		height: 26px;
+ 		line-height: 26px;
+ 		width: auto;
+ 		font-size: 12px;
+ 		cursor: pointer;
+ 	}
+ 
+ 	.lgcookieslaw_banner span:hover.lgcookieslaw_btn
+ 	{
+ 		moz-opacity:0.85;
+ 		opacity: 0.85;
+ 		filter: alpha(opacity=85);
+ 	}
+ 
+ 	.lgcookieslaw_banner a.lgcookieslaw_btn
+ 	{
+ 		border-color: #474747;
+ 		background: #474747;
+ 		color: #FFFFFF !important;
+ 		margin: 0;
+ 		padding: 0 5px;
+ 		display: inline-block;
+ 		border: 0;
+ 		font-weight: bold;
+ 		height: 26px;
+ 		line-height: 26px;
+ 		width: auto;
+ 		font-size: 12px;
+ 	}
+ 
+ 	@media (max-width: 768px) {
+ 		.lgcookieslaw_banner span.lgcookieslaw_btn,
+ 		.lgcookieslaw_banner a.lgcookieslaw_btn {
+ 			height: auto;
+ 		}
+ 	}
+ 
+ 	.lgcookieslaw_banner > form a:hover.lgcookieslaw_btn
+ 	{
+ 		moz-opacity:0.85;
+ 		opacity: 0.85;
+ 		filter: alpha(opacity=85);
+ 	}
+ 
+ 	.lgcookieslaw_close_banner_btn
+ 	{
+ 		cursor:pointer;
+ 		height:21px;
+ 		max-width:21px;
+ 		width:21px;
+ 	}
+ 
+ 	.lgcookieslaw_container {
+ 		display:table;
+ 		margin: 0 auto;
+ 	}
+ 
+ 	.lgcookieslaw_button_container {
+ 		display:table-cell;
+ 		padding: 5px 0;
+ 		vertical-align: middle;
+ 	}
+ 
+ 	.lgcookieslaw_button_container div{
+ 		display:table-cell;
+ 		padding: 0px 5px 0px 0px;
+ 		vertical-align: middle;
+ 	}
+ 
+ 	.lgcookieslaw_message {
+ 		display:table-cell;
+ 		font-size: 12px;
+ 		padding: 5px 20px 5px 5px;
+ 		vertical-align: middle;
+ 	}
+ 
+ 	.lgcookieslaw_btn-close {
+ 		position:absolute;
+ 		right:5px;
+ 		top:5px;
+ 	}
+   </style>
+   <script type="text/javascript">
+    /* <![CDATA[ */function closeinfo()
+ {var obj=document.getElementById("lgcookieslaw_banner");obj.style.display='none';setCookie("__lglaw",1,31536000);}
+ function setCookie(cname,cvalue,exdays){var d=new Date();d.setTime(d.getTime()+(exdays*1000));var expires="expires="+d.toUTCString();document.cookie=cname+"="+cvalue+";"+expires+";path=/";}
+ function ready(fn){if(document.attachEvent?document.readyState==="complete":document.readyState!=="loading"){fn();}else{document.addEventListener('DOMContentLoaded',fn);}}
+ ready(function(){document.getElementById("lgcookieslaw_accept").addEventListener("click",function(){closeinfo();});});/* ]]> */
+   </script>
+  </head>
+  <body class=" " id="index">
+   <div class="header_top clearfix">
+    <div class="inside">
+     <ul class="item_list">
+      <li class="item">
+       <a href="https://www.mon-herboristerie.com/content/154-suivi-de-commande">
+        Suivi de commande
+       </a>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <a href="https://www.mon-herboristerie.com/content/157-newsletter">
+        Newsletter
+       </a>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <a href="https://www.mon-herboristerie.com/plan-du-site">
+        Plan du site
+       </a>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <a href="https://www.mon-herboristerie.com/contactez-nous">
+        Contact
+       </a>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <a href="https://www.mon-herboristerie.com/content/category/16-questions-frequentes">
+        Questions fréquentes
+       </a>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <strong>
+        <a href="/blog">
+         LE BLOG
+        </a>
+       </strong>
+      </li>
+      <li class="sep">
+      </li>
+      <li class="item">
+       <a href="https://www.facebook.com/monherboristerie" target="_blank" title="Rejoignez nous sur Facebook">
+        <img src="https://www.mon-herboristerie.com/themes/herboristerie/img//icone_fb_top.png"/>
+       </a>
+      </li>
+      <li class="item">
+       <a href="https://twitter.com/_5897484486111" target="_blank" title="Rejoignez nous sur Twitter">
+        <img src="https://www.mon-herboristerie.com/themes/herboristerie/img//icone_tw_top.png"/>
+       </a>
+      </li>
+      <li class="item">
+       <a href="/modules/feeder/rss.php" target="_blank" title="Suivez notre actualité">
+        <img src="https://www.mon-herboristerie.com/themes/herboristerie/img//icone_rss_top.png"/>
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="header2 clearfix">
+    <span class="header_logo">
+     <a href="https://www.mon-herboristerie.com/" title="Mon herboristerie">
+      <img alt="Mon herboristerie" class="logo" src="/img/mon-herboristerie-logo.gif"/>
+     </a>
+    </span>
+    <span class="header_logo2">
+     <a href="https://www.mon-herboristerie.com/content/27-qui-sommes-nous-">
+      Service géré par une pharmacie française agréée
+     </a>
+    </span>
+    <span class="header_infos">
+     <span class="your_account">
+      <a class="user_block_link mh_button login" href="https://www.mon-herboristerie.com/mon-compte" rel="nofollow">
+       Me connecter
+      </a>
+      <div class="user_block_menu block exclusive">
+       <form action="https://www.mon-herboristerie.com/authentification" method="post">
+        <div class="clearfix">
+         <p class="text">
+          <label for="email">
+           Adresse email
+          </label>
+          <span>
+           <input class="text" id="email" name="email" type="text" value=""/>
+          </span>
+         </p>
+         <p class="text">
+          <label for="passwd">
+           Mot de passe
+          </label>
+          <span>
+           <input class="text" id="passwd" name="passwd" type="password" value=""/>
+          </span>
+         </p>
+         <p class="lost_password" rel="nofollow">
+          <a href="https://www.mon-herboristerie.com/mot-de-passe-oublie">
+           Mot de passe oublié ?
+          </a>
+         </p>
+         <input class="button" id="SubmitLogin" name="SubmitLogin" type="submit" value="Me connecter"/>
+         <p style="margin-top: 15px;">
+          <a href="https://www.mon-herboristerie.com/authentification" rel="nofollow">
+           Créer mon compte
+          </a>
+         </p>
+        </div>
+       </form>
+      </div>
+     </span>
+     <span class="shopping_cart" id="shopping_cart">
+      <a class="mh_button" href="https://www.mon-herboristerie.com/commande" rel="nofollow">
+       Mon panier
+       <span class="shopping_cart_total">
+       </span>
+      </a>
+     </span>
+     <script type="text/javascript">
+      var CUSTOMIZE_TEXTFIELD = 1;
+ var img_dir = 'https://www.mon-herboristerie.com/themes/herboristerie/img/';
+     </script>
+     <script type="text/javascript">
+      var customizationIdMessage = 'Personnalisation n°';
+ var removingLinkText = 'supprimer cet article du panier';
+ var freeShippingTranslation = 'Livraison gratuite !';
+ var freeProductTranslation = 'Gratuit !';
+ var delete_txt = 'Supprimer';
+     </script>
+     <!-- MODULE Block cart -->
+     <div class="block exclusive" id="cart_block">
+      <p class="title_block">
+       <a href="https://www.mon-herboristerie.com/commande" rel="nofollow" title="Voir mon panier">
+        Panier
+        <span class="hidden" id="block_cart_expand">
+        </span>
+        <span id="block_cart_collapse">
+        </span>
+       </a>
+      </p>
+      <div class="block_content">
+       <!-- block summary -->
+       <div class="collapsed" id="cart_block_summary">
+        <span class="ajax_cart_quantity" style="display:none;">
+         0
+        </span>
+        <span class="ajax_cart_product_txt_s" style="display:none">
+         articles
+        </span>
+        <span class="ajax_cart_product_txt">
+         article
+        </span>
+        <span class="ajax_cart_total" style="display:none">
+        </span>
+        <span class="ajax_cart_no_product">
+         (vide)
+        </span>
+       </div>
+       <!-- block list of products -->
+       <div class="expanded" id="cart_block_list">
+        <p class="cart_block_no_products" id="cart_block_no_products">
+         Aucun produit
+        </p>
+        <p id="cart-prices">
+         <span class="price ajax_cart_shipping_cost" id="cart_block_shipping_cost">
+          0.00 €
+         </span>
+         <span>
+          Expédition
+         </span>
+         <br/>
+         <span class="price ajax_cart_tax_cost" id="cart_block_tax_cost">
+          0.00 €
+         </span>
+         <span>
+          Taxes
+         </span>
+         <br/>
+         <span class="price ajax_block_cart_total" id="cart_block_total">
+          0.00 €
+         </span>
+         <span>
+          Total
+         </span>
+        </p>
+        <p id="cart-price-precisions">
+         Les prix sont TTC
+        </p>
+        <p id="cart-buttons">
+         <a class="button_small" href="https://www.mon-herboristerie.com/commande" rel="nofollow" title="Voir mon panier">
+          Panier
+         </a>
+         <a class="exclusive" href="https://www.mon-herboristerie.com/commande" id="button_order_cart" rel="nofollow" title="Commander">
+          <span>
+          </span>
+          Commander
+         </a>
+        </p>
+       </div>
+      </div>
+     </div>
+     <!-- /MODULE Block cart -->
+    </span>
+   </div>
+   <div class="header3 clearfix">
+    <div class="sub_header1 clearfix">
+     <ul class="item_list">
+      <li class="item item_home">
+       <a href="/">
+        <span class="visuallyhidden">
+         Accueil
+        </span>
+       </a>
+      </li>
+      <li class="item sep">
+      </li>
+      <li class="item item_col1 link">
+       <a href="index.php?controller=filtre&amp;type_filtre=pathologie">
+        Pathologies
+       </a>
+      </li>
+      <li class="item sep">
+      </li>
+      <li class="item item_col2 link">
+       <a href="index.php?controller=filtre&amp;type_filtre=principe">
+        Actifs naturels
+       </a>
+      </li>
+      <li class="item sep">
+      </li>
+      <li class="item item_col3 link">
+       <a href="index.php?controller=filtre&amp;type_filtre=laboratoire">
+        Laboratoires
+       </a>
+      </li>
+      <li class="item item_search">
+       <form action="https://www.mon-herboristerie.com/recherche" id="form_search" method="get">
+        <label class="visuallyhidden" for="search_query_top">
+         Recherche dans le site
+        </label>
+        <input name="controller" type="hidden" value="search"/>
+        <input name="orderby" type="hidden" value="position"/>
+        <input name="orderway" type="hidden" value="desc"/>
+        <input class="se" id="search_query_top" name="search_query" placeholder="Recherche dans le site" type="text" value=""/>
+        <button class="bt" name="submit_search" type="submit">
+         <span class="visuallyhidden">
+          Search
+         </span>
+        </button>
+       </form>
+      </li>
+      <li class="item item_col4 link">
+       <a href="https://www.mon-herboristerie.com/nouveaux-produits">
+        Nouveautés
+       </a>
+      </li>
+      <li class="item sep">
+      </li>
+      <li class="item item_col5 link">
+       <a href="https://www.mon-herboristerie.com/index.php?controller=selection-products">
+        Sélection
+       </a>
+      </li>
+      <li class="item sep">
+      </li>
+      <li class="item item_col6 link">
+       <a href="https://www.mon-herboristerie.com/promotions">
+        Promotions
+       </a>
+      </li>
+     </ul>
+    </div>
+    <div id="doofinder_wraper">
+    </div>
+   </div>
+   <!-- Menu -->
+   <div class="sf-contener clearfix">
+    <ul class="sf-menu clearfix">
+     <li>
+      <a href="https://www.mon-herboristerie.com/50-phytothrapie">
+       Phytothérapie
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/56-les-tisanes-composes">
+         Les tisanes composées
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/55-les-plantes-individuelles">
+         Les plantes individuelles
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/57-les-glules-comprims">
+         Les Gélules &amp; Comprimés
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/117-les-formes-liquides">
+         Les Formes liquides
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/84-l-elixir-du-sudois">
+         L'Elixir du Suédois
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/144-les-ths-bio">
+         Les thés BIO
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/146-les-livres">
+         Les livres
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/51-aromathrapie">
+       Aromathérapie
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/60-les-huiles-essentielles">
+         Les huiles essentielles
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/61-les-huiles-vgtales">
+         Les huiles végétales
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/62-les-complexes">
+         Les complexes
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/63-la-diffusion">
+         La diffusion
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/77-les-eaux-florales">
+         Les eaux florales
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/81-les-synergies-essentielles">
+         Les Synergies Essentielles
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/64-les-supports-flaconnage">
+         Les Supports &amp; Flaconnage
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/150-les-livres">
+         Les livres
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/129-gemmothrapie">
+       Gemmothérapie
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/151-les-macrats-mre-unitaires">
+         Les macérats-mère unitaires
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/152-les-gemmo-complexes">
+         Les gemmo-complexes
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/156-les-preparations">
+         Les préparations
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/153-les-livres">
+         Les livres
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/52-fleurs-de-bach">
+       Fleurs de Bach
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/65-les-fleurs-de-bach-unitaires">
+         Les fleurs de Bach unitaires
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/66-la-gamme-rescue">
+         La gamme Rescue
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/89-les-complexes-de-bach-bio">
+         Les complexes de Bach BIO
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/145-les-livres-accessoires">
+         Les livres &amp; Accessoires
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/90-apithrapie">
+       Apithérapie
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/91-la-gele-royale">
+         La Gelée Royale
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/132-le-pollen">
+         Le Pollen
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/74-la-propolis">
+         La Propolis
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/131-le-miel">
+         Le Miel
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/154-les-livres">
+         Les livres
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/80-compléments-alimentaires">
+       Compléments alimentaires
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/110-tonus-immunit">
+         Tonus &amp; Immunité
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/113-stress-sommeil">
+         Stress &amp; Sommeil
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/143-minceur-dtox">
+         Minceur &amp; Détox
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/155-bien-tre-digestif">
+         Bien-être digestif
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/133-bien-tre-orl">
+         Bien-être ORL
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/115-bien-tre-sniors">
+         Bien-être Séniors
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/116-bien-tre-gnral">
+         Bien-être général
+        </a>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/114-bien-tre-fminin">
+         Bien-être féminin
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li>
+      <a href="https://www.mon-herboristerie.com/53-hygiène-cosmétique">
+       Hygiène &amp; Cosmétique
+      </a>
+      <ul>
+       <li>
+        <a href="https://www.mon-herboristerie.com/79-hygiène">
+         Hygiène
+        </a>
+        <ul>
+         <li>
+          <a href="https://www.mon-herboristerie.com/128-dentifrices">
+           Dentifrices
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/101-dodorants-naturels">
+           Déodorants naturels
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/126-stop-aux-poux">
+           Stop aux poux
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/69-argile">
+           Argile
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/105-soins-petits-bobos">
+           Soins "Petits bobos"
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/103-bain-douche-bio">
+           Bain &amp; Douche BIO
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/102-shampooings-bio">
+           Shampooings BIO
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/100-savons-naturels">
+           Savons naturels
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/104-soins-corporels">
+           Soins corporels
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/118-soins-bb-bio">
+           Soins Bébé BIO
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/157-soins-du-visage">
+         Soins du visage
+        </a>
+        <ul>
+         <li>
+          <a href="https://www.mon-herboristerie.com/158-peau-normale">
+           Peau normale
+          </a>
+          <ul>
+           <li>
+            <a href="https://www.mon-herboristerie.com/159-peau-mature">
+             Peau mature
+            </a>
+            <ul>
+             <li>
+              <a href="https://www.mon-herboristerie.com/160-peau-sensible">
+               Peau sensible
+              </a>
+             </li>
+            </ul>
+           </li>
+          </ul>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/161-peau-mature">
+           Peau mature
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/162-peau-grasse">
+           Peau grasse
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/163-peau-mixte">
+           Peau mixte
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/164-peau-sensible">
+           Peau sensible
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="https://www.mon-herboristerie.com/165-problèmes-de-peau">
+         Problèmes de peau
+        </a>
+        <ul>
+         <li>
+          <a href="https://www.mon-herboristerie.com/166-cicatrices">
+           Cicatrices
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/168-eczema">
+           Eczema
+          </a>
+         </li>
+         <li>
+          <a href="https://www.mon-herboristerie.com/169-acné">
+           Acné
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+     </li>
+    </ul>
+    <div class="sf-right">
+    </div>
+    <!--/ Menu -->
+    <div class="lgcookieslaw_banner" id="lgcookieslaw_banner">
+     <div class="lgcookieslaw_container">
+      <div class="lgcookieslaw_message">
+       En poursuivant votre navigation sur ce site, vous acceptez l’utilisation des cookies.
+      </div>
+      <div class="lgcookieslaw_button_container">
+       <div>
+        <span class="lgcookieslaw_btn" id="lgcookieslaw_accept">
+         J'accepte
+        </span>
+       </div>
+       <div>
+        <a class="lgcookieslaw_btn" href="https://www.mon-herboristerie.com/content/26-politique-de-confidentialite-cookies" id="lgcookieslaw_info">
+         Plus d'informations
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="lgcookieslaw_btn-close" id="lgcookieslaw_close">
+      <img alt="close" class="lgcookieslaw_close_banner_btn" onclick="closeinfo();" src="/modules/lgcookieslaw/views/img/close.png"/>
+     </div>
+    </div>
+    <div class="content clearfix" id="center_column">
+     <div class="hook_home clearfix">
+      <div class="clear">
+      </div>
+      <div class="PM_AdsAndSlideshowWrap" id="PM_AdsAndSlideshowWrap_1">
+       <div class="PM_AdsAndSlideshowBgColor PM_AdsAndSlideshowBgColor_1_fr" id="PM_AdsAndSlideshowBgColor_1">
+        <div class="PM_AdsAndSlideshow_home PM_AdsAndSlideshow_1_fr" id="PM_AdsAndSlideshow_1">
+        </div>
+       </div>
+      </div>
+      <script type="text/javascript">
+       /* <![CDATA[ */<!--
+ var oldt_1=0;var curt_1=1;var nLi_1=0;slideInfos[1]=[{'id':'14','name':'Le SERUM BIO-REGENERANT - les inspyr&eacute;es','description':'','link':'https://www.mon-herboristerie.com/peau-normale/2154-le-serum-bio-regenerant-les-inspyrees.html','target':'0','pause_duration':'0','oldt':0},{'id':'8','name':'Gelee royale','description':'Gelee royale bio fraiche francaise','link':'http://www.mon-herboristerie.com/la-gele-royale/1025-gel%C3%A9e-royale-biologique-fran%C3%A7aise-garantie-gpgr.html','target':'0','pause_duration':'0','oldt':0},{'id':'9','name':'Facebook','description':'','link':'https://www.facebook.com/monherboristerie','target':'0','pause_duration':'0','oldt':0},{'id':'10','name':'Blog','description':'','link':'http://mon-herboristerie.com/blog/','target':'0','pause_duration':'0','oldt':0},{'id':'7','name':'slide2','description':'','link':'','target':'0','pause_duration':'0','oldt':0}];var pm_adsandslideshow_1=$jqPmSlide("#PM_AdsAndSlideshow_1").sudoSlider({prevHtml:'<a href="javascript:void(0);" class="adss_prevBtn">&nbsp;</a>',nextHtml:'<a href="javascript:void(0);" class="adss_nextBtn">&nbsp;</a>',controlsAttr:'class="adss_controls"',ajax:['https://www.mon-herboristerie.com/modules/pm_adsandslideshow/ajax_front.php?action=getSlide&id_element=14&w=1200&h=400&slideshow_name=accueil','https://www.mon-herboristerie.com/modules/pm_adsandslideshow/ajax_front.php?action=getSlide&id_element=8&w=1200&h=400&slideshow_name=accueil','https://www.mon-herboristerie.com/modules/pm_adsandslideshow/ajax_front.php?action=getSlide&id_element=9&w=1200&h=400&slideshow_name=accueil','https://www.mon-herboristerie.com/modules/pm_adsandslideshow/ajax_front.php?action=getSlide&id_element=10&w=1200&h=400&slideshow_name=accueil','https://www.mon-herboristerie.com/modules/pm_adsandslideshow/ajax_front.php?action=getSlide&id_element=7&w=1200&h=400&slideshow_name=accueil'],preloadAjax:true,ajaxLoadFunction:function(t){$jqPmSlide(this).attr('id','PM_AdsAndSlideshowElement_'+slideInfos[1][t-1]['id']);},uncurrentFunc:function(t){if(typeof(pm_adsandslideshow_1)!='undefined'&&typeof(slideInfos[1][t-1]['pause_duration'])!='undefined'&&parseInt(slideInfos[1][t-1]['pause_duration'])!=0&&parseInt(pm_adsandslideshow_1.getOption('pause'))!=parseInt(slideInfos[1][t-1]['pause_duration']))
+ pm_adsandslideshow_1.adjustPause(parseInt(slideInfos[1][t-1]['pause_duration']));else if(typeof(pm_adsandslideshow_1)!='undefined'&&parseInt(pm_adsandslideshow_1.getOption('pause'))!=parseInt(5000))
+ pm_adsandslideshow_1.adjustPause(parseInt(5000));},customLink:'.custom',beforeAniFunc:function(t){},afterAniFunc:function(t){},fade:true,auto:true,transitionEffect:'Random',continuous:true,pause:(typeof(slideInfos[1][0])!='undefined'&&parseInt(slideInfos[1][0]['pause_duration'])!=0?parseInt(slideInfos[1][0]['pause_duration']):'5000'),speed:'1000',fadespeed:'1000'});/* ]]> */
+      </script>
+      <div class="clear">
+      </div>
+      <div class="clear">
+      </div>
+      <div class="PM_AdsAndSlideshowWrap" id="PM_AdsAndSlideshowWrap_3">
+       <div class="PM_AdsAndSlideshowBgColor PM_AdsAndSlideshowBgColor_3_fr" id="PM_AdsAndSlideshowBgColor_3">
+        <div class="PM_AdsAndSlideshow_home PM_AdsAndSlideshow_3_fr" id="PM_AdsAndSlideshow_3">
+         <ul class="PM_AdsAndSlideshow">
+         </ul>
+        </div>
+       </div>
+      </div>
+      <script type="text/javascript">
+       /* <![CDATA[ */<!--
+ var oldt_3=0;var curt_3=1;var nLi_3=0;slideInfos[3]=[];var pm_adsandslideshow_3=$jqPmSlide("#PM_AdsAndSlideshow_3").sudoSlider({prevHtml:'<a href="javascript:void(0);" class="adss_prevBtn">&nbsp;</a>',nextHtml:'<a href="javascript:void(0);" class="adss_nextBtn">&nbsp;</a>',controlsAttr:'class="adss_controls"',loadFunction:function(t){$jqPmSlide(this).attr('id','PM_AdsAndSlideshowElement_'+slideInfos[3][t-1]['id']);},uncurrentFunc:function(t){if(typeof(pm_adsandslideshow_3)!='undefined'&&typeof(slideInfos[3][t-1]['pause_duration'])!='undefined'&&parseInt(slideInfos[3][t-1]['pause_duration'])!=0&&parseInt(pm_adsandslideshow_3.getOption('pause'))!=parseInt(slideInfos[3][t-1]['pause_duration']))
+ pm_adsandslideshow_3.adjustPause(parseInt(slideInfos[3][t-1]['pause_duration']));else if(typeof(pm_adsandslideshow_3)!='undefined'&&parseInt(pm_adsandslideshow_3.getOption('pause'))!=parseInt(3000))
+ pm_adsandslideshow_3.adjustPause(parseInt(3000));},customLink:'.custom',beforeAniFunc:function(t){},afterAniFunc:function(t){},fade:true,transitionEffect:'Random',continuous:true,prevNext:false,pause:(typeof(slideInfos[3][0])!='undefined'&&parseInt(slideInfos[3][0]['pause_duration'])!=0?parseInt(slideInfos[3][0]['pause_duration']):'3000'),speed:'1000',fadespeed:'1000'});/* ]]> */
+      </script>
+      <div class="clear">
+      </div>
+      <!-- Module Editorial -->
+      <div class="editorial_block" id="editorial_block_center">
+       <div class="rte">
+        <p>
+         Créé et géré par un
+         <strong>
+          <a href="http://www.mon-herboristerie.com/qualite-interlocuteurs-o-53.html" title="docteur en pharmacie">
+           docteur en pharmacie
+          </a>
+         </strong>
+         passionné de plantes médicinales, ce site souhaite vous donner accès à des produits de
+         <strong>
+          <a href="http://www.mon-herboristerie.com/phytotherapie-c-50.html.html" title="phytothérapie">
+           phytothérapie
+          </a>
+         </strong>
+         , d'
+         <a href="http://www.mon-herboristerie.com/aromatherapie-c-51.html" title="aromathérapie">
+          <strong>
+           aromathérapie
+          </strong>
+         </a>
+         , d'
+         <strong>
+          <a href="http://www.mon-herboristerie.com/fleurs-bach-c-52.html" title="élixirs floraux">
+           élixirs floraux
+          </a>
+         </strong>
+         et
+         <strong>
+          <a href="http://www.mon-herboristerie.com/autres-produits-naturels-c-53.html" target="_blank" title="autres produits naturels">
+           autres produits naturels
+          </a>
+         </strong>
+         de haute qualité et d'origine pharmaceutique contrôlée.
+        </p>
+        <p>
+         Toutes nos plantes médicinales proviennent d'
+         <strong>
+          établissements pharmaceutiques
+         </strong>
+         et répondent aux
+         <strong>
+          normes très strictes
+         </strong>
+         des pharmacopées européenne et/ou française. Les critères de ces deux institutions nous permettent de vous présenter des
+         <strong>
+          <a href="http://www.mon-herboristerie.com/qualite-plantes-medicinales-o-36.html" title="plantes médicinales de qualité exceptionnelle">
+           plantes médicinales de qualité exceptionnelle
+          </a>
+         </strong>
+         , vous permettant ainsi d'obtenir le
+         <strong>
+          meilleur potentiel thérapeutique
+         </strong>
+         de chacune d'elles.
+        </p>
+        <p>
+         <strong>
+          <a href="http://www.mon-herboristerie.com/phytotherapie-c-50.html" title="Plus de 500 produits">
+           Plus de 1000 références
+          </a>
+         </strong>
+         de phytothérapie, d'aromathérapie et de bien-être détenus
+         <strong>
+          en stock permanent
+         </strong>
+         (sauf rupture laboratoire), livrés à l'adresse de votre choix sous
+         <strong>
+          48/72 heures
+         </strong>
+         .
+        </p>
+        <p>
+         Ce service vous est proposé par une
+         <strong>
+          <a href="http://www.mon-herboristerie.com/qui-sommesnous-o-133.html" title="Pharmacie DEDIEU">
+           officine de pharmacie basée en France
+          </a>
+          ;
+         </strong>
+         pour vous: l'
+         <a href="http://www.mon-herboristerie.com/lofficine-pharmacie-ligne-votre-securite-o-216.html" title="Assurance qualite">
+          <strong>
+           assurance de qualité et de sécurité optimale
+          </strong>
+         </a>
+         des produits proposés.
+        </p>
+       </div>
+      </div>
+      <!-- /Module Editorial -->
+      <!-- MODULE WP recent posts -->
+      <div class="block" id="wprecentposts">
+       <h1>
+        Derniers articles du blog
+       </h1>
+       <div class="block_content">
+        <div class="item clearfix alt">
+         <a href="https://www.mon-herboristerie.com/blog/?p=4820" target="_blank">
+          <h2>
+           MALADIE DE LYME - Les huiles essentielles à la rescousse
+          </h2>
+          <p>
+           <img alt="MALADIE DE LYME - Les huiles essentielles à la rescousse" class="thumbail" src="https://www.mon-herboristerie.com/blog/wp-content/uploads/2018/05/SP-Lyme-Tique.jpg" style="width: 100px;"/>
+           <span>
+            Publié le  8 mai 2018
+           </span>
+           <span>
+            dans « La santé naturelle »
+           </span>
+          </p>
+         </a>
+        </div>
+        <div class="item clearfix ">
+         <a href="https://www.mon-herboristerie.com/blog/?p=4810" target="_blank">
+          <h2>
+           Huile de pépins de FIGUE DE BARBARIE : un trésor pour les peaux matures
+          </h2>
+          <p>
+           <img alt="Huile de pépins de FIGUE DE BARBARIE : un trésor pour les peaux matures" class="thumbail" src="https://www.mon-herboristerie.com/blog/wp-content/uploads/2018/04/Fotolia_180279318_S.jpg" style="width: 100px;"/>
+           <span>
+            Publié le 20 avril 2018
+           </span>
+           <span>
+            dans « Plantes médicinales &amp; actifs naturels »
+           </span>
+          </p>
+         </a>
+        </div>
+       </div>
+      </div>
+      <!-- /MODULE WP recent posts -->
+     </div>
+     <div class="content_footer clearfix">
+      <div class="reinsurance_block">
+       <ul>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/25-livraisons">
+          <img alt="" src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-1-1.jpg"/>
+          <span>
+           Livraison offerte à partir de 49 €
+          </span>
+         </a>
+        </li>
+        <li class="sep">
+        </li>
+        <li>
+         <img alt="" src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-2-1.jpg"/>
+         <span>
+          Expédition sous 24/48 h
+         </span>
+        </li>
+        <li class="sep">
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/13-le-programme-fidelite">
+          <img alt='h"' src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-6-1.jpg"/>
+          <span>
+           Gagnez 1€ tous les 25€ d'achat
+          </span>
+         </a>
+        </li>
+        <li class="sep">
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/8-qualite-de-vos-interlocuteurs">
+          <img alt="" src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-3-1.jpg"/>
+          <span>
+           Qualité pharmaceutique
+          </span>
+         </a>
+        </li>
+        <li class="sep">
+        </li>
+        <li>
+         <img alt="" src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-4-1.jpg"/>
+         <span>
+          Secret professionnel
+         </span>
+        </li>
+        <li class="sep">
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/6-securite-du-paiement-en-ligne">
+          <img alt="" src="https://www.mon-herboristerie.com/themes/herboristerie/img/reinsurance-5-1.jpg"/>
+          <span>
+           Paiement sécurisé
+          </span>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+     <!--
+ * 2012-2018 NetReviews
+ *
+ *  @author    NetReviews SAS <contact@avis-verifies.com>
+ *  @copyright 2018 NetReviews SAS
+ *  @version   Release: $Revision: 7.5.0
+ *  @license   NetReviews
+ *  @date      16/03/2018
+ *  International Registered Trademark & Property of NetReviews SAS
+ -->
+     <div id="netreviews_global_website_review" itemscope="" itemtype="http://data-vocabulary.org/Review-aggregate">
+      <meta content="Mon herboristerie" itemprop="itemreviewed"/>
+      <meta content="267" itemprop="votes"/>
+      <span itemprop="rating" itemscope="" itemtype="http://data-vocabulary.org/Rating">
+       <meta content="4.8" itemprop="average"/>
+       <meta content="5" itemprop="best"/>
+      </span>
+     </div>
+    </div>
+   </div>
+   <!-- .main_content -->
+   <div class="footer clearfix">
+    <div class="inside">
+     <div class="clearfix">
+      <div class="item pages_list list1">
+       <h2>
+        A propos
+       </h2>
+       <ul>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/27-qui-sommes-nous-">
+          Qui sommes-nous ?
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/28-informations-legales">
+          Informations légales
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/category/16-questions-frequentes">
+          Questions fréquentes
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/29-cgv">
+          C.G.V
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/30-avis-et-desengagement-de-responsabilite">
+          Avis et désengagement de responsabilité
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="item pages_list list2">
+       <h2>
+        Nos engagements
+       </h2>
+       <ul>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/category/4-qualite-de-nos-produits">
+          Qualité de nos produits
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/category/2-lachat-serenite">
+          L'achat sérénité
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/category/3-mes-avantages">
+          Mes avantages
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/25-livraisons">
+          Livraisons
+         </a>
+        </li>
+        <li>
+         <a href="https://www.mon-herboristerie.com/content/26-politique-de-confidentialite-cookies">
+          Politique de confidentialité
+         </a>
+        </li>
+       </ul>
+      </div>
+      <!-- Block MailJet Sync module-->
+      <div class="item newsletter" id="newsletter_block">
+       <h2>
+        Newsletter
+       </h2>
+       <div class="block_content">
+        <form action="https://www.mon-herboristerie.com/#newsletter_block" method="post">
+         <p>
+          Inscrivez vous et recevez les dernières infos de Mon-Herboristerie, les nouveautés, les promotions...
+         </p>
+         <p>
+          <input name="list_id" type="hidden" value="581506"/>
+          <input class="inputNew" name="email" onblur="javascript:if(this.value=='')this.value='Votre email';" onfocus="javascript:if(this.value=='Votre email')this.value='';" size="18" type="text" value="Votre email"/>
+          <input class="button_mini exclusive_alt" name="submitNewsletterMailJet" type="submit" value="Je m'abonne"/>
+         </p>
+        </form>
+       </div>
+      </div>
+      <!-- /Block MailJet Sync module-->
+     </div>
+     <div class="footer3 clearfix">
+      <div class="item">
+       <a class="lien" href="http://www.ordre.pharmacien.fr/" target="_blank">
+        <img alt="Ordre des Pharmaciens" src="https://www.mon-herboristerie.com/themes/herboristerie/img/footer-lien-order.png"/>
+       </a>
+      </div>
+      <div class="item">
+       <a class="lien" href="http://www.sante.gouv.fr/" target="_blank">
+        <img alt="Ministère de la santé" src="https://www.mon-herboristerie.com/themes/herboristerie/img/footer-lien-ministere.png"/>
+       </a>
+      </div>
+      <!--
+ 					<div class="item">
+ 						<a class="lien" href="http://ansm.sante.fr/" target="_blank"><img src="https://www.mon-herboristerie.com/themes/herboristerie/img/footer-logo-ansm.png" alt="Ansm"></a>
+ 					</div>
+ 					-->
+      <div class="item">
+       <a class="lien" href="http://www.ars.sante.fr/portail.0.html" target="_blank">
+        <img alt="ARS Midi-Pyrénées" src="https://www.mon-herboristerie.com/themes/herboristerie/img/footer-lien-ars.png"/>
+       </a>
+      </div>
+      <div class="item">
+       <a class="lien" href="/content/170-comment-puis-je-regler-ma-commande">
+        <img alt="Moyens de paiement" src="https://www.mon-herboristerie.com/themes/herboristerie/img/moyens-de-paiement-mon-herboristerie.png"/>
+       </a>
+      </div>
+      <div class="item">
+       <meta class="netreviewsWidget" data-jsurl="//cl.avis-verifies.com/fr/cache/7/e/3/7e38fd07-ba5d-4aa4-dd36-9a1dd9a06a6d/widget4/widget03-13852_script.js" id="netreviewsWidgetNum13852"/>
+       <script src="//cl.avis-verifies.com/fr/widget4/widget03.min.js">
+       </script>
+       <!--
+ 						<a target="_blank" href="http://logi118.xiti.com/go.url?xts=487123&xtor=AD-1-[fond_blanc]---[https://www.mon-herboristerie.com/]--[Mon Herboristerie]&url=http://www.fia-net.com/annuaire/6218/mon-herboristerie.html"><img height="70" border="0" width="160" title="Voir les avis et commentaires sur le site FIA-NET.com" alt="Evaluation FIA-NET" src="https://static.fia-net.com/widgets2/blanc/6218.png"> </a>
+ 						<script type="text/javascript">	xt_imgpub = new Image(); xtdmedpub = new Date(); xt_imgpub.src = '//logi118.xiti.com/go.url?xts=487123&xto=AD-1-[fond_blanc]---[https://www.mon-herboristerie.com/]--[Mon Herboristerie]&type=ad&hl=' + xtdmedpub.getHours() + 'x' + xtdmedpub.getMinutes() + 'x' + xtdmedpub.getSeconds();	</script>
+ 						-->
+      </div>
+      <div class="item">
+       <a href="https://www.mon-herboristerie.com/content/28-informations-legales">
+        <img alt="mon-herboristerie.com est un service proposé par la Pharmacie DEDIEU" src="https://www.mon-herboristerie.com/themes/herboristerie/img/footer-logo-pharmacie-dedieu.png"/>
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--Doofinder script starts here -->
+   <script type="text/javascript">
+    var doofinder_script = '//cdn.doofinder.com/media/js/doofinder-4.latest.min.js';
+ (function(d,t){var f=d.createElement(t),s=d.getElementsByTagName(t)[0];f.async=1;
+     f.src=('https:'==location.protocol?'https:':'http:')+doofinder_script;
+     s.parentNode.insertBefore(f,s)}(document,'script')
+ );
+ if(!doofinder){var doofinder={};}
+ doofinder.options = {
+   "lang": "fr", 
+   "zone": "eu1", 
+   "dleft": 0, 
+   "appendTo": "#doofinder_wraper",
+   "results": {
+     "width": 700, 
+     "defaultTemplate": "GridView"
+   }, 
+   "facets": {
+     "width": 200
+   },
+   "header": {}, 
+   "queryInput": "#search_query_top", 
+   "hashid": "d631e2eef477a4acf2fb821e6cc44480"
+ };
+   </script>
+   <!--Doofinder script ends here -->
+   <style>
+    body #doofinder_wraper {
+ 	position: relative;
+ 	width: 600px;
+ }
+ body #doofinder {
+ 	left: 150px;
+ }
+ @media screen and (max-width: 1200px) {
+ 	body #doofinder {
+ 		left: 0;
+ 	}
+ }
+ body #doofinder,
+ body #doofinder *,
+ body #helpck-results ul li {
+ 	font-family: inherit !important;
+ 	font-size: inherit !important;
+ }
+ body #doofinder .sub_header1 {
+ 	text-transform: none;
+ }
+   </style>
+  </body>
+ </html>

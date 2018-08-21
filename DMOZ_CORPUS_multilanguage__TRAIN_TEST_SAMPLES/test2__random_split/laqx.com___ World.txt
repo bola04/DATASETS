@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+ <html xmlns:wb="http://open.weibo.com/wb">
+  <head>
+   <meta charset="utf-8"/>
+   <title>
+    临安气象
+   </title>
+   <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <meta content="width=device-width" name="viewport"/>
+   <meta content="临安气象,杭州幂拓科技" name="keywords"/>
+   <meta content="杭州幂拓科技" name="author"/>
+   <link href="/Content/site.css" rel="stylesheet"/>
+   <!--[if lt IE 8]> <link href="/Content/ie67.css" rel="stylesheet"/>  <![endif]-->
+   <script src="/Scripts/modernizr-2.6.2.js">
+   </script>
+   <script src="/Scripts/jquery-1.8.2.js">
+   </script>
+   <script src="/Scripts/metgs/mlib.js">
+   </script>
+   <script src="/Scripts/metgs/JMapData.js">
+   </script>
+   <script src="/Scripts/metgs/BaseMap.js">
+   </script>
+   <script src="/Scripts/metgs/CMap.js">
+   </script>
+   <script src="/Scripts/highcharts/highcharts.js" type="text/javascript">
+   </script>
+   <!-- Easy UI -->
+   <link href="/Scripts/eui/themes/default/easyui.css" rel="stylesheet" type="text/css"/>
+   <link href="/Scripts/eui/themes/icon.css" rel="stylesheet" type="text/css"/>
+   <script src="/Scripts/eui/json2.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/eui/jquery.easyui.min.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/eui/locale/easyui-lang-zh_CN.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/metgs/fts.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/metgs/AQI.js" type="text/javascript">
+   </script>
+   <script>
+    /// global map object.
+     var GMap = new CMap();
+ 
+     /// global forecast time series manager
+     var GMgr = new CFHFcstMgr();
+ 
+     var GUrl = "/";
+ 
+     //----------------------------------------
+     //-- Load forecast when document is loading
+     //----------------------------------------
+     $(document).ready(function () {
+ 
+         //-- Disable highcharts UTC
+         Highcharts.setOptions({
+             global: { useUTC: false }
+         });
+ 
+         //-- Aws map
+         GMap.SetMapContainer("divMapCanvas");
+         GMap.SetTitleContainer("divMapTitle");
+         GMap.SetLegendContainer("divMapLegend");
+         GMap.SetMapData(GMapData.JMap);
+         GMap.BaseUrl = GUrl;
+ 
+ 	    GMap.Action = 'ObsAws';
+ 	    GMap.AwsVarName = "T";
+ 	    GMap.LinkTitle = "正点气温";
+ 	    GMap.ShowData();
+ 
+         //--
+         //-- Town forecast
+         //--
+         //
+ 	    var url = "/Forecast/CityData";
+ 	    $.post(url, 0, function (data) {
+ 	        $("#fcstCity").html(data);
+ 
+ 	        DoFcstCity('fcstCity', $.parseJSON(data));
+ 	    });
+ 
+ 
+         //-- Town fcst
+ 	    GMgr.BaseUrl = GUrl;
+ 	    GMgr.SetContainer("divFcstTimeSeries");
+ 	    GMgr.ServerURL = GUrl + "Forecast/TownData";
+ 	    ShowTownTS(null, "58448");
+ 
+         //-- Show AQI
+ 	    AQIShowRealTime();
+     });
+ 
+     //----------------------------------------
+     //-- Show forecast time series
+     //----------------------------------------
+     function ShowTownTS(linkObj, stId) {
+         GMgr.StId = stId;
+         GMgr.FetchFcst();
+ 
+         if ( linkObj != null )
+         {
+             $(linkObj).parent().siblings(".mtabs-selected").removeClass();
+             $(linkObj).parent().addClass("mtabs-selected");
+         }
+     }
+ 
+     function ShowAwsSpace(linkObj, uName, vName, stat, hourDelta, hourStart, naviDelta) {
+         GMap.LinkTitle = $(linkObj).html();
+         GMap.ObservTime = null;
+         GMap.UVarName = uName;
+         GMap.VVarName = vName;
+         GMap.StatMethod = stat;
+         GMap.HourDelta = hourDelta;
+         GMap.HourStart = hourStart;
+         GMap.NaviDelta = (naviDelta == null ? 1 : naviDelta);
+ 
+         //-- Close time series dialog
+         /*
+         if ($("#awsDialog").dialog())
+             $("#awsDialog").dialog('close');
+         */
+         GMap.ShowData();
+ 
+         //-- Change selected state
+         $(linkObj).parent().siblings(".selected").removeClass();
+         $(linkObj).parent().addClass("selected");
+     }
+ 
+     function ShowAwsTs(stid, stName, varName, observTime, linkObj) {
+         GMap.ShowAwsTs(stid, stName, varName, observTime, linkObj, true);
+     }
+ 
+     /**
+      * Build form to shown city forecast
+      */
+     function DoFcstCity(divId, fcst) {
+         var dt, dtInit;
+         var sHeader, sDN, sWW1, sWW2, sTemp, sWd, sWs;
+         var item1, item2;
+ 
+         dtInit = DateFromString(fcst.InitDate, "yymmddHH");
+         sHeader = sDN = sWW1 = sWW2 = sTemp = sWd = sWs = "";
+ 
+         //*
+         for (var i = 0; i < fcst.Data.length; i += 2) {
+             item1 = fcst.Data[i];
+             item2 = fcst.Data[i + 1];
+             dt = dtInit.addHour(item1.FH);
+ 
+             item2.TMax = parseInt(item2.TMax);
+             item2.TMin = parseInt(item2.TMin);
+             
+             sHeader += "<td colspan='2' class='title'>" + dt.format("m月d日") + "</td>";
+             sDN += (dt.getHours() == 20 ? "<td>白天</td><td>夜间</td>" : "<td>夜间</td><td>白天</td>");
+             sWW1 += "<td><img src='" + GUrl + "Images/wwcma/" + (dt.getHours() == 20 ? "d" : "n") + (item1.WW < 10 ? "0" : "") + item1.WW + ".gif'></img></td>" + 
+                     "<td><img src='" + GUrl + "Images/wwcma/" + (dt.getHours() == 20 ? "n" : "d") + (item2.WW < 10 ? "0" : "") + item2.WW + ".gif'></img></td>";
+ 
+             sWW2 += "<td>" + item1.WWChs + "</td><td>" + item2.WWChs + "</td>";
+ 
+             if ( dtInit.getHours() == 20) //08时起报的最高为当日天，归低为第二日早间最低
+                 sTemp += "<td colspan='2'><span style='color:blue'>" + item2.TMin + "</span>&nbsp;~&nbsp;<span style='color:red'>" + item2.TMax + "</span>℃</td>";
+             else
+                 sTemp += "<td colspan='2'><span style='color:red'>" + item2.TMax + "</span>&nbsp;~&nbsp;<span style='color:blue'>" + item2.TMin + "</span>℃</td>";
+ 
+             sWd += "<td>" + item1.WDChs + "风</td><td>" + item2.WDChs + "风</td>";
+             sWs += "<td>" + item1.WSChs + (item1.WS < 1 ? "":"级") + "</td><td>" + item2.WSChs + (item2.WS < 1 ? "":"级") + "</td>";
+         }
+ 
+         var s = "<table width='100%'>" +
+             "<tr>" + sHeader + "</tr>" +
+             "<tr>" + sDN + "</tr>" +
+             "<tr>" + sWW1 + "</tr>" +
+             "<tr>" + sTemp + "</tr>" +
+             "<tr>" + sWd + "</tr>" +
+             "<tr>" + sWs + "</tr>" +
+             "</table>"
+ 
+         $("#" + divId).html(s);
+     }
+ 
+     function test()
+     {
+         $('#liTest').addClass('selected');
+         //alert('hello');
+     }
+   </script>
+   <script type="text/JavaScript">
+    navHover = function () {
+             var lis = document.getElementById("navmenu").getElementsByTagName("LI");
+             for (var i = 0; i < lis.length; i++) {
+                 lis[i].onmouseover = function () {
+                     this.className += " iehover";
+                 }
+ 
+                 lis[i].onmouseout = function () {
+                     this.className = this.className.replace(new RegExp(" iehover\\b"), "");
+                 }
+             }
+         }
+ 
+         if (window.attachEvent)
+             window.attachEvent("onload", navHover);
+   </script>
+   <script charset="utf-8" src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript">
+   </script>
+  </head>
+  <body>
+   <header>
+    <div class="header">
+     <div style="top:3px;float:right;">
+      <wb:follow-button height="24" type="red_1" uid="5186859674" width="67">
+      </wb:follow-button>
+     </div>
+    </div>
+    <div class="menuMain">
+     <div class="menuLeft">
+     </div>
+     <div class="menuCenter">
+      <ul id="navmenu">
+       <li>
+        <a href="/">
+         首页
+        </a>
+       </li>
+       <li>
+        <a href="/Forecast">
+         天气预报
+        </a>
+        <ul class="subMenu">
+         <li>
+          <a href="/Forecast/Short">
+           短期天气预报
+          </a>
+         </li>
+         <li>
+          <a href="/Forecast/Town">
+           乡镇天气预报
+          </a>
+         </li>
+         <li>
+          <a href="/Forecast/City">
+           一周城市预报
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/Aws">
+         自动站观测
+        </a>
+       </li>
+       <li>
+        <a href="/Radar/CRFull">
+         雷达产品
+        </a>
+        <ul class="subMenu">
+         <li>
+          <a href="/Radar/CRFull">
+           雷达拼图
+          </a>
+         </li>
+         <li>
+          <a href="/Radar/PrOne">
+           1小时降水
+          </a>
+         </li>
+         <li>
+          <a href="/Radar/PrThree">
+           3小时降水
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <a href="/Satelite">
+         卫星云图
+        </a>
+       </li>
+       <li>
+        <a href="/Typhoon">
+         台风信息
+        </a>
+       </li>
+       <li>
+        <a href="/AQI">
+         环境气象
+        </a>
+       </li>
+       <li>
+        <a href="/Affair">
+         信息公开
+        </a>
+       </li>
+      </ul>
+     </div>
+     <div class="menuRight">
+     </div>
+    </div>
+   </header>
+   <!-- <div><img src="/Images/Activity/2015_323_banner.jpg" /></div> -->
+   <!---------------------------- Message --------------------------------->
+   <div class="message" id="message">
+    <div class="1b" style="width:750px; padding-left:10px;float:left;">
+     <b>
+      当前位置
+     </b>
+     : 临安气象&gt;&gt;首页
+    </div>
+    <div class="b1" style="padding-right:10px;width:220px; text-align:right; float:right;">
+     2018年07月29日  星期日
+    </div>
+   </div>
+   <!---------------------------- Contents --------------------------------->
+   <div id="body">
+    <!-- 搞活动的时候显示的通栏专题 -->
+    <!-- Left column Start -->
+    <div class="columnLeft" style="height:1555px;">
+     <!-- Link highlight -->
+     <!-- 信息公开　-->
+     <div class="leftColumn">
+      <div class="leftColumnHeader">
+       <div class="leftColumnHeaderTitle">
+        特色栏目
+       </div>
+      </div>
+      <div class="leftColumnContent">
+       <div style="height:3px;">
+       </div>
+       <div class="linkHighLight">
+        <a href="http://www.zjmb.gov.cn/qxzm" target="_blank">
+         <img class="linkHighLightImage" src="/Images/link/link_met_proof.png"/>
+        </a>
+       </div>
+       <div class="linkHighLight">
+        <a href="http://www.hzqx.com/xlypt" target="_blank">
+         <img class="linkHighLightImage" src="/Images/link/link_met_assistant.png"/>
+        </a>
+       </div>
+       <div class="linkHighLight">
+        <a href="/AQI">
+         <img class="linkHighLightImage" src="/Images/link/link_hjqx.png"/>
+        </a>
+       </div>
+       <div class="linkHighLight">
+        <a href="http://laqx.com/nyqx/" target="_blank">
+         <img class="linkHighLightImage" src="/Images/link/link_met_agriculture.png"/>
+        </a>
+       </div>
+       <div class="linkHighLight">
+        <a href="http://www.zjmb.gov.cn/dsjs/sxsjspt.jsp" target="_blank">
+         <img class="linkHighLightImage" src="/Images/link/link_pr3.png"/>
+        </a>
+       </div>
+       <div class="linkHighLight">
+        <a href="/Forecast/Town">
+         <img class="linkHighLightImage" src="/Images/link/link_town_fcst.png"/>
+        </a>
+       </div>
+      </div>
+      <div class="leftColumnBottom">
+      </div>
+     </div>
+     <div class="verticalMargin">
+     </div>
+     <!-- 环境气象　-->
+     <div class="leftColumn">
+      <div class="leftColumnHeader">
+       <div class="leftColumnHeaderTitle">
+        <a href="/AQI" style="color:white;">
+         环境气象
+        </a>
+       </div>
+      </div>
+      <div class="leftColumnContent">
+       <div style="height:10px;width:100%">
+       </div>
+       <div class="leftColumnSub">
+        <div class="leftColumnSubHeader">
+         <a href="/AQI" style="color:rgb(24, 61, 164);">
+          实时空气质量监测
+         </a>
+        </div>
+        <div class="leftColumnSubContent" style="position:relative;width:183px;height:85px;overflow:hidden;">
+         <div id="AQIRealTime" style="position:relative;top:0px;width:183px;text-align:center;border:solid 0px blue;">
+          <div id="AQIRealTimeDate" style="margin-top:5px; height:20px;line-height:20px;">
+          </div>
+          <div id="AQIRealTimeIndex" style="font-weight:bolder;font-family:Verdana;font-size:20px;text-align:center;margin:3px 0px 5px 0px;">
+          </div>
+          <div id="AQIRealTimeClass" style="height:20px;line-height:20px;">
+          </div>
+          <div style="height:20px;line-height:20px;">
+           <span id="AQIRealTimePrimaryPullutant">
+           </span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div style="height:10px;width:100%">
+       </div>
+       <div class="leftColumnSub">
+        <div class="leftColumnSubHeader">
+         空气质量AQI指数预报
+        </div>
+        <div class="leftColumnSubContent" style="text-align:left;">
+         <p>
+          今天空气质量指数40到60，空气质量等级为优。
+         </p>
+        </div>
+       </div>
+       <div style="height:10px;">
+       </div>
+      </div>
+      <div class="leftColumnBottom">
+      </div>
+     </div>
+     <div class="verticalMargin">
+     </div>
+     <!-- 信息公开　-->
+     <div class="leftColumn">
+      <div class="leftColumnHeader">
+       <div class="leftColumnHeaderTitle">
+        信息公开
+       </div>
+      </div>
+      <div class="leftColumnContent">
+       <div style="height:10px;width:100%">
+       </div>
+       <div class="metOfficeInfo">
+        <div class="metOfficeText">
+         <a href="/Affair/Organization">
+          机构信息
+         </a>
+        </div>
+       </div>
+       <div class="metOfficePolicy">
+        <div class="metOfficeText">
+         <a href="/Affair/Policy">
+          政策法规
+         </a>
+        </div>
+       </div>
+       <div class="metOfficeComplain">
+        <div class="metOfficeText">
+         <a href="/Affair/Notice">
+          通知公告
+         </a>
+        </div>
+       </div>
+       <div style="height:1px;">
+       </div>
+      </div>
+      <div class="leftColumnBottom">
+      </div>
+     </div>
+     <div class="verticalMargin">
+     </div>
+     <div class="leftColumn">
+      <div class="leftColumnHeader">
+       <div class="leftColumnHeaderTitle">
+        气象服务
+       </div>
+      </div>
+      <div class="leftColumnContent">
+       <div style="height:10px;width:100%">
+       </div>
+       <div class="leftColumnContentMenu">
+        <div class="metServiceImage fl" style="background:url(/Images/met_service_phone.png) center no-repeat">
+        </div>
+        <div class="metServiceText fl">
+         声讯电话
+        </div>
+       </div>
+       <div class="leftColumnContentMenu">
+        <div class="metServiceImage fl" style="background:url(/Images/met_service_vedio.png) center no-repeat">
+        </div>
+        <div class="metServiceText fl">
+         气象影视
+        </div>
+       </div>
+       <div class="leftColumnContentMenu">
+        <div class="metServiceImage fl" style="background:url(/Images/met_service_message.png) center no-repeat">
+        </div>
+        <div class="metServiceText fl">
+         天气短信
+        </div>
+       </div>
+       <div style="height:1px;">
+       </div>
+      </div>
+      <div class="leftColumnBottom">
+      </div>
+     </div>
+     <div class="verticalMargin">
+     </div>
+     <div class="verticalMargin">
+     </div>
+     <!-- 友情链接　-->
+     <div class="leftColumn" style="position:absolute;bottom:0px;">
+      <div class="leftColumnHeader">
+       <div class="leftColumnHeaderTitle">
+        友情链接
+       </div>
+      </div>
+      <div class="leftColumnContent">
+       <div style="height:10px;width:100%">
+       </div>
+       <div class="linkHeader">
+        气象服务机构：
+       </div>
+       <div class="linkContent">
+        <ul>
+         <li>
+          <a href="http://www.cma.gov.cn" target="_blank">
+           中国气象局
+          </a>
+         </li>
+         <li>
+          <a href="http://www.zjmb.gov.cn" target="_blank">
+           浙江省气象局
+          </a>
+         </li>
+         <li>
+          <a href="http://www.hzqx.com" target="_blank">
+           杭州市气象局
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="linkHeader">
+        专业气象网站：
+       </div>
+       <div class="linkContent">
+        <ul>
+         <li>
+          <a href="http://www.weather.com.cn" target="_blank">
+           中国天气网
+          </a>
+         </li>
+         <li>
+          <a href="http://zj.weather.com.cn" target="_blank">
+           浙江天气网
+          </a>
+         </li>
+         <li>
+          <a href="http://www.hzqx.com" target="_blank">
+           杭州气象
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="linkHeader">
+        临安本地信息：
+       </div>
+       <div class="linkContent">
+        <ul>
+         <li>
+          <a href="http://www.linan.gov.cn" target="_blank">
+           临安人民政府网站
+          </a>
+         </li>
+         <li>
+          <a href="http://www.lanews.com.cn" target="_blank">
+           临安新闻网
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div style="height:1px;margin-bottom:0px;">
+       </div>
+      </div>
+      <div class="leftColumnBottom">
+      </div>
+     </div>
+    </div>
+    <!-- Left column End -->
+    <div class="columnRight">
+     <div class="fl" id="observation">
+      <div class="fl columnHeader">
+       <div class="columnTitle">
+        观测实况
+       </div>
+       <div class="columnMenu">
+        <ul>
+         <li class="selected">
+          <a href="javascript:void(0);" onclick="ShowAwsSpace(this,'T',null,null,null,null,1)">
+           正点温度
+          </a>
+         </li>
+         <li>
+          <a href="javascript:void(0);" onclick="ShowAwsSpace(this,'Pr',null,null,null,null,1)">
+           小时降水量
+          </a>
+         </li>
+         <li>
+          <a href="javascript:void(0);" onclick="ShowAwsSpace(this,'Rh',null,null,null,null,1)">
+           相对湿度
+          </a>
+         </li>
+         <li>
+          <a href="javascript:void(0);" onclick="ShowAwsSpace(this,'Ws','Wd',null,null,null,1)">
+           正点平均风
+          </a>
+         </li>
+         <li>
+          <a href="/Aws">
+           更多 &gt;&gt;
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+      <div class="fl" style="position:relative;width:770px;height:390px;border:0px solid #95B8E7;background-color:white;padding:0px;margin:0px;">
+       <div style="position:absolute;left:-1px;top:0px;width:3px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+       <div style="position:absolute;left:3px;top:0px;width:762px;height:100%;border:0px solid red;">
+        <div id="divMapCanvas" style="z-index:5;position:absolute;left:1px;top:1px;width:760px;height:380px;margin:0px;border: 0px solid #aaaaaa;overflow:visible;">
+        </div>
+        <div id="divAwsNavi" style="z-index:10;position:absolute;right:10px;top:0px;width:150px;height:30px;line-height:30px;text-align:right;border:solid 0px blue;">
+         <a href="javascript:void(0);" onclick="GMap.NaviDate(-1);">
+          &lt;&lt; 向前
+         </a>
+         <a href="javascript:void(0);" onclick="GMap.NaviDate(1);">
+          向后 &gt;&gt;
+         </a>
+        </div>
+        <div id="divMapTitle" style="z-index:10;position:absolute;left:5px;top:2px;width:400px;height:30px;line-height:30px;font-size:9pt;border:solid 0px blue;">
+        </div>
+        <div style="z-index:10;position:absolute;right:10px;bottom:5px;width:172px;text-align:left;border:solid 1px grey;padding:5px;">
+         <p style="color:brown;font-weight:bold;text-indent:0px;">
+          小贴示:
+         </p>
+         <p style="margin-top:3px;line-height:120%;text-indent:0px;">
+          点击乡镇(街道)点右上角数值可查看该乡镇(街道)的时间序列图
+         </p>
+        </div>
+        <div style="z-index:98;position:absolute;left:5px;bottom:0px;width:200px;height:30px;line-height:30px;border:solid 0px green;overflow:hidden;">
+         <input checked="" onclick="GMap.ShowStName = !GMap.ShowStName; GMap.ShowData(true);" style="vertical-align:middle;" type="checkbox"/>
+         显示站名
+         <input checked="" onclick="GMap.ShowDecimal = !GMap.ShowDecimal; GMap.ShowData(true);" style="vertical-align:middle;" type="checkbox"/>
+         显示小数
+        </div>
+       </div>
+       <!-- ui-dialog -->
+       <div id="awsDialog" style="display:none;" title="自动站观测">
+        <div id="awsTimeseries" style="width:100%;height:100%;">
+        </div>
+       </div>
+       <div style="position:absolute;right:0px;top:0px;width:4px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+      </div>
+      <div class="fl columnBottom">
+      </div>
+     </div>
+     <div class="columnMargin fl">
+     </div>
+     <div class="fl" id="forecast">
+      <div class="fl columnHeader">
+       <div class="columnTitle">
+        天气预报
+       </div>
+      </div>
+      <div class="fl" style="position:relative;width:770px;height:845px;border:0px solid #95B8E7;background-color:white;padding:0px;margin:0px;">
+       <div style="position:absolute;left:-1px;top:0px;width:3px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+       <div style="position:absolute;left:3px;top:0px;width:762px;height:100%;border:0px solid red;">
+        <div style="position:relative;width:100%;height:180px;border-bottom:solid 1px #BFDEF3;">
+         <!-- Text forecst  -->
+         <div style="color:rgb(30,30,30);line-height:180%;float:left;top:1px;width:360px;height:160px;background:url(/Images/fcst_text_bg.png) no-repeat;border-right:solid 2px #BFDEF3;padding:10px;background:none;">
+          <h3 style="text-align:center;">
+           短期天气预报
+          </h3>
+          <hr/>
+          <p style="padding:3px 8px 8px 8px;">
+           临安区气象台2018年7月29日16时发布天气预报：预计16到19时，多云，部分地区有雷阵雨，气温30到28度；今天夜里多云，半夜前局部有雷阵雨，偏东风3级；明天晴到多云，午后部分地区有雷阵雨，偏西风3级，气温25到36度，平均相对湿度65%，空气质量指数50到70，空气质量等级为良，首要污染物为臭氧，山体滑坡等级三级，较易滑坡
+           <a href="/Forecast/Short">
+            ……[ 查看全部内容 ]
+           </a>
+          </p>
+         </div>
+         <!-- Index forecast -->
+         <div style="float:right;top:1px;width:370px;height:170px;padding:5px;">
+          <div class="fcstIndexHeader">
+           生活指数预报(07月29日06时发布)
+          </div>
+          <div class="fcstIndex fl b">
+           <div class="fcstIndexImage">
+            <img src="/Images/fcst_index_exercise.jpg"/>
+           </div>
+           <div class="fcstIndexTextTitle">
+            晨练指数
+           </div>
+           <div class="fcstIndexTextContent">
+            明天早晨晨练指数2级，适宜晨练。
+           </div>
+          </div>
+          <div class="fcstIndex fl b">
+           <div class="fcstIndexImage">
+            <img src="/Images/fcst_index_comfort.jpg"/>
+           </div>
+           <div class="fcstIndexTextTitle">
+            人体舒适度指数
+           </div>
+           <div class="fcstIndexTextContent">
+            今天人体舒适九级，大部分人感觉不舒适。
+           </div>
+          </div>
+          <div class="fcstIndex fl b">
+           <div class="fcstIndexImage">
+            <img src="/Images/fcst_index_air.jpg"/>
+           </div>
+           <div class="fcstIndexTextTitle">
+            空气质量指数
+           </div>
+           <div class="fcstIndexTextContent">
+            今天空气质量指数40到60，空气质量等级为优。
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- 城市天气预报 -->
+        <div style="position:relative;width:100%;height:190px;border-top:solid 1px #BFDEF3;">
+         <div class="fcstCityIndexTitle">
+          一周城市预报
+         </div>
+         <div class="fcstCityIndex" id="fcstCity">
+         </div>
+        </div>
+        <!-- 乡镇天气预报 -->
+        <div style="position:relative;width:100%;height:440px;border-top:solid 1px #BFDEF3;border:none;">
+         <div class="fcstCityIndexTitle">
+          乡镇天气预报
+         </div>
+         <div>
+          <ul class="mtabs" style="width:760px;">
+           <li class="mtabs-selected">
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1025');">
+             锦城
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1044');">
+             板桥
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1012');">
+             昌化
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1046');">
+             岛石
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1085');">
+             高虹
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1097');">
+             河桥
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1448');">
+             锦北
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1094');">
+             玲珑
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1156');">
+             龙岗
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'58448');">
+             锦南
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1259');">
+             潜川
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1126');">
+             青山湖
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1256');">
+             清凉峰
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1047');">
+             太湖源
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1255');">
+             太阳
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1146');">
+             天目山
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1043');">
+             湍口
+            </a>
+           </li>
+           <li>
+            <a class="mtabs-inner" href="javascript:void(0);" onclick="ShowTownTS(this,'K1032');">
+             於潜
+            </a>
+           </li>
+          </ul>
+         </div>
+         <!-- time series -->
+         <div style="position:relative;width:760px;height:410px;border:solid 0px green;overflow:visible;">
+          <div class="waiting" style="position:absolute;left:0px; width:760px; height:410px;line-height:410px;text-align:center;color:rgb(255, 106, 0);font-weight:bold;z-index:2;display:none;">
+           数据加载中, 请稍等...
+          </div>
+          <div class="fl sborder" id="divFcstTimeSeries" style="position:absolute;left:-2px; top:0px; width:790px; height:410px;z-index:1;">
+          </div>
+         </div>
+        </div>
+       </div>
+       <div style="position:absolute;right:0px;top:0px;width:4px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+      </div>
+      <div class="fl columnBottom">
+      </div>
+     </div>
+     <div class="columnMargin fl">
+     </div>
+     <div class="fl" id="met-vedio">
+      <div class="fl columnHeader">
+       <div class="columnTitle">
+        气象影视
+       </div>
+      </div>
+      <div class="fl" style="position:relative;width:770px;height:160px;border:0px solid #95B8E7;background-color:white;padding:0px;margin:0px;">
+       <div style="position:absolute;left:-1px;top:0px;width:3px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+       <div style="position:absolute;left:3px;top:0px;width:160px;height:100%;border:0px solid red;">
+        <div style="margin:10px;text-align:center;">
+         <img src="/Images/met_vedio.png"/>
+        </div>
+       </div>
+       <div style="position:absolute;right:0px;top:0px;width:4px;height:100%;background:url(/Images/column_border_v.png) repeat;">
+       </div>
+      </div>
+      <div class="fl columnBottom">
+      </div>
+     </div>
+    </div>
+    <!-- Right column end -->
+    <div onclick="window.open('http://www.gov.cn/xinwen/2017-07/28/content_5214141.htm','_blank')" style="position:fixed;left:0;top:250px;width:140px;height:500px;cursor:pointer;">
+     <img src="/Images/home_float_fl.png"/>
+    </div>
+    <div onclick="window.open('http://www.gov.cn/xinwen/2017-07/27/content_5214190.htm', '_blank')" style="position:fixed;right:0;top:250px;width:140px;height:500px;cursor:pointer;">
+     <img src="/Images/home_float_fr.png"/>
+    </div>
+   </div>
+   <!---------------------------- Footer --------------------------------->
+   <footer>
+    <div class="footer">
+     <div>
+      <p>
+       客户服务热线：
+       <img src="/Images/linAnPhone400.png"/>
+      </p>
+      <p>
+       Copyright© 杭州市临安区气象局
+      </p>
+      <p>
+       地址：浙江省杭州市临安区横潭路89号 电话：
+       <img src="/Images/linAnPhone0571.png"/>
+      </p>
+      <p>
+       技术支持：杭州幂拓科技有限公司
+      </p>
+      <p class="verticalAlign">
+       <img src="/Images/ghs.png"/>
+       浙公网安备 33018502001093号
+       <img src="/Images/certification.png"/>
+       浙ICP备12012989号-1 增值电信业务经营许可证B2-20050053
+      </p>
+      <p class="verticalAlign">
+       您是我们第
+       <img alt="访问总数" src="http://hitwebcounter.com/counter/counter.php?page=5935957&amp;style=0006&amp;nbdigits=6&amp;type=ip&amp;initCount=0" title="访问计数"/>
+       位访客
+      </p>
+      <script type="text/javascript">
+       document.write(unescape("%3Cspan id='_ideConac' %3E%3C/span%3E%3Cscript src='http://dcs.conac.cn/js/12/186/1393/60878157/CA121861393608781570002.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+     </div>
+    </div>
+   </footer>
+   <script type="text/JavaScript">
+    var _hmt = _hmt || [];
+         (function() {
+           var hm = document.createElement("script");
+           hm.src = "//hm.baidu.com/hm.js?b4d959ab4ea96a3a194d32161f5d8349";
+           var s = document.getElementsByTagName("script")[0]; 
+           s.parentNode.insertBefore(hm, s);
+         })();
+   </script>
+  </body>
+ </html>

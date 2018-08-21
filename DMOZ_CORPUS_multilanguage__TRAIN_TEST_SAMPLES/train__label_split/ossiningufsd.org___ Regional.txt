@@ -1,0 +1,1439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Home - Ossining Union Free School District
+   </title>
+   <meta content="" name="Description"/>
+   <meta content="" name="keywords"/>
+   <base href="https://ossiningufsd.org/"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="max-age=3600" http-equiv="Cache-Control"/>
+   <meta content="Thu, 26 Jul 2018 09:36:07 CST" http-equiv="last-modified"/>
+   <link href="https://ossiningufsd.org/" rel="canonical"/>
+   <!-- CSS -->
+   <link href="/style.css?v=20171210" rel="stylesheet" type="text/css"/>
+   <link href="/mce.css?v=20171210" rel="stylesheet" type="text/css"/>
+   <link href="/assets/templates/site/css/hint.css?v=20171210" rel="stylesheet" type="text/css"/>
+   <link href="/assets/templates/site/css/print.css?v=20171210" media="print" rel="stylesheet" type="text/css"/>
+   <!--[if IE]>
+         <link href="/assets/templates/site/css/ie.css" rel="stylesheet" media="screen" type="text/css" />
+         <![endif]-->
+   <!--[if lt IE 9]>
+           <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+           <script src="//s3.amazonaws.com/nwapi/nwmatcher/nwmatcher-1.2.5-min.js"></script>
+           <link href="/assets/templates/site/css/ie8.css?v=20171210" rel="stylesheet" media="screen" type="text/css" />
+         <![endif]-->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+   </script>
+   <script src="/assets/templates/base/js/jquery.sidr.min.js" type="text/javascript">
+   </script>
+   <script src="/assets/templates/base/js/table2div.js" type="text/javascript">
+   </script>
+   <script src="/assets/templates/base/js/magnifico.min.js" type="text/javascript">
+   </script>
+   <script src="/assets/templates/base/js/placeholder.js" type="text/javascript">
+   </script>
+   <script src="assets/templates/base/js/jquery.flexslider-min.js" type="text/javascript">
+   </script>
+   <script src="/assets/templates/site/js/main.js?v=20171210" type="text/javascript">
+   </script>
+   <script>
+    $(function() {                     
+   $(".close-btn").click(function() { 
+     $("#top-bar").addClass("bar-close");     
+   });
+ });
+   </script>
+   <!-- Paste Google Analytics Code Below -->
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+   ga('create', 'UA-65952180-3', 'auto');
+   ga('send', 'pageview');
+   </script>
+   <script>
+    var tz = 'America/New_York';	
+ $(window).load(function() {
+ 
+     var mykey = 'AIzaSyCepP1hUEHJFDEtQFfvOD3dqqAGhLc6jDY';
+     var calendarid = 'ossiningufsd.org_h2r3tnaoibpmgjm266u3cfk358@group.calendar.google.com';
+     var calids =  calendarid.split(",");
+     var items = {};
+ 	jQuery(function () {
+ 	  jQuery.ajaxSetup({ 
+ 		xhr: function() {
+ 		  if (jQuery.browser.msie) {
+ 			return new ActiveXObject("Microsoft.XMLHTTP");
+ 		  } else {
+ 			return new XMLHttpRequest();
+ 		  }
+ 		}
+ 	  })
+ 	});
+     function makeRequest(e) {
+       var newDate = new Date();
+ 
+       // temporary event filter only lists events in the next day. Ideally, it should list events until a quota of events (3) is met to fill out the widget.
+ 
+       jQuery.ajax({
+           type: 'GET',
+           url: encodeURI('https://www.googleapis.com/calendar/v3/calendars/' + e + '/events?'
+             + 'key=' + mykey
+             + '&singleEvents=true'
+             + '&timeMin=' + newDate.toISOString()
+             + '&orderBy=startTime'
+             + '&maxResults=8'),
+           dataType: 'jsonp',
+           success: function (response) {
+               items = jQuery.merge(response.items,items);
+               items.sort(function(a,b) {return (a.start.dateTime > b.start.dateTime) ? 1 : ((b.start.dateTime > a.start.dateTime) ? -1 : 0);} );
+               items.slice(0,8);
+               var limit = items.slice(0,8);
+               sortAndFill(limit);
+           },
+           error: function (response) {
+               console.log(response); //error!
+           }
+       });
+     }
+     for(i = 0; i < calids.length; i++){
+         makeRequest(calids[i]);
+     }
+     
+         //console.log(items);
+ 
+     // functions for later use ///////////////
+ 
+     function convertISODate(ISOString) {
+       var date = new Date(ISOString);
+       return date;
+     }
+ 
+     // handles date object and returns a text string consisting of time of day in 12 hour, AM/PM format.
+     function convertToTime(date) {
+       var timeString;
+       var afternoon = false;
+ 
+       if (date.getHours() >= 12)
+         afternoon = true;
+ 
+       timeString = afternoon ? date.getHours() - 12 : date.getHours();
+       timeString = timeString == 0 ? 12 : timeString;
+       timeString += ":";
+       timeString += ( date.getMinutes() % 100 == 0 ) ? "0" + date.getMinutes() : date.getMinutes();
+       timeString += " ";
+       timeString += afternoon ? "PM" : "AM";
+       if(timeString == "12:00 AM")timeString = "All Day";
+       return timeString;
+     }
+     function formatMonth(month){
+         var form_month = '';
+         if(month == 1) form_month="Jan";
+         if(month == 2) form_month="Feb";
+         if(month == 3) form_month="Mar";
+         if(month == 4) form_month="Apr";
+         if(month == 5) form_month="May";
+         if(month == 6) form_month="Jun";
+         if(month == 7) form_month="Jul";
+         if(month == 8) form_month="Aug";
+         if(month == 9) form_month="Sept";
+         if(month == 10) form_month="Oct";
+         if(month == 11) form_month="Nov";
+         if(month == 12) form_month="Dec";
+         return form_month;
+     }
+     function formatMonthFull(month){
+         var form_month = '';
+         if(month == 1) form_month="January";
+         if(month == 2) form_month="February";
+         if(month == 3) form_month="March";
+         if(month == 4) form_month="April";
+         if(month == 5) form_month="May";
+         if(month == 6) form_month="June";
+         if(month == 7) form_month="July";
+         if(month == 8) form_month="August";
+         if(month == 9) form_month="September";
+         if(month == 10) form_month="October";
+         if(month == 11) form_month="November";
+         if(month == 12) form_month="December";
+         return form_month;
+     }
+ 
+  function reformatYear(year){
+         var form_year = year;
+         form_year = form_year+1900;
+         return form_year;
+     }
+     
+ 
+  function reformatMonth(month){
+         var form_month = '';
+         if(month == 0) form_month="January";
+         if(month == 1) form_month="February";
+         if(month == 2) form_month="March";
+         if(month == 3) form_month="April";
+         if(month == 4) form_month="May";
+         if(month == 5) form_month="June";
+         if(month == 6) form_month="July";
+         if(month == 7) form_month="August";
+         if(month == 8) form_month="September";
+         if(month == 9) form_month="October";
+         if(month == 10) form_month="November";
+         if(month == 11) form_month="December";
+         return form_month;
+     }
+     // encapsulate generation of single event element, return DOM object.
+     function generateElement(isToday, calEvent) {
+         // Construct container for each event.
+         // eventCont > linkify > info_cont > info_time + info_location
+         //console.log(calEvent);
+         
+         // this next line, during daylight savings should be -4,not should be -5
+         
+       var startTime = (calEvent.start.dateTime)?convertISODate(calEvent.start.dateTime):convertISODate(calEvent.start.date+"T00:00:00-04:00");
+       
+       
+       
+       var dateString = convertToTime(startTime);
+       //if (!isToday) dateString += " on " + generateDate(startTime);
+ 
+  var eventElement = document.createElement('li');
+  
+  
+  			  
+             
+  
+  
+         jQuery(eventElement).attr("href",calEvent.htmlLink+"&ctz="+tz)
+         
+         .attr("onclick","window.open('"+ calEvent.htmlLink +"&ctz="+tz+"','','width=450,height=450,left='+(screen.availWidth/2-225)+',top='+(screen.availHeight/2-225)+'');return false;")
+         
+              .attr("target","_blank");
+         
+       var info_date = document.createElement('div');
+       jQuery(info_date).addClass("datestamp")
+                     .appendTo(jQuery(eventElement));
+ 
+       var info_month = document.createElement('span');
+       jQuery(info_month).addClass("month")
+                     .text(formatMonth(startTime.getMonth() + 1))
+                    // .appendTo(jQuery(info_date));
+ 		
+       var info_time = document.createElement('span');
+         jQuery(info_time).addClass("date")
+ 		jQuery(info_time).text(startTime.getDate())
+ 					.appendTo(jQuery(info_date));
+ 
+ 	  var title_holder = document.createElement('div');
+ 		jQuery(title_holder).addClass("details")
+ 					.appendTo(jQuery(eventElement));
+ 		
+       var title = document.createElement("div"); 
+         jQuery(title).addClass("name")
+ 	    jQuery(title).appendTo(jQuery(title_holder))
+ 		jQuery(title).text(calEvent.summary);
+ 
+       var info_dline = document.createElement('div');
+        jQuery(info_dline).addClass("date-time")
+ 
+       .text(reformatMonth(startTime.getMonth())+" "+startTime.getDate()+', '+reformatYear(startTime.getYear())+" • "+dateString)
+                     .appendTo(jQuery(title_holder));             
+ 
+       return eventElement;
+     }
+ 
+     // populate calendar. 
+     function sortAndFill(eventList) {
+     jQuery('#districtEvents').empty();
+       var today = new Date();
+       var i; //index
+       for (i = 0; i < eventList.length; i++) {
+         jQuery('#districtEvents').append(jQuery(generateElement(false, eventList[i])));
+       }        
+ 
+       if (jQuery('#districtEvents').children().length < 1)
+         jQuery('#districtEvents').append("<p>No events scheduled!</p>");
+ 
+       // fill.call(this, false, fill.call(this, true, 0));
+     }
+     	});
+   </script>
+   <script>
+    $(window).load(function() {
+ 			  $('.flexslider').flexslider({
+ 			    animation: "slide"
+ 			  });
+ 			});
+   </script>
+   <meta content="_CEX_iI3d_dI7Bs23DC3uSjbYyE8TuWUYxHi_PvkyNU" name="google-site-verification"/>
+   <meta content="A36CC67005CFFCF212DBD1AE5A2A0FB9" name="msvalidate.01"/>
+  </head>
+  <body id="home">
+   <div id="wrapper">
+    <!--TOP BAR-->
+    <div id="top-bar">
+     <div class="row">
+      <div class="left-col">
+       <h1>
+        Notice: New Email Addresses
+       </h1>
+       <p>
+        As of June 29, 2018, all email addresses for Ossining UFSD faculty and staff have changed from @ossining.k12.ny.us to @ossiningufsd.org. Please adjust your saved contacts accordingly.
+       </p>
+      </div>
+      <div class="right-col">
+       <div class="close-btn">
+        CLOSE X
+       </div>
+       <div class="actions" style="display:none;">
+        <a class="cta" href="https://www.ossiningufsd.org/oblast/" target="_self">
+         Sign Up Now!
+         <i class="fa fa-caret-right">
+         </i>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="bg-envelope">
+      <i class="fa fa-envelope-o">
+      </i>
+     </div>
+    </div>
+    <div id="main">
+     <header id="header">
+      <!--TOP BAR-->
+      <div class="top-bar">
+       <div class="row">
+        <div class="translate">
+         <a href="//translate.google.com/translate?tl=es&amp;u=https://ossiningufsd.org/">
+          Translate
+          <i class="fa fa-caret-down">
+          </i>
+         </a>
+         <ul id="otherlan">
+          <li>
+           <a href="//translate.google.com/translate?tl=es&amp;u=https://ossiningufsd.org/">
+            Español
+           </a>
+          </li>
+          <li>
+           <a href="//translate.google.com/translate?tl=zh-CN&amp;u=https://ossiningufsd.org/">
+            Chinese [Traditional]
+           </a>
+          </li>
+          <li>
+           <a href="//translate.google.com/translate?tl=zh-TW&amp;u=https://ossiningufsd.org/">
+            Chinese [Simplified]
+           </a>
+          </li>
+          <li>
+           <a href="//translate.google.com/translate?tl=it&amp;u=https://ossiningufsd.org/">
+            Italian
+           </a>
+          </li>
+          <li>
+           <a href="//translate.google.com/translate?tl=pt&amp;u=https://ossiningufsd.org/">
+            Portuguese
+           </a>
+          </li>
+          <li>
+           <a href="//translate.google.com/translate?tl=ar&amp;u=https://ossiningufsd.org/">
+            Arabic
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="top-menu">
+         <ul>
+          <li>
+           <a href="https://ossiningufsd.org/students/">
+            Students
+           </a>
+          </li>
+          <li>
+           <a href="https://ossiningufsd.org/parents/">
+            Parents
+           </a>
+          </li>
+          <li>
+           <a href="https://ossiningufsd.org/staff/">
+            Staff
+           </a>
+          </li>
+          <li class="cal">
+           <a href="https://ossiningufsd.org/calendars.html">
+            Calendars
+           </a>
+          </li>
+          <li class="new">
+           <a href="https://ossiningufsd.org/district/about/">
+            New to OUFSD?
+           </a>
+          </li>
+          <li class="contact">
+           <a href="https://ossiningufsd.org/contact/">
+            Contact
+           </a>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </div>
+      <!--FLAG-->
+      <div class="row">
+       <div class="logo-holder">
+        <a href="https://ossiningufsd.org/" title="Ossining Union Free School District">
+         <div class="logo">
+         </div>
+        </a>
+       </div>
+       <div id="mobile-menu">
+        <a href="#sidr-main" id="sidr-menu">
+         Menu
+        </a>
+       </div>
+       <div id="navigation">
+        <nav class="main-nav">
+         <h1>
+          Ossining UFSD
+         </h1>
+         <ul>
+          <li class="first has-drop">
+           <a href="https://ossiningufsd.org/district/" title="Welcome to Our District">
+            <i class="fa fa-flag">
+            </i>
+            District
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="https://ossiningufsd.org/district/about/">
+              About
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/kindness-challenge.html">
+              Kindness Challenge
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/boe/">
+              Board of Education
+             </a>
+            </li>
+            <li>
+             <a href="https://www.alumniclass.com/ossining">
+              Alumni
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/2018-2019-budget.html">
+              2018-2019 Budget
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/communications/">
+              Communication
+             </a>
+            </li>
+            <li>
+             <a href="https://drive.google.com/open?id=16nclq1PBMy4Hqg3vvDxGMClcHNw1PRJT">
+              Delayed Opening--3 hours
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/district-calendar.html">
+              District Calendar
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/emergency-procedures/">
+              Emergency Procedures
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/public-relations/">
+              Public Relations
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/leadership.html">
+              Leadership Team
+             </a>
+            </li>
+            <li>
+             <a href="https://drive.google.com/file/d/0B07n2IWy5hVmVW4wVlZsS0U4Z1k/view?usp=sharing">
+              Smart Schools Investment Plan
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/district/voter-registration/">
+              Voter Registration
+             </a>
+            </li>
+            <li>
+             <a href="https://drive.google.com/file/d/0B07n2IWy5hVmWnlaNU0wRnZvN00/view?usp=sharing">
+              Long Range Plan
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://ossiningufsd.org/district/website-feedback.html">
+              Website Feedback
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="has-drop">
+           <a href="https://ossiningufsd.org/schools.html" title="Schools">
+            <i class="fa fa-institution">
+            </i>
+            Schools
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="https://ossiningufsd.org/schools/ohs/">
+              Ossining High School
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/amd/">
+              Anne M. Dorner Middle School
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/roosevelt/">
+              Roosevelt Elementary School
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/claremont/">
+              Claremont Elementary
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/brookside/">
+              Brookside Elementary School
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://ossiningufsd.org/schools/park/">
+              Park Early Childhood Center
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="has-drop">
+           <a href="https://ossiningufsd.org/programs/" title="Programs">
+            <i class="fa fa-leaf">
+            </i>
+            Programs
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="https://ossiningufsd.org/programs/community-partnership/">
+              Community Partnership
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/programs/dasa/">
+              Dignity for All Students Act
+             </a>
+            </li>
+            <li>
+             <a href="https://sites.google.com/ossiningufsd.org/ossiningbasics">
+              Ossining Basics
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/programs/wellness.html">
+              Wellness
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/programs/first-steps/">
+              First Steps Early Literacy
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://sites.google.com/a/ossiningufsd.org/parent-leadership-institute-with-marcela-levin/">
+              Parent Leadership Institute
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="has-drop">
+           <a href="https://ossiningufsd.org/departments/" title="Departments">
+            <i class="fa fa-cube">
+            </i>
+            Departments
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="http://www.oufsdbolt.com/">
+              Business Operations
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/curriculum-and-assessment/">
+              Curriculum, Instruction &amp; Assessment
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/enl-program/">
+              English as a New Language and Bilingual Program
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/health-services/">
+              Health Services
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/human-resources/">
+              Human Resources
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/technology/">
+              Technology
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/departments/transportation.html">
+              Transportation
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://ossiningufsd.org/departments/special-education/">
+              Special Education
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="has-drop">
+           <a href="https://ossiningufsd.org/activities/" title="Ossining High School Activities">
+            <i class="fa fa-star">
+            </i>
+            Arts &amp; Athletics
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="https://ossiningathletics.weebly.com/">
+              Athletics
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://sites.google.com/ossiningufsd.org/cultural-arts">
+              Cultural Arts
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li class="last has-drop">
+           <a href="https://ossiningufsd.org/staff-directory/" title="Staff Directory">
+            <i class="fa fa-envelope">
+            </i>
+            Staff Directory
+           </a>
+           <ul class="dropdown">
+            <li class="first">
+             <a href="https://ossiningufsd.org/schools/ohs/staff/">
+              OHS Staff
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/amd/staff/">
+              AMD Staff
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/roosevelt/staff/">
+              Roosevelt Staff
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/claremont/staff/">
+              Claremont Staff
+             </a>
+            </li>
+            <li>
+             <a href="https://ossiningufsd.org/schools/brookside/staff/">
+              Brookside Staff
+             </a>
+            </li>
+            <li class="last">
+             <a href="https://ossiningufsd.org/schools/park/staff/">
+              Park Staff
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+         <!--<ul> 
+                                     <li class="first"><a href="#link"><i class="fa fa-institution"></i>Schools</a></li>
+                                     <li><a href="#link"><i class="fa fa-flag"></i>District</a></li>
+                                     <li class="has-drop"><a href="#link"><i class="fa fa-leaf"></i>Programs</a>
+                                         <ul>
+                                             <li><a href="#link">Sub-Link</a></li>
+                                             <li><a href="#link">Sub-Link</a></li>
+                                             <li><a href="#link">Sub-Link</a></li>
+                                         </ul>
+                                     </li>
+                                     <li><a href="#link"><i class="fa fa-cube"></i>Departments</a></li>
+                                     <li><a href="#link"><i class="fa fa-star"></i>Activities</a></li>
+                                     <li class="last"><a href="#link"><i class="fa fa-envelope"></i>Staff Directory</a></li>
+                                 </ul>-->
+        </nav>
+       </div>
+      </div>
+      <!--CLOSE HEADER-->
+      <!--<header id="header">
+     <div class="row">
+         <div class="logo-holder">
+             <a href="#link" title="Site Title">
+             <div class="logo">
+             </div>
+             </a>
+         </div>
+         <div id="mobile-menu">
+             <a href="#sidr-main" id="sidr-menu">Menu</a>
+         </div>
+         <div id="navigation">
+             <nav class="main-nav">
+                 <h1></h1>
+                 
+             </nav>
+         </div>
+     </div>-->
+      <!-- Home Banner Connent -->
+     </header>
+     <!--
+ -->
+     <!--OPEN MAIN CONTENT-->
+     <section id="main-content">
+      <div class="row">
+       <!--O COVER SHAPE-->
+       <div class="o-shape">
+       </div>
+       <!--SOCIAL LINKS-->
+       <div class="social">
+        <ul class="social-links">
+         <li>
+          <a href="http://facebook.com/oufsd" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="Facebook">
+            <i class="fa fa-facebook-square">
+            </i>
+           </span>
+          </a>
+         </li>
+         <li>
+          <a href="http://twitter.com/ossiningschools" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="Twitter">
+            <i class="fa fa-twitter-square">
+            </i>
+           </span>
+          </a>
+         </li>
+         <li>
+          <a href="http://instagram.com/oufsd" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="Instagram">
+            <i class="fa fa-instagram">
+            </i>
+           </span>
+          </a>
+         </li>
+         <li>
+          <a href="http://vimeo.com/oufsd" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="Vimeo">
+            <i class="fa fa-vimeo-square">
+            </i>
+           </span>
+          </a>
+         </li>
+         <!--<li><a href="https://itunes.apple.com/us/app/ossining-union-free-school/id494046164?ls=1&mt=8" target="_blank"><span class="hint--top hint--rounded" data-hint="App Store"><img src="assets/templates/site/images/appstore-logo.png" width="26px" height="26px" /></span></a></li>-->
+         <li>
+          <a href="http://oufsd.smugmug.com/" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="SmugMug">
+            <img height="26px" src="assets/templates/site/images/smugmug-icon.png" width="26px"/>
+           </span>
+          </a>
+         </li>
+         <li>
+          <a href="http://www.ustream.tv/search?q=oufsd" target="_blank">
+           <span class="hint--top hint--rounded" data-hint="Ustream">
+            <img height="26px" src="assets/templates/site/images/ustream-Icon.png" width="26px"/>
+           </span>
+          </a>
+         </li>
+        </ul>
+       </div>
+       <!--SCHOOL FINDER-->
+       <div class="school-finder">
+        <div class="btn desktopfindschool">
+         Find Your School
+         <i class="fa fa-arrow-down">
+         </i>
+        </div>
+        <div class="btn touchfindschool" id="touchfindschool">
+         Find Your School
+         <i class="fa fa-arrow-down">
+         </i>
+        </div>
+        <ul class="school-list" id="school-list">
+         <li>
+          <a href="https://ossiningufsd.org/schools/ohs/">
+           Ossining
+           <strong>
+            High School
+           </strong>
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/schools/amd/">
+           Anne M. Dorner
+           <strong>
+            Middle School
+           </strong>
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/schools/roosevelt/">
+           <strong>
+            Roosevelt
+           </strong>
+           Elementary School
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/schools/claremont/">
+           <strong>
+            Claremont
+           </strong>
+           Elementary School
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/schools/brookside/">
+           <strong>
+            Brookside
+           </strong>
+           Elementary School
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/schools/park/">
+           Park
+           <strong>
+            Early Childhood Center
+           </strong>
+          </a>
+         </li>
+        </ul>
+       </div>
+       <!--SEARCH BOX-->
+       <div class="search-bar">
+        <form action="https://ossiningufsd.org/search-results.html" id="search" method="get">
+         <input name="search" placeholder="Search our site..." type="text" value=""/>
+         <button class="button" type="submit">
+          <i class="fa fa-search">
+          </i>
+         </button>
+         <input name="id" type="hidden" value="28"/>
+        </form>
+       </div>
+       <!--OPEN SLIDER-->
+       <div class="slider">
+        <div class="flexslider">
+         <ul class="slides">
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             Take a walk on our new OHS Turf Field with Superintendent Sanchez!
+            </h3>
+            <p class="excerpt">
+             Monday, July 30th at 8:30 a.m.
+            </p>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/walk.829a028095ae6ae833219512679d21b1.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/1Jx-2FN1cxI3i9rJNWY6YlqAtBJWe6pNg/view?usp=sharing">
+              Driver's Education Program at OHS
+             </a>
+            </h3>
+            <p class="excerpt">
+             Click below for additional information.
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/1Jx-2FN1cxI3i9rJNWY6YlqAtBJWe6pNg/view?usp=sharing">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/driver.bcb031aa3f7e6cc9631ec048a754672a.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/1DIKANSI4yq1r4GO6vaPcqy3HOQcJeJH4/view?ts=5b4ef447">
+              View our video for a highlight of facilities projects throughout our schools!
+             </a>
+            </h3>
+            <p class="excerpt">
+             Click below for video
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/1DIKANSI4yq1r4GO6vaPcqy3HOQcJeJH4/view?ts=5b4ef447">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/blue-dot-background.af1daacca48931cc148a23b2ac9a5891.png"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://ossiningufsd.org/district/kindness-challenge.html">
+              Take the Superintendent's Kindness Challenge!
+             </a>
+            </h3>
+            <p class="excerpt">
+             Click below to learn more!
+            </p>
+            <a class="more" href="https://ossiningufsd.org/district/kindness-challenge.html">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/kindness-matters.6c2c340a7206d386c2a6105d68f3df13.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/12gwVgo9qy_7TPAg8RZUmLwMSMOeqx_o8/view?usp=sharing">
+              Free Summer Lunch will once again be offered!
+             </a>
+            </h3>
+            <p class="excerpt">
+             Click below for details!
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/12gwVgo9qy_7TPAg8RZUmLwMSMOeqx_o8/view?usp=sharing">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/summer-lunch-program.7df3045c2f810905966fea315df60802.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://sites.google.com/ossiningufsd.org/ossining-elem-summer-read/home">
+              Check out our Ossining Elementary Summer Read Web site
+             </a>
+            </h3>
+            <p class="excerpt">
+             Please click below!
+            </p>
+            <a class="more" href="https://sites.google.com/ossiningufsd.org/ossining-elem-summer-read/home">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/read.843f4647c49eda642faffd4927edc74e.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/1bdewp0Nos7Wq09igdwantZvqMXoQLWZc/view?usp=sharing">
+              Check out our new video highlighting our Science Research Program
+             </a>
+            </h3>
+            <p class="excerpt">
+             Click below for link
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/1bdewp0Nos7Wq09igdwantZvqMXoQLWZc/view?usp=sharing">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/new-science-video9.9305501f44cee35463d61fbb96629996.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/1nVcESlWIEld9QCKTUId5LIsa4fXpwA_D/view?usp=sharing">
+              Click below to view procedures for transportation changes
+             </a>
+            </h3>
+            <p class="excerpt">
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/1nVcESlWIEld9QCKTUId5LIsa4fXpwA_D/view?usp=sharing">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/activity-bus.9bd421b4623bfaa4a132a24ecfa8c55b.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/drive/folders/1EZWVuBHFozAMRZAEgLZhvZsCl74lEE5J">
+              Click below to view our Elementary School Supply Lists
+             </a>
+            </h3>
+            <p class="excerpt">
+            </p>
+            <a class="more" href="https://drive.google.com/drive/folders/1EZWVuBHFozAMRZAEgLZhvZsCl74lEE5J">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/supplylistsimage.c0256be2fb5f327d4f2cf907baaddba1.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             Change of Districtwide e-mail addresses
+            </h3>
+            <p class="excerpt">
+             Starting July 1st all Ossining staff e-mail addresses will change from @ossining.k12.ny.us to @ossiningufsd.org.  Please make a note of this important change.  Thank you.
+            </p>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/emial.c80425b0630d88897cfa10a5bc2d1298.jpg"/>
+           </div>
+          </li>
+          <li class="news-item">
+           <div class="caption">
+            <h3>
+             <a href="https://drive.google.com/file/d/1ilUabX855qkEsUEFQKBa8MPfc9bupA8p/view?usp=sharing">
+              Important Information from the School Nurse's Office regarding Health Exams
+             </a>
+            </h3>
+            <p class="excerpt">
+             Please click below for these important letters
+            </p>
+            <a class="more" href="https://drive.google.com/file/d/1ilUabX855qkEsUEFQKBa8MPfc9bupA8p/view?usp=sharing">
+             Find Out More
+             <i class="fa fa-arrow-circle-right">
+             </i>
+            </a>
+           </div>
+           <div class="photo">
+            <img src="/assets/components/phpthumbof/cache/blue-stripes.78e793fcaf5a3c944e23de0cdf823717.jpg"/>
+           </div>
+          </li>
+         </ul>
+         <!--CLOSE SLIDER-->
+        </div>
+       </div>
+       <!--OPEN EVENTS-->
+       <div class="events">
+        <h4>
+         Upcoming Events
+        </h4>
+        <ul class="event-list">
+         <div id="districtEvents">
+         </div>
+        </ul>
+        <div class="more-events">
+         <a href="https://ossiningufsd.org/district/district-calendar.html">
+          View Full Calendar
+          <i class="fa fa-arrow-circle-right">
+          </i>
+         </a>
+        </div>
+       </div>
+       <!--CLOSE MAIN CONTENT-->
+      </div>
+     </section>
+     <!--OPEN SECONDARY CONTENT-->
+     <section id="secondary">
+      <div class="row">
+       <!--ANNOUNCEMENTS
+ 		                <div class="announcements">
+ 			                <h3>Announcements</h3>
+ 			                <ul>
+ 			                
+ 			                </ul>
+ 			                <a href="#" class="more">More News <i class="fa fa-arrow-circle-right"></i></a>
+ 		                </div>-->
+       <!--TWEETS BOX-->
+       <div class="tweets">
+        <h4>
+         OUFSD on Twitter
+        </h4>
+        <div class="follow-btn">
+         <a class="twitter-follow-button" data-show-count="false" data-show-screen-name="false" href="https://twitter.com/ossiningschools">
+          Follow @ossiningschools
+         </a>
+         <script>
+          !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+         </script>
+        </div>
+        <div class="tweets-box">
+         <ul class="twitter-feed">
+          <li>
+           <p class="status">
+            New turf walk on Monday!  🚶
+            <a href="https://t.co/K1nhqhweyL" rel="nofollow" target="_blank">
+             https://t.co/K1nhqhweyL
+            </a>
+           </p>
+           <p class="status-info">
+            <a href="http://twitter.com/OssiningSchools" target="_blank">
+             <img alt="Ossining UFSD on Twitter" src="https://pbs.twimg.com/profile_images/1010926403812974592/uePUdx75_normal.jpg"/>
+             Ossining UFSD
+            </a>
+            <span>
+             1 hour, 23 minutes ago
+            </span>
+           </p>
+          </li>
+          <li>
+           <p class="status">
+            RT
+            <a href="https://twitter.com/OssiningArts" rel="nofollow" target="_blank">
+             @OssiningArts
+            </a>
+            : Congratulations to OHS Alumna, Lila Coogan, who will be staring in the national tour of broadway’s Anastasia!…
+            <a href="https://t.co/CITWwzNAr9" rel="nofollow" target="_blank">
+             https://t.co/CITWwzNAr9
+            </a>
+           </p>
+           <p class="status-info">
+            <a href="http://twitter.com/OssiningSchools" target="_blank">
+             <img alt="Ossining UFSD on Twitter" src="https://pbs.twimg.com/profile_images/1010926403812974592/uePUdx75_normal.jpg"/>
+             Ossining UFSD
+            </a>
+            <span>
+             1 hour, 24 minutes ago
+            </span>
+           </p>
+          </li>
+          <!--	<li class="tweet">“Join us for the Summer Musical Theater Production of High School Musical Jr.! Click here: <a href="#">https://goo.gl/CxK0PU</a>."<div class="details"><span class="date">March 22</span></div></li>
+ 				                	<li class="tweet">“Join us for the Summer Musical Theater Production of High School Musical Jr.! Click here: <a href="#">https://goo.gl/CxK0PU</a>."<div class="details"><span class="date">March 22</span></div></li>
+ 				                	<li class="tweet">“Join us for the Summer Musical Theater Production of High School Musical Jr.! Click here: <a href="#">https://goo.gl/CxK0PU</a>."<div class="details"><span class="date">March 22</span></div></li>
+ 				                	<li class="tweet">“Join us for the Summer Musical Theater Production of High School Musical Jr.! Click here: <a href="#">https://goo.gl/CxK0PU</a>."<div class="details"><span class="date">March 22</span></div></li>
+ 				                	<li class="tweet">“Join us for the Summer Musical Theater Production of High School Musical Jr.! Click here: <a href="#">https://goo.gl/CxK0PU</a>."<div class="details"><span class="date">March 22</span></div></li>
+ 			                -->
+         </ul>
+         <a class="twitter" href="http://twitter.com/ossiningschools" target="_blank">
+          See more on Twitter
+         </a>
+        </div>
+       </div>
+       <!--QUICKLINKS-->
+       <!--QUICKLINKS-->
+       <div class="quicklinks">
+        <h6>
+         Quicklinks
+        </h6>
+        <ul class="quicklinks">
+         <li>
+          <a href="https://ossiningufsd.org/district/boe/">
+           <i class="fa fa-gavel">
+           </i>
+           Board of Education
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/activities/athletics/">
+           <i class="fa fa-trophy">
+           </i>
+           Athletics
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/departments/business/food-services/menu.html">
+           <i class="fa fa-spoon">
+           </i>
+           Daily Menu
+          </a>
+         </li>
+         <li>
+          <a href="https://docs.google.com/document/d/1PbIznPzEqaVTXXVvBTtr01xT5cU_3C-ZxZacD-PU0fM/edit?usp=sharing">
+           <i class="fa fa-question-circle">
+           </i>
+           Just Ask
+          </a>
+         </li>
+         <li>
+          <a href="https://docs.google.com/document/d/1Dz-SWipSSfRDhjCtP49RzJRr6V-rCd4gOrSr1Etr7Yo/pub">
+           <i class="fa fa-desktop">
+           </i>
+           GoTV Schedule
+          </a>
+         </li>
+         <li>
+          <a href="https://ossiningufsd.org/students/infinite-campus.html">
+           <i class="fa fa-users">
+           </i>
+           Parent Portal
+          </a>
+         </li>
+         <li>
+          <a href="https://www.ossiningufsd.org/district/2018-2019-budget.html">
+           <i class="fa fa-dollar">
+           </i>
+           2018-19 Budget Information
+          </a>
+         </li>
+        </ul>
+       </div>
+       <!--RECENT VIDEO
+ 		                <div class="video">
+ 		                <h4>Video Spotlight</h4>
+ 		                
+ 		                <div class="main-video">
+ 				                <a href="https://vimeo.com/125904235" target="_blank">
+ 					                <div class="caption">
+ 						                <i class="fa fa-play-circle"></i>
+ 						                <span class="title">Cleawater Sloop Video 1</span>
+ 										<span class="date">posted 3 years, 3 months ago</span>
+ 					                </div>
+ 						             <img src="http://i.vimeocdn.com/video/516164981_100x75.jpg" />
+ 				                </a>
+ 			                </div>
+ 			               
+ 			                
+ 			                <ul class="video-list">
+ 			                <div>
+   <span><a href="https://vimeo.com/125904236" target="_blank">Clearwater Sloop Video 3</a></span><br>
+   <a href="https://vimeo.com/125904236" target="_blank"><img src="http://i.vimeocdn.com/video/516165063_100x75.jpg" alt="Clearwater Sloop Video 3"></a><br>
+   <span><i>3 years, 3 months ago</i><br></span>
+ </div>
+ 				                
+ 			                </ul>
+ 		                </div>-->
+       <!--SUPS CORNER-->
+       <div class="sups-corner">
+        <div class="photo" style="background-image:url(/assets/site/images/district/sups-standin2017.png)">
+        </div>
+        <div class="message">
+         <h4>
+          Superintendent's Corner
+         </h4>
+         <h5>
+          Welcome to our district!
+         </h5>
+         <p>
+          Thank you for visiting our website. Check back for important dates and information. Follow me on Twitter as I share photos, articles and more.
+         </p>
+         <div class="photo" style="background-image:url(/assets/site/images/district/sups-standin2017.png)">
+         </div>
+         <a class="cta" href="http://twitter.com/OssiningSup">
+          @OssiningSup on Twitter
+         </a>
+         <a class="cta pod" href="https://drive.google.com/drive/folders/0B07n2IWy5hVmSlI4YjhwLVI0dGM?usp=sharing" target="_blank">
+          Superintendent Sanchez's Podcast
+         </a>
+        </div>
+       </div>
+       <!--CLOSE SECONDARY CONTENT-->
+      </div>
+     </section>
+     <!--            
+ <section class="row">
+      <!-- Content Area 
+      <h1></h1>
+     
+ </section>-->
+    </div>
+   </div>
+   <!--OPEN FOOTER-->
+   <footer id="footer">
+    <!--FOOTER NAV-->
+    <div class="footer-nav">
+     <nav class="main-nav">
+      <ul>
+       <li class="first">
+        <a href="https://ossiningufsd.org/district/" title="Welcome to Our District">
+         <i class="fa fa-flag">
+         </i>
+         District
+        </a>
+       </li>
+       <li>
+        <a href="https://ossiningufsd.org/schools.html" title="Schools">
+         <i class="fa fa-institution">
+         </i>
+         Schools
+        </a>
+       </li>
+       <li>
+        <a href="https://ossiningufsd.org/programs/" title="Programs">
+         <i class="fa fa-leaf">
+         </i>
+         Programs
+        </a>
+       </li>
+       <li>
+        <a href="https://ossiningufsd.org/departments/" title="Departments">
+         <i class="fa fa-cube">
+         </i>
+         Departments
+        </a>
+       </li>
+       <li>
+        <a href="https://ossiningufsd.org/activities/" title="Ossining High School Activities">
+         <i class="fa fa-star">
+         </i>
+         Arts &amp; Athletics
+        </a>
+       </li>
+       <li class="last">
+        <a href="https://ossiningufsd.org/staff-directory/" title="Staff Directory">
+         <i class="fa fa-envelope">
+         </i>
+         Staff Directory
+        </a>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <div class="row">
+     <!--HOME MESSAGE-->
+     <!--QUICKLINKS-->
+     <div class="home-message">
+      <h6>
+       Intel School of Distinction
+      </h6>
+      <p>
+      </p>
+      <p style="display: inline; margin-bottom: 0;">
+       <img alt="" src="assets/site/documents/district/Intel-Schools-of-Distinction-2012-STAR-Innovator.png" style="float: left; margin: 3px 10px 15px 0px;" width="75"/>
+       OHS earned the 2012 Intel Schools of Distinction Awards, receiving the Star Innovator Award for its project-based science programs.
+      </p>
+      <a href="https://ossiningufsd.org/district/about/school-of-distinction.html">
+       Learn More
+       <i class="fa fa-arrow-circle-right">
+       </i>
+      </a>
+     </div>
+     <!--EMAIL SIGNUP-->
+     <div class="email-signup">
+      <h6>
+       Sign-Up for the O-Blast
+      </h6>
+      <p>
+       Stay connected with district news, information and resources.
+      </p>
+      <!--<form action="https://ossiningufsd.org/oblast/" id="signup">
+ 				        <input type="text" name="email" placeholder="Your email address...">
+ 				        <input type="submit" value="Signup">
+ 			        </form>-->
+      <div class="signup-btn">
+       <a href="https://ossiningufsd.org/oblast/">
+        Sign Up Now!
+        <i class="fa fa-caret-right">
+        </i>
+       </a>
+      </div>
+      <div class="edit">
+       <a href="http://visitor.r20.constantcontact.com/manage/optin/ea?v=0018AZf-G_T2CQEa2bFnTLmVQtDXRbaRb5lluJ7dIMbO4fOXKQLlCGCp9B4JjIdM1a51bfOZb8uKGeBrPNfwXBX7g%3D%3D" target="_blank">
+        Edit My Account Settings
+       </a>
+      </div>
+     </div>
+     <!--CONTACT BOX-->
+     <div class="contact">
+      <h6>
+       Ossining Union Free School District
+      </h6>
+      <span class="address">
+       400 Executive Boulevard, Ossining, NY 10562
+      </span>
+      <span class="phone">
+       Phone:
+       <a href="tel:1-914-941-7700">
+        914-941-7700
+       </a>
+      </span>
+      •
+      <span class="fax">
+       Fax: 914-941-7291
+      </span>
+      <a class="contact-us" href="https://ossiningufsd.org/contact/">
+       Contact Us
+      </a>
+     </div>
+    </div>
+    <!--CREDITS-->
+    <div class="credits">
+     <div class="row">
+      <div class="copyright">
+       © Copyright
+       <script>
+        document.write(new Date().getFullYear())
+       </script>
+       Ossining Union Free School District
+      </div>
+      <div class="ada_statement">
+       <a href="https://ossiningufsd.org/departments/technology/web-site-accessibility-guidelines.html">
+        OUFSD Website Accessibility Guidelines
+       </a>
+      </div>
+      <div class="links">
+       <a href="https://ossiningufsd.org/contact/">
+        Contact Us
+       </a>
+       <a href="https://ossiningufsd.org/district/public-relations/">
+        Privacy Policy
+       </a>
+      </div>
+      <div class="developer">
+       <a href="http://ideabankmarketing.com" target="_blank">
+        Website Design and Development by
+        <em>
+         IdeaBank Marketing
+        </em>
+        .
+       </a>
+      </div>
+     </div>
+    </div>
+    <!--CLOSE FOOTER-->
+   </footer>
+   <!--<div id="footer">
+     <div class="row">
+         <div id="copy" class="lg-4 sm-12"><p>&copy; <script>document.write(new Date().getFullYear())</script> Copyright Ossining Union Free School District</p></div>
+         <div id="policy" class="lg-4 sm-12"></div>
+         <div id="credit" class="lg-4 sm-12"><p><a href="http://www.ideabankmarketing.com" target="_blank">Designed and developed by <span>IdeaBank Marketing</span></a></p></div>
+     </div>
+ </div>
+ -->
+   <!--This page, MySQL queries took 0.0193 s for 66 queries(s), document parsing took 0.3795 s, for a total time of 0.3988 s, and retrieved from cache.-->
+  </body>
+ </html>

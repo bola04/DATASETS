@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+ <html class="no-js" lang="es">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+   <title>
+    Mapa Interactivo de Buenos Aires v4.1
+   </title>
+   <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="El Mapa Interactivo de la Ciudad de Buenos Aires es un servicio que le permite localizar direcciones geográficamente, visualizar información relevante de cada parcela de la ciudad incluyendo su fotografía de fachada, hallar el camino más corto para ir de un lugar a otro de la ciudad a pie o en auto, acceder a un importante conjunto de datos útiles de interés general y muchas cosas más." name="description"/>
+   <meta content="mapa ciudad buenos aires oficial informacion geografica sig gis mapserver postgis recorridos localizacion direcciones" name="keywords"/>
+   <meta content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+   <link href="/favicon.ico" rel="shortcut icon" sizes="16x16" type="image/ico"/>
+   <link href="android-app://ar.gob.buenosaires.comollego/http/mapa.buenosaires.gob.ar/comollego/" rel="alternate"/>
+   <!-- android -->
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <!-- iOS -->
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="translucent-black" name="apple-mobile-web-app-status-bar-style"/>
+   <meta content="Mapa Interactivo de Buenos Aires v4.1" name="apple-mobile-web-app-title"/>
+   <!-- android -->
+   <link href="/images/icons/f084e598.196.png" rel="shortcut icon" sizes="196x196"/>
+   <!-- iOS -->
+   <link href="/images/icons/d05b92d2.57.png" rel="apple-touch-icon-precomposed"/>
+   <link href="/images/icons/dd194db8.72.png" rel="apple-touch-icon-precomposed" sizes="72x72"/>
+   <link href="/images/icons/4622feba.114.png" rel="apple-touch-icon-precomposed" sizes="114x114"/>
+   <meta content="max-age=0" http-equiv="cache-control"/>
+   <meta content="no-cache" http-equiv="cache-control"/>
+   <meta content="no-cache" http-equiv="pragma"/>
+   <meta content="government" property="og:type"/>
+   <meta content="Mapa Interactivo de Buenos Aires - Gobierno de la Ciudad Autónoma de Buenos Aires" property="og:site_name"/>
+   <meta content="@gcba" name="twitter:site"/>
+   <meta content="@gcba" name="twitter:creator"/>
+   <link href="https://plus.google.com/+GobiernodelaCiudaddeBuenosAires/" rel="publisher"/>
+   <meta content="Mapa Interactivo de Buenos Aires - Gobierno de la Ciudad Autónoma de Buenos Aires" property="og:title"/>
+   <meta content="http://mapa.buenosaires.gob.ar/" property="og:url"/>
+   <link href="humans.txt" rel="author"/>
+   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+   <link href="/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet"/>
+   <link href="/bower_components/leaflet/dist/leaflet.css" rel="stylesheet"/>
+   <link href="/styles/60079c84.app.css" rel="stylesheet"/>
+   <link href="/styles/e715c9d1.print.css" media="print" rel="stylesheet"/>
+   <!--         <link rel="stylesheet" type="text/css" href="scripts/mapa/externals/usig-js/css/transportes.css" />
+  -->
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+           })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ 
+           ga('create', 'UA-10722425-5', 'auto');
+           ga('require', 'displayfeatures');
+           ga('send', 'pageview');
+   </script>
+  </head>
+  <body>
+   <header>
+    <nav class="navbar navbar-fixed-top" role="navigation">
+     <div class="container-fluid fondo_amarillo">
+      <div class="navbar-header">
+       <button class="navbar-toggle sidebar-toggle collapsed pull-left" data-target="#navbar-collapse" data-toggle="collapse" type="button">
+        <span class="sr-only">
+         Toggle navigation
+        </span>
+        <span class="glyphicon glyphicon-menu-right">
+        </span>
+       </button>
+       <a class="navbar-brand" href="#">
+        <img alt="Gobierno de la Ciudad de Buenos Aires" src="/imgs/logo-bsas.png"/>
+       </a>
+       <h1 class="section-title">
+        Cómo Llego
+       </h1>
+       <form class="navbar-form pull-left" id="main-form">
+        <div class="form-group">
+         <div class="input-group">
+          <input class="form-control" id="main-form-input" placeholder="Direcciones o Lugares" type="text"/>
+          <span class="input-group-btn">
+           <button class="btn btn-inverse">
+            <span class="glyphicon glyphicon-search white">
+            </span>
+           </button>
+          </span>
+         </div>
+        </div>
+       </form>
+       <button class="navbar-toggle map-toggle pull-right" type="button">
+        <span class="sr-only">
+         Toggle navigation
+        </span>
+        <span class="glyphicon glyphicon-menu-left">
+        </span>
+       </button>
+      </div>
+      <!-- navbar-header -->
+     </div>
+    </nav>
+   </header>
+   <div class="mainContainer" role="main">
+    <div class="sidebar" id="sidebar">
+     <ul class="nav nav-tabs">
+      <li class="active" title="Cómo Llego">
+       <a data-toggle="tab" href="#comollego" rel="tooltip">
+        <span class="icon icon-walk">
+        </span>
+       </a>
+      </li>
+      <li title="Favoritos">
+       <a data-toggle="tab" href="#favoritos">
+        <span class="icon icon-star bigger">
+        </span>
+       </a>
+      </li>
+      <li title="Información">
+       <a data-toggle="tab" href="#informacion">
+        <span class="icon glyphicon glyphicon-info-sign white">
+        </span>
+       </a>
+      </li>
+      <li title="Mapas Temáticos">
+       <a data-toggle="tab" href="#mapas">
+        <span class="icon icon-layers">
+        </span>
+       </a>
+      </li>
+      <li title="Buscador">
+       <a data-toggle="tab" href="#buscador">
+        <span class="icon glyphicon glyphicon-search white smaller">
+        </span>
+       </a>
+      </li>
+      <!--
+                     <li title="Configuración"><a href="#pane-configuracion" data-toggle="tab"><span class="icons-sprite icons-configuracion"></span></a></li>
+                     -->
+      <li title="Contacto">
+       <a data-toggle="tab" href="#contacto">
+        <span class="icon icon-comment">
+        </span>
+       </a>
+      </li>
+     </ul>
+    </div>
+    <div class="mainPanel tab-content" id="mainPanel">
+     <div class="tab-pane clearfix active" id="comollego">
+     </div>
+     <div class="tab-pane clearfix" id="favoritos">
+     </div>
+     <div class="tab-pane clearfix" id="informacion">
+     </div>
+     <div class="tab-pane clearfix" id="mapas">
+     </div>
+     <div class="tab-pane clearfix" id="buscador">
+     </div>
+     <div class="tab-pane clearfix" id="contacto">
+      <p class="loading help">
+       Cargando...
+      </p>
+     </div>
+    </div>
+    <div class="overlay" id="mainPanelOverlay">
+    </div>
+    <div class="filler open" id="map">
+    </div>
+    <div class="overlay" id="fillerOverlay">
+    </div>
+    <a class="toggles" href="#">
+     <i class="glyphicon glyphicon-white glyphicon-chevron-left">
+     </i>
+    </a>
+   </div>
+   <div aria-hidden="true" class="modal fade" data-show="false" id="static-dialog" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+        ×
+       </button>
+       <h3 class="titulo">
+       </h3>
+      </div>
+      <div class="modal-body" id="static-dialog-body">
+      </div>
+     </div>
+    </div>
+   </div>
+   <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal fade" id="please-wait" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+     <div class="modal-content">
+      <div class="modal-header">
+       <p class="modal-title">
+        Por favor aguarde un momento mientras se restablece la aplicación...
+       </p>
+      </div>
+      <div class="modal-body center-block">
+       <div class="progress">
+        <div class="progress progress-striped active" style="margin-bottom:0">
+         <div class="progress-bar" style="width: 100%">
+         </div>
+        </div>
+        <!--
+                   <div class="progress-bar bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">                    
+                   -->
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- /.modal-content -->
+   </div>
+   <!-- /.modal-dialog -->
+   <!-- /.modal -->
+   <div aria-hidden="true" aria-labelledby="Novedades" class="modal fade" id="novedades" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+     <div class="modal-content">
+      <div class="modal-header">
+       <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">
+         ×
+        </span>
+       </button>
+       <h2 class="modal-title" id="myModalLabel">
+        Novedades
+       </h2>
+      </div>
+      <div class="modal-body">
+       <div class="row">
+        <div class="col-sm-4 text-center">
+         <h1>
+          <span class="glyphicon glyphicon-road text-info">
+          </span>
+         </h1>
+         <p>
+          Sumamos el área metropolitana de Buenos Aires hasta el tercer cordón.
+         </p>
+        </div>
+        <div class="col-sm-4 text-center">
+         <h1>
+          <span class="glyphicon glyphicon-search text-danger">
+          </span>
+         </h1>
+         <p>
+          Podés buscar direcciones separando con una coma el nombre del partido o localidad.
+         </p>
+        </div>
+        <div class="col-sm-4 text-center">
+         <h1>
+          <span class="glyphicon glyphicon-phone text-success">
+          </span>
+         </h1>
+         <p>
+          Ahora el mapa funciona con cualquier dispositivo (celulares, tablets y más).
+         </p>
+        </div>
+       </div>
+       <hr/>
+       <h3>
+        Y además...
+       </h3>
+       <ul>
+        <li>
+         Podés buscar la mejor ruta entre dos direcciones e indicar puntos intermedios sobre el recorrido arrastrando el mismo con el mouse.
+        </li>
+        <li>
+         Si en un recorrido en auto, en bici o a pie encontramos más de una opción te las mostramos para que puedas elegir.
+        </li>
+        <li>
+         Mejoramos la navegación de los mapas temáticos.
+        </li>
+        <li>
+         Integramos un botón para que puedas averiguar tu posición actual y usarla como origen/destino de tus recorridos.
+        </li>
+        <li>
+         La nueva ficha de datos de parcela muestra más información que nunca.
+        </li>
+        <li>
+         Integramos las más avanzadas tecnologías web para que la navegación sea más rápida y ágil en cualquier dispositivo.
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- tooltip notification 
+ <div id="tooltip-notification-wrapper" class="box-wrapper not-selectable">
+ <div id="tooltip-notification-content" class="box-content">
+ 
+     <div id="tooltip-notification-toggle" class="iconic-button cancel-marker top-right-button"></div>
+     <div class="quad top-right-button"></div>
+     <div id="tooltip-notification-resize" class="iconic-button cancel-marker top-right-button"></div>
+     <div id="tooltip-notification-label" class="box-label">Notification</div>
+ 
+     <div id="tooltip-notification-box"></div>
+ </div>
+ </div>
+ -->
+   <!--[if lt IE 7]>
+             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+         <![endif]-->
+   <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+   <!--
+         <script>
+             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+             g.src='//www.google-analytics.com/ga.js';
+             s.parentNode.insertBefore(g,s)}(document,'script'));
+         </script>
+         -->
+   <!--
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+         -->
+   <script src="/bower_components/leaflet/dist/leaflet.js" type="text/javascript">
+   </script>
+   <script src="/scripts/f7c3cf85.osrm.js">
+   </script>
+   <script src="/scripts/376bf153.app.js">
+   </script>
+   <script src="/scripts/96472fe6.extra.js">
+   </script>
+   <script id="template-comollego-main" type="text/template">
+    <div class="wrapper">
+                 <form class="form-horizonal" role="form">
+                     <div class="form-group btn-group btn-group-lg modo-transporte" role="group" aria-label="Modo de transporte">
+                       <button tabindex="4" title="Recorrido a pie" type="button" data-engine=2 class="btn btn-default icon-pie engine"></button>
+                       <button tabindex="5" title="Recorrido en bici" type="button" data-engine=1 class="btn btn-default icon-bici engine"></button>
+                       <button tabindex="6" title="Recorrido en transporte público" data-engine=3 type="button" class="btn btn-default icon-transporte engine active"></button>
+                       <button tabindex="7" title="Recorrido en auto" type="button" data-engine=0 class="btn btn-default icon-auto engine"></button>
+                     </div>            
+                     <div class="form-group">
+                       <div class="input-group" id="source-input-group">
+                         <div class="input-group-addon" id="gui-search-source">A</div>
+                         <input type="text" placeholder="Direcciones o Lugares" class="form-control input-lg" id="gui-input-source" tabindex="1">
+                         <div id="gui-delete-source" class="iconic-button cancel-marker input-delete"></div>
+                       </div>
+                       <div id="ac-input-source" class="opciones_autocompleter"></div>
+                       <button title="Intercambiar origen y destino" class="icon-idavuelta" id="gui-reverse" type="button"></button>
+                       <div class="input-group" id="target-input-group">
+                         <div class="input-group-addon" id="gui-search-target">B</div>
+                         <input type="text" placeholder="Direcciones o Lugares" class="form-control input-lg" id="gui-input-target" tabindex="2">
+                         <div id="gui-delete-target" class="iconic-button cancel-marker input-delete"></div>
+                       </div>
+                       <div id="ac-input-target" class="opciones_autocompleter"></div>
+                     </div>
+                 </form>
+                 <p class="show-more"><a href="#" data-toggle="collapse" data-target="#opciones_recorrido" id="switch_opciones" tabindex="3">Mostrar opciones »</a></p>
+                 <div id="opciones_recorrido" class="collapse">
+                     <form id="opciones-recorrido-transporte" class="opciones-recorrido">
+                         <table class="transportes">
+                             <tr>
+                                 <td><label class="control-label"><input type="checkbox" value="colectivo" checked/>&nbsp;&nbsp;Colectivo</label></td>
+                                 <td><label class="control-label"><input type="checkbox" value="subte" checked/>&nbsp;&nbsp;Subte</label></td>
+                                 <td><label class="control-label"><input type="checkbox" value="tren" checked/>&nbsp;&nbsp;Tren</label></td>
+                             </tr>
+                         </table>
+                         <div class="caminata">
+                             <label class="control-label">Caminata máxima:</label>
+                             <span class="metros_caminata pull-right">800 m</span>
+                             <input type="range" min="200" max="1200" step="100" value="800">
+                             <span class="tope pull-left">200 m</span>
+                             <span class="tope pull-right">1200 m</span>
+                             <span class="clearfix"></span>
+                         </div>
+                     </form>
+                 </div>
+ 
+             </div>
+             <div class="return-head hidden">
+                 <table>
+                     <tr><td><span class="glyphicon glyphicon-chevron-left white btn-lg"></span></td>
+                     <td><div class="extremos">
+                         <div class="truncate220">Desde<br/> <span class="desde"></span></div>
+                         <div class="truncate220">Hasta<br/><span class="hasta"></span></div>
+                         </div>
+                     </td></tr>
+                 </table>
+             </div>
+             <p class="alert alert-warning multiple-routes hidden"></p>
+             <div id="information-box"></div>
+   </script>
+   <script id="template-resultados-ruteo" type="text/template">
+    <% _.each(routes_to_render, function(route, i) { %>
+                 <div class="route-header route_<%= i %>" data-route-idx=<%= i %>>
+                     <div class="route-desc">
+                         <p class="name"><%= route.summary.description %></p>
+                         <p class="distance">Total: <b><%= route.summary.total_distance %></b></p>
+                     </div>
+                     <div class="pull-right">
+                         <span class="time"><%= route.summary.total_time %></span></div>
+                     </div>
+                 </div>
+                 <ul class="route-steps route_<%= i %> hidden">
+                     <% _.each(route.instructions, function(item, i) { %>
+                         <li class="route-step <%= (i%2)?'even':''%> clearfix">
+                             <div class="turn-indication"><img src="<%= item.iconSrc %>" alt="" class="description-body-direction"></div>
+                             <div class="step-desc"><%= item.html %></div>
+                             <div class="step-distance"><%= item.humanDistance %></div>
+                         </li>
+                     <% }); %>
+                 </ul>
+                 <!--
+                 <div class="clearfix llegada toggle">Llegada a destino</div>
+                 -->
+             <% }); %>
+             <div>
+                 <button class="btn btn-block btn-inverse btn-lg mostrar-mapa">Mostrar mapa</button>
+             </div>
+   </script>
+   <script id="template-opciones-transporte" type="text/template">
+    <% _.each(opciones, function(item, i) { %>
+             <div class="cont-row clearfix op-recorrido recorrido_<%= i %>" id="recorrido_<%= i %>">
+                 <div class="clearfix toggle" data-toggle="collapse" data-target="#recorrido<%= i %>">
+                     <div class="span7 item-transportes">
+                         <%= item.toHtmlString() %>
+                     </div>
+                     <div class="span4 pull-right" style="text-align: right;">
+                         <span class="time" title="<%= textTime%>"><%= item.getTimeString()%></span><div class="pill-recorrido recorrido_<%= i %>"></div>
+                     </div>
+                 </div>
+                 <div class="recorrido clearfix accordion-body collapse" id="recorrido<%= i %>">
+                     <p class="help">Cargando...</p>
+                 </div>
+             </div> <!-- end opcion transporte -->   
+             <% }); 
+             %> 
+             <div>
+                 <button class="btn btn-block btn-inverse btn-lg mostrar-mapa">Mostrar mapa</button>
+             </div>
+             <div class="ver-mas">
+                 <a href="#" class="ver_mas_recorridos">Ver más resultados</a>
+             </div>
+   </script>
+   <script id="template-predictivo" type="text/template">
+    <% if (p.proximosServicios.predicciones.length > 0) { %>
+                 <h1>Próximos servicios en:</h1>
+                 <ul>
+                     <% _.each(p.proximosServicios.predicciones, function(item, i) { %> 
+                         <li><%=item.minutos>0?item.minutos+"'":"En andén"%>&nbsp;<span class="nombre-ramal"><%=item.ramal%></span></li>
+                     <% }); %>
+                 </ul>
+             <% } %>
+             <% if (p.proximosServicios.horarios.horarios && p.proximosServicios.horarios.horarios.length > 0) { %>
+                 <h1>Próximos servicios programados:</h1>
+                 <ul>
+                     <% _.each(p.proximosServicios.horarios.horarios, function(item, i) { %> 
+                         <li><%=item.horario%>&nbsp;<span class="nombre-ramal"><%=item.ramal%></span></li>
+                     <% }); %>
+                 </ul>
+                 <div class="fuente">Fuente: <%=p.proximosServicios.horarios.fuente.nombre%></div>
+             <% } %>
+             <% if (!(p.proximosServicios.horarios.horarios && p.proximosServicios.horarios.horarios.length > 0) && !(p.proximosServicios.predicciones.length > 0) && p.frecuencia && p.frecuencia.frecuencia) { %>
+                 <h2>Frecuencia estipulada: <span class="dato"><%=p.frecuencia.frecuencia %></span></h2>
+                 <div class="fuente">Fuente: <%=p.frecuencia.fuente.nombre%></div>
+             <% } %>
+             <% if (p.estado && p.estado.estado) { %>
+                 <h2>Estado del servicio: <span class="dato"><%=p.estado.estado %></span></h2>
+                 <% if (p.estado.mensaje!="") {%>
+                     <p><%=p.estado.mensaje %></p>
+                 <% } %>
+                 <div class="fuente">Fuente: <%=p.estado.fuente.nombre%></div>
+             <% } %>
+             <% if (p.proximosServicios.predicciones.length > 0) { %>
+                 <div class="ultima-actualizacion">Última actualización: <%=(new Date(ultimaActualizacion)).toLocaleTimeString()%></div>
+             <% } %>
+   </script>
+   <script id="template-recorrido-transporte" type="text/template">
+    <% if (mostrarPredictivo) { %>
+                 <div class="predictivo">Buscando información...</div>
+             <% } %>
+             <% if (alertas.length > 0) { %>
+             <div class="alert alert-warning"><h4>Atención</h4>
+                 <ul>
+                 <% for (var i=0,l=alertas.length;i<l;i++) { %>
+                     <li><%= alertas[i].mensaje %></li>
+                 <% } %>
+                 </ul></div>
+             <% } %>
+             <ul>
+             <% _.each(items, function(item, i) { %>
+                 <li class="pasos-a-seguir <%= (i%2)?'par':''%> index-<%= i %>" title="Ver este paso en el mapa">
+                     <div class="clearfix">
+                         <span class="icons-sprite icons-transporte-<%= item.type %> transporte-icon"></span>
+                         <span class="texto-paso"><%= item.text %></span>
+                     </div>
+                 </li>
+             <% }); %>
+                 <li class="mostrar-mapa-cont">
+                     <div class="clearfix">
+                         <span style="float:right; font-size: 120%;"><a class="mostrar-mapa">Mostrar Mapa ></a></span>
+                     </div>
+                 </li>
+             </ul>
+   </script>
+   <script id="template-recorrido-muy-corto" type="text/template">
+    <p class="alert alert-warning"><big>El recorrido solicitado es demasiado corto. Pruebe el recorrido a pie.</big></p>
+   </script>
+   <script id="template-misdirecciones-content" type="text/template">
+    <div class="filtro">
+                 <form role="search">
+                   <div class="form-group">
+                   <div class="input-group add-on">
+                     <input class="form-control" placeholder="Buscar en mis direcciones" name="buscar_misdirecciones" type="text" title="Buscar en mis direcciones">
+                     <div class="input-group-btn">
+                       <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                     </div>
+                   </div>
+                   </div>    
+                 </form>
+             </div>
+             <div class="opciones borde_bottom disable-select">
+                 <div class="checkbox">
+                   <label>
+                     <input type="checkbox" value="" id="mapear_mis_direcciones">
+                     Mostrar en el mapa
+                   </label>
+                 </div>
+             </div>
+             <div id="lista-lugares">
+             </div>
+             <div class="clearfix"></div>
+             <div class="eliminar-todos">
+                 <a href="#modal-misdirecciones-eliminar" data-toggle="modal" class="eliminar-todos">Eliminar Todos</a>
+             </div>
+             <p class="text-muted help">
+                 A medida que ingrese direcciones se guardarán en esta lista donde podrá etiquetarlas e interactuar con ellas.
+             </p>
+   </script>
+   <script id="template-misdirecciones-eliminar-alert" type="text/template">
+    <div class="modal fade" id="modal-misdirecciones-eliminar" tabindex="-1" role="dialog" aria-labelledby="Eliminar todos" aria-hidden="true">
+               <div class="modal-dialog">
+                 <div class="modal-content">
+                   <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <h3 class="modal-title">¡Atención!</h3>
+                   </div>
+                   <div class="modal-body">
+                     <big>¿Está seguro que desea eliminar todas las direcciones y lugares de su libreta? Esta acción no podrá deshacerse.</big>
+                   </div>
+                   <div class="modal-footer">
+                     <a href="#" class="btn btn-danger" data-action="eliminar">Eliminar todos</a> <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</a>
+                   </div>
+                 </div>
+               </div>
+             </div>
+   </script>
+   <script id="template-misdirecciones-items" type="text/template">
+    <div class="" data-id=<%= id %>>
+                 <div class="contenido lugar" title="Ver este lugar en el mapa">
+                     <div class="lugar-desc pull-left">
+                         <h5 class="lugar-content"><%= nombre %></h5>
+                         <p class="lugar-content"><%= nombre_ubicacion %></p>
+                     </div>
+                     <div class="dropdown pull-right">
+                         <button class="btn btn-default btn-sm" data-toggle="dropdown" href="#">
+                             <i class="glyphicon glyphicon-chevron-down"></i>
+                             <span class="sr-only">Toggle Dropdown</span>
+                         </button>
+                         <!-- Link or button to toggle dropdown -->
+                         <ul class="dropdown-menu" role="menu" data-id=<%= id %> aria-labelledby="Acciones">
+                             <li><a tabindex="-1" href="#" class="editar" title="Cambiar el nombre a este lugar">Cambiar nombre</a></li>
+                             <li><a tabindex="-1" href="#" class="goto" title="Ver este lugar en el mapa">Ver en el mapa</a></li>
+                             <li class="ver_ficha"><a tabindex="-1" href="#" class="ver_ficha" title="Ver información de este lugar">Información</a></li>
+                             <li><a tabindex="-1" href="#" class="desde" title="Buscar un recorrido desde aquí">Desde aquí</a></li>
+                             <li><a tabindex="-1" href="#" class="hasta" title="Buscar un recorrido hasta aquí">Hasta aquí</a></li>
+                             <li class="divider"></li>
+                             <li><a tabindex="-1" href="#" class="borrar" title="Eliminar este lugar">Eliminar</a></li>
+                         </ul>
+                     </div>
+                     <div class="clearfix"></div>
+                 </div>
+             </div>
+   </script>
+   <script id="template-buscador-content" type="text/template">
+    <div class="filtro">
+             <form  id="buscador-form">
+               <div class="form-group">
+                   <div class="input-group add-on">
+                     <input type="text" class="form-control search-query" placeholder="Buscar lugares" name="buscar_lugares" title="Buscar lugares">
+                     <div class="input-group-btn">
+                       <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                     </div>
+                   </div>
+               </div>    
+             </form>
+         </div>
+         <div class="clearfix placeholder">
+             <p class="help">Aquí puede buscar lugares de interés dentro de la Ciudad de Buenos Aires o bien restringidos al área que está visualizando en el mapa.</p>
+             <p class="help loading hidden">Buscando...</p>
+         </div>
+         <div class="buscador-body"></div>
+   </script>
+   <script id="template-buscador-results" type="text/template">
+    <div class="clearfix filter-btns">
+             <div class="btn-group " data-toggle="buttons-radio">
+               <button class="btn <%=(bbox?'':'active')%>" data-extent="all">Todos</button>
+               <button class="btn <%=(bbox?'active':'')%>" data-extent="view">Vista actual</button>
+             </div>
+         </div>
+         <div class="clearfix filter-results">
+             <% if (pages <= 1) { %>
+             Se encontraron <strong><%= totalFull %> resultados</strong>
+             <% } else if (pages > 1) { %>
+             Página <%= page %> de <%= pages %> (<strong><%= totalFull %> resultados</strong>)
+             <% } else { %>
+             Se encontró <strong>1 resultado</strong>
+             <% } %>
+             <button class="btn btn-mini btn-link pull-right opacity6" data-toggle="collapse" data-target="#buscador_filters">
+                 <span class="glyphicon glyphicon-menu-down"></span>
+             </button>
+         </div>
+         <div id="buscador_filters" class="collapse">
+             <div class="clearfix filter-list">
+                 <ul class="unstyled">
+                 <% _.each(clasesEncontradas, function(clase, idx) { %>
+                     <li>
+                         <a href="#" data-claseId="<%=clase.id %>">
+                             <span><%= clase.nombre %></span>
+                             <span class="number"><%=clase.total %></span>
+                         </a>
+                     </li>
+                 <% }) %>
+                 </ul>
+             </div>
+         </div>
+         <div class="results">
+             <% _.each(instancias, function(obj, idx) { %>
+                 <div class="borde_bottom buscador_element">
+                     <span class="contenido lugar" data-id="<%= obj.id %>" title="Ver este lugar en el mapa">
+                         <h5 class="lugar-content"><%= obj.headline %></h5>
+                         <p class="lugar-content"><%= obj.clase %></p>
+                         <div class="lugares-action pull-right span2">
+                             <i class="glyphicon glyphicon-info-sign opacity6 info" title="Ver Información del Lugar"></i>
+                             <span class="ver pull-right">
+                                 <div class="pill-buscador">
+                                     <span class="inner-pill-buscador"></span>
+                                 </div>
+                             </span>
+                         </div>
+                     </span>
+                 </div>
+             <% }) %>
+         </div>
+         <% if (pages > 1) { %>
+         <ul class="pager">
+             <li class="previous <%=(page > 1?'':'disabled') %>">
+                 <a href="#" class="paginar" data-dir="-1">&larr; Anterior</a>
+             </li>
+             <li class="next <%=(page<pages?'':'disabled') %>">
+                 <a href="#" class="paginar" data-dir="1">Siguiente &rarr;</a>
+             </li>
+         </ul>
+         <% } %>
+   </script>
+   <script id="template-markers-menu" type="text/template">
+    <% if (titulo != '') { %>
+             <div class="btn-inverse title">
+                 <%=titulo %>
+             </div>
+             <% } %>
+             <div class="dropdown">
+                 <ul class="dropdown-menu no-border marker-menu" role="menu" data-latlng="<%=latlng %>" data-desc="<%=titulo %>" data-marker-class="<%=markerClass %>" data-marker-id="<%= id %>" aria-labelledby="dropdownMenu" style="display: block; position: static; *width: 200px;">
+                     <li><a tabindex="-1" href="#" data-action="DESDE_AQUI" data-broadcast="true">Desde aquí</a></li>
+                     <li><a tabindex="-1" href="#" data-action="HASTA_AQUI" data-broadcast="true">Hasta aquí</a></li>
+                     <li><a tabindex="-1" href="#" data-action="VER_INFORMACION" data-broadcast="false">Más Información...</a></li>        
+                     <% if(markerClass == 'marker' || markerClass == 'location') { %>
+                     <li class="divider"></li>
+                     <li><a tabindex="-1" href="#" data-action="ELIMINAR_MARKER" title="Eliminar este marcador" data-broadcast="false">Eliminar</a></li>
+                     <% } %>
+                 </ul>
+             </div>
+   </script>
+   <script id="template-optional-layers" type="text/template">
+    <ul class="unstyled optional-layers disable-select">
+                 <% _.each(options, function(opt, idx) { %>
+                     <% if (idx == 'divider') { %>
+                     <li class="divider"></li>
+                     <% } else if (opt.iconUrl!='') { %>
+                     <li data-id="<%=idx %>" class="<%=opt.className %><% if (opt.active) { %> active <% } %>">
+                         <img class="icon" src="<%=opt.iconUrl %>"/><%=opt.desc %><span class="glyphicon glyphicon-ok pull-right"></span>
+                     </li>
+                     <% } else { %>
+                     <li data-id="<%=idx %>" class="<% if (opt.active) { %> active <% } %>">
+                         <span class="icon <%=opt.className %>"></span><%=opt.desc %><span class="glyphicon glyphicon-ok pull-right"></span>
+                     </li>
+                     <% } %>
+                 <% }) %>
+                 </ul>
+   </script>
+   <script id="template-mapas-content" type="text/template">
+    <div class="filtro">
+             <form  id="mapas-form">
+               <div class="form-group">
+                   <div class="input-group add-on">
+                     <input type="text" class="form-control search-query" placeholder="Buscar mapas" name="buscar_mapas" title="Buscar mapas">
+                     <div class="input-group-btn">
+                       <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                     </div>
+                   </div>
+               </div>    
+             </form>
+         </div>
+         <div class="clearfix">
+             <ul class="unstyled categorias color disable-select">
+             <% _.each(categorias, function(cat, id) { %>
+                 <li class="categoria" style="border-left: 7px solid <%=cat.color %>;"  data-color="<%=cat.color %>">
+                     <button type="button" class="close close-categoria" aria-hidden="true">×</button>
+                     <h1><%=cat.nombre %></h1>
+                     <p class="resumen"><%=cat.resumen %></p>
+                     <ul class="mapas">
+                     <% if (cat.mapas.length > 0) { %>
+                         <% _.each(cat.mapas, function(mapId, mapIdx) { 
+                             var map = mapas[mapId];
+                         %>
+                         <li class="clearfix mapa" data-mapId="<%=mapId %>">
+                             <span class="pull-left"><img src="<%=map.iconUrl %>" class="icono-mapa"></span>
+                             <h2 class="pull-left nombre-mapa"><%=map.nombre %></h2>
+                             <button type="button" class="close close-mapa" aria-hidden="true">×</button>
+                             <div class="clearfix"></div>
+                             <div class="metadatos">
+                                 <p class="abstract"><%=map.metadatos.abstract || 'No hay descripción disponible.' %></p>
+                                 <% if (map.metadatos.referencias.length > 0) { %>
+                                     <ul class="referencias">
+                                     <% _.each(map.metadatos.referencias, function(ref, idx) { %>
+                                             <% if (ref.iconUrl) { %>
+                                             <li class="clearfix">
+                                                 <span class="icono"><img class="icono-ref" src="<%=ref.iconUrl %>"/></span>
+                                                 <span class="desc"><%=ref.desc %></span>
+                                             </li>
+                                             <% } else if (ref.layerId) { %>
+                                                 <% _.each(capas[ref.layerId], function(capa, idCapa) { 
+                                                     if (capa.icon) {
+                                                 %>
+                                                 <li class="clearfix">
+                                                     <span class="icono" style="background: url(<%=capa.icon.shadowUrl %>) no-repeat; background-position: 0 0; background-size: 30px 30px;"><img class="icono-ref" src="<%=capa.icon.iconUrl %>"/></span>
+                                                     <span class="desc"><%=capa.nombre %></span>
+                                                 </li>
+                                                 <%  }
+                                                 }) %>
+                                             <% } %>
+                                     <% }) %>
+                                     </ul>
+                                 <% } %> 
+                             </div>
+                         </li>
+                         <% }) %>
+                     <% } else { %>
+                         <li class="placeholder">Aún no hay mapas en esta categoría.</li>
+                     <% } %> 
+                     </ul>
+                 </li>                
+             <% }) %>
+             </ul>
+         </div>
+   </script>
+   <script id="template-informacion-foto" type="text/template">
+    <div class="img-main">
+             <div class="foto-main">
+                 <a href="#informacion" role="button" data-toggle="modal"></a>
+             </div>
+             <div class="img-footer">
+                 <span class="btn-mini fuente" href="#" rel="tooltip" title="first tooltip"><i class="icon-info-sign icon-white"></i></span><span>&nbsp</span><span class="fecha-foto"></span> 
+                     <div class="btn-group pull-right">
+                         <a class="btn btn-mini btn-link izq" href="#"><i class="icon-chevron-left icon-white"></i></a>
+                         <a class="btn btn-mini btn-link der" href="#"><i class="icon-chevron-right icon-white"></i></a>
+                     </div>
+             </div>
+         </div>
+   </script>
+   <script id="template-informacion" type="text/template">
+    <div id="mapa-referencia" class="mapa-referencia"></div>
+ 
+         <div class="data-block datos-lugar"></div>
+ 
+         <div class="data-block info-contextual"></div>
+ 
+         <div class="data-block transportes-cercanos"></div>
+ 
+         <div class="data-block datos-parcela"></div>
+ 
+         <div class="data-block datos-transportes"></div>
+ 
+         <div class="data-block datos-utiles"></div>
+ 
+         <div class="help">
+             <h1><span class="glyphicon glyphicon-info-sign text-info"></span></h1>
+             <p class="desktop">Puede acceder a información contextual haciendo <strong>click derecho</strong> sobre el mapa y seleccionando <strong>Más información...</strong> o bien a través del menú que aparece al hacer click sobre los marcadores en el mapa.</p>
+             <p class="mobile">Puede acceder a información contextual <strong>presionando prolongadamente</strong> sobre el mapa y seleccionando <strong>Más información...</strong> o bien a través del menú que aparece al presionar sobre los marcadores en el mapa.</p>
+             <p>Podrá visualizar:
+                 <ul>
+                     <li>Fotografías de fachada</li>
+                     <li>Información técnica (superficie, tipo de edificación, etc.)</li>
+                     <li>Datos útiles como Barrio, Comuna, Área hospitalaria, etc.</li>
+                 </ul>
+             </p>
+         </div>
+ 
+         <div class="loading">
+             <p class="loading">Buscando información...</p>
+         </div>
+   </script>
+   <script id="template-foto-dialog" type="text/template">
+    <div class="modal fade" id="foto-dialog" tabindex="-1" role="dialog" aria-labelledby="Foto" aria-hidden="true">
+           <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h3 class="modal-title">Foto</h3></div>
+                 <div class="modal-body">
+                 </div>
+                 <div class="modal-footer">
+                         <p class="feature_info">
+                             <span class="feature_attr">Fecha:</span>
+                             <span class="feature_attr_value fecha"></span>
+                         </p>
+                         <p class="feature_info">
+                             <span class="feature_attr">Fuente:</span>
+                             <span class="feature_attr_value fuente"></span>
+                         </p>
+                 </div>
+               </div>
+           </div>
+         </div>
+   </script>
+   <script id="template-informacion-fotos" type="text/template">
+    <div class="data-block fotos">
+             <div class="img-main">
+                 <div class="foto-main" title="Click para agrandar">
+                     <a href="#foto-dialog" data-toggle="modal" data-target="foto-dialog"></a>
+                 </div>
+                 <div class="img-footer">
+                     <span class="btn-mini fuente" href="#" rel="tooltip" data-toggle="tooltip" data-trigger="hover" title="Fuente: Gobierno de la Ciudad de Buenos Aires"><i class="icon-info-sign icon-white"></i></span><span>&nbsp</span><span class="fecha-foto"></span> 
+                         <div class="btn-group pull-right">
+                             <a class="btn btn-mini glyphicon glyphicon-chevron-left" href="#" data-action="fotoAnterior"></a>
+                             <a class="btn btn-mini glyphicon glyphicon-chevron-right" href="#" data-action="fotoSiguiente"></a>
+                         </div>
+                 </div>
+             </div>
+         </div>
+   </script>
+   <script id="template-informacion-data" type="text/template">
+    <h1><span class="titulo"><%=titulo %></span><span class="pull-right btn-mini fuente" data-toggle="tooltip" title="<%=fuente %>"><i class="icon-info-sign"></i></span></h1>
+             <% if (clase != '') { %>
+             <div class="clase"><%= clase %></div>
+             <% } %>
+             <table class="table table-striped data-list">
+             <tbody>
+             <% _.each(aliases, function(alias, key) { %>
+                 <% if (datos[key] && datos[key]!='') { %>
+                 <tr><td class="clave"><%= alias %>: </td><td class="valor"><%=datos[key] %></td></tr>
+                 <% } %>
+             <% }) %>
+             </tbody>
+             </table>
+   </script>
+   <script id="template-informacion-contextual" type="text/template">
+    <% _.each(resultados, function(clase, k) { %>
+                 <% _.each(clase.objetos, function(obj, l) { %>
+                   <% if (obj.nombre!='') { %>
+                     <h1><span class="titulo"><%=obj.nombre %></span><span class="pull-right btn-mini fuente" data-toggle="tooltip" title="<%=clase.fuente %> (<%=clase.fecha %>)"><i class="icon-info-sign"></i></span></h1>
+                     <div class="clase"><%= clase.clase %></div>
+                     <table class="table table-striped data-list">
+                     <tbody>
+                     <% _.each(obj.contenido, function(dato, idx) { %>
+                         <% if (dato.valor != "" && dato.valor != null) { 
+                             if (dato.valor.charAt(0)!='<') { %>
+                                 <tr><td class="clave"><%= dato.nombre %>: </td><td class="valor"><%=dato.valor %></td></tr>
+                             <% } else { %>
+                                 <tr><td colspan="2">
+                                     <% if (dato.nombreId.charAt(0)!='_') { %>
+                                     <span class="clave"><%= dato.nombre %>: </span><br/>
+                                     <% } %>
+                                     <span class="valor"><%=dato.valor %></span>
+                                 </td></tr>
+                             <% } %>
+                         <% } %>
+                     <% }); %>        
+                     </tbody>
+                     </table>
+                   <% } %>
+                 <% }) %>
+             <% }) %>
+   </script>
+   <script id="template-informacion-lugar" type="text/template">
+    <h1><span class="titulo"><%=contenido[0].valor %></span><span class="pull-right btn-mini fuente" data-toggle="tooltip" title="<%=fuente %> (<%=fechaActualizacion %>)"><i class="icon-info-sign"></i></span></h1>
+             <div class="clase"><%=clase.nombre || clase %></div>
+             <table class="table table-striped data-list">
+             <tbody>
+             <% _.each(contenido, function(dato, idx) { %>
+                 <% if (dato.valor != "" && dato.valor != null && dato.nombre != "Nombre") { 
+                     if (dato.valor.charAt(0)!='<') { %>
+                         <tr><td class="clave"><%= dato.nombre %>: </td><td class="valor"><%=dato.valor %></td></tr>
+                     <% } else { %>
+                         <tr><td colspan="2">
+                             <% if (dato.nombreId.charAt(0)!='_') { %>
+                             <span class="clave"><%= dato.nombre %>: </span><br/>
+                             <% } %>
+                             <span class="valor"><%=dato.valor %></span>
+                         </td></tr>
+                     <% } %>
+                 <% } %>
+             <% }); %>        
+             </tbody>
+             </table>
+   </script>
+   <script id="template-informacion-transportes" type="text/template">
+    <h1><span class="titulo">Transportes Cercanos</span><span class="pull-right btn-mini fuente" data-toggle="tooltip" title="Unidad de Sistemas de Información Geográfica, DGGOBE (ASI), Ministerio de Modernización"><i class="icon-info-sign"></i></span></h1>
+             <table class="table table-striped data-list">
+             <tbody>
+                 <% if (info.bus.length > 0) { %>
+                 <tr><td class="clave">Colectivos: </td><td class="valor"><%=info.bus.join(', ') %></td></tr>
+                 <% } %>
+                 <% if (info.subway.length > 0) { %>
+                 <tr><td class="clave">Subtes (Metro): </td><td class="valor"><%=info.subway.join(', ') %></td></tr>
+                 <% } %>
+                 <% if (info.train.length > 0) { %>
+                 <tr><td class="clave">Trenes: </td><td class="valor"><%=info.train.join(', ') %></td></tr>
+                 <% } %>
+             </tbody>
+             </table>
+   </script>
+   <script src="https://tags.crwdcntrl.net/c/8468/cc_af.js">
+   </script>
+  </body>
+ </html>

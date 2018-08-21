@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+ <html class="no-js" dir="ltr" lang="en">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <title>
+    Design og indretning til virksomheder - GrapeDesign
+   </title>
+   <link href="css/foundation.css" rel="stylesheet"/>
+   <link href="css/app.css" rel="stylesheet"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+   <style type="text/css">
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600" rel="stylesheet"/>
+   <script language="JavaScript" src="jsloader.php?Script=functions" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="jsloader.php?Script=ajax" type="text/javascript">
+   </script>
+   <script src="js/vendor/jquery.js">
+   </script>
+   <script language="javascript" type="text/javascript">
+    // remote scripting library
+ 		// (c) copyright 2005 modernmethod, inc
+ 		var sajax_debug_mode = false;
+ 		var sajax_request_type = "GET";
+ 		var sajax_target_id = "";
+ 		var sajax_failure_redirect = "";
+ 		
+ 		function sajax_debug(text) {
+ 			if (sajax_debug_mode)
+ 				alert(text);
+ 		}
+ 		
+  		function sajax_init_object() {
+  			sajax_debug("sajax_init_object() called..")
+  			
+  			var A;
+  			
+  			var msxmlhttp = new Array(
+ 				'Msxml2.XMLHTTP.5.0',
+ 				'Msxml2.XMLHTTP.4.0',
+ 				'Msxml2.XMLHTTP.3.0',
+ 				'Msxml2.XMLHTTP',
+ 				'Microsoft.XMLHTTP');
+ 			for (var i = 0; i < msxmlhttp.length; i++) {
+ 				try {
+ 					A = new ActiveXObject(msxmlhttp[i]);
+ 				} catch (e) {
+ 					A = null;
+ 				}
+ 			}
+  			
+ 			if(!A && typeof XMLHttpRequest != "undefined")
+ 				A = new XMLHttpRequest();
+ 			if (!A)
+ 				sajax_debug("Could not create connection object.");
+ 			return A;
+ 		}
+ 		
+ 		var sajax_requests = new Array();
+ 		
+ 		function sajax_cancel() {
+ 			for (var i = 0; i < sajax_requests.length; i++) 
+ 				sajax_requests[i].abort();
+ 		}
+ 		
+ 		function sajax_do_call(func_name, args) {
+ 			var i, x, n;
+ 			var uri;
+ 			var post_data;
+ 			var target_id;
+ 			
+ 			sajax_debug("in sajax_do_call().." + sajax_request_type + "/" + sajax_target_id);
+ 			target_id = sajax_target_id;
+ 			if (typeof(sajax_request_type) == "undefined" || sajax_request_type == "") 
+ 				sajax_request_type = "GET";
+ 			
+ 			uri = "/";
+ 			if (sajax_request_type == "GET") {
+ 			
+ 				if (uri.indexOf("?") == -1) 
+ 					uri += "?rs=" + escape(func_name);
+ 				else
+ 					uri += "&rs=" + escape(func_name);
+ 				uri += "&rst=" + escape(sajax_target_id);
+ 				uri += "&rsrnd=" + new Date().getTime();
+ 				
+ 				for (i = 0; i < args.length-1; i++) 
+ 					uri += "&rsargs[]=" + escape(args[i]);
+ 
+ 				post_data = null;
+ 			} 
+ 			else if (sajax_request_type == "POST") {
+ 				post_data = "rs=" + escape(func_name);
+ 				post_data += "&rst=" + escape(sajax_target_id);
+ 				post_data += "&rsrnd=" + new Date().getTime();
+ 				
+ 				for (i = 0; i < args.length-1; i++) 
+ 					post_data = post_data + "&rsargs[]=" + escape(args[i]);
+ 			}
+ 			else {
+ 				alert("Illegal request type: " + sajax_request_type);
+ 			}
+ 			
+ 			x = sajax_init_object();
+ 			if (x == null) {
+ 				if (sajax_failure_redirect != "") {
+ 					location.href = sajax_failure_redirect;
+ 					return false;
+ 				} else {
+ 					sajax_debug("NULL sajax object for user agent:\n" + navigator.userAgent);
+ 					return false;
+ 				}
+ 			} else {
+ 				x.open(sajax_request_type, uri, true);
+ 				// window.open(uri);
+ 				
+ 				sajax_requests[sajax_requests.length] = x;
+ 				
+ 				if (sajax_request_type == "POST") {
+ 					x.setRequestHeader("Method", "POST " + uri + " HTTP/1.1");
+ 					x.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+ 				}
+ 			
+ 				x.onreadystatechange = function() {
+ 					if (x.readyState != 4) 
+ 						return;
+ 
+ 					sajax_debug("received " + x.responseText);
+ 				
+ 					var status;
+ 					var data;
+ 					var txt = x.responseText.replace(/^\s*|\s*$/g,"");
+ 					status = txt.charAt(0);
+ 					data = txt.substring(2);
+ 
+ 					if (status == "") {
+ 						// let's just assume this is a pre-response bailout and let it slide for now
+ 					} else if (status == "-") 
+ 						alert("Error: " + data);
+ 					else {
+ 						if (target_id != "") 
+ 							document.getElementById(target_id).innerHTML = eval(data);
+ 						else {
+ 							try {
+ 								var callback;
+ 								var extra_data = false;
+ 								if (typeof args[args.length-1] == "object") {
+ 									callback = args[args.length-1].callback;
+ 									extra_data = args[args.length-1].extra_data;
+ 								} else {
+ 									callback = args[args.length-1];
+ 								}
+ 								callback(eval(data), extra_data);
+ 							} catch (e) {
+ 								sajax_debug("Caught error " + e + ": Could not eval " + data );
+ 							}
+ 						}
+ 					}
+ 				}
+ 			}
+ 			
+ 			sajax_debug(func_name + " uri = " + uri + "/post = " + post_data);
+ 			x.send(post_data);
+ 			sajax_debug(func_name + " waiting..");
+ 			delete x;
+ 			return true;
+ 		}
+ 		
+ 				
+ 		// wrapper for multiply		
+ 		function x_multiply() {
+ 			sajax_do_call("multiply",
+ 				x_multiply.arguments);
+ 		}
+ 		
+ 				
+ 		// wrapper for get_username		
+ 		function x_get_username() {
+ 			sajax_do_call("get_username",
+ 				x_get_username.arguments);
+ 		}
+ 		
+ 				
+ 		// wrapper for debug		
+ 		function x_debug() {
+ 			sajax_do_call("debug",
+ 				x_debug.arguments);
+ 		}
+ 		
+ 				
+ 		// wrapper for add_product_to_favorites		
+ 		function x_add_product_to_favorites() {
+ 			sajax_do_call("add_product_to_favorites",
+ 				x_add_product_to_favorites.arguments);
+ 		}
+ 		
+ 				
+ 		// wrapper for remove_product_from_favorites		
+ 		function x_remove_product_from_favorites() {
+ 			sajax_do_call("remove_product_from_favorites",
+ 				x_remove_product_from_favorites.arguments);
+ 		}
+   </script>
+   <script language="JavaScript" type="text/javascript">
+    function DoSubmit(){
+ 			if(QuickSearchForm.QuickSearch.value != "" && QuickSearchForm.QuickSearch.value != "\'"){
+ 				QuickSearchForm.submit();
+ 			}
+ 			else{
+ 				alert("Angiv et søgeord");
+ 				QuickSearchForm.QuickSearch.focus();
+ 			}
+ 		}
+   </script>
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ 		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ 		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ 
+ 		  ga('create', 'UA-18169215-1', 'auto');
+ 		  ga('send', 'pageview');
+   </script>
+   <!-- Facebook Pixel Code -->
+   <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+ 		n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+ 		n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+ 		t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+ 		document,'script','https://connect.facebook.net/en_US/fbevents.js');
+ 		fbq('init', '848730315303002'); // Insert your pixel ID here.
+ 		fbq('track', 'PageView');
+   </script>
+   <noscript>
+    <img height="1" src="https://www.facebook.com/tr?id=848730315303002&amp;ev=PageView&amp;noscript=1" style="display:none" width="1"/>
+   </noscript>
+   <!-- DO NOT MODIFY -->
+   <!-- End Facebook Pixel Code -->
+  </head>
+  <body>
+   <div class="off-canvas-wrapper">
+    <nav class="off-canvas position-left" data-off-canvas="" id="offCanvasMenu">
+     <!-- Your menu or Off-canvas content goes here -->
+     <div class="row small-up-3 icon-bar">
+      <div class="column column-block text-center">
+       <a href="/">
+        <i class="fa fa-home fa-lg">
+        </i>
+       </a>
+      </div>
+      <div class="column column-block text-center">
+       <a href="/?Page=login">
+        <i class="fa fa-user fa-lg">
+        </i>
+       </a>
+      </div>
+      <div class="column column-block text-center">
+       <a href="?Page=serve&amp;PageNumber=58">
+        <i class="fa fa-shopping-cart fa-lg">
+        </i>
+       </a>
+      </div>
+     </div>
+     <!-- Mobile navigation -->
+     <ul class="vertical menu" data-accordion-menu="" data-multi-open="false">
+      <li>
+       <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=2">
+        Impact
+       </a>
+      </li>
+      <li>
+       <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=1">
+        molo
+       </a>
+      </li>
+      <li>
+       <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=28">
+        rosso
+       </a>
+      </li>
+      <li>
+       <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=37">
+        Panzeri®
+       </a>
+      </li>
+      <li>
+       <a href="javascript:void(0);">
+        Inspiration
+       </a>
+       <ul class="menu vertical nested">
+        <li>
+         <a href="javascript:void(0);">
+          Indretning og belysning
+         </a>
+         <ul class="menu vertical nested">
+          <li>
+           <a href="?Page=serve&amp;PageNumber=173">
+            Aktivitetsbaseret arbejdsplads
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=161">
+            Kontorindretning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=248">
+            Kontorbelysning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=162">
+            Butiksindretning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=253">
+            Butiks- og showroom belysning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=160">
+            Restaurant- og cafeindretning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=159">
+            Akustik og indretning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=234">
+            Rumdelere der kan lidt mere
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=233">
+            Bæredygtig indretning
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="javascript:void(0);">
+          Brands
+         </a>
+         <ul class="menu vertical nested">
+          <li>
+           <a href="?Page=serve&amp;PageNumber=131">
+            AKUART
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=123">
+            &amp;tradition
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=124">
+            Buster + Punch
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=132">
+            BuzziSpace
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=130">
+            Erik Jørgensen
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=125">
+            FLOS
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=127">
+            Functionals
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=122">
+            Gubi
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=240">
+            HANDVÄRK
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=129">
+            Holmris
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=133">
+            Humanscale
+           </a>
+          </li>
+          <li>
+           <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=2">
+            Impact by GrapeDesign
+           </a>
+          </li>
+          <li>
+           <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=1">
+            molo
+           </a>
+          </li>
+          <li>
+           <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=28">
+            Rossoacoustic®
+           </a>
+          </li>
+          <li>
+           <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=37">
+            Panzeri®
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=128">
+            THORS-DESIGN
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=126">
+            Verpan
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="javascript:void(0);">
+          Referencer
+         </a>
+         <ul class="menu vertical nested">
+          <li>
+           <a href="?Page=serve&amp;PageNumber=137">
+            7N
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=171">
+            CICERO
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=168">
+            Danfoss
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=138">
+            Dansk Design Center
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=167">
+            Falcon.io
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=135">
+            Farumhus
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=139">
+            Georg Jensen
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=172">
+            Handelsbanken
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=213">
+            Københavns Erhvervsakademi
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=166">
+            LEGOLAND
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=170">
+            LINAK
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=140">
+            Polyteknisk
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=136">
+            Q8
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=144">
+            Scion DTU
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=142">
+            Det Kongelige Bibliotek
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=143">
+            Surftown
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=141">
+            TATA
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=145">
+            Tesla
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=169">
+            The Square
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="javascript:void(0);">
+          Tankevækkende artikler
+         </a>
+         <ul class="menu vertical nested">
+          <li>
+           <a href="?Page=serve&amp;PageNumber=180">
+            Skovbadning
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=179">
+            Bløde former kan mærkes
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=176">
+            Naturens egen støjdræber
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=175">
+            Hvad ved Møller om akustik?
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=177">
+            Den robuste medarbejder
+           </a>
+          </li>
+          <li>
+           <a href="?Page=serve&amp;PageNumber=178">
+            Behov for at reducere støj?
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li>
+         <a href="?Page=serve&amp;PageNumber=209">
+          Download DKK prisliste
+         </a>
+        </li>
+        <li>
+         <a href="?Page=serve&amp;PageNumber=251">
+          + nyhedsmail
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="javascript:void(0);">
+        <i class="fa fa-globe fa-lg">
+        </i>
+       </a>
+       <ul class="menu vertical nested">
+        <li>
+         <a href="/?PreLoad=SetLanguage&amp;Language=da">
+          DA
+         </a>
+        </li>
+        <li>
+         <a href="/?PreLoad=SetLanguage&amp;Language=en">
+          EN
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="javascript:void(0);">
+        <i class="fa fa-user fa-lg">
+        </i>
+       </a>
+       <ul class="menu vertical nested">
+        <li>
+         <a href="?Page=serve&amp;PageNumber=58">
+          Indkøbskurv
+         </a>
+        </li>
+        <li>
+         <a href="?Page=serve&amp;PageNumber=65">
+          Glemt dit kodeord?
+         </a>
+        </li>
+        <li>
+         <a href="/?Page=login">
+          Log ind
+         </a>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </nav>
+    <aside class="off-canvas position-right off-canvas-cart" data-off-canvas="" id="offCanvasCart">
+     <!-- Your menu or Off-canvas content goes here -->
+     <section class="nx-cart">
+      <!-- Cart for both mobile and desktop -->
+      <nav class="nx-checkout">
+       <div class="nx-checkout">
+        <a href="?Page=serve&amp;PageNumber=183">
+         Bestil
+        </a>
+       </div>
+       <div class="nx-cart-link">
+        <a href="?Page=serve&amp;PageNumber=58">
+         Gå til kurv
+        </a>
+        »
+       </div>
+      </nav>
+     </section>
+    </aside>
+    <div class="off-canvas-content" data-off-canvas-content="">
+     <!-- Your page content lives here -->
+     <!-- Mobile top bar -->
+     <nav class="hide-for-large">
+      <div class="top-bar-container" data-sticky-container="">
+       <div class="sticky" data-options="anchor: page; marginTop: 0; stickyOn: small;" data-sticky="">
+        <div class="top-bar primary-top-bar-mobile">
+         <div class="nx-primary-logo">
+          <a href="/">
+           <img src="grfx/gd_logo.svg"/>
+          </a>
+         </div>
+         <div class="left">
+          <a data-toggle="offCanvasMenu">
+           <i class="fa fa-bars">
+           </i>
+          </a>
+         </div>
+         <div class="right">
+          <a data-toggle="offCanvasCart">
+           <i class="fa fa-shopping-cart">
+           </i>
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+     </nav>
+     <div class="show-for-large">
+      <!-- Desktop navigation -->
+      <nav class="top-bar primary-top-bar-desktop">
+       <div class="wrap">
+        <div class="nx-primary-logo">
+         <a href="/">
+          <img src="grfx/gd_logo.svg"/>
+         </a>
+        </div>
+        <div class="top-bar-left">
+         <ul class="dropdown menu" data-close-on-click-inside="false" data-dropdown-menu="">
+          <li>
+           <a data-toggle="offCanvasMenu" title="Menu">
+            <i class="fa fa-bars fa-lg">
+            </i>
+           </a>
+          </li>
+          <li>
+           <a href="javascript:void(0);">
+            Inspiration
+           </a>
+           <ul class="menu vertical">
+            <li>
+             <a href="javascript:void(0);">
+              Indretning og belysning
+             </a>
+             <ul class="menu vertical">
+              <li>
+               <a href="?Page=serve&amp;PageNumber=173">
+                Aktivitetsbaseret arbejdsplads
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=161">
+                Kontorindretning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=248">
+                Kontorbelysning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=162">
+                Butiksindretning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=253">
+                Butiks- og showroom belysning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=160">
+                Restaurant- og cafeindretning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=159">
+                Akustik og indretning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=234">
+                Rumdelere der kan lidt mere
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=233">
+                Bæredygtig indretning
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li>
+             <a href="javascript:void(0);">
+              Brands
+             </a>
+             <ul class="menu vertical">
+              <li>
+               <a href="?Page=serve&amp;PageNumber=131">
+                AKUART
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=123">
+                &amp;tradition
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=124">
+                Buster + Punch
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=132">
+                BuzziSpace
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=130">
+                Erik Jørgensen
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=125">
+                FLOS
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=127">
+                Functionals
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=122">
+                Gubi
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=240">
+                HANDVÄRK
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=129">
+                Holmris
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=133">
+                Humanscale
+               </a>
+              </li>
+              <li>
+               <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=2">
+                Impact by GrapeDesign
+               </a>
+              </li>
+              <li>
+               <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=1">
+                molo
+               </a>
+              </li>
+              <li>
+               <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=28">
+                Rossoacoustic®
+               </a>
+              </li>
+              <li>
+               <a href="/?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=37">
+                Panzeri®
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=128">
+                THORS-DESIGN
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=126">
+                Verpan
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li>
+             <a href="javascript:void(0);">
+              Referencer
+             </a>
+             <ul class="menu vertical">
+              <li>
+               <a href="?Page=serve&amp;PageNumber=137">
+                7N
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=171">
+                CICERO
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=168">
+                Danfoss
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=138">
+                Dansk Design Center
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=167">
+                Falcon.io
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=135">
+                Farumhus
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=139">
+                Georg Jensen
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=172">
+                Handelsbanken
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=213">
+                Københavns Erhvervsakademi
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=166">
+                LEGOLAND
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=170">
+                LINAK
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=140">
+                Polyteknisk
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=136">
+                Q8
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=144">
+                Scion DTU
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=142">
+                Det Kongelige Bibliotek
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=143">
+                Surftown
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=141">
+                TATA
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=145">
+                Tesla
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=169">
+                The Square
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li>
+             <a href="javascript:void(0);">
+              Tankevækkende artikler
+             </a>
+             <ul class="menu vertical">
+              <li>
+               <a href="?Page=serve&amp;PageNumber=180">
+                Skovbadning
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=179">
+                Bløde former kan mærkes
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=176">
+                Naturens egen støjdræber
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=175">
+                Hvad ved Møller om akustik?
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=177">
+                Den robuste medarbejder
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=178">
+                Behov for at reducere støj?
+               </a>
+              </li>
+             </ul>
+            </li>
+            <li>
+             <a href="?Page=serve&amp;PageNumber=209">
+              Download DKK prisliste
+             </a>
+            </li>
+            <li>
+             <a href="?Page=serve&amp;PageNumber=251">
+              + nyhedsmail
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+        </div>
+        <div class="top-bar-right">
+         <ul class="dropdown menu" data-close-on-click-inside="false" data-dropdown-menu="">
+          <li>
+           <a href="javascript:void(0);">
+            <i class="fa fa-globe fa-lg">
+            </i>
+           </a>
+           <ul class="menu vertical icons">
+            <li>
+             <a href="/?PreLoad=SetLanguage&amp;Language=da" title="Vælg dansk som sprog">
+              DA
+             </a>
+            </li>
+            <li>
+             <a href="/?PreLoad=SetLanguage&amp;Language=en" title="Choose English as language">
+              EN
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li>
+           <a href="javascript:void(0);">
+            <i class="fa fa-user fa-lg">
+            </i>
+           </a>
+           <ul class="menu vertical">
+            <li>
+             <a href="?Page=serve&amp;PageNumber=58">
+              Indkøbskurv
+             </a>
+            </li>
+            <li>
+             <a href="?Page=serve&amp;PageNumber=65">
+              Glemt dit kodeord?
+             </a>
+            </li>
+            <li>
+             <a href="/?Page=login">
+              Log ind
+             </a>
+            </li>
+           </ul>
+          </li>
+          <li>
+           <a data-toggle="offCanvasCart" title="Indkøbskurv">
+            <i class="fa fa-shopping-cart fa-lg">
+            </i>
+           </a>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </nav>
+      <div class="top-bar-container" data-sticky-container="">
+       <div class="sticky" data-options="marginTop:0;" data-sticky="" data-top-anchor="80">
+        <header class="secondary-top-bar-desktop">
+         <div class="wrap">
+          <div class="default-padding">
+           <div class="nx-topcategories">
+            <nav>
+             <ul>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=2">
+                Impact
+               </a>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=">
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=1">
+                molo
+               </a>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=">
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=28">
+                rosso
+               </a>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=">
+               </a>
+              </li>
+              <li>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=37">
+                Panzeri®
+               </a>
+               <a href="?Page=serve&amp;PageNumber=79&amp;ProductCategoriesNumber=">
+               </a>
+              </li>
+             </ul>
+            </nav>
+           </div>
+          </div>
+         </div>
+        </header>
+       </div>
+      </div>
+     </div>
+     <section class="nx-hero-image nx-subpage-images">
+      <div aria-label="" class="orbit" data-options="autoPlay:false;" data-orbit="" role="region">
+       <ul class="orbit-container">
+        <li class="is-active orbit-slide">
+         <figure class="orbit-figure">
+          <img alt="molo softwall skærmvæg" class="orbit-image show-for-medium" src="/img/pages/softwall-rumdeler.jpg"/>
+          <img alt="molo softwall skærmvæg" class="orbit-image show-for-small-only" src="/img/pages/softwall-rumdeler-2000x2000.jpg"/>
+         </figure>
+         <div class="nx-slide-text nx-light show-for-medium" style="top: 30%; left: 8%;">
+          <div class="nx-caption">
+           <a href="/?Page=serve&amp;PageNumber=49&amp;AbstractProductsNumber=5
+ ">
+            molo softwall skærmvæg
+           </a>
+          </div>
+          <div class="nx-description">
+           designed by Stephanie Forsythe and Todd MacAllen for molo
+          </div>
+         </div>
+         <div class="nx-slide-caption nx-light show-for-small-only">
+          <div class="nx-caption">
+           <a href="/?Page=serve&amp;PageNumber=49&amp;AbstractProductsNumber=5
+ ">
+            molo softwall skærmvæg
+           </a>
+          </div>
+         </div>
+        </li>
+       </ul>
+      </div>
+     </section>
+     <section class="main-content">
+      <div class="wrap">
+       <div class="row">
+        <div class="small-12 columns">
+         <article class="nx-article">
+          <!-- Title (105) -->
+          <h1>
+           Design og indretning til virksomheder
+          </h1>
+          <!-- (105) END -->
+          <!-- Configurable article view (441) -->
+          <section class="nx-body">
+           <h2>
+            Hvem er GrapeDesign?
+           </h2>
+           <p>
+            GrapeDesign er en design og indretningsvirksomhed etableret i 2005. Vi tror på, at omgivelserne påvirker vores adfærd. Derfor er vi passionerede omkring indretninger, design og produkter, der inspirerer mennesker. Det kan fx være medarbejderne i virksomheden, restaurantens gæster eller kunderne i butikken. Vi har gennem vores arbejde med indretning erfaret, at rolige, enkle og venlige omgivelser giver de bedste resultater.
+           </p>
+           <p>
+            Derfor lader vi os inspirere os af det sted, hvor man næsten altid opnår den største grad af velvære; nemlig i naturen. Mærk selv efter næste gang du har været en tur i skoven eller har gået med fødderne i vand i strandkanten. Derfor genkendes vores indretninger let på valget af organiske materialer, afdæmpede naturfarver, bløde former, god akustik og gennemtænkt lyssætning. Elementer vi også tager med, når vi designer nye Impact produkter.
+           </p>
+           <h2>
+            Impact by GrapeDesign
+           </h2>
+           <p>
+            Impact by GrapeDesign er vores egne bud på løsninger til indretninger, der skal inspirere. DNA’et sammensat af bløde former, organiske materialer og afdæmpede naturfarver, er ligesom vores indretninger let genkendeligt. Impact produkterne giver ofte anledning til en god snak om det konservative vs modet til at skille sig ud fra mængden. Impact by GrapeDesign skiller vandene; det er design, man kan mærke. Uanset om du elsker eller hader. Hvis du kan lide et Impact produkt, bliver det hurtigt til mere end et funktionelt element i indretningen. Det bliver til et statement af design med holdninger.
+           </p>
+           <a href="https://grapedesign.dk/impact" target="_blank">
+            Mere om Impact by GrapeDesign
+           </a>
+           <h2>
+            Tre internationale brands
+           </h2>
+           <p>
+            molo, rosso og Panzeri er tre stærke brands, vi er stolte af repræsentere eksklusivt her i Danmark eller Skandinavien. molo fra Vancouver har været med os helt fra starten og er en stor inspiration til, hvordan vi i dag tænker i produkter og omgivelser, der inspirerer. Rosso, der bor i Stuttgart, har nogle meget unikke og funktionelle akustiske design-løsninger, der springer ud af konkrete behov. Som fx en gennemsigtig rumdeler med akustisk afskærmning til indretninger, hvor man gerne vil kunne se om kollegaen er på pinden. Det tredje brand Panzeri fra Milano er en mere end 70 år gammel familievirksomhed, som designer og producerer nogle af de fineste lamper, vi kender til.
+           </p>
+           <h2>
+            Akustik og belysning
+           </h2>
+           <p>
+            Akustik og belysning er måske de to elementer, der betyder allermest for, om en indretning bliver en succes eller fiasko. Ironisk nok er det også de to elementer, der er tit bliver glemt eller negligeret i nye indretninger og byggerier. Forklaringen på “glemsomheden” er delvist, at akustik og belysning også kan være lidt abstrakt, indtil man har gravet sig ned i emnerne. Derfor er det værd at vide, at akustik og belysning netop er to solide kernekompetencer hos GrapeDesign. Og vi forsøger at hjælpe med jordnære og let forståelige anbefalinger.
+           </p>
+           <p>
+           </p>
+           <h2>
+            Vi er her for at hjælpe!
+           </h2>
+           <p>
+            Hos GrapeDesign mener vi, man kommer længst med passion og hjælpsomhed. Så det er dét, du skal kunne mærke, når du ringer til GrapeDesign. Uanset om du vil høre mere om en lampe, eller om du har brug for hjælp til akustikken. Så sidder du med en udfordring, så tag dette som en opfordring.
+           </p>
+          </section>
+          <!-- (441) END -->
+         </article>
+        </div>
+       </div>
+      </div>
+     </section>
+     <footer>
+      <div class="nx-footer-logo">
+       <img src="grfx/gd_footer_logo.svg"/>
+      </div>
+      <div class="wrap">
+       <div class="nx-main-footer">
+        <div class="row small-up-2 medium-up-3 large-up-3">
+         <div class="column">
+          <h4>
+           GrapeDesign
+          </h4>
+          <a href="?Page=serve&amp;PageNumber=189">
+           Medarbejdere
+          </a>
+          <a href="?Page=serve&amp;PageNumber=101">
+           Handelsbetingelser
+          </a>
+          <a href="?Page=serve&amp;PageNumber=249">
+           Persondatapolitik
+          </a>
+          <a href="?Page=serve&amp;PageNumber=238">
+           + nyhedsmail
+          </a>
+         </div>
+         <div class="column">
+          <h4>
+           Sociale Medier
+          </h4>
+          <a href="https://www.facebook.com/GrapeD" target="_blank">
+           facebook
+          </a>
+          <a href="https://www.pinterest.dk/GrapeDesigndk/" target="_blank">
+           Pinterest
+          </a>
+          <a href="https://www.instagram.com/grapedesign.dk/" target="_blank">
+           Instagram
+          </a>
+         </div>
+         <div class="column">
+          <h4>
+           Andre links
+          </h4>
+          <a href="https://www.ingenco2.dk/crt/dispcust/c/690/l/2" target="_blank">
+           CO2 neutralt website
+          </a>
+          <a href="/img/pages/AAA.jpg" target="_blank">
+           Højeste kreditværdighed
+          </a>
+          <a href="http://files.grapedesign.dk" target="_blank">
+           Downloads
+          </a>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="nx-medium-footer">
+       <div class="nx-footer-name">
+        GrapeDesign,
+       </div>
+       <div class="nx-footer-address">
+        Rentemestervej 64 2. sal,
+       </div>
+       <div class="nx-footer-city-country">
+        2400 København NV, Danmark,
+       </div>
+       <div class="nx-footer-phone">
+        Tlf.: +45 38 878 800
+       </div>
+       <div class="nx-footer-catchline">
+       </div>
+       <div class="nx-footer-email">
+        E-mail:
+        <a href="mailto:grape@grapedesign.dk">
+         grape@grapedesign.dk
+        </a>
+       </div>
+      </div>
+     </footer>
+    </div>
+   </div>
+   <script language="JavaScript" type="text/javascript">
+    document.onkeydown = function () {
+ 			if(event.keyCode == 73){ // i
+ 				if(event.altKey && event.ctrlKey){
+ 					alert('About \'Design og indretning til virksomheder\' (in index.php, PageNumber: 6):\n\nLayout:\n-------------------------------------\n125\n\nUsed modules:\n-------------------------------------\n10 - Box Library\n170 - Hero image (SubPage list)\n105 - Title\n441 - Configurable article view\n481 - Inter page navigation (same level)\n\nComment:\n-------------------------------------\n');
+ 					return false;
+ 				}
+ 			}
+ 		}
+   </script>
+   <script language="javascript">
+    if (parent.location.href != self.location.href) {
+ 			// if inside frame (takeover window)
+ 	
+ 			for(num = 0; num < document.links.length; num++) {
+ 				URLToCheck = document.links[num].href;
+ 				if (URLToCheck.indexOf("TakeOverAccount") == -1) {
+ 					if(URLToCheck.indexOf('javascript:') == -1){
+ 						if(URLToCheck.indexOf('?') == -1){
+ 								document.links[num].href += '?TakeOverAccount=' + window.parent.CRMFrame.f_GetAccountID();
+ 						}
+ 						else{
+ 							document.links[num].href += '&TakeOverAccount=' + window.parent.CRMFrame.f_GetAccountID();
+ 						}
+ 					}
+ 				}
+ 			}
+ 		}
+   </script>
+   <script src="js/vendor/jquery.js">
+   </script>
+   <script src="js/vendor/what-input.js">
+   </script>
+   <script src="js/vendor/foundation.js">
+   </script>
+   <script src="js/app.js">
+   </script>
+  </body>
+ </html>

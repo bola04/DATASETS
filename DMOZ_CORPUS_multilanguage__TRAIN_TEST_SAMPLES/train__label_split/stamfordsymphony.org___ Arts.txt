@@ -1,0 +1,2153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+ <html>
+  <head>
+   <title>
+    Stamford Symphony
+   </title>
+   <meta content="Main - SSO" name="description"/>
+   <meta content="width=device-width, height=device-height, initial-scale=1.0" name="viewport"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="Stamford Symphony" property="og:title"/>
+   <meta content="/Online//default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=1BC6ACDD-8199-42AF-967A-587498A5F108&amp;BOparam::WScontent::loadArticle::context_id=undefined" property="og:url"/>
+   <meta content="Main - SSO" property="og:description"/>
+   <meta content="Stamford Symphony" property="og:site_name"/>
+   <meta content="no" http-equiv="Imagetoolbar"/>
+   <link href="/ArticleMedia/Images/branding-sso/ssofavicon.PNG?_7.20.0" rel="shortcut icon"/>
+   <link href="branding/home-screen-icon.png?_7.20.0" rel="apple-touch-icon"/>
+   <!-- inclusion of bootstrap specific CSS -->
+   <!-- http://twitter.github.com for documentation on bootstrap -->
+   <link href="/lib/bootstrap/css/bootstrap.min.css?_7.20.0" rel="Stylesheet"/>
+   <!-- end of bootstrap specific CSS -->
+   <link href="../../content/images/branding/global.css?_=7.20.0" rel="stylesheet" type="text/css"/>
+   <!--[if lt IE 9]>
+     <link rel="stylesheet" href="../../content/images/branding/global_IE.css?_7.20.0" type="text/css">
+ <![endif]-->
+   <script language="Javascript">
+   </script>
+   <link href="/ArticleMedia/Files/CSS/sso_branding-8.css?_=7.20.0" rel="stylesheet" type="text/css"/>
+   <script type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    // Check whether cookies are enabled.
+ 	document.cookie = "TestCookie=1";
+ 	var testCookie = document.cookie;
+ 
+ 	// Try to retrieve the value we just set.
+ 	if (testCookie.indexOf("TestCookie=1") == -1)
+ 	{
+ 		
+ 		    document.location = "error.asp?nocookie=";
+ 		
+     }
+ 	else
+ 		document.cookie = "TestCookie=;expires=Thu, 01-Jan-1970 00:00:00 GMT";
+   </script>
+   <script type="text/javascript">
+    function setRSVPButtons(response, eventCode)
+ {
+                 var url = '/' + eventCode + '/invited?user=' + response.authResponse.userID + '&access_token=' + response.authResponse.accessToken;
+                  FB.api(url, 'get',
+                  function (response) {
+                     if (!response || response.error) {
+                       new showAlertPopup("Error occurred: " + response.error.message, "", "", "", "", "");
+                     }
+                     else
+                     {
+                         if (response.data[0].rsvp_status == "attending")
+                         {
+                             var buttons = document.getElementsByName("attendingButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = true;
+                                 buttons.item(x).style.display = "inline";
+                             }
+                             buttons = document.getElementsByName("maybeButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).style.display = "inline";
+                             }
+                         }
+                         else if (response.data[0].rsvp_status == "unsure")
+                         {
+                             var buttons = document.getElementsByName("attendingButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).style.display = "inline";
+                             }
+                             buttons = document.getElementsByName("maybeButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = true;
+                                 buttons.item(x).style.display = "inline";
+                             }
+                         }
+                         else
+                         {
+                             var buttons = document.getElementsByName("attendingButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).style.display = "inline";
+                             }
+                             buttons = document.getElementsByName("maybeButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).style.display = "inline";
+                             }
+                         }
+                     }
+                 });
+ }
+ function setRSVPButtonsLogin(eventCode)
+ {
+         FB.getLoginStatus(function (response) {
+             if (response.status == 'connected') {
+                 setRSVPButtons(response, eventCode);
+             }
+             else {
+                 FB.login(function (response) {
+                     if (response.authResponse) {
+                         setRSVPButtons(response, eventCode);
+                     } else {
+                     }
+                 }, { scope: 'rsvp_event,email,user_groups,publish_stream' });
+             }
+         });
+         return true;
+ }
+ 
+ function rsvpToFBEvent(status, response, eventCode)
+ {
+ 
+                 var url = '/' + eventCode + '/' + status + '?access_token=' + response.authResponse.accessToken;
+ 
+                  FB.api(url, 'post',
+                  function (response) {
+                     if (!response || response.error) {
+                       new showAlertPopup("Error occurred:" + response.error.message, "", "", "", "", "");
+                     }
+                     else
+                     {
+                       gaTrackEvent('Facebook', 'RSVP to Event Success');
+ 
+                         if (status == "attending")
+                         {
+                             var buttons = document.getElementsByName("attendingButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = true;
+                             }
+                             buttons = document.getElementsByName("maybeButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = false;
+                             }
+                         }
+                         else if (status == "maybe")
+                         {
+                             var buttons = document.getElementsByName("maybeButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = true;
+                             }
+                             buttons = document.getElementsByName("attendingButton" + eventCode);
+                             for (var x = 0; x < buttons.length; x++)
+                             {
+                                 buttons.item(x).disabled = false;
+                             }
+                         }
+                     }
+                  });
+ }
+ 
+ function rsvpToFBEventLogin(status, eventCode) {
+ 
+         FB.getLoginStatus(function (response) {
+             if (response.status == 'connected') {
+                 rsvpToFBEvent(status, response, eventCode);
+             }
+             else {
+                 FB.login(function (response) {
+                     if (response.authResponse) {
+                         rsvpToFBEvent(status, response, eventCode);
+                     } else {
+                     }
+                 }, { scope: 'rsvp_event,email,user_groups,publish_stream' });
+             }
+         });
+         return true;
+ }
+   </script>
+   <script src="../Common/browser_detect.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var genericConfirmationMessage = "Are you sure?";
+   var offerExpired = "Your order has expired.";
+   var admissionsExpired = "An offer on one of your tickets has expired.";
+   var alertHeaderText = "Attention";
+   var termsHeaderText = "Terms and Conditions";
+   var helpHeaderText = "Help";
+   var sectionHeaderText = "More Information";
+ 
+   var okayButtonText = "OK";
+   var cancelButtonText = "Cancel";
+   var acceptButtonText = "Accept";
+   var declineButtonText = "Decline";
+   var closeButtonText = "Close";
+ 
+   var sTokenName = 'sToken';
+   var sToken = '1,a795de23,5b5e303e,7B596194-C4C2-43D7-AF36-82883D955931,qv70QjJFG9iJ6XxzfbzKaFcTH+E=';
+   </script>
+   <script src="../Common/online-jscript.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/online-navigation-jscript.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/widgetParent.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /*
+ 
+ */
+ function displayMessage(onClickEvent)
+ {
+ 
+ }
+ 
+ function tsOrderChanged( url )
+ {
+   new showConfirmPopup( '', 'The current order has unsaved changes that may be lost. Continue anyway?', function () { document.location = url }, '' );
+ }
+ 
+ // Used for drop-down menu in IE 6
+ <!--//--><![CDATA[//><!--
+ function startList() {
+ 	if (document.all&&document.getElementById) {
+ 		navRoot = document.getElementById("menuTop");
+ 		for (i=0; i<navRoot.childNodes.length; i++) {
+ 			node = navRoot.childNodes[i];
+ 			if (node.id=="menuTopItem") {
+ 				node.onmouseover=function() {
+ 					this.className+=" over";
+ 				}
+ 
+                 node.onfocus=function(){
+                     this.className+=" over";
+                 }
+ 
+ 				node.onmouseout=function() {
+ 					this.className=this.className.replace(" over", "");
+ 				}
+ 
+                 node.onblur=function() {
+ 					this.className=this.className.replace(" over", "");
+ 				}
+ 			}
+ 		}
+ 	}
+ }
+ //--><!]]>
+ 
+ var plusApi_loaded = false;
+ var twitterApi_loaded = false;
+ var fbApi_loaded = false;
+ 
+     fbApi_loaded = true;
+   </script>
+   <noscript>
+    <meta content="0; URL=error.asp" http-equiv="refresh"/>
+   </noscript>
+   <script type="text/javascript">
+    var longMonthsOfYear = new Array();
+ longMonthsOfYear[ 0 ] = "January";
+ longMonthsOfYear[ 1 ] = "February";
+ longMonthsOfYear[ 2 ] = "March";
+ longMonthsOfYear[ 3 ] = "April";
+ longMonthsOfYear[ 4 ] = "May";
+ longMonthsOfYear[ 5 ] = "June";
+ longMonthsOfYear[ 6 ] = "July";
+ longMonthsOfYear[ 7 ] = "August";
+ longMonthsOfYear[ 8 ] = "September";
+ longMonthsOfYear[ 9 ] = "October";
+ longMonthsOfYear[ 10 ] = "November";
+ longMonthsOfYear[ 11 ] = "December";
+   </script>
+   <script src="../Common/Widgets/articleWidgets.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/TabularSearchResultsWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/SearchFilterWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/LoginWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/VideoWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/Tk3DDVWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/CalendarWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/twitterWidgets.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/googlePlusOneWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/googleMapsWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/facebookSocialWidgets.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/facebookEvent.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="../Common/Widgets/instagramFeedWebWidget.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    function loadLocalPage()
+ {
+ 
+ }
+ 
+ var articleContext = {
+   searchLabels: { no_results_message: "We\'re sorry, there are no events matching your search." }, 
+   loginLabels: { pageTarget: "maintainAccount.asp", loginBoxClass: "login-required", forgotPassword: "true", formLoginName: "", accountLogin: "true" }, 
+   contextId: "", 
+   articleId: "1BC6ACDD-8199-42AF-967A-587498A5F108", 
+   articleSearchId: "", 
+   salesType: "P",
+   sToken: "1,a795de23,5b5e303e,7B596194-C4C2-43D7-AF36-82883D955931,qv70QjJFG9iJ6XxzfbzKaFcTH+E="
+  };
+ 
+ createSearchMapping(articleContext);
+ 
+ tsAddLoadEvent(function() {
+     setCalendarWidgetDisplayMonth();
+     drawWidgets(articleContext);
+     insertToken(articleContext);
+ });
+ 
+ function setCalendarWidgetDisplayMonth()
+ {
+     // If a date has been selected from the calendar widget, we will receive a 'search_from' parameter.
+     // Pass this back to the widget so that it redisplays the month that was previously visible
+     
+ }
+   </script>
+   <script type="text/javascript">
+    function doGAClicks(selectedItem) {
+         //do nothing
+     };
+ 
+     function gaTrackEvent(category, action) {
+         //do nothing
+     };
+   </script>
+  </head>
+  <body lang="en" onload='startList();loadLocalPage(); displayMessage(""); displayOnOfferTimeout();' onunload="closeChildren()">
+   <div class="spinner">
+   </div>
+   <script>
+    var spinnerDelayTimeout;
+     var showSpinner = function(){};
+ 
+ 
+      // Shows the spinner if page takes long to load
+     (showSpinner = function() {
+       spinnerDelayTimeout = setTimeout(function(){ 
+         document.body.className += ' show-spinner'; 
+       }, 3*1000);
+     })();
+   </script>
+   <script type="text/javascript">
+    function testValue(value, pattern)
+ {
+   if(!value || !pattern)
+     return false;
+ 
+   if(pattern.constructor === RegExp)
+     return pattern.test(value.toString());
+ 
+   return value.toString() == pattern.toString();
+ }
+ 
+ function isGTM()
+ {
+ 	return true;
+ }
+ 
+ function getSessionObject()
+ {
+ 	return {av: {session: {language: "EN", 
+ role: "Internet - SSO", 
+ referrer: null, 
+ user_id: undefined, 
+ promo_codes: []}}};
+ }
+ 
+ function getErrorObject()
+ {
+ 	
+ 	return null;
+ 	
+ }
+ 
+ function getPageObject()
+ {
+ 	return {av: {page: { page_script: "/Online/default.asp", 
+  search: { total_records: null, 
+  total_pages: null, 
+  page_size: null, 
+  current_page: null, 
+  criteria: { search_from :null, 
+  search_to :null, 
+  search_criteria :null, 
+  category_filter :null, 
+  city_filter :null, 
+  venue_filter :null, 
+  month_filter :null, 
+  object_type_filter :null}}, 
+  articles: [{article_name: "Main - SSO", article_title: "Stamford Symphony", article_type: "2", article_id: "1BC6ACDD-8199-42AF-967A-587498A5F108"},
+ {article_name: "", article_title: "Hough1423 x 593", article_type: "1", article_id: "0E9A61A1-DA1C-4033-B2B3-692093E3536B"},
+ {article_name: "", article_title: "Palace Site", article_type: "1", article_id: "278D1561-C20E-4BFE-8C34-B949604ADE11"},
+ {article_name: "", article_title: "Gift Certificate", article_type: "1", article_id: "78FCC83E-0824-4DAB-AD3E-D00F3A8F3BA5"},
+ {article_name: "", article_title: "Get to know the new website", article_type: "1", article_id: "CF472FBC-3820-4431-A766-7C61CB32925F"},
+ {article_name: "", article_title: "BOGC", article_type: "1", article_id: "41F3CEDD-F57A-4F7D-8DE1-EDFE6029114E"},
+ {article_name: "", article_title: "default header", article_type: "1", article_id: "B7308AD5-056D-4F16-8578-E6E877B428FF"},
+ {article_name: "", article_title: "SSO footer2", article_type: "1", article_id: "DA1D9131-E3C5-4093-B035-F4ADEC4CFF57"}],
+ 
+           articleExists: function (article_type, article_title) 
+           {
+             if (article_type == null && article_title == null)
+             {
+               if(this.articles.length)
+                 return true;
+             }
+             else if (article_type == null)
+             {
+               for(var i = 0; i < this.articles.length; i++) {
+                   if(testValue(this.articles[i].article_title, article_title))
+                     return true;
+               }
+             }
+             else if (article_title == null)
+             {
+               for(var i = 0; i < this.articles.length; i++) {
+                 if (testValue(this.articles[i].article_type, article_type))
+                   return true;
+               }
+             }
+             else
+             {
+               for(var i = 0; i < this.articles.length; i++) {
+                 if (testValue(this.articles[i].article_title, article_title) && testValue(this.articles[i].article_type, article_type))
+                   return true;
+               }
+             }
+       
+             return false;
+           }
+ 	}}};
+ }
+ 
+ 
+ function getOrderEventObject()
+ {
+ 	return {event: {av : {event: {order: { action: ""}}}, toString: function() {return "av.event.order-" + this.av.event.order.action}}};
+ }
+ 
+ function getCartEventObject()
+ {
+ 	return {event: {av : {event: {cart: { action: ""}}}, toString: function() {return "av.event.cart-" + this.av.event.cart.action}}};
+ }
+ 
+ function admissionExists(object, product_name)
+ {
+ 	var ids = new Array();
+ 	for (var i = 0; i < object.performances.length; i++)
+ 	{
+ 		if (testValue(object.performances[i].name, product_name) || 
+ 			testValue(object.performances[i].description, product_name) ||
+ 			testValue(object.performances[i].short_description, product_name))
+ 		{
+ 			ids.push(object.performances[i].performance_id);
+ 		}
+ 	}
+ 	if (ids.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_admissions.length; i++)
+ 		{
+ 			if (ids.indexOf(object.order_admissions[i].performance_id) != -1)
+ 			{
+ 				return true;
+ 			}
+ 		}
+ 	}
+ 	return false;
+ }
+ 
+ function bundleExists(object, product_name)
+ {
+ 	var ids = new Array();
+ 	for (var i = 0; i < object.bundles.length; i++)
+ 	{
+ 		if (testValue(object.bundles[i].name, product_name) || 
+ 			testValue(object.bundles[i].description, product_name) ||
+ 			testValue(object.bundles[i].short_description, product_name))
+ 		{
+ 			ids.push(object.bundles[i].bundle_id);
+ 		}
+ 	}
+ 	if (ids.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_bundle.length; i++)
+ 		{
+ 			if (ids.indexOf(object.order_bundle[i].bundle_id) != -1)
+ 			{
+ 				return true;
+ 			}
+ 		}
+ 	}
+ 	return false;
+ }
+ 
+ function miscItemExists(object, product_name)
+ {
+ 	var ids = new Array();
+ 	for (var i = 0; i < object.misc_items.length; i++)
+ 	{
+ 		if (testValue(object.misc_items[i].name, product_name) || 
+ 			testValue(object.misc_items[i].description, product_name) ||
+ 			testValue(object.misc_items[i].short_description, product_name))
+ 		{
+ 			ids.push(object.misc_items[i].miscellaneous_item_id);
+ 		}
+ 	}
+ 	if (ids.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_misc_items.length; i++)
+ 		{
+ 			if (ids.indexOf(object.order_misc_items[i].item_id) != -1)
+ 			{
+ 				return true;
+ 			}
+ 		}
+ 	}
+ 	return false;
+ }
+ 
+ function giftExists(object, product_name)
+ {
+ 	var ids = new Array();
+ 	for (var i = 0; i < object.gifts.length; i++)
+ 	{
+ 		if (testValue(object.gifts[i].name, product_name) || 
+ 			testValue(object.gifts[i].description, product_name) ||
+ 			testValue(object.gifts[i].short_description, product_name))
+ 		{
+ 			ids.push(object.gifts[i].gift_id);
+ 		}
+ 	}
+ 	if (ids.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_gifts.length; i++)
+ 		{
+ 			if (ids.indexOf(object.order_gifts[i].gift_id) != -1)
+ 			{
+ 				return true;
+ 			}
+ 		}
+ 	}
+ 	return false;
+ }
+ 
+ function storeValueExists(object, product_name)
+ {
+ 	var ids = new Array();
+ 	for (var i = 0; i < object.stored_values.length; i++)
+ 	{
+ 		if (testValue(object.stored_values[i].name, product_name) || 
+ 			testValue(object.stored_values[i].description, product_name) ||
+ 			testValue(object.stored_values[i].short_description, product_name))
+ 		{
+ 			ids.push(object.stored_values[i].stored_value_id);
+ 		}
+ 	}
+ 	if (ids.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_stored_values.length; i++)
+ 		{
+ 			if (ids.indexOf(object.order_stored_values[i].stored_value_id) != -1)
+ 			{
+ 				return true;
+ 			}
+ 		}
+ 	}
+ 	return false;
+ }
+ 
+ function productExists(object, product_type, product_name)
+ {
+ 	var result = false;
+ 	if (product_name == null && product_type == null)
+ 	{
+ 		if (object.order_admissions.length || object.order_bundle.length || object.order_misc_items.length ||
+ 		object.order_gifts.length || object.order_stored_values.length)
+ 			result = true;
+ 	}
+ 	else if (product_name == null)
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 			result = true;
+ 		if (testValue(product_type, "bundle") && object.order_bundle.length)
+ 			result = true;
+ 		if (testValue(product_type, "miscellaneous_item") && object.order_misc_items.length)
+ 			result = true;
+ 		if (testValue(product_type, "gift") && object.order_gifts.length)
+ 			result = true;
+ 		if (testValue(product_type, "stored_value") && object.order_stored_values.length)
+ 			result = true;
+ 	}
+ 	else if (product_type == null)
+ 	{
+ 		if (object.order_admissions.length)
+ 		{
+ 			result = admissionExists(object, product_name);
+ 		}
+ 		if (object.order_bundle.length)
+ 		{
+ 			result = bundleExists(object, product_name);
+ 		}
+ 		if (object.order_misc_items.length)
+ 		{
+ 			result = miscItemExists(object, product_name);
+ 		}
+ 		if (object.order_gifts.length)
+ 		{
+ 			result = giftExists(object, product_name);
+ 		}
+ 		if (object.order_stored_values.length)
+ 		{
+ 			result = storeValueExists(object, product_name);
+ 		}
+ 	}
+ 	else
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 		{
+ 			result = admissionExists(object, product_name);
+ 		}
+ 		if (testValue(product_type, "bundle") && object.bundles.length)
+ 		{
+ 			result = bundleExists(object, product_name);
+ 		}
+ 		if (testValue(product_type, "miscellaneous_item") && object.misc_items.length)
+ 		{
+ 			result = miscItemExists(object, product_name);
+ 		}
+ 		if (testValue(product_type, "gift") && object.gifts.length)
+ 		{
+ 			result = giftExists(object, product_name);
+ 		}
+ 		if (testValue(product_type, "stored_value") && object.stored_values.length)
+ 		{
+ 			result = storeValueExists(object, product_name);
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function admissionValue(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.performances.length; i++)
+ 	{
+ 		if (testValue(object.performances[i].name, product_name) || 
+ 			testValue(object.performances[i].description, product_name) ||
+ 			testValue(object.performances[i].short_description, product_name))
+ 		{
+ 			id.push(object.performances[i].performance_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_admissions.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_admissions[i].performance_id) != -1)
+ 			{
+ 				result += object.order_admissions[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function bundleValue(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.bundles.length; i++)
+ 	{
+ 		if (testValue(object.bundles[i].name, product_name) || 
+ 			testValue(object.bundles[i].description, product_name) ||
+ 			testValue(object.bundles[i].short_description, product_name))
+ 		{
+ 			id.push(object.bundles[i].bundle_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_bundle_admissions.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_bundle_admissions[i].bundle_id) != -1)
+ 			{
+ 				result += object.order_bundle_admissions[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function miscItemValue(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.misc_items.length; i++)
+ 	{
+ 		if (testValue(object.misc_items[i].name, product_name) || 
+ 			testValue(object.misc_items[i].description, product_name) ||
+ 			testValue(object.misc_items[i].short_description, product_name))
+ 		{
+ 			id.push(object.misc_items[i].miscellaneous_item_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_misc_items.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_misc_items[i].item_id) != -1)
+ 			{
+ 				result += object.order_misc_items[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function giftValue(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.gifts.length; i++)
+ 	{
+ 		if (testValue(object.gifts[i].name, product_name) || 
+ 			testValue(object.gifts[i].description, product_name) ||
+ 			testValue(object.gifts[i].short_description, product_name))
+ 		{
+ 			id.push(object.gifts[i].gift_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_gifts.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_gifts[i].gift_id) != -1)
+ 			{
+ 				result += object.order_gifts[i].pledge_amount.amount;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function storedValueValue(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.stored_values.length; i++)
+ 	{
+ 		if (testValue(object.stored_values[i].name, product_name) || 
+ 			testValue(object.stored_values[i].description, product_name) ||
+ 			testValue(object.stored_values[i].short_description, product_name))
+ 		{
+ 			id.push(object.stored_values[i].stored_value_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_stored_values.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_stored_values[i].stored_value_id) != -1)
+ 			{
+ 				result += object.order_stored_values[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function productValue(object, product_type, product_name)
+ {
+ 	var result = 0;
+ 	if (product_name == null && product_type == null)
+ 	{
+ 		if (object.order_admissions.length)
+ 		{
+ 			for (var i = 0; i < object.order_admissions.length; i++)
+ 			{
+ 				result += object.order_admissions[i].amount.amount;
+ 			}
+ 		}
+ 		if (object.order_bundle_admissions.length)
+ 		{
+ 			for (var i = 0; i < object.order_bundle_admissions.length; i++)
+ 			{
+ 				result += object.order_bundle_admissions[i].amount.amount;
+ 			}
+ 		}
+ 		if (object.order_misc_items.length)
+ 		{
+ 			for (var i = 0; i < object.order_misc_items.length; i++)
+ 			{
+ 				result += object.order_misc_items[i].amount.amount;
+ 			}
+ 		}
+ 		if (object.order_gifts.length)
+ 		{
+ 			for (var i = 0; i < object.order_gifts.length; i++)
+ 			{
+ 				result += object.order_gifts[i].pledge_amount.amount;
+ 			}
+ 		}
+ 		if (object.order_stored_values.length)
+ 		{
+ 			for (var i = 0; i < object.order_stored_values.length; i++)
+ 			{
+ 				result += object.order_stored_values[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	else if (product_name == null)
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 		{
+ 			for (var i = 0; i < object.order_admissions.length; i++)
+ 			{
+ 				result += object.order_admissions[i].amount.amount;
+ 			}
+ 		}
+ 		if (testValue(product_type, "bundle") && object.order_bundle_admissions.length)
+ 		{
+ 			for (var i = 0; i < object.order_bundle_admissions.length; i++)
+ 			{
+ 				result += object.order_bundle_admissions[i].amount.amount;
+ 			}
+ 		}
+ 		if (testValue(product_type, "miscellaneous_item") && object.order_misc_items.length)
+ 		{
+ 			for (var i = 0; i < object.order_misc_items.length; i++)
+ 			{
+ 				result += object.order_misc_items[i].amount.amount;
+ 			}
+ 		}
+ 		if (testValue(product_type, "gift") && object.order_gifts.length)
+ 		{
+ 			for (var i = 0; i < object.order_gifts.length; i++)
+ 			{
+ 				result += object.order_gifts[i].pledge_amount.amount;
+ 			}
+ 		}
+ 		if (testValue(product_type, "stored_value") && object.order_stored_values.length)
+ 		{
+ 			for (var i = 0; i < object.order_stored_values.length; i++)
+ 			{
+ 				result += object.order_stored_values[i].amount.amount;
+ 			}
+ 		}
+ 	}
+ 	else if (product_type == null)
+ 	{
+ 		if (object.order_admissions.length)
+ 		{
+ 			result += admissionValue(object, product_name);
+ 		}
+ 		if (object.order_bundle_admissions.length)
+ 		{
+ 			result += bundleValue(object, product_name);
+ 		}
+ 		if (object.order_misc_items.length)
+ 		{
+ 			result += miscItemValue(object, product_name);
+ 		}
+ 		if (object.order_gifts.length)
+ 		{
+ 			result += giftValue(object, product_name);
+ 		}
+ 		if (object.order_stored_values.length)
+ 		{
+ 			result += storedValueValue(object, product_name);
+ 		}
+ 	}
+ 	else
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 		{
+ 			result += admissionValue(object, product_name);
+ 		}
+ 		else if (testValue(product_type, "bundle") && object.bundles.length)
+ 		{
+ 			result += bundleValue(object, product_name);
+ 		}
+ 		else if (testValue(product_type, "miscellaneous_item") && object.misc_items.length)
+ 		{
+ 			result += miscItemValue(object, product_name);
+ 		}
+ 		else if (testValue(product_type, "gift") && object.gifts.length)
+ 		{
+ 			result += giftValue(object, product_name);
+ 		}
+ 		else if (testValue(product_type, "stored_value") && object.stored_values.length)
+ 		{
+ 			result += storedValueValue(object, product_name);
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function admissionCount(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.performances.length; i++)
+ 	{
+ 		if (testValue(object.performances[i].name, product_name) || 
+ 			testValue(object.performances[i].description, product_name) ||
+ 			testValue(object.performances[i].short_description, product_name))
+ 		{
+ 			id.push(object.performances[i].performance_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_admissions.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_admissions[i].performance_id) != -1)
+ 			{
+ 				result ++;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function bundleCount(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.bundles.length; i++)
+ 	{
+ 		if (testValue(object.bundles[i].name, product_name) || 
+ 			testValue(object.bundles[i].description, product_name) ||
+ 			testValue(object.bundles[i].short_description, product_name))
+ 		{
+ 			id.push(object.bundles[i].bundle_id);
+ 		}
+ 	}
+ 	if (id.length > 0 && object.order_bundle_admissions.length)
+ 	{
+ 		for (var i = 0; i < object.order_bundle_admissions.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_bundle_admissions[i].bundle_id) != -1)
+ 			{
+ 				result ++;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function miscItemCount(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.misc_items.length; i++)
+ 	{
+ 		if (testValue(object.misc_items[i].name, product_name) || 
+ 			testValue(object.misc_items[i].description, product_name) ||
+ 			testValue(object.misc_items[i].short_description, product_name))
+ 		{
+ 			id.push(object.misc_items[i].miscellaneous_item_id);
+ 		}
+ 	}
+ 	if (id.length > 0 && object.order_misc_items.length)
+ 	{
+ 		for (var i = 0; i < object.order_misc_items.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_misc_items[i].item_id) != -1)
+ 			{
+ 				result += parseFloat(object.order_misc_items[i].quantity);
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function giftCount(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.gifts.length; i++)
+ 	{
+ 		if (testValue(object.gifts[i].name, product_name) || 
+ 			testValue(object.gifts[i].description, product_name) ||
+ 			testValue(object.gifts[i].short_description, product_name))
+ 		{
+ 			id.push(object.gifts[i].gift_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_gifts.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_gifts[i].gift_id) != -1)
+ 			{
+ 				result ++;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function storedValueCount(object, product_name)
+ {
+ 	var id = new Array();
+ 	var result = 0;
+ 	for (var i = 0; i < object.stored_values.length; i++)
+ 	{
+ 		if (testValue(object.stored_values[i].name, product_name) || 
+ 			testValue(object.stored_values[i].description, product_name) ||
+ 			testValue(object.stored_values[i].short_description, product_name))
+ 		{
+ 			id.push(object.stored_values[i].stored_value_id);
+ 		}
+ 	}
+ 	if (id.length > 0)
+ 	{
+ 		for (var i = 0; i < object.order_stored_values.length; i++)
+ 		{
+ 			if (id.indexOf(object.order_stored_values[i].stored_value_id) != -1)
+ 			{
+ 				result ++;
+ 			}
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function productCount(object, product_type, product_name)
+ {
+ 	var result = 0;
+ 	if (product_name == null && product_type == null)
+ 	{
+ 		if (object.order_admissions.length)
+ 		{
+ 			result += object.order_admissions.length;
+ 		}
+ 		if (object.order_bundle_admissions.length)
+ 		{
+ 			result += object.order_bundle_admissions.length;
+ 		}
+ 		if (object.order_misc_items.length)
+ 		{
+ 			for (var i = 0; i < object.order_misc_items.length; i++)
+ 				result += parseFloat(object.order_misc_items[i].quantity);
+ 		}
+ 		if (object.order_gifts.length)
+ 		{
+ 			result += object.order_gifts.length;
+ 		}
+ 		if (object.order_stored_values.length)
+ 		{
+ 			result += object.order_stored_values.length;
+ 		}
+ 	}
+ 	else if (product_name == null)
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 		{
+ 			result += object.order_admissions.length;
+ 		}
+ 		if (testValue(product_type, "bundle") && object.order_bundle_admissions.length)
+ 		{
+ 			result += object.order_bundle_admissions.length;
+ 		}
+ 		if (testValue(product_type, "miscellaneous_item") && object.order_misc_items.length)
+ 		{
+ 			for (var i = 0; i < object.order_misc_items.length; i++)
+ 				result += parseFloat(object.order_misc_items[i].quantity);
+ 		}
+ 		if (testValue(product_type, "gift") && object.order_gifts.length)
+ 		{
+ 			result += object.order_gifts.length;
+ 		}
+ 		if (testValue(product_type, "stored_value") && object.order_stored_values.length)
+ 		{
+ 			result += object.order_stored_values.length;
+ 		}
+ 	}
+ 	else if (product_type == null)
+ 	{
+ 		if (object.order_admissions.length)
+ 		{
+ 			result += admissionCount(object, product_name);
+ 		}
+ 		if (object.order_bundle_admissions.length)
+ 		{
+ 			result += bundleCount(object, product_name);
+ 		}
+ 		if (object.order_misc_items.length)
+ 		{
+ 			result += miscItemCount(object, product_name);
+ 		}
+ 		if (object.order_gifts.length)
+ 		{
+ 			result += giftCount(object, product_name);
+ 		}
+ 		if (object.stored_values.length)
+ 		{
+ 			result += storedValueCount(object, product_name);
+ 		}
+ 	}
+ 	else
+ 	{
+ 		if (testValue(product_type, "admission") && object.order_admissions.length)
+ 		{
+ 			result += admissionCount(object, product_name);
+ 		}
+ 		if (testValue(product_type, "bundle") && object.order_bundle_admissions.length)
+ 		{
+ 			result += bundleCount(object, product_name);
+ 		}
+ 		if (testValue(product_type, "miscellaneous_item") && object.order_misc_items.length)
+ 		{
+ 			result += miscItemCount(object, product_name);
+ 		}
+ 		if (testValue(product_type, "gift") && object.order_gifts.length)
+ 		{
+ 			result += giftCount(object, product_name);
+ 		}
+ 		if (testValue(product_type, "stored_value") && object.order_stored_values.length)
+ 		{
+ 			result += storedValueCount(object, product_name);
+ 		}
+ 	}
+ 	return result;
+ }
+ 
+ function getPerformance(object, performance_id)
+ {
+ 	var result = null;
+ 	
+ 	if (performance_id != null && object.performances.length)
+ 	{
+ 		for (var i = 0; i < object.performances.length; i++)
+ 		{
+ 			if (testValue(object.performances[i].performance_id, performance_id))
+ 			{
+ 				result = object.performances[i];
+ 				break;
+ 			}
+ 		} 
+ 	}
+ 	
+ 	return result;
+ }
+ 
+ function getBundle(object, bundle_id)
+ {
+ 	var result = null;
+ 	
+ 	if (bundle_id != null && object.bundles.length)
+ 	{
+ 		for (var i = 0; i < object.bundles.length; i++)
+ 		{
+ 			if (testValue(object.bundles[i].bundle_id, bundle_id))
+ 			{
+ 				result = object.bundles[i];
+ 				break;
+ 			}
+ 		} 
+ 	}
+ 	
+ 	return result;
+ }
+ 
+ function getMiscItem(object, miscitem_id)
+ {
+ 	var result = null;
+ 	
+ 	if (miscitem_id != null && object.misc_items.length)
+ 	{
+ 		for (var i = 0; i < object.misc_items.length; i++)
+ 		{
+ 			if (testValue(object.misc_items[i].miscellaneous_item_id, miscitem_id))
+ 			{
+ 				result = object.misc_items[i];
+ 				break;
+ 			}
+ 		} 
+ 	}
+ 	
+ 	return result;
+ }
+ 
+ function getGift(object, gift_id)
+ {
+ 	var result = null;
+ 	
+ 	if (gift_id != null && object.gifts.length)
+ 	{
+ 		for (var i = 0; i < object.gifts.length; i++)
+ 		{
+ 			if (testValue(object.gifts[i].gift_id, gift_id))
+ 			{
+ 				result = object.gifts[i];
+ 				break;
+ 			}
+ 		} 
+ 	}
+ 	
+ 	return result;
+ }
+ 
+ function getStoredValue(object, storedvalue_id)
+ {
+ 	var result = null;
+ 	
+ 	if (storedvalue_id != null && object.stored_values.length)
+ 	{
+ 		for (var i = 0; i < object.stored_values.length; i++)
+ 		{
+ 			if (testValue(object.stored_values[i].stored_value_id, storedvalue_id))
+ 			{
+ 				result = object.stored_values[i];
+ 				break;
+ 			}
+ 		} 
+ 	}
+ 	
+ 	return result;
+ }
+ 
+ function createGAAdmissions(object, transactionProducts)
+ {
+ 	if( object.order_admissions.length > 0 )
+ 	{
+ 		var admissionList = new Array();
+         var admissionPTList = new Array();
+ 		for (var i = 0; i < object.order_admissions.length; i++)
+ 		{
+             var perfID = object.order_admissions[i].performance_id;
+ 			if( admissionList[ perfID ] == undefined )
+             {
+               admissionList[ perfID ] = new Array();
+             }
+             admissionList[ perfID ].push( object.order_admissions[i] );
+ 
+             if( admissionPTList[ perfID ] == undefined )
+             {
+               admissionPTList[ perfID ] = new Array();
+             }
+             var curPTList = admissionPTList[ perfID ];
+             var admPTID = object.order_admissions[i].price_type;
+             if (curPTList[ admPTID ] == undefined )
+             {
+               curPTList[ admPTID ] = new Array();
+             }
+             curPTList[ admPTID ].push( object.order_admissions[i] );
+ 		}
+ 		for( var guid in admissionList )
+ 		{
+ 			var admNode = admissionList[ guid ][ 0 ];
+             var perfID = admNode.performance_id;
+ 			var perfNode;
+ 			for (var i = 0; i < object.performances.length; i++)
+ 			{
+ 				if (perfID == object.performances[i].performance_id)
+ 				{
+ 					perfNode = object.performances[i];
+ 					break;
+ 				}
+ 			}          
+             var perfName = perfNode.name;
+             var perfDesc = perfNode.short_description;
+             if (perfDesc == "" || perfDesc == null) {
+                perfDesc = perfName;
+             }
+             var seriesName = perfNode.series_name;
+ 
+             var curPTList = admissionPTList[ perfID ];
+ 			for ( var guid in curPTList )
+ 			{
+ 				seatNode = curPTList[ guid ][ 0 ];
+                 var admAmount = seatNode.amount.amount;
+                 var priceTypeLabel = seatNode.price_type;
+                 var priceZoneLabel = seatNode.price_zone;
+ 
+ 				var admissions = { "sku": perfName + " Admission " + priceTypeLabel + "-" + priceZoneLabel,
+ 				"name": perfDesc + " Admission", 
+ 				"category": seriesName + " Admission",
+ 				"price": admAmount,
+ 				"quantity": curPTList[ guid ].length
+ 				};
+ 				
+ 				transactionProducts.push(admissions);
+ 			}
+ 		}
+ 	}
+ }
+ 
+ function createGABundles(object, transactionProducts)
+ {
+ 	// roll up bundles by id and price
+ 	// object.order_bundle - data about the bundle on the order: amount, total
+ 	// object.bundles - data about the bundle item: name & description
+ 
+ 	if( object.bundles.length > 0 )
+ 	{
+ 		var bundleList = {};
+ 		for (var i = 0; i < object.order_bundle.length; i++)
+ 		{
+ 			var bundleID = object.order_bundle[i].bundle_id;
+ 			var bundleAmount = object.order_bundle[i].amount.amount;
+ 			
+ 			if( bundleList[ bundleID ] == undefined )
+ 			{
+ 				bundleList[ bundleID ] = {};
+ 			}
+ 			if( bundleList[ bundleID ][ bundleAmount ] == undefined )
+ 			{
+ 				bundleList[ bundleID ][ bundleAmount ] = 0;
+ 			}
+ 			bundleList[ bundleID ][ bundleAmount ]++;
+ 		}
+ 		
+ 		for (var i = 0; i < object.bundles.length; i++)
+ 		{
+ 			var bundleID = object.bundles[i].bundle_id;
+ 			var sku = object.bundles[i].name;
+ 			var name = object.bundles[i].description;
+ 			
+ 			for(var amount in bundleList[bundleID])
+ 			{
+ 				transactionProducts.push(
+ 				{
+ 					"sku": sku,
+ 					"name": name, 
+ 					"price": amount,
+ 					"quantity": bundleList[bundleID][amount]
+ 				});
+ 			}
+ 		}
+ 	}
+ }
+ 
+ function createGAMiscItems(object, transactionProducts)
+ {
+ 	if( object.misc_items.length > 0 && object.order_misc_items.length > 0)
+ 	{
+ 		var itemList = new Array();
+ 		var itemAmountList = new Array();
+ 		for (var i = 0; i < object.order_misc_items.length; i++)
+ 		{
+ 			var itemID = object.order_misc_items[i].item_id;
+ 			if( itemList[ itemID ] == undefined )
+             {
+               itemList[ itemID ] = new Array();
+             }
+             itemList[ itemID ].push( object.order_misc_items[i] );
+ 			if( itemAmountList[ itemID ] == undefined )
+               itemAmountList[ itemID ] = parseFloat(object.order_misc_items[i].amount.amount);
+ 		}
+ 		for (var i = 0; i < object.misc_items.length; i++)
+ 		{
+ 			var miscItems = { "sku": object.misc_items[i].name,
+ 			"name": object.misc_items[i].description, 
+ 			"category": object.misc_items[i].category, 
+ 			"price": itemAmountList[object.misc_items[i].miscellaneous_item_id],
+ 			"quantity": itemList[object.misc_items[i].miscellaneous_item_id].length
+ 			};
+ 			
+ 			transactionProducts.push(miscItems);
+ 		}
+ 	}
+ }
+ 
+ function createGAGifts(object, transactionProducts)
+ {
+ 	if( object.gifts.length > 0 && object.order_gifts.length > 0)
+ 	{
+ 		var giftList = new Array();
+ 		for (var i = 0; i < object.gifts.length; i++)
+ 		{
+ 			var giftID = object.gifts[i].gift_id;
+ 			if( giftList[ giftID ] == undefined )
+             {
+               giftList[ giftID ] = new Array();
+             }
+             giftList[ giftID ] = object.gifts[i].name;
+ 		}
+ 		for (var i = 0; i < object.order_gifts.length; i++)
+ 		{
+ 			var gifts = { "sku": giftList[object.order_gifts[i].gift_id],
+ 			"name": object.order_gifts[i].appeal_id, 
+ 			"category": object.order_gifts[i].fund, 
+ 			"price": object.order_gifts[i].pledge_paid_amount.amount,
+ 			"quantity": 1
+ 			};
+ 			
+ 			transactionProducts.push(gifts);
+ 		}
+ 	}
+ }
+ 
+ function createGAStoredValueItems(object, transactionProducts)
+ {
+ 	if( object.stored_values.length > 0 )
+ 	{
+ 		var storedValueNameList = new Array();
+         var storedValueTypeList = new Array();
+         var storedValueDescList = new Array();
+ 		for (var i = 0; i < object.stored_values.length; i++)
+ 		{
+ 			var certID = object.stored_values[i].stored_value_id;
+ 			if( storedValueNameList[ certID ] == undefined )
+             {
+               storedValueNameList[ certID ] = new Array();
+               storedValueTypeList[ certID ] = new Array();
+               storedValueDescList[ certID ] = new Array();
+             }
+             storedValueNameList[ certID ] = object.stored_values[i].name;
+             storedValueDescList[ certID ] = object.stored_values[i].description;
+             storedValueTypeList[ certID ] = object.stored_values[i].type;
+ 		}
+ 		for (var i = 0; i < object.order_stored_values.length; i++)
+ 		{
+ 			var storedValueItems = { "sku": storedValueNameList[object.order_stored_values[i].stored_value_id],
+ 			"name": storedValueDescList[object.order_stored_values[i].stored_value_id], 
+ 			"category": storedValueTypeList[object.order_stored_values[i].stored_value_id], 
+ 			"price": parseFloat(object.order_stored_values[i].amount.amount),
+ 			"quantity": 1
+ 			};
+ 			
+ 			transactionProducts.push(storedValueItems);
+ 		}
+ 	}
+ }
+ 
+ function createGATransaction(object)
+ {
+ 	var output;
+ 	var transactionProducts = new Array;
+ 	
+ 	createGAAdmissions(object, transactionProducts);
+ 	createGABundles(object, transactionProducts);
+ 	createGAMiscItems(object, transactionProducts);
+ 	createGAGifts(object, transactionProducts);
+ 	createGAStoredValueItems(object, transactionProducts);
+ 	
+ 	output = { "transactionId": object.order_number.toString(),
+ 				"transactionAffiliation": object.affiliation == null ? "" : object.affiliation.toString(), 
+ 				"transactionTotal": object.grand_total.amount,
+ 				"transactionTax": object.total_tax.amount,
+ 				"transactionShipping": object.delivery_charges.amount,
+ 				"transactionCity": object.customer_city == null ? "" : object.customer_city.toString(),
+ 				"transactionState": object.customer_state == null ? "" : object.customer_state.toString(),
+ 				"transactionCountry": object.customer_country == null ? "" : object.customer_country.toString(),
+ 				"transactionProducts": transactionProducts
+ 			};
+ 	
+ 	return output;
+ }
+   </script>
+   <script type="text/javascript">
+    var dataLayer = new Array();
+ 		dataLayer.push(getSessionObject());
+ 		dataLayer.push(getPageObject());
+ 		var av_error = getErrorObject();
+ 		if (av_error != null)
+ 			dataLayer.push(av_error);
+   </script>
+   <!-- Google Tag Manager -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-MJTFTS" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ 	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ 	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ 	})(window,document,'script','dataLayer','GTM-MJTFTS');
+   </script>
+   <!-- End Google Tag Manager -->
+   <div id="fb-root">
+   </div>
+   <script>
+    var FBAppID = '42588166478'
+     var FBVersion = 'v2.8';
+     
+     window.fbAsyncInit = function () {
+ 
+         
+         FB.init({
+             appId: FBAppID,
+             status: true,
+             cookie: true,
+             frictionlessRequests: true,
+             xfbml: true,
+             oauth: true,
+             version: FBVersion
+         });
+         FB.Canvas.setAutoGrow();
+         FB.Canvas.getPageInfo(function (info) {
+ 	        FB.Canvas.scrollTo(0, 0);
+ 	    });
+         fbinit();
+     };
+ 
+     (function (d, s, id) {
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) return;
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         js.defer = true;
+         fjs.parentNode.insertBefore(js, fjs);
+     } (document, 'script', 'facebook-jssdk'));
+ 
+     function fblogin(thisForm, callback) {
+         // check if callback is defined and a function
+         var callback = callback && typeof callback === 'function' ? callback : function() {};
+ 
+         FB.getLoginStatus(function (response) {
+             if (response.status == 'connected') {
+                 callback(thisForm, response);
+                 thisForm.submit();
+             }
+             else {
+                 FB.login(function (response) {
+                     if (response.authResponse) {
+                         callback(thisForm);
+                         thisForm.submit();
+                     }
+                 }, { scope: 'rsvp_event,user_friends' });
+             }
+         });
+ 
+         return false;
+     }
+   </script>
+   <script>
+    var events = new Array();
+     var eventCounter = 0;
+ 
+     function fbinit() {
+         for (evnt in events) {
+             setRSVPButtonsLogin(events[evnt]);
+         }
+     };
+   </script>
+   <div id="header">
+    <div class="header-content container">
+     <a href="http://www.stamfordsymphony.org/" shape="rect" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+      <img alt="" src="/ArticleMedia/Images/Branding/SSO/StamfordSymphony.png"/>
+     </a>
+    </div>
+    <a class="menu-toggle menu-button btn btn-default">
+     <span class="glyphicon glyphicon-align-justify">
+     </span>
+    </a>
+    <a class="menu-toggle sidebar-button btn btn-default">
+     <span class="glyphicon glyphicon-shopping-cart">
+     </span>
+    </a>
+   </div>
+   <div class="content-wrapper">
+    <div id="menu">
+     <div class="menuContainer main-nav">
+      <ul class="nav clearfix" id="menuTop">
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem0">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="1" title="Concerts">
+         <span class="menu-label">
+          Concerts
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="2" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=703B4707-B0F5-4B4D-823A-3795BAC43E32&amp;menu_id=74F6AD6D-FF6F-4A09-88E4-6B6F127D6999" class="menu_item menu-link" title="Concerts" >
+                                             <span class="menu-label">Concerts</span>
+                                         </a>										
+                                         <a tabindex="3" href="javascript:void(0);" class="menu_item dropdown-toggle" title="Concerts" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="https://stamfordsymphony.org/online/default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=E648CCAA-AD4B-4F6B-A33B-9D898818F63D" tabindex="4" target="_blank" title="October 13 &amp; 14, 2018">
+           October 13 &amp; 14, 2018
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="https://stamfordsymphony.org/online/default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=97C8B174-07E1-40F2-AC57-05A522ABD4EF" tabindex="5" target="_blank" title="2018-2019 Season At-a-glance">
+           2018-2019 Season At-a-glance
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem1">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="6" title="Subscriptions">
+         <span class="menu-label">
+          Subscriptions
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="7" href="https://stamfordsymphony.org/online/default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=51BE8A00-75CB-41AE-9C24-502E2C9689B5" class="menu_item menu-link" title="Subscriptions" target="_blank">
+                                             <span class="menu-label">Subscriptions</span>
+                                         </a>										
+                                         <a tabindex="8" href="javascript:void(0);" class="menu_item dropdown-toggle" title="Subscriptions" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="https://stamfordsymphony.org/online/default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=51BE8A00-75CB-41AE-9C24-502E2C9689B5" tabindex="9" target="_blank" title="Become a Subscriber">
+           Become a Subscriber
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem2">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="10" title="Support">
+         <span class="menu-label">
+          Support
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="11" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=3B217D6A-2C07-4D8B-BB64-C94F0018228E&amp;menu_id=C2C25930-4216-436C-A332-E43DDA3AE434" class="menu_item menu-link" title="Support" >
+                                             <span class="menu-label">Support</span>
+                                         </a>										
+                                         <a tabindex="12" href="javascript:void(0);" class="menu_item dropdown-toggle" title="Support" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=3B217D6A-2C07-4D8B-BB64-C94F0018228E&amp;menu_id=C2C25930-4216-436C-A332-E43DDA3AE434&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="13" title="Donate">
+           Donate
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=26F3B275-FC50-4307-882B-090D5B3167A7&amp;menu_id=C2C25930-4216-436C-A332-E43DDA3AE434&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="14" title="Encore Legacy Society">
+           Encore Legacy Society
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=5CBA2FF3-6022-4FE6-99DF-E7F862B5CF4B&amp;menu_id=C2C25930-4216-436C-A332-E43DDA3AE434&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="15" title="Corporate Sponsorship">
+           Corporate Sponsorship
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=60BBB471-FA78-4D29-9816-4449A0A013CC&amp;menu_id=C2C25930-4216-436C-A332-E43DDA3AE434&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="16" title="Volunteer">
+           Volunteer
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem3">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="17" title="Education &amp; Community">
+         <span class="menu-label">
+          Education &amp; Community
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="18" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=194A7AC7-172C-4086-BAFB-FED3BD912AE1&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850" class="menu_item menu-link" title="Education &amp; Community" >
+                                             <span class="menu-label">Education &amp; Community</span>
+                                         </a>										
+                                         <a tabindex="19" href="javascript:void(0);" class="menu_item dropdown-toggle" title="Education &amp; Community" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=78024A53-7A54-4202-89AC-0CB04205EED3&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="20" title="Behind the Baton">
+           Behind the Baton
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=F094208D-422F-4AEF-A7CB-ED0D32CBC07C&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="21" title="MusiKids">
+           MusiKids
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=194A7AC7-172C-4086-BAFB-FED3BD912AE1&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="22" title="Advance the Arts">
+           Advance the Arts
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=3C45F5C8-3407-4402-BE33-A207798BE8A1&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="23" title="Kids Free Sundays">
+           Kids Free Sundays
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=2FC85039-DBD5-4BF1-A764-8C6DBDD121D5&amp;menu_id=40102B35-47D1-422A-8F0E-F697DF6DE850&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="24" title="School Programs">
+           School Programs
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem4">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="25" title="Concertgoer's Guide">
+         <span class="menu-label">
+          Concertgoer's Guide
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="26" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=78024A53-7A54-4202-89AC-0CB04205EED3&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190" class="menu_item menu-link" title="Concertgoer's Guide" >
+                                             <span class="menu-label">Concertgoer's Guide</span>
+                                         </a>										
+                                         <a tabindex="27" href="javascript:void(0);" class="menu_item dropdown-toggle" title="Concertgoer's Guide" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=1FA26990-8844-4673-A0D5-DFE6791FAD8E&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="28" title="Meet the 2017-2018 Guest Maestros">
+           Meet the 2017-2018 Guest Maestros
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=78024A53-7A54-4202-89AC-0CB04205EED3&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="29" title="Behind the Baton">
+           Behind the Baton
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=EF759E67-70D9-4EF1-A34F-ADCB4FF13D36&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="30" title="Program Notes">
+           Program Notes
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=9E26D1ED-D1BF-4A44-99BF-CB6954D5E35D&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="31" title="Directions &amp; Parking">
+           Directions &amp; Parking
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=BB6B4CEC-9F39-427B-86B0-CC1C82C10112&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="32" title="Dining">
+           Dining
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=65F294E6-EF5C-4B89-8F60-242AC33215AC&amp;menu_id=1D9DCF01-9808-4795-B876-ED06FFF8A190&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="33" title="Founder's Room">
+           Founder's Room
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem has-sub-menu clearfix" id="menuTopItem5">
+        <a class="menu_item menu-link" data-target="#" data-toggle="dropdown" href="javascript:void(0);" tabindex="34" title="About Us">
+         <span class="menu-label">
+          About Us
+         </span>
+         <span class="glyphicon glyphicon-chevron-down">
+         </span>
+        </a>
+        <!--
+                                          <a tabindex="35" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=59EA0185-FD34-4E5C-BD52-69C0F676050C&amp;menu_id=35CB0BA2-7DF9-4E32-B063-E47D410FEF12" class="menu_item menu-link" title="About Us" >
+                                             <span class="menu-label">About Us</span>
+                                         </a>										
+                                         <a tabindex="36" href="javascript:void(0);" class="menu_item dropdown-toggle" title="About Us" data-toggle="dropdown" data-target="#" >
+                                             <span class="glyphicon glyphicon-chevron-down"></span>
+                                         </a>
+ 										-->
+        <ul class="menuSub dropdown-menu">
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=59EA0185-FD34-4E5C-BD52-69C0F676050C&amp;menu_id=35CB0BA2-7DF9-4E32-B063-E47D410FEF12&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="37" title="History">
+           History
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=BB8AD2BB-4595-475C-B410-E53849ACBB5F&amp;menu_id=35CB0BA2-7DF9-4E32-B063-E47D410FEF12&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="38" title="Musicians">
+           Musicians
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=687C6CB5-EFE0-437A-9D9C-CB66AB7D8F7E&amp;menu_id=35CB0BA2-7DF9-4E32-B063-E47D410FEF12&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="39" title="Board">
+           Board
+          </a>
+         </li>
+         <li class="menuSubItem">
+          <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=F0692679-7009-4A24-A497-BD440BA6B67C&amp;menu_id=35CB0BA2-7DF9-4E32-B063-E47D410FEF12&amp;sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" tabindex="40" title="Admin">
+           Admin
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="menuTopItem" id="menuTopItem-help">
+        <a class="menu_item menu-link" href="javascript:var jsPop=new showInformationPopup( 'Help', 'loadArticle.asp?BOparam::WScontent::loadArticle::article_id=F8103D8C-7EA0-4B4B-A37E-9DE398B93107' )" tabindex="41" title="Help">
+         Help
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <!-- customer/order information -->
+    <div class="customer-options" id="customer-utilities">
+     <!--ORDER DETAILS BOX-->
+     <div id="orderInfo">
+      <div id="customer-order-info">
+       <div class="customer-greeting">
+        <span class="greeting-message">
+         Order for
+        </span>
+        <span class="greeting-name">
+         websales SSO
+        </span>
+       </div>
+       <div class="customer-order shopping-cart-details order-message ">
+        <span id="orderInfoEmptyMessage">
+         Your shopping cart is empty.
+        </span>
+       </div>
+       <div class="customer-buttons">
+        <div class="cart-callout">
+         <a class="shopping-cart-link btn btn-default" href="shoppingCart.asp?sToken=1%2Ca795de23%2C5b5e303e%2C7B596194-C4C2-43D7-AF36-82883D955931%2Cqv70QjJFG9iJ6XxzfbzKaFcTH%2BE%3D" id="orderInfoCartLink" tabindex="42" title="Shopping Cart">
+          <span>
+           Shopping Cart
+          </span>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="menuContainer utility-nav">
+      <ul class="nav" id="utility-menu">
+       <li class="utility-menu-item" id="utility-menu-item-login">
+        <a class="menu_item" href="login.asp" tabindex="43" title="Login">
+         Login
+        </a>
+       </li>
+       <li class="utility-menu-item" id="utility-menu-item0">
+        <a class="menu_item" href="maintainAccount.asp?menu_id=C9171D9F-A5E8-411D-9CC6-6920685426A2" tabindex="44" title="My Account">
+         My Account
+        </a>
+       </li>
+       <li class="utility-menu-item" id="utility-menu-item1">
+        <a class="menu_item" href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=3B217D6A-2C07-4D8B-BB64-C94F0018228E&amp;menu_id=C2339E3F-40A0-4966-B31B-A8B7D7C077B5" tabindex="45" title="Donate">
+         Donate
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <!-- CONTENT START -->
+    <div id="content">
+     <div class="container">
+      <div class="bodyDetails" id="default">
+       <div class="search-box" id="searchBox">
+        <form action="default.asp" class="form-inline" id="searchItems" method="post">
+         <input class="form-inline" name="sToken" type="hidden" value="1,a795de23,5b5e303e,7B596194-C4C2-43D7-AF36-82883D955931,qv70QjJFG9iJ6XxzfbzKaFcTH+E="/>
+         <input name="BOset::WScontent::SearchCriteria::venue_filter" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::city_filter" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::month_filter" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::object_type_filter" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::category_filter" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::search_from" type="hidden" value=""/>
+         <input name="BOset::WScontent::SearchCriteria::search_to" type="hidden" value=""/>
+         <input name="doWork::WScontent::search" type="hidden" value="1"/>
+         <input name="BOparam::WScontent::search::article_search_id" type="hidden" value=""/>
+         <ul class="list-unstyled">
+          <li class="item-search-keyword">
+           <label>
+            <span class="searchBoxLabel field-label">
+             Search Events
+            </span>
+            <input class=" form-control" id="BOset::WScontent::SearchCriteria::search_criteria" name="BOset::WScontent::SearchCriteria::search_criteria" tabindex="46" title="Search Criteria" type="text" value=""/>
+           </label>
+          </li>
+          <li class="item-search-start-date">
+           <label>
+            <span class="searchBoxLabel field-label">
+             Event Dates
+            </span>
+            <div class="input-group">
+             <input class=" form-control" id="BOset::WScontent::SearchCriteria::search_from::0" name="BOset::WScontent::SearchCriteria::search_from" tabindex="47" title="Search From" type="text" value=""/>
+             <div class="input-group-addon">
+              <button class="btn-unstyled calIcon" id="cal::BOset::WScontent::SearchCriteria::search_from::0" onclick='tsOpenCalendar( event, "BOset::WScontent::SearchCriteria::search_from::0", "0", "true", "sToken", "1,a795de23,5b5e303e,7B596194-C4C2-43D7-AF36-82883D955931,qv70QjJFG9iJ6XxzfbzKaFcTH+E=");' title="Show date picker" type="button">
+              </button>
+             </div>
+             <span class="input-group-btn">
+              <button class="btn-unstyled warningIcon" data-placement="right" data-toggle="tooltip" id="BOset::WScontent::SearchCriteria::search_from::0::warning" style="display:none" title="" type="button">
+              </button>
+             </span>
+            </div>
+           </label>
+          </li>
+          <li class="item-search-end-date">
+           <label>
+            <span class="searchBoxLabel field-label">
+             to
+            </span>
+            <div class="input-group">
+             <input class=" form-control" id="BOset::WScontent::SearchCriteria::search_to::0" name="BOset::WScontent::SearchCriteria::search_to" tabindex="48" title="Search To" type="text" value=""/>
+             <div class="input-group-addon">
+              <button class="btn-unstyled calIcon" id="cal::BOset::WScontent::SearchCriteria::search_to::0" onclick='tsOpenCalendar( event, "BOset::WScontent::SearchCriteria::search_to::0", "0", "true", "sToken", "1,a795de23,5b5e303e,7B596194-C4C2-43D7-AF36-82883D955931,qv70QjJFG9iJ6XxzfbzKaFcTH+E=");' title="Show date picker" type="button">
+              </button>
+             </div>
+             <span class="input-group-btn">
+              <button class="btn-unstyled warningIcon" data-placement="right" data-toggle="tooltip" id="BOset::WScontent::SearchCriteria::search_to::0::warning" style="display:none" title="" type="button">
+              </button>
+             </span>
+            </div>
+           </label>
+          </li>
+          <li class="item-search-submit">
+           <input class="btn btn-default" name="Go" onclick="doGAClicks('Search')" tabindex="49" type="submit" value="Go"/>
+          </li>
+         </ul>
+        </form>
+       </div>
+       <div class="articles has-primary-features has-tertiary-features">
+        <!-- top scrolling features included -->
+        <div class="article-container primary-feature-wrapper">
+         <div class="static-inner" id="feature-box">
+          <div class="item item-0 static">
+           <div class="desc" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+            <ul>
+             <li class="title">
+             </li>
+             <li class="title">
+              IGNITE YOUR SENSES
+             </li>
+             <li class="title">
+              The 2018-2019 Season
+             </li>
+             <li class="date">
+              Selling Subscriptions
+             </li>
+             <li class="long-desc">
+              Check out the program for the season
+             </li>
+             <li class="cta">
+              <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=97C8B174-07E1-40F2-AC57-05A522ABD4EF" shape="rect">
+               More Info
+              </a>
+             </li>
+            </ul>
+           </div>
+           <img alt="" src="/content/Images/Branding/SSO/1718_Season/1423x593IgniteYourSensesBanner.jpg" style="width: 100%; height: auto;" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/"/>
+          </div>
+         </div>
+        </div>
+        <div class="article-body-container">
+         <div class="article-container main-article-body">
+          <div id="avWidget_1BC6ACDD-8199-42AF-967A-587498A5F108_ID4HBKNAIWSCRUHOGH5GG1UV2UCCX03T1QZFUSZNFTQ2RIVJS0LB0N" name="avWidget" xmlns:av="http://www.audienceview.com/xml/email/" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+           <script type="text/javascript">
+            registerWidget( "SearchWebWidget3", "avWidget_1BC6ACDD-8199-42AF-967A-587498A5F108_ID4HBKNAIWSCRUHOGH5GG1UV2UCCX03T1QZFUSZNFTQ2RIVJS0LB0N", {
+   "SearchWebWidget3": "", 
+   
+   "css_class": "", 
+   
+   "css_id": "", 
+   
+   "css_style": "", 
+   
+   "showPrice": "", 
+   
+   "showLegend": "", 
+   
+   "showNoResults": "false", 
+   
+   "title": "", 
+    "1": "1"});
+           </script>
+          </div>
+         </div>
+         <div class="article-container tertiary-linked-features">
+          <div class="tertiary-linked-features-div" id="tertiary-linked-features-0">
+           <a href="https://www.palacestamford.org/Online/" shape="rect" target="_blank" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+            <img alt="" src="/ArticleMedia/Images/Branding/SSO/1617_Season/PalaceTertiary_235x150.jpg" style="width: 235px; height: 150px;"/>
+           </a>
+          </div>
+          <div class="tertiary-linked-features-div" id="tertiary-linked-features-1">
+           <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=1FC4D478-A711-46B5-B003-1DB25B86260C" shape="rect" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+            <img alt="" src="/content/Images/Branding/SSO/1718_Season/SSGiftCardSmall.jpg" style="width: 235px; height: 235px;"/>
+           </a>
+          </div>
+          <div class="tertiary-linked-features-div" id="tertiary-linked-features-2">
+           <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=8C927EA3-D9F2-420F-A3CF-1ED2847D1652" shape="rect" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+            <img alt="" src="/ArticleMedia/Images/Branding/SSO/1617_Season/Get%20to%20know%20the%20new%20website%20260%20x260.jpg" style="width: 260px; height: 260px;"/>
+           </a>
+          </div>
+          <div class="tertiary-linked-features-div" id="tertiary-linked-features-3">
+           <a href="http://bit.ly/2lziIhV" shape="rect" target="_blank" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+            <img alt="" src="/ArticleMedia/Images/branding-sso/Best%20of%20Gold%20Coast260x260px.jpg" style="width: 260px; height: 260px;"/>
+           </a>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <!--\\ .bodyDetails -->
+    </div>
+    <!--\\ .container -->
+   </div>
+   <!--\\ #content -->
+   <div id="footer">
+    <div class="footer-content container">
+     <div class="row" xmlns="http://www.w3.org/1999/xhtml" xmlns:av="http://www.audienceview.com/xml/email/">
+      <div class="col-xs-12">
+       <ul class="social">
+        <li>
+         <a class="fb" href="https://www.facebook.com/stamfordsymphony" shape="rect">
+          Facebook
+         </a>
+        </li>
+        <li>
+         <a class="t" href="https://twitter.com/stamfordsymphon" shape="rect">
+          Twitter
+         </a>
+        </li>
+       </ul>
+      </div>
+      <table align="left" border="0" cellpadding="1" cellspacing="1" style="width: 500px;">
+       <tbody>
+        <tr>
+         <td colspan="1" rowspan="1">
+          © 2015-2016 Stamford Symphony
+         </td>
+         <td colspan="1" rowspan="1">
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <br clear="none"/>
+      <br clear="none"/>
+      <br clear="none"/>
+      <br clear="none"/>
+      <table border="0" cellpadding="1" cellspacing="1" style="width: 100%;">
+       <tbody>
+        <tr>
+         <td colspan="1" rowspan="1" style="width: 30%;">
+          Administrative Offices:
+          <br clear="none"/>
+          263 Tresser Boulevard
+          <br clear="none"/>
+          Stamford, CT 06901
+          <br clear="none"/>
+          203.325.1407
+          <br clear="none"/>
+          office@stamfordsymphony.org
+         </td>
+         <td colspan="1" rowspan="1" style="text-align: left; vertical-align: top;">
+          Full Orchestra Performances:
+          <br clear="none"/>
+          The Palace Theatre
+          <br clear="none"/>
+          61 Atlantic Street
+          <br clear="none"/>
+          Stamford, CT 06901
+         </td>
+        </tr>
+       </tbody>
+      </table>
+      <br clear="none"/>
+      Box Office Hours (The Palace Theatre):
+      <br clear="none"/>
+      M-F | 12 pm to 5 pm &amp; 90 min. before events
+      <br clear="none"/>
+      203.325.4466
+      <br clear="none"/>
+      <div class="col-xs-12">
+      </div>
+      <div>
+       <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=B3405D56-22C4-444F-88BB-6F338163A7A3" shape="rect">
+        Terms of use
+       </a>
+       |
+       <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=D26B2917-7307-470C-99CD-25C73FC69B8B" shape="rect">
+        Privacy policy
+       </a>
+       |
+       <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=48F763D8-4134-4B09-BFBD-4A6C923F4CEB" shape="rect">
+        Press Room
+       </a>
+       |
+       <a href="default.asp?doWork::WScontent::loadArticle=Load&amp;BOparam::WScontent::loadArticle::article_id=A064BF25-F02F-4580-A355-3BCBE7221533" shape="rect">
+        Contact Us
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--\\ .content-wrapper -->
+   <div class="black_overlay" id="fade">
+   </div>
+   <!-- inclusion of bootstrap.js and jquery -->
+   <!-- http://twitter.github.com for documentation on bootstrap -->
+   <script src="/lib/jquery/jquery.min.js?_=7.20.0" type="text/javascript">
+   </script>
+   <script src="/lib/bootstrap/js/bootstrap.min.js?_=7.20.0" type="text/javascript">
+   </script>
+   <!-- end of bootstrap.js and jquery -->
+   <!-- contains bootstrap specific function declarations -->
+   <script src="/lib/bootstrap/js/bootstrap-functions.js?_=7.20.0" type="text/javascript">
+   </script>
+   <!-- Logout Handler -->
+   <script>
+    $(document).ready(function() {
+     var body = $("body");
+     
+     body
+     .on("logged-out", function(e) {
+         var targetPage = "default.asp?";
+         window.location.assign("login.asp?targetPage="+encodeURIComponent(targetPage));
+     });
+     
+     // on pressing Enter key on an anchor trigger click
+     $("a").keypress(function(e){
+       if(e.keyCode == 13){
+         $(this).trigger("click");
+       }
+     });
+     
+     // When page is loaded make sure the Page Load Spinner is not shown
+     if(spinnerDelayTimeout)
+       clearTimeout(spinnerDelayTimeout);
+     
+     body.removeClass("show-spinner");
+     
+     // Show spinner when form submitted or link clicked
+     $("form").submit(function(e) {
+       showSpinner();
+     });
+     
+     $("a").click(function(e) {
+       var href = $(this).attr("href") || "";
+       var target = $(this).attr("target") || "";
+       
+       if ((target == "" || /^(_self|_top|_parent)/.test(href)) && href != "" && !/^(#|javascript:|mailto:|file:)/.test(href))
+         showSpinner();
+     });
+     
+     // Mimimize spinner if clicked
+     $(".spinner").click(function() {
+        body.addClass("minimize-spinner");
+     });
+ });
+   </script>
+   <!-- CONTENT END -->
+  </body>
+ </html>

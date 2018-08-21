@@ -1,0 +1,5567 @@
+<!DOCTYPE html>
+ <!--[if IE 6]>
+ <html id="ie6" lang="en-US">
+ <![endif]-->
+ <!--[if IE 7]>
+ <html id="ie7" lang="en-US">
+ <![endif]-->
+ <!--[if IE 8]>
+ <html id="ie8" lang="en-US">
+ <![endif]-->
+ <!--[if !(IE 6) & !(IE 7) & !(IE 8)]><!-->
+ <html lang="en-US">
+  <!--<![endif]-->
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width" name="viewport"/>
+   <title>
+    Box2D | A 2D Physics Engine for Games
+   </title>
+   <link href="http://gmpg.org/xfn/11" rel="profile"/>
+   <link href="http://box2d.org/wp-content/themes/twentyeleven/style.css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://box2d.org/xmlrpc.php" rel="pingback"/>
+   <!--[if lt IE 9]>
+ <script src="http://box2d.org/wp-content/themes/twentyeleven/js/html5.js" type="text/javascript"></script>
+ <![endif]-->
+   <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], processEscapes: true}});
+   </script>
+   <link href="//cdnjs.cloudflare.com" rel="dns-prefetch"/>
+   <link href="//s.w.org" rel="dns-prefetch"/>
+   <link href="http://box2d.org/feed/" rel="alternate" title="Box2D » Feed" type="application/rss+xml"/>
+   <link href="http://box2d.org/comments/feed/" rel="alternate" title="Box2D » Comments Feed" type="application/rss+xml"/>
+   <script type="text/javascript">
+    window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/box2d.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.3"}};
+ 			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56692,8205,9792,65039],[55357,56692,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+   </script>
+   <style type="text/css">
+    img.wp-smiley,
+ img.emoji {
+ 	display: inline !important;
+ 	border: none !important;
+ 	box-shadow: none !important;
+ 	height: 1em !important;
+ 	width: 1em !important;
+ 	margin: 0 .07em !important;
+ 	vertical-align: -0.1em !important;
+ 	background: none !important;
+ 	padding: 0 !important;
+ }
+   </style>
+   <link href="http://box2d.org/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css?ver=_2.7.2_beta" id="crayon-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://box2d.org/wp-content/plugins/crayon-syntax-highlighter/themes/classic/classic.css?ver=_2.7.2_beta" id="crayon-theme-classic-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://box2d.org/wp-content/plugins/crayon-syntax-highlighter/fonts/monaco.css?ver=_2.7.2_beta" id="crayon-font-monaco-css" media="all" rel="stylesheet" type="text/css"/>
+   <script src="http://box2d.org/wp-includes/js/jquery/jquery.js?ver=1.12.4" type="text/javascript">
+   </script>
+   <script src="http://box2d.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/box2d.org\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+ var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+ /* ]]> */
+   </script>
+   <script src="http://box2d.org/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js?ver=_2.7.2_beta" type="text/javascript">
+   </script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML%2CSafe.js&amp;ver=4.9.3" type="text/javascript">
+   </script>
+   <link href="http://box2d.org/wp-json/" rel="https://api.w.org/"/>
+   <link href="http://box2d.org/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml"/>
+   <link href="http://box2d.org/wp-includes/wlwmanifest.xml" rel="wlwmanifest" type="application/wlwmanifest+xml"/>
+  </head>
+  <body class="home blog single-author two-column right-sidebar">
+   <div class="hfeed" id="page">
+    <header id="branding" role="banner">
+     <hgroup>
+      <h1 id="site-title">
+       <span>
+        <a href="http://box2d.org/" rel="home">
+         Box2D
+        </a>
+       </span>
+      </h1>
+      <h2 id="site-description">
+       A 2D Physics Engine for Games
+      </h2>
+     </hgroup>
+     <form action="http://box2d.org/" id="searchform" method="get">
+      <label class="assistive-text" for="s">
+       Search
+      </label>
+      <input class="field" id="s" name="s" placeholder="Search" type="text"/>
+      <input class="submit" id="searchsubmit" name="submit" type="submit" value="Search"/>
+     </form>
+     <nav id="access" role="navigation">
+      <h3 class="assistive-text">
+       Main menu
+      </h3>
+      <div class="skip-link">
+       <a class="assistive-text" href="#content">
+        Skip to primary content
+       </a>
+      </div>
+      <div class="skip-link">
+       <a class="assistive-text" href="#secondary">
+        Skip to secondary content
+       </a>
+      </div>
+      <div class="menu-main-container">
+       <ul class="menu" id="menu-main">
+        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19" id="menu-item-19">
+         <a href="http://box2d.org/about/">
+          About
+         </a>
+        </li>
+        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-144" id="menu-item-144">
+         <a href="http://box2d.org/downloads/">
+          Downloads
+         </a>
+        </li>
+        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-31" id="menu-item-31">
+         <a href="http://box2d.org/documentation/">
+          Documentation
+         </a>
+         <ul class="sub-menu">
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6" id="menu-item-6">
+           <a href="https://github.com/erincatto/Box2D/wiki/FAQ">
+            FAQ
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-29" id="menu-item-29">
+           <a href="http://box2d.org/manual.pdf">
+            Manual
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-4" id="menu-item-4">
+         <a href="/forum/">
+          Forum
+         </a>
+        </li>
+        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-55" id="menu-item-55">
+         <a href="http://box2d.org/contributors/">
+          Contributors
+         </a>
+        </li>
+        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-71" id="menu-item-71">
+         <a href="http://box2d.org/links/">
+          Links
+         </a>
+        </li>
+       </ul>
+      </div>
+     </nav>
+     <!-- #access -->
+    </header>
+    <!-- #branding -->
+    <div id="main">
+     <div id="primary">
+      <div id="content" role="main">
+       <nav id="nav-above">
+        <h3 class="assistive-text">
+         Post navigation
+        </h3>
+        <div class="nav-previous">
+         <a href="http://box2d.org/page/2/">
+          <span class="meta-nav">
+           ←
+          </span>
+          Older posts
+         </a>
+        </div>
+        <div class="nav-next">
+        </div>
+       </nav>
+       <!-- #nav-above -->
+       <article class="post-193 post type-post status-publish format-standard hentry category-box2d" id="post-193">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2015/07/github-hosting/" rel="bookmark">
+           GitHub Hosting
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2015/07/github-hosting/" rel="bookmark" title="4:44 pm">
+           <time class="entry-date" datetime="2015-07-12T16:44:55+00:00">
+            July 12, 2015
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          Google project hosting is
+          <a href="http://google-opensource.blogspot.com/2015/03/farewell-to-google-code.html">
+           closing down
+          </a>
+          .
+         </p>
+         <p>
+          I have moved the Box2D repository to GitHub:
+          <a href="https://github.com/erincatto/Box2D">
+           here
+          </a>
+          .
+         </p>
+         <p>
+          This is the third site to host Box2D: SourceForge -&gt; Google -&gt; GitHub
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/box2d/" rel="category tag">
+           Box2D
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-193 -->
+       <article class="post-186 post type-post status-publish format-standard hentry category-gdc" id="post-186">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2015/07/downloads/" rel="bookmark">
+           Downloads Update
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2015/07/downloads/" rel="bookmark" title="11:34 am">
+           <time class="entry-date" datetime="2015-07-11T11:34:38+00:00">
+            July 11, 2015
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          I’ve moved all the GDC downloads onto this site. The Google project hosting is going down soon and Github is not a good way to host publications. Let me know if you have trouble with any links.
+         </p>
+         <p>
+          Thanks!
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/gdc/" rel="category tag">
+           GDC
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-186 -->
+       <article class="post-164 post type-post status-publish format-standard hentry category-gdc" id="post-164">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2015/03/gdc-2015-physics-tutorial/" rel="bookmark">
+           GDC 2015 Physics Tutorial
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2015/03/gdc-2015-physics-tutorial/" rel="bookmark" title="3:17 pm">
+           <time class="entry-date" datetime="2015-03-07T15:17:40+00:00">
+            March 7, 2015
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          Thanks to everyone that attended the GDC Physics Tutorial in San Francisco. I’m really proud of the work done by the tutorial team!
+         </p>
+         <p>
+          You can download the tutorials here:
+          <a href="http://box2d.org/downloads">
+           downloads
+          </a>
+          .
+         </p>
+         <p>
+          Some of the talks have a Keynote version where you can see the embedded animations and videos. The tutorial was recorded on video and should be viewable on the GDC Vault in the next couple weeks.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/gdc/" rel="category tag">
+           GDC
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-164 -->
+       <article class="post-156 post type-post status-publish format-standard hentry category-algorithms" id="post-156">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2014/08/balancing-dynamic-trees/" rel="bookmark">
+           Balancing Dynamic Trees
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2014/08/balancing-dynamic-trees/" rel="bookmark" title="9:36 am">
+           <time class="entry-date" datetime="2014-08-07T09:36:34+00:00">
+            August 7, 2014
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          I received this question on LinkedIn:
+          <br/>
+          I’m working on a 3d dynamic aabb tree based on the concepts of Presson’s bullet contribution. I came across a bullet forum thread in which Dirk recommended looking at your box2d implementation. I noticed the major difference is that box2d is a balanced tree using a surface area heuristic while bullet’s is unbalanced with manhattan distance heuristic.
+         </p>
+         <p>
+          My guess is that keeping your tree balanced resulted in increased maintenance overhead but decreased tree query times. Was there any benchmark of this anywhere that measured if the tradeoff was worth it? Or if there was any other motivation for implementing it this way?
+         </p>
+         <p>
+          Here is my reply:
+          <br/>
+          A dynamic tree must be actively balanced through rotations (like AVL trees), otherwise you can easily have the tree degenerate into a very long linked list.
+         </p>
+         <p>
+          For example, imagine a world with many boxes in a row. Say 100 boxes extending along the x-axis. If the boxes are added to the tree at the origin and then incrementally along the x-axis, you will end up not with a tree, but a linked list with 100 elements. You do not need to run a benchmark to know this will yield horrible query performance. Not only will the performance be bad, but you will also need a large stack to process queries (ray casts or overlap tests).
+         </p>
+         <p>
+          This may sound like a contrived example, but this actually happens a lot in games. Imagine a side scrolling game, as the player moves through the world, objects are added in a linear fashion.
+         </p>
+         <p>
+          The Bullet code attempts to keep the tree balanced through random removal and insertions. In my tests, I found situations where this would take thousands of iterations to balance the tree reasonably. So I decided to implement tree rotations like you will find in AVL trees. It is actually a little bit simpler since there is no strict right-left sorting necessary.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/algorithms/" rel="category tag">
+           Algorithms
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-156 -->
+       <article class="post-146 post type-post status-publish format-standard hentry category-uncategorized" id="post-146">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2014/04/box2d-v2-3-1-released/" rel="bookmark">
+           Box2D v2.3.1 Released
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2014/04/box2d-v2-3-1-released/" rel="bookmark" title="4:51 pm">
+           <time class="entry-date" datetime="2014-04-05T16:51:50+00:00">
+            April 5, 2014
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          Google Code no longer allows for downloads, therefore you will have to use SVN to get v2.3.1:
+         </p>
+         <p>
+          svn checkout
+          <strong>
+           <em>
+            http
+           </em>
+          </strong>
+          ://box2d.googlecode.com/svn/tags/v2.3.1
+         </p>
+         <p>
+          You can view the changes here:
+          <a href="https://code.google.com/p/box2d/source/list" title="https://code.google.com/p/box2d/source/list">
+           https://code.google.com/p/box2d/source/list
+          </a>
+         </p>
+         <p>
+          The main change was the conversion of the Testbed to use GLFW and imgui instead of freeglut and GLUI. GLUI was not supported and I was having trouble with freeglut in newer versions of Visual Studio. If you work in Visual Studio 2013 or Xcode 5, you can open the project file and get started. On other platforms you will have to do more work to set things up. The big difference in running the Testbed is that the working path needs to be setup correctly so that the font may be loaded. In Visual Studio you can set the working path under the project settings. In Xcode you can setup a custom working directory in the Testbed scheme. The Testbed will crash if it fails to load the font file.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-146 -->
+       <article class="post-135 post type-post status-publish format-standard hentry category-uncategorized" id="post-135">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2014/03/gdc-2014-physics-tutorial/" rel="bookmark">
+           GDC 2014 Physics Tutorial
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2014/03/gdc-2014-physics-tutorial/" rel="bookmark" title="7:02 pm">
+           <time class="entry-date" datetime="2014-03-23T19:02:44+00:00">
+            March 23, 2014
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          We had another successful tutorial this year at the Game Developer Conference in San Francisco. Thanks to everyone that attended!
+         </p>
+         <p>
+          Since Google Projects no longer hosts files, I am hosting new GDC files on this site. Get them
+          <a href="http://box2d.org/downloads">
+           here
+          </a>
+          .
+         </p>
+         <p>
+          Next year I’d like to open up the Physics Tutorial a bit. If you’d like to present, please contact me on Twitter @erin_catto.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-135 -->
+       <article class="post-129 post type-post status-publish format-standard hentry category-uncategorized" id="post-129">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2014/02/computing-a-basis/" rel="bookmark">
+           Computing a Basis
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2014/02/computing-a-basis/" rel="bookmark" title="11:33 am">
+           <time class="entry-date" datetime="2014-02-03T11:33:04+00:00">
+            February 3, 2014
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          Given a normalized 3D vector, here’s an efficient method for computing a full basis. The computed basis is axis aligned if the input vector is axis aligned.
+         </p>
+         <p>
+         </p>
+         <!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+         <div class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" id="crayon-5b2b94333fea1616538659" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+          <div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;">
+           <span class="crayon-title">
+           </span>
+           <div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;">
+            <div class="crayon-button crayon-nums-button" title="Toggle Line Numbers">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-plain-button" title="Toggle Plain Code">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-expand-button" title="Expand Code">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-copy-button" title="Copy">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-popup-button" title="Open Code In New Window">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+           </div>
+          </div>
+          <div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;">
+          </div>
+          <div class="crayon-plain-wrap">
+           <textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;" wrap="soft">
+            void ComputeBasis(const Vec&amp; a, Vec* b, Vec* c)
+ {
+   // Suppose vector a has all equal components and is a unit vector: a = (s, s, s)
+   // Then 3*s*s = 1, s = sqrt(1/3) = 0.57735. This means that at least one component of a
+   // unit vector must be greater or equal to 0.57735.
+ 
+   if (Abs(a.x) &gt;= 0.57735f)
+     b-&gt;Set(a.y, -a.x, 0.0f);
+   else
+     b-&gt;Set(0.0f, a.z, -a.y);
+ 
+   b = Normalize(b);
+   *c = Cross(a, *b);
+ }
+           </textarea>
+          </div>
+          <div class="crayon-main" style="">
+           <table class="crayon-table">
+            <tr class="crayon-row">
+             <td class="crayon-nums " data-settings="show">
+              <div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;">
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-1">
+                1
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-2">
+                2
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-3">
+                3
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-4">
+                4
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-5">
+                5
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-6">
+                6
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-7">
+                7
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-8">
+                8
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-9">
+                9
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-10">
+                10
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-11">
+                11
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-12">
+                12
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b94333fea1616538659-13">
+                13
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b94333fea1616538659-14">
+                14
+               </div>
+              </div>
+             </td>
+             <td class="crayon-code">
+              <div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;">
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-1">
+                <span class="crayon-t">
+                 void
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 ComputeBasis
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-o">
+                 &amp;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e ">
+                 Vec*
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e ">
+                 Vec*
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-2">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-3">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-c">
+                 // Suppose vector a has all equal components and is a unit vector: a = (s, s, s)
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-4">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-c">
+                 // Then 3*s*s = 1, s = sqrt(1/3) = 0.57735. This means that at least one component of a
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-5">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-c">
+                 // unit vector must be greater or equal to 0.57735.
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-6">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-7">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 if
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Abs
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 &gt;=
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 0.57735f
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-8">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-o">
+                 -&gt;
+                </span>
+                <span class="crayon-e">
+                 Set
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 0.0f
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-9">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 else
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-10">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-o">
+                 -&gt;
+                </span>
+                <span class="crayon-e">
+                 Set
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-cn">
+                 0.0f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-11">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-12">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b94333fea1616538659-13">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Cross
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b94333fea1616538659-14">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+              </div>
+             </td>
+            </tr>
+           </table>
+          </div>
+         </div>
+         <!-- [Format Time: 0.0033 seconds] -->
+         <p>
+         </p>
+         <p>
+          In SSE land you can eliminate the branch using a select operation.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-129 -->
+       <article class="post-119 post type-post status-publish format-standard hentry category-uncategorized" id="post-119">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2014/01/troublesome-triangle/" rel="bookmark">
+           Troublesome Triangle
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2014/01/troublesome-triangle/" rel="bookmark" title="4:50 pm">
+           <time class="entry-date" datetime="2014-01-31T16:50:09+00:00">
+            January 31, 2014
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          I ran into a problem computing a polygon normal using Newell’s method as described in Christer Ericson’s excellent book Real-Time Collision Detection. In this case the polygon happens to a be a triangle that is close to the origin. So I would guess that Newell’s method would yield a great result. However, this is not true. I only get 2 digits of accuracy in single precision.
+         </p>
+         <p>
+          Here is the triangle:
+          <br/>
+          p1 = (0.331916571f, 0.382771939f, -0.465963870f)
+          <br/>
+          p2 = (0.378853887f, -0.246981591f, -0.440359056f)
+          <br/>
+          p3 = (0.331879079f, 0.382861078f, -0.465974003f)
+         </p>
+         <p>
+          I knew I was getting a bad normal because some of my convex hull code was failing. So I decided to analyze the problem. First of all, this triangle has edge lengths of around 0.6320, 0.6321, and 1e-4. So this is a sliver and it is well known that slivers can be numerically challenging.
+         </p>
+         <p>
+          I computed a baseline normal using doubles. Doubles yielded the following normal vector (truncated to 6 digits):
+          <br/>
+          normal_doubles = (0.206384 -0.0243884 -0.978167).
+          <br/>
+          I got the same result computing the normal in many different ways. So I am confident that this is accurate.
+         </p>
+         <p>
+          Then I computed the normal many several different ways using single precision:
+          <br/>
+          – 1 way using Newell’s method as stated in Christer’s book
+          <br/>
+          – 3 ways using edge cross products
+          <br/>
+          – 3 ways using Newell’s method on the triangle shifted to each vertex (suggested by Christer)
+          <br/>
+          – 1 way using Newell’s method on the triangle shifted to the centroid
+         </p>
+         <p>
+          Here is the code:
+         </p>
+         <p>
+         </p>
+         <!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+         <div class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" id="crayon-5b2b943340de2632671755" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+          <div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;">
+           <span class="crayon-title">
+           </span>
+           <div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;">
+            <div class="crayon-button crayon-nums-button" title="Toggle Line Numbers">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-plain-button" title="Toggle Plain Code">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-expand-button" title="Expand Code">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-copy-button" title="Copy">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <div class="crayon-button crayon-popup-button" title="Open Code In New Window">
+             <div class="crayon-button-icon">
+             </div>
+            </div>
+            <span class="crayon-language">
+             C++
+            </span>
+           </div>
+          </div>
+          <div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;">
+          </div>
+          <div class="crayon-plain-wrap">
+           <textarea class="crayon-plain print-no" data-settings="dblclick" readonly="" style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;" wrap="soft">
+            #include
+ #include
+ 
+ typedef float Real; // change this to double to get a high accuracy result
+ 
+ inline float Sqrt(float s)
+ {
+   return sqrtf(s);
+ }
+ 
+ inline double Sqrt(double s)
+ {
+   return sqrt(s);
+ }
+ 
+ struct Vec
+ {
+   Vec() {}
+   Vec(Real x_, Real y_, Real z_) { x = x_; y = y_; z = z_; }
+   Real x, y, z;
+ };
+ 
+ inline Vec operator-(const Vec&amp;amp; a, const Vec&amp;amp; b)
+ {
+   return Vec(a.x - b.x, a.y - b.y, a.z - b.z);
+ }
+ 
+ inline Vec operator+(const Vec&amp;amp; a, const Vec&amp;amp; b)
+ {
+   return Vec(a.x + b.x, a.y + b.y, a.z + b.z);
+ }
+ 
+ inline Vec Cross(const Vec&amp;amp; a, const Vec&amp;amp; b)
+ {
+   return Vec(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+ }
+ 
+ inline Vec Newell(const Vec&amp;amp; a, const Vec&amp;amp; b)
+ {
+   return Vec((a.y - b.y) * (a.z + b.z), (a.z - b.z) * (a.x + b.x), (a.x - b.x) * (a.y + b.y));
+ }
+ 
+ inline Vec Normalize(const Vec&amp;amp; a)
+ {
+   float d = Sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+   return Vec(a.x/d, a.y/d, a.z/d);
+ }
+ 
+ inline Real Length(const Vec&amp;amp; a)
+ {
+   return Sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+ }
+ 
+ int main()
+ {
+   Vec p1(0.331916571f, 0.382771939f, -0.465963870f);
+   Vec p2(0.378853887f, -0.246981591f, -0.440359056f);
+   Vec p3(0.331879079f, 0.382861078f, -0.465974003f);
+   
+   Vec newell = Normalize(Newell(p1, p2) + Newell(p2, p3) + Newell(p3, p1));
+   
+   Vec e1 = p2 - p1;
+   Vec e2 = p3 - p2;
+   Vec e3 = p1 - p3;
+   
+   Real d1 = Length(e1);
+   Real d2 = Length(e2);
+   Real d3 = Length(e3);
+   
+   Vec n1 = Cross(e3, e1);
+   Vec n2 = Cross(e1, e2);
+   Vec n3 = Cross(e2, e3);
+   
+   Real s1 = Length(n1);
+   Real s2 = Length(n2);
+   Real s3 = Length(n3);
+   
+   n1 = Normalize(n1);
+   n2 = Normalize(n2);
+   n3 = Normalize(n3);
+   
+   Vec shift1 = Normalize(Newell(p1-p1, p2-p1) + Newell(p2-p1, p3-p1) + Newell(p3-p1, p1-p1));
+   Vec shift2 = Normalize(Newell(p1-p2, p2-p2) + Newell(p2-p2, p3-p2) + Newell(p3-p2, p1-p2));
+   Vec shift3 = Normalize(Newell(p1-p3, p2-p3) + Newell(p2-p3, p3-p3) + Newell(p3-p3, p1-p3));
+   
+   Vec c = p1 + p2 + p3;
+   c.x = c.x / 3.0f;
+   c.y = c.y / 3.0f;
+   c.z = c.z / 3.0f;
+   
+   Vec shiftc = Normalize(Newell(p1-c, p2-c) + Newell(p2-c, p3-c) + Newell(p3-c, p1-c));
+   
+   printf("%g %g %g\n", newell.x, newell.y, newell.z);
+   printf("%g %g %g\n", n1.x, n1.y, n1.z);
+   printf("%g %g %g\n", n2.x, n2.y, n2.z);
+   printf("%g %g %g\n", n3.x, n3.y, n3.z);
+   printf("%g %g %g\n", shift1.x, shift1.y, shift1.z);
+   printf("%g %g %g\n", shift2.x, shift2.y, shift2.z);
+   printf("%g %g %g\n", shift3.x, shift3.y, shift3.z);
+   printf("%g %g %g\n", shiftc.x, shiftc.y, shiftc.z);
+ }
+           </textarea>
+          </div>
+          <div class="crayon-main" style="">
+           <table class="crayon-table">
+            <tr class="crayon-row">
+             <td class="crayon-nums " data-settings="show">
+              <div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;">
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-1">
+                1
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-2">
+                2
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-3">
+                3
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-4">
+                4
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-5">
+                5
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-6">
+                6
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-7">
+                7
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-8">
+                8
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-9">
+                9
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-10">
+                10
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-11">
+                11
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-12">
+                12
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-13">
+                13
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-14">
+                14
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-15">
+                15
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-16">
+                16
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-17">
+                17
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-18">
+                18
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-19">
+                19
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-20">
+                20
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-21">
+                21
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-22">
+                22
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-23">
+                23
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-24">
+                24
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-25">
+                25
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-26">
+                26
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-27">
+                27
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-28">
+                28
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-29">
+                29
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-30">
+                30
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-31">
+                31
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-32">
+                32
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-33">
+                33
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-34">
+                34
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-35">
+                35
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-36">
+                36
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-37">
+                37
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-38">
+                38
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-39">
+                39
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-40">
+                40
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-41">
+                41
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-42">
+                42
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-43">
+                43
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-44">
+                44
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-45">
+                45
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-46">
+                46
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-47">
+                47
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-48">
+                48
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-49">
+                49
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-50">
+                50
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-51">
+                51
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-52">
+                52
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-53">
+                53
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-54">
+                54
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-55">
+                55
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-56">
+                56
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-57">
+                57
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-58">
+                58
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-59">
+                59
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-60">
+                60
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-61">
+                61
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-62">
+                62
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-63">
+                63
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-64">
+                64
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-65">
+                65
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-66">
+                66
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-67">
+                67
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-68">
+                68
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-69">
+                69
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-70">
+                70
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-71">
+                71
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-72">
+                72
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-73">
+                73
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-74">
+                74
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-75">
+                75
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-76">
+                76
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-77">
+                77
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-78">
+                78
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-79">
+                79
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-80">
+                80
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-81">
+                81
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-82">
+                82
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-83">
+                83
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-84">
+                84
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-85">
+                85
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-86">
+                86
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-87">
+                87
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-88">
+                88
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-89">
+                89
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-90">
+                90
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-91">
+                91
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-92">
+                92
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-93">
+                93
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-94">
+                94
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-95">
+                95
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-96">
+                96
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-97">
+                97
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-98">
+                98
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-99">
+                99
+               </div>
+               <div class="crayon-num crayon-striped-num" data-line="crayon-5b2b943340de2632671755-100">
+                100
+               </div>
+               <div class="crayon-num" data-line="crayon-5b2b943340de2632671755-101">
+                101
+               </div>
+              </div>
+             </td>
+             <td class="crayon-code">
+              <div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;">
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-1">
+                <span class="crayon-p">
+                 #include
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-2">
+                <span class="crayon-p">
+                 #include
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-3">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-4">
+                <span class="crayon-r">
+                 typedef
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-t">
+                 float
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Real
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-c">
+                 // change this to double to get a high accuracy result
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-5">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-6">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-t">
+                 float
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Sqrt
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-t">
+                 float
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 s
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-7">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-8">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 sqrtf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 s
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-9">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-10">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-11">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-t">
+                 double
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Sqrt
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-t">
+                 double
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 s
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-12">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-13">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 sqrt
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 s
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-14">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-15">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-16">
+                <span class="crayon-t">
+                 struct
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-17">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-18">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 {
+                </span>
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-19">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 x_
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 y_
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 z_
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 {
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 x_
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 y_
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 z_
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-20">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-i">
+                 Real
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-21">
+                <span class="crayon-sy">
+                 }
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-22">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-23">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-t">
+                 operator
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-24">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-25">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-26">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-27">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-28">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-t">
+                 operator
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-29">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-30">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-31">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-32">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-33">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 Cross
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-34">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-35">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-36">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-37">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-38">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-39">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-40">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 b
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-41">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-42">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-43">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-44">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-45">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-t">
+                 float
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 d
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Sqrt
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-46">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-v">
+                 d
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-v">
+                 d
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-v">
+                 d
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-47">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-48">
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-49">
+                <span class="crayon-m">
+                 inline
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-m">
+                 const
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 &amp;amp
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-50">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-51">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-st">
+                 return
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Sqrt
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 *
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 a
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-52">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-53">
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-54">
+                <span class="crayon-t">
+                 int
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 main
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-55">
+                <span class="crayon-sy">
+                 {
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-56">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-cn">
+                 0.331916571f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 0.382771939f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-cn">
+                 0.465963870f
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-57">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-cn">
+                 0.378853887f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-cn">
+                 0.246981591f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-cn">
+                 0.440359056f
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-58">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-e">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-cn">
+                 0.331879079f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 0.382861078f
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-cn">
+                 0.465974003f
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-59">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-60">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 newell
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-61">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-62">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 e1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-63">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 e2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-64">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 e3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-65">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-66">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 d1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-67">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 d2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-68">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 d3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-69">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-70">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Cross
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e3
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 e1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-71">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Cross
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e1
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 e2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-72">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Cross
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 e2
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 e3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-73">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-74">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 s1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-75">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 s2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-76">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Real
+                </span>
+                <span class="crayon-v">
+                 s3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Length
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-77">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-78">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-79">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-80">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-81">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-82">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 shift1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-83">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 shift2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-84">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 shift3
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-85">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-86">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-i">
+                 Vec
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-87">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 3.0f
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-88">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 3.0f
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-89">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 /
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-cn">
+                 3.0f
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-90">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-91">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Vec
+                </span>
+                <span class="crayon-v">
+                 shiftc
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 =
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Normalize
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p2
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-o">
+                 +
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 Newell
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-v">
+                 p3
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 p1
+                </span>
+                <span class="crayon-o">
+                 -
+                </span>
+                <span class="crayon-v">
+                 c
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-92">
+                <span class="crayon-h">
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-93">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 newell
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 newell
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 newell
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-94">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-95">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-96">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 n3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-97">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift1
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-98">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift2
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-99">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shift3
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line crayon-striped-line" id="crayon-5b2b943340de2632671755-100">
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-e">
+                 printf
+                </span>
+                <span class="crayon-sy">
+                 (
+                </span>
+                <span class="crayon-s">
+                 "%g %g %g\n"
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shiftc
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 x
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shiftc
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 y
+                </span>
+                <span class="crayon-sy">
+                 ,
+                </span>
+                <span class="crayon-h">
+                </span>
+                <span class="crayon-v">
+                 shiftc
+                </span>
+                <span class="crayon-sy">
+                 .
+                </span>
+                <span class="crayon-v">
+                 z
+                </span>
+                <span class="crayon-sy">
+                 )
+                </span>
+                <span class="crayon-sy">
+                 ;
+                </span>
+               </div>
+               <div class="crayon-line" id="crayon-5b2b943340de2632671755-101">
+                <span class="crayon-sy">
+                 }
+                </span>
+               </div>
+              </div>
+             </td>
+            </tr>
+           </table>
+          </div>
+         </div>
+         <!-- [Format Time: 0.0359 seconds] -->
+         <p>
+         </p>
+         <p>
+          And here are the results:
+          <br/>
+          0.205007 -0.0244907 -0.978454
+          <br/>
+          0.206384 -0.0243884 -0.978167
+          <br/>
+          0.206417 -0.0243837 -0.97816
+          <br/>
+          0.206384 -0.0243884 -0.978167
+          <br/>
+          0.206377 -0.0243887 -0.978168
+          <br/>
+          0.206453 -0.024386 -0.978153
+          <br/>
+          0.206315 -0.0243899 -0.978182
+          <br/>
+          0.206375 -0.0243882 -0.978169
+         </p>
+         <p>
+          Exact:
+          <br/>
+          0.206384 -0.0243884 -0.978167
+         </p>
+         <p>
+          As you can see, Newell’s method is only giving 2 digits of accuracy. Every other method is giving close to 4 digits of accuracy or more. The best result is from n1 and n2. Both of these are cross products that include the shortest edge. This agrees with Gino van den Bergen’s comments on
+          <a href="https://twitter.com/erin_catto/status/408711096631971841" title="Twitter">
+           Twitter
+          </a>
+          .
+         </p>
+         <p>
+          Shifting the triangle origin to one of the vertices or the centroid all improve Newell’s method substantially. I’m a little disappointed that Newell’s method is still not as good as _any_ of the cross products. The price of generality?
+         </p>
+         <p>
+          Bottom line:
+          <br/>
+          1. Shift a vertex to the origin before applying Newell’s method.
+          <br/>
+          2. Cross products can produce triangle normals that are superior to the results of Newell’s method.
+          <br/>
+          3. Switching to doubles can solve numerical problems, but it is better to first understand the underlying issue.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-119 -->
+       <article class="post-111 post type-post status-publish format-standard hentry category-uncategorized" id="post-111">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2013/11/new-testbed-gui/" rel="bookmark">
+           New Testbed GUI
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2013/11/new-testbed-gui/" rel="bookmark" title="11:26 pm">
+           <time class="entry-date" datetime="2013-11-23T23:26:10+00:00">
+            November 23, 2013
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          I’m making progress on a revised testbed framework using
+          <a href="http://www.glfw.org/" title="GLFW">
+           GLFW
+          </a>
+          ,
+          <a href="http://glew.sourceforge.net/" title="GLEW">
+           GLEW
+          </a>
+          , and
+          <a href="https://github.com/AdrienHerubel/imgui" title="imgui">
+           imgui
+          </a>
+          .
+         </p>
+         <p>
+          This is replacing the old framework that uses freeglut and GLUI. GLUI is no longer supported and freeglut has been having some problems with newer versions of Visual Studio. Maybe freeglut 3.0 will be better. GLFW is well maintained and very small. Hopefully it works well on OSX.
+         </p>
+         <p>
+          Anyhow, I’m excited by the results, so I decided to post a screenshot. I’m hoping to commit this in the next few days. I need to repair text rendering and get the XCode project fixed up.
+         </p>
+         <p>
+          <a href="http://box2d.org/wp-content/uploads/2013/11/NewTestbed.png">
+           <img alt="NewTestbed" class="alignnone size-medium wp-image-112" height="193" sizes="(max-width: 300px) 100vw, 300px" src="http://box2d.org/wp-content/uploads/2013/11/NewTestbed-300x193.png" srcset="http://box2d.org/wp-content/uploads/2013/11/NewTestbed-300x193.png 300w, http://box2d.org/wp-content/uploads/2013/11/NewTestbed-1024x662.png 1024w, http://box2d.org/wp-content/uploads/2013/11/NewTestbed-463x300.png 463w, http://box2d.org/wp-content/uploads/2013/11/NewTestbed.png 1296w" width="300"/>
+          </a>
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-111 -->
+       <article class="post-104 post type-post status-publish format-standard hentry category-uncategorized" id="post-104">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          <a href="http://box2d.org/2013/11/box2d-2-3-0-release/" rel="bookmark">
+           Box2D 2.3.0 Released
+          </a>
+         </h1>
+         <div class="entry-meta">
+          <span class="sep">
+           Posted on
+          </span>
+          <a href="http://box2d.org/2013/11/box2d-2-3-0-release/" rel="bookmark" title="10:17 am">
+           <time class="entry-date" datetime="2013-11-03T10:17:51+00:00">
+            November 3, 2013
+           </time>
+          </a>
+          <span class="by-author">
+           <span class="sep">
+            by
+           </span>
+           <span class="author vcard">
+            <a class="url fn n" href="http://box2d.org/author/ecatto/" rel="author" title="View all posts by Erin Catto">
+             Erin Catto
+            </a>
+           </span>
+          </span>
+         </div>
+         <!-- .entry-meta -->
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+         <p>
+          It has been a long time, but version 2.3.0 has finally been released. You can get it here:
+          <a href="https://code.google.com/p/box2d/downloads/list" title="Download">
+          </a>
+          .
+         </p>
+         <p>
+          Here are the changes:
+         </p>
+         <ul>
+          <li>
+           Polygon creation now computes the convex hull. Vertices no longer need to be ordered.
+          </li>
+          <li>
+           The convex hull code will merge vertices closer than dm_linearSlop. This may lead to failure on very small polygons.
+          </li>
+          <li>
+           Added b2MotorJoint.
+          </li>
+          <li>
+           Bug fixes.
+          </li>
+         </ul>
+         <p>
+          Next year, Google Code will not allow new downloads:
+          <a href="http://google-opensource.blogspot.com/2013/05/a-change-to-google-code-download-service.html" title="read">
+          </a>
+          . So I am now using SVN tags for releases. If you want to switch over to using tags now, then you can use this:
+         </p>
+         <p>
+          svn checkout http://box2d.googlecode.com/svn/tags/v2.3.0
+         </p>
+         <p>
+          I plan to switch to this method for the next release of Box2D. Hopefully Google will make it easier to download a tagged version.
+         </p>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+         <span class="cat-links">
+          <span class="entry-utility-prep entry-utility-prep-cat-links">
+           Posted in
+          </span>
+          <a href="http://box2d.org/category/uncategorized/" rel="category tag">
+           Uncategorized
+          </a>
+         </span>
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post-104 -->
+       <nav id="nav-below">
+        <h3 class="assistive-text">
+         Post navigation
+        </h3>
+        <div class="nav-previous">
+         <a href="http://box2d.org/page/2/">
+          <span class="meta-nav">
+           ←
+          </span>
+          Older posts
+         </a>
+        </div>
+        <div class="nav-next">
+        </div>
+       </nav>
+       <!-- #nav-above -->
+      </div>
+      <!-- #content -->
+     </div>
+     <!-- #primary -->
+     <div class="widget-area" id="secondary" role="complementary">
+      <aside class="widget widget_text" id="text-3">
+       <div class="textwidget">
+        <p>
+         <img class="icon" src="images/icon.gif"/>
+        </p>
+       </div>
+      </aside>
+      <aside class="widget widget_text" id="text-4">
+       <h3 class="widget-title">
+        Support Box2D
+       </h3>
+       <div class="textwidget">
+        <p>
+         <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=LRX6X8QBYQ6FU">
+          <img alt="" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif"/>
+         </a>
+        </p>
+       </div>
+      </aside>
+      <aside class="widget widget_text" id="text-5">
+       <h3 class="widget-title">
+        Twitter
+       </h3>
+       <div class="textwidget">
+        <p>
+         <a href="http://www.twitter.com/erin_catto">
+          <img alt="Follow erin_catto on Twitter" src="http://twitter-badges.s3.amazonaws.com/twitter-b.png"/>
+         </a>
+        </p>
+       </div>
+      </aside>
+     </div>
+     <!-- #secondary .widget-area -->
+    </div>
+    <!-- #main -->
+    <footer id="colophon" role="contentinfo">
+     <div id="site-generator">
+      <a href="https://wordpress.org/" title="Semantic Personal Publishing Platform">
+       Proudly powered by WordPress
+      </a>
+     </div>
+    </footer>
+    <!-- #colophon -->
+   </div>
+   <!-- #page -->
+   <script src="http://box2d.org/wp-includes/js/wp-embed.min.js?ver=4.9.3" type="text/javascript">
+   </script>
+  </body>
+ </html>

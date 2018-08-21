@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+ <!--[if lt IE 7]> <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7" dir="ltr" lang="en"> <![endif]-->
+ <!--[if IE 7]>    <html class="no-js lt-ie10 lt-ie9 lt-ie8" dir="ltr" lang="en"> <![endif]-->
+ <!--[if IE 8]>    <html class="no-js lt-ie10 lt-ie9" dir="ltr" lang="en"> <![endif]-->
+ <!--[if IE 9]>    <html class="no-js lt-ie10" dir="ltr" lang="en"> <![endif]-->
+ <!--[if gt IE 9]><!-->
+ <html class="no-js" dir="ltr" lang="en">
+  <!--<![endif]-->
+  <head>
+   <meta content="IE=11" http-equiv="X-UA-Compatible"/>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+   </script>
+   <script type="text/javascript">
+    //VDP deeplink for BASE Ford/USA v14 08-28-2017 cs
+ 			LoadFPSGetVDPlast();
+ 
+ 			var redirect
+ 			var i = 0;
+ 			var nt = 4;
+ 			var a = 1;
+ 			var VIN
+ 
+ 			function LoadFPSGetVDPlast() {
+ 				FPSLoad(a, function() {
+ 					SetFPSpath(a, function() {
+ 						getVDLD(a, function() {});
+ 					});
+ 				});
+ 			}
+ 
+ 			//check brand and Load FPS with crossdomain option true
+ 			function FPSLoad(a, callback) {
+ 				$.getScript("https://www.ford.com/fps/script/Ford/USA?xdc=true", function() {
+ 					callback();
+ 				});
+ 			}
+ 
+ 
+ 			//Set FPS path so sets and gets post back to FPS server
+ 			function SetFPSpath(a, callback) {
+ 				FPS.config.path = "https://www.ford.com/fps";
+ 				callback();
+ 			}
+ 
+ 			//This function Get's VDLD then clears it so next visit the user is not redirected
+ 			function getVDLD(a, callback) {
+ 				FPS.get([{
+ 					VDLD: {}
+ 				}], {
+ 					success: function(data, status, xhr) {
+ 						if (!data[0].VDLD[0]) {
+ 							return;
+ 						} else {
+ 							VIN = data[0].VDLD[0].VIN;
+ 							if (VIN === "" || Date.parse(data[0].VDLD[0].on) < Date.parse(xhr.getResponseHeader("expires")) - 15000) {
+ 								console.log( "Time expired or VIN empty Data: " + (Date.parse(data[0].VDLD[0].on) - ( Date.parse(xhr.getResponseHeader("expires")) - 15000)) + " VIN:"+ VIN);
+ 								return;
+ 							} else {
+ 								FPS.set([{
+ 									VDLD: {
+ 										"VIN": "",
+ 										"stock": ""
+ 									}
+ 								}], {
+ 									success: function() {
+ 										console.log("Redirecting Data: "+ (Date.parse(data[0].VDLD[0].on) - ( Date.parse(xhr.getResponseHeader("expires")) - 15000)) + " VIN:"+ VIN);
+ 										redirect = "/new-inventory/details?vin=" + VIN;
+ 										window.location.href = redirect;
+ 									},
+ 									error: function() {
+ 										return;
+ 									}
+ 								});
+ 
+ 							}
+ 						}
+ 					},
+ 					error: function() {
+ 						return;
+ 					}
+ 				});
+ 			}
+   </script>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+   <title>
+    Boss Motors, Inc. - Your Marysville Kansas Ford dealer for new Cars, Crossovers, SUVs, Trucks and used vehicles sales and service. Located at 605 Broadway, Marysville, Kansas 66508-1839.
+   </title>
+   <base href="http://www.bossmotors.net/"/>
+   <meta content="Boss Motors, Inc. - Your Marysville Kansas Ford dealer for new Cars, Crossovers, SUVs, Trucks and used vehicles sales and service. Located at 605 Broadway, Marysville, Kansas 66508-1839." name="description"/>
+   <meta content="Boss Motors, Inc. Ford Cars, Crossovers, SUVs, Trucks Marysville Kansas" name="keywords"/>
+   <meta content="" name="author"/>
+   <meta content="width=device-width" name="viewport"/>
+   <meta content="1b603e41c327a7c6-69026718df8f3c08-g8ccfb8b90e8b0bd0-14" name="google-translate-customization"/>
+   <link href="/static/dist/theme-default-norad.min.css" id="themeCSS" rel="stylesheet" type="text/css"/>
+   <style>
+    body {
+ 				background-image: url(images/51ff94a43705ec4313b8ca01/source.png);
+ 				background-repeat: no-repeat;
+ 				background-size: cover;
+ 			}
+   </style>
+   <!--Adobe Dynamic Tag Manager - NGDS-6433-->
+   <script src="//assets.adobedtm.com/a07333cf048521a77d8805932555ede8eefdb471/satelliteLib-8a15ff650229f4fa949e871f84b067b7d949d80a.js">
+   </script>
+   <script src="/static/js/libs/modernizr-2.6.2.custom.js">
+   </script>
+   <script type="text/javascript">
+    window.NREUM||(NREUM={}),__nr_require=function(e,t,n){function r(n){if(!t[n]){var o=t[n]={exports:{}};e[n][0].call(o.exports,function(t){var o=e[n][1][t];return r(o||t)},o,o.exports)}return t[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({1:[function(e,t,n){function r(){}function o(e,t,n){return function(){return i(e,[f.now()].concat(u(arguments)),t?null:this,n),t?void 0:this}}var i=e("handle"),a=e(2),u=e(3),c=e("ee").get("tracer"),f=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(e,t){s[t]=o(d+t,!0,"api")}),s.addPageAction=o(d+"addPageAction",!0),s.setCurrentRouteName=o(d+"routeName",!0),t.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,t){var n={},r=this,o="function"==typeof t;return i(l+"tracer",[f.now(),e,n],r),function(){if(c.emit((o?"":"no-")+"fn-start",[f.now(),r,o],n),o)try{return t.apply(this,arguments)}catch(e){throw c.emit("fn-err",[arguments,this,e],n),e}finally{c.emit("fn-end",[f.now()],n)}}}};a("setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,t){m[t]=o(l+t)}),newrelic.noticeError=function(e){"string"==typeof e&&(e=new Error(e)),i("err",[e,f.now()])}},{}],2:[function(e,t,n){function r(e,t){var n=[],r="",i=0;for(r in e)o.call(e,r)&&(n[i]=t(r,e[r]),i+=1);return n}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],3:[function(e,t,n){function r(e,t,n){t||(t=0),"undefined"==typeof n&&(n=e?e.length:0);for(var r=-1,o=n-t||0,i=Array(o<0?0:o);++r<o;)i[r]=e[t+r];return i}t.exports=r},{}],4:[function(e,t,n){t.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,t,n){function r(){}function o(e){function t(e){return e&&e instanceof r?e:e?c(e,u,i):i()}function n(n,r,o,i){if(!d.aborted||i){e&&e(n,r,o);for(var a=t(o),u=m(n),c=u.length,f=0;f<c;f++)u[f].apply(a,r);var p=s[y[n]];return p&&p.push([b,n,r,a]),a}}function l(e,t){v[e]=m(e).concat(t)}function m(e){return v[e]||[]}function w(e){return p[e]=p[e]||o(n)}function g(e,t){f(e,function(e,n){t=t||"feature",y[n]=t,t in s||(s[t]=[])})}var v={},y={},b={on:l,emit:n,get:w,listeners:m,context:t,buffer:g,abort:a,aborted:!1};return b}function i(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var u="nr@context",c=e("gos"),f=e(2),s={},p={},d=t.exports=o();d.backlog=s},{}],gos:[function(e,t,n){function r(e,t,n){if(o.call(e,t))return e[t];var r=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,t,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return e[t]=r,r}var o=Object.prototype.hasOwnProperty;t.exports=r},{}],handle:[function(e,t,n){function r(e,t,n,r){o.buffer([e],r),o.emit(e,t,n)}var o=e("ee").get("handle");t.exports=r,r.ee=o},{}],id:[function(e,t,n){function r(e){var t=typeof e;return!e||"object"!==t&&"function"!==t?-1:e===window?0:a(e,i,function(){return o++})}var o=1,i="nr@id",a=e("gos");t.exports=r},{}],loader:[function(e,t,n){function r(){if(!x++){var e=h.info=NREUM.info,t=d.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&t))return s.abort();f(y,function(t,n){e[t]||(e[t]=n)}),c("mark",["onload",a()+h.offset],null,"api");var n=d.createElement("script");n.src="https://"+e.agent,t.parentNode.insertBefore(n,t)}}function o(){"complete"===d.readyState&&i()}function i(){c("mark",["domContent",a()+h.offset],null,"api")}function a(){return E.exists&&performance.now?Math.round(performance.now()):(u=Math.max((new Date).getTime(),u))-h.offset}var u=(new Date).getTime(),c=e("handle"),f=e(2),s=e("ee"),p=window,d=p.document,l="addEventListener",m="attachEvent",w=p.XMLHttpRequest,g=w&&w.prototype;NREUM.o={ST:setTimeout,SI:p.setImmediate,CT:clearTimeout,XHR:w,REQ:p.Request,EV:p.Event,PR:p.Promise,MO:p.MutationObserver};var v=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1071.min.js"},b=w&&g&&g[l]&&!/CriOS/.test(navigator.userAgent),h=t.exports={offset:u,now:a,origin:v,features:{},xhrWrappable:b};e(1),d[l]?(d[l]("DOMContentLoaded",i,!1),p[l]("load",r,!1)):(d[m]("onreadystatechange",o),p[m]("onload",r)),c("mark",["firstbyte",u],null,"api");var x=0,E=e(4)},{}]},{},["loader"]);
+   </script>
+   <!--Omniture Analytics-->
+   <script language="JavaScript" type="text/javascript">
+    s_account = 'fmcdealerconnection,fmcglobal';
+   </script>
+  </head>
+  <body class=" " country="us" data-load="bootstrap pjax" dmt-locale="" locale="en">
+   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+   <div class="modalAlerts modal hide fade dltconfirmModal" data-backdrop="false" data-keyboard="false" id="confirmMsgModal">
+    <div class="modal-header">
+     <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+     </button>
+     <h3>
+     </h3>
+    </div>
+    <div class="modal-body">
+     <span class="icon-image">
+     </span>
+     <p class="modal-body-msg">
+     </p>
+    </div>
+    <div class="modal-footer">
+     <button class="btn btn-primary" data-dismiss="modal">
+     </button>
+     <button class="btn close-btn" data-dismiss="modal">
+      Cancel
+     </button>
+    </div>
+   </div>
+   <div class="modalAlerts modal hide fade errorModal" id="infoMsgModal">
+    <div class="modal-header">
+     <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+     </button>
+     <h3>
+     </h3>
+    </div>
+    <div class="modal-body">
+     <span class="icon-image">
+     </span>
+     <p class="modal-body-msg">
+     </p>
+    </div>
+    <div class="modal-footer">
+     <button class="btn btn-primary callback-btn" data-dismiss="modal">
+      Ok
+     </button>
+    </div>
+   </div>
+   <div class="pjax-main">
+    <div class="container theme-default " id="page-container">
+     <header class=" ">
+      <div class="topbar row-fluid" data-dimension="top-links">
+       <div class="topbar-inner">
+        <div id="">
+        </div>
+        <div id="section-right">
+         <div class="social-icons" data-edit-dialog="ngds-admin/dmt/settings/#social-network" data-edit-message="Add Social Media" data-suppress-dialog="true" data-tooltip="Click on the hotspot to open Social Network Settings page" id="section-social-icons">
+         </div>
+         <ul id="top_bar_links">
+          <li>
+           <i class="icon-top-bar hours_icon">
+           </i>
+           <a data-pjax=".pjax-main" href="hours/">
+            Dealership Hours
+           </a>
+          </li>
+          <li>
+           <i class="icon-top-bar contact_us_icon">
+           </i>
+           <a data-pjax=".pjax-main" href="contact/">
+            Contact Us
+           </a>
+          </li>
+          <li>
+           <i class="icon-top-bar directions_icon">
+           </i>
+           <a data-pjax=".pjax-main" href="directions/">
+            Map and Directions
+           </a>
+          </li>
+         </ul>
+         <div class="language-picker" id="google_translate_element" role="language-picker">
+         </div>
+        </div>
+       </div>
+      </div>
+      <!--This style need to be added here for supporting masthead images replace on PJAX calls-->
+      <style>
+       .masthead {
+                 margin-bottom: 0px;
+                 background: url(images/51ff94a73705ec4313b8ca15/source.png) no-repeat;
+                 background-size: 100% 100%;
+             }
+      </style>
+      <div class="masthead row-fluid" data-dimension="header" id="masthead" itemscope="" itemtype="http://schema.org/AutoDealer" role="banner">
+       <nav data-edit-dialog="ngds-admin/dmt/edit-dealership-info" data-edit-message="Edit Dealership Info" data-tooltip="Click on the hotspot to open the Edit Dealership Info dialog box" id="navdealerinfo" role="dealer-information">
+       </nav>
+       <div class="hide lincoln-map-link" data-dismiss="modal" id="lincoln_map_link">
+        <span class="dealer-address" itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress" role="dealer-address">
+         Map
+        </span>
+       </div>
+       <div class="mini lincoln-map-link" data-dealer='{ 
+     "longitude":-96.650471,"latitude":39.84172,"primary_address":"605 Broadway, Marysville, KS, 66508-1839, US", "primary_address_uuid":"cfe254db-d4e9-4efa-805c-b3100a1539a1","brands":["ford"],"name":"Boss Motors, Inc.","country":"US" }' data-load="map-control" data-map-hotspot="[role='banner'] .lincoln-map-link[data-dismiss='modal']" data-type="mini" role="map-control">
+        <div class="arrow">
+        </div>
+        <div class="close lincoln-map-link" data-dismiss="modal">
+        </div>
+        <div class="query-controls">
+         <div class="user-address-copy">
+          Your Location :
+         </div>
+         <input role="user-address" type="text" value="Address, City, State, Zip Code"/>
+         <button class="btn btn-mini directions-hotspot" role="directions-hotspot" type="button">
+          Get Directions
+         </button>
+        </div>
+        <div role="map">
+        </div>
+        <div class="bottom-link">
+         <a data-pjax=".pjax-main" href="hours/">
+          Dealership Hours
+         </a>
+         <a data-pjax=".pjax-main" href="contact/">
+          Contact Us
+         </a>
+        </div>
+        <div role="loader">
+         <img src="/static/img/ajax-loader-inv.gif"/>
+        </div>
+       </div>
+       <div align="vertical" class="head-part call-us-now num_phones_1">
+        <button class="btn btn-link btn-small" data-class="dealer-phone" data-original-title="Call Us Now" data-placement="left" rel="clickover" type="button">
+         <span class="dept_name" style="color: ">
+          Call Us Now
+          <span class="colon_dept_name">
+           :
+          </span>
+         </span>
+         <span class="dept_phn_num" itemprop="telephone" style="color: ">
+          800-453-3696
+         </span>
+         <div rel="clickover-content">
+          <div class="close" data-dismiss="clickover">
+          </div>
+          <div class="dept_details">
+           <div class="section-left">
+            <p class="dept_phn_num">
+             800-453-3696
+            </p>
+            <p class="dept_fax_num" itemprop="faxNumber">
+             785-562-2250
+            </p>
+            <p class="dept_email">
+             <a href="mailto:jboss@bluevalley.net" itemprop="email">
+              jboss@bluevalley.net
+             </a>
+            </p>
+           </div>
+          </div>
+          <div class="bottom-link">
+           <a data-pjax=".pjax-main" href="contact/">
+            Contact Us Page
+           </a>
+          </div>
+         </div>
+        </button>
+       </div>
+       <div class="pull-left" id="logo">
+        <a data-pjax=".pjax-main" href="http://www.bossmotors.net/">
+         <img alt="Ford Logo" class="head-part span2 logo" src="/static/img/ford_logo.png" width="100"/>
+        </a>
+       </div>
+       <div class="head-part span6 dealer-info">
+        <div id="v-separtor">
+        </div>
+        <h1 class="dealer-name" itemprop="name">
+         Boss Motors, Inc.
+        </h1>
+        <span class="dealer-address" data-dismiss="modal" itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress" role="dealer-address">
+         <span itemprop="streetAddress">
+          605 Broadway
+         </span>
+         ,
+         <span itemprop="addressLocality">
+          Marysville
+         </span>
+         ,
+         <span itemprop="addressRegion">
+          KS
+         </span>
+         <span itemprop="postalCode">
+          66508-1839
+         </span>
+        </span>
+        <div class="mini" data-dealer='{ 
+     "longitude":-96.650471,"latitude":39.84172,"primary_address":"605 Broadway, Marysville, KS, 66508-1839, US", "primary_address_uuid":"cfe254db-d4e9-4efa-805c-b3100a1539a1","brands":["ford"],"name":"Boss Motors, Inc.","country":"US" }' data-load="map-control" data-map-hotspot="[role='banner'] .dealer-info [data-dismiss='modal']" data-type="mini" role="map-control">
+         <div class="arrow">
+         </div>
+         <div class="close" data-dismiss="modal">
+         </div>
+         <div class="query-controls">
+          <div class="user-address-copy">
+           Your Location :
+          </div>
+          <input role="user-address" type="text" value="Address, City, State, Zip Code"/>
+          <button class="btn btn-mini directions-hotspot" role="directions-hotspot" type="button">
+           Get Directions
+          </button>
+         </div>
+         <div role="map">
+         </div>
+         <div class="bottom-link">
+          <a data-pjax=".pjax-main" href="hours/">
+           Dealership Hours
+          </a>
+          <a data-pjax=".pjax-main" href="contact/">
+           Contact Us
+          </a>
+         </div>
+         <div role="loader">
+          <img src="/static/img/ajax-loader-inv.gif"/>
+         </div>
+        </div>
+        <nav category="banner" data-edit-dialog="ngds-admin/image/list?category=banner" data-edit-message="Edit Banner" data-tooltip="Click on the hotspot to change the Banner image with the help of the Image Library" id="edit_banner_link" pcs="False" role="image-library">
+        </nav>
+       </div>
+      </div>
+      <div data-edit-dialog="ngds-admin/dmt/edit-navigation" data-edit-message="Edit Navigation" data-tooltip="Click on the hotspot to open the Edit Navigation dialog box" data-tooltip-placement="right" id="edit-navigation">
+      </div>
+      <nav class="navbar" data-dimension="header" id="navbar" role="navigation">
+       <div class="navbar-inner">
+        <button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button">
+         <span class="icon-bar">
+         </span>
+         <span class="icon-bar">
+         </span>
+         <span class="icon-bar">
+         </span>
+        </button>
+        <div class="nav-collapse collapse widget-editable" data-path="site-nav-manager">
+         <a data-pjax=".pjax-main" href="http://www.bossmotors.net/">
+          <div class="hide" id="lincoln_logo">
+          </div>
+         </a>
+         <ul class="nav" role="navigation">
+          <li class="link-width-5">
+           <a class="active" data-page-path="/" data-pjax=".pjax-main" href="http://www.bossmotors.net/" rel="nav-item">
+            Home
+            <span class="extra-item">
+            </span>
+           </a>
+          </li>
+          <li class="link-width-5">
+           <a class="" data-page-path="/" data-pjax=".pjax-main" href="http://www.bossmotors.net/new-inventory/" rel="nav-item">
+            Search New Vehicles
+            <span class="extra-item">
+            </span>
+           </a>
+          </li>
+          <li class="link-width-5">
+           <a class="" data-page-path="/" data-pjax=".pjax-main" href="http://www.bossmotors.net/used-inventory/" rel="nav-item">
+            Search Used Vehicles
+            <span class="extra-item">
+            </span>
+           </a>
+          </li>
+          <li class="link-width-5">
+           <a class="" data-page-path="/" data-pjax=".pjax-main" href="http://www.bossmotors.net/service-appointment/" rel="nav-item">
+            Schedule Service
+            <span class="extra-item">
+            </span>
+           </a>
+          </li>
+          <li class="link-width-5">
+           <a class="" data-page-path="/" data-pjax=".pjax-main" href="http://www.bossmotors.net/contact/" rel="nav-item">
+            Contact Us
+            <span class="extra-item">
+            </span>
+           </a>
+          </li>
+          <li class="dropdown link-width-5" id="more">
+           <a class="dropdown-toggle" href="javascript:void(0);">
+            More
+            <span class="extra-item">
+            </span>
+           </a>
+           <div class="dropdown-menu-wrapper">
+            <ul class="column-nav row-fluid dropdown-menu pull-right">
+             <!--<li class="column-1">-->
+             <li class="span3">
+              <div class="category">
+               <span class="name">
+                New Vehicles
+               </span>
+               <ul>
+                <li>
+                 <i class="icon-nav search_new_vehicles_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/new-inventory/">
+                  Search New Vehicles
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav resaerch_vehicle_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/showroom/">
+                  Vehicle Showroom
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav let_us_find_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/letusfindit/">
+                  Let Us Find It For You
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav ">
+                 </i>
+                 <a data-target="#build-and-price" data-toggle="modal" href="http://www.bossmotors.net/build-and-price/flip/?requestType=build_and_price">
+                  Build &amp; Price
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav get_internet_price_icon">
+                 </i>
+                 <a data-target="#get-internet-price" data-toggle="modal" href="http://www.bossmotors.net/quote/flip/?requestType=goip">
+                  Request a Quote
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav schedule_test_drive_icon">
+                 </i>
+                 <a data-target="#schedule-test-drive" data-toggle="modal" href="http://www.bossmotors.net/test-drive/flip/?requestType=test-drive">
+                  Schedule a Test Drive
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </li>
+             <!--<li class="column-2">-->
+             <li class="span3">
+              <div class="category">
+               <span class="name">
+                Used Vehicles
+               </span>
+               <ul>
+                <li>
+                 <i class="icon-nav search_pre-owned_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/used-inventory/">
+                  Search Used Vehicles
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav ">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/aboutused/">
+                  About Pre-Owned Sales
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <div class="category">
+               <span class="name">
+                Finance
+               </span>
+               <ul>
+                <li>
+                 <i class="icon-nav special_offer_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/specials/">
+                  View Special Offers
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav trade_in_appraisal_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/trade-in/">
+                  Value Your Trade
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav credit_estimator_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/credit-estimate/">
+                  Credit Estimator
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav apply_for_credit_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/credit-application/">
+                  Ford Credit
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </li>
+             <!--<li class="column-3">-->
+             <li class="span3">
+              <div class="category">
+               <span class="name">
+                Service
+               </span>
+               <ul>
+                <li>
+                 <i class="icon-nav schedule_services_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/service-appointment/">
+                  Schedule Service
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav service_department_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/service/">
+                  Service Department
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav parts_and_accesories_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/parts/">
+                  Parts
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav ">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/accessories/">
+                  Accessories
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav ">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/coupons/">
+                  Coupons Page
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </li>
+             <!--<li class="column-4">-->
+             <li class="span3">
+              <div class="category">
+               <span class="name">
+                About Us
+               </span>
+               <ul>
+                <li>
+                 <i class="icon-nav about_us_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/about/">
+                  About Us
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav dealership_hours_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/hours/">
+                  Dealership Hours
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav ">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/staff/">
+                  Our Team
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav maps_direction_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/directions/">
+                  Directions
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav contact_us_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/contact/">
+                  Contact Us
+                 </a>
+                </li>
+                <li>
+                 <i class="icon-nav blog_icon">
+                 </i>
+                 <a data-pjax=".pjax-main" href="http://www.bossmotors.net/blog/">
+                  Blog
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </li>
+            </ul>
+           </div>
+          </li>
+         </ul>
+        </div>
+       </div>
+      </nav>
+     </header>
+     <div class="home" data-dimension="body" id="content-body">
+      <input data-case="no" id="mkt_reg_code" type="hidden" value="fdaf-53B"/>
+      <input id="page_url" type="hidden" value="/"/>
+      <input id="dealer_city" type="hidden" value="Marysville"/>
+      <input id="current_theme" type="hidden" value="default"/>
+      <input id="current_theme_name" type="hidden" value="blue"/>
+      <input id="o_prefix" type="hidden" value="dc"/>
+      <input id="country" type="hidden" value="US"/>
+      <input id="pa_code" type="hidden" value="05182"/>
+      <input id="code" type="hidden" value="05182"/>
+      <input id="theme" type="hidden" value="default"/>
+      <input id="dealertype" type="hidden" value="base"/>
+      <input id="o_dealertype" type="hidden" value="base"/>
+      <input id="page_template" type="hidden" value="home-shop"/>
+      <input id="current_layout" type="hidden" value="shop"/>
+      <input id="page_type" type="hidden" value="home"/>
+      <input id="zip_main" type="hidden" value="66508-1839"/>
+      <input id="site_brand" type="hidden" value="dc: Ford"/>
+      <input id="site_appl_brands" type="hidden" value="dc: Ford"/>
+      <input id="client_brand" type="hidden" value="Ford"/>
+      <input id="dealer_state" type="hidden" value="KS"/>
+      <input id="lang" type="hidden" value="en"/>
+      <div class="content-body" role="main">
+       <!-- <h3>Home</h3> -->
+       <input id="page_name" type="hidden" value="dc: home"/>
+       <input id="channel" type="hidden" value="home"/>
+       <input id="site_level" type="hidden" value="home"/>
+       <div class="" id="vehicle-barrage-layout-1">
+        <div class="row-fluid">
+         <div class="span9 page-content-container page-content-container-6">
+          <div id="slideshow-widget">
+           <div data-edit-dialog="ngds-admin/dmt/edit-slideshow" data-edit-message="Edit Slideshow/Campaigns" data-tooltip="Click on the hotspot to open the Edit Slideshow/Campaigns dialog box" id="edit-slideshow" role="edit-slideshow">
+            <div class="hidden-phone row-fluid custom-carousel" data-dimension="slide-show" data-load="slideshow" id="slideshowWrapper">
+             <div class="carousel-inner">
+              <div class="item active" data-interval="0">
+               <a data-intcmp="NILPACC-3Q18Service" data-pjax=".pjax-main" href="coupons/?intcmp=NILPACC-3Q18Service">
+                <img alt="" metadata="{u'disclosure': {u'fr': u'', u'en': u'', u'es': u''}, u'name': u'NILPACC - 3Q18 Service', u'end_date': datetime.datetime(2018, 9, 30, 23, 59), u'promotiles': [], u'id': u'5b3513f03705ec13337cbde1', u'additional_delay': u'0', u'open_in_new_window': False, u'start_date': datetime.datetime(2018, 7, 1, 0, 0), u'homepage_heroshot_image': {u'fr': {u'image_id': u'', u'link_to': {u'00000': {u'type': None, u'value': u''}}, u'secondary_image_id': u''}, u'en': {u'image_id': u'5b35132042f9184ac94c7b5f', u'link_to': {u'00000': {u'type': u'Site Page', u'value': u'/coupons/'}}, u'secondary_image_id': u''}}}" src="images/5b35132042f9184ac94c7b5f/source.png" title="Click to see the details"/>
+               </a>
+              </div>
+              <div class="item " data-interval="0">
+               <a data-intcmp="2018SummerSalesEvent" data-pjax=".pjax-main" href="new-inventory/?intcmp=2018SummerSalesEvent">
+                <img alt="" metadata="{u'disclosure': {u'fr': u'', u'en': u'', u'es': u''}, u'name': u'2018 Summer Sales Event', u'end_date': datetime.datetime(2018, 7, 31, 23, 59), u'promotiles': [], u'start_date': datetime.datetime(2018, 7, 10, 0, 0), u'additional_delay': u'0', u'open_in_new_window': False, u'id': u'5b3e1ebf3705ec4d2885b735', u'homepage_heroshot_image': {u'fr': {u'image_id': u'', u'link_to': {}, u'secondary_image_id': u''}, u'en': {u'image_id': u'5b3e1dd681f7441524530fad', u'link_to': {u'47B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'41E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'53E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'72C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'53A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'32B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'16A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47W': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47Z': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56D': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'53B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'24A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48J': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'24B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48G': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'70F': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'41C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'21C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56I': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'44H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'58C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'47D': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'58A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48W': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'41A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'71B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'44E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'70I': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52D': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52F': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52G': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56F': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'33H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'13T': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'52H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'44C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'27C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'53F': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'74B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'44B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'11A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'41B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'31A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'27A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'27B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'71D': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'13G': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'13F': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'71C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'13H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'23A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'23B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'56E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'13S': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'74A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'21D': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'74C': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'21B': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'71A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'21A': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'70E': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'33G': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'48H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'21H': {u'type': u'Site Page', u'value': u'/new-inventory/'}, u'31D': {u'type': u'Site Page', u'value': u'/new-inventory/'}}, u'secondary_image_id': u''}}}" src="images/5b3e1dd681f7441524530fad/source.png" title="Click to see the details"/>
+               </a>
+              </div>
+             </div>
+             <div class="carousel-pagination">
+              <ul>
+               <li>
+                <a class="active" href="" slide-to="0">
+                 1
+                </a>
+               </li>
+               <li>
+                <a class="" href="" slide-to="1">
+                 2
+                </a>
+               </li>
+              </ul>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="span3">
+          <div class="shop-link-wrapper">
+           <!-- This is for "More way to shop" widget in vehicle barrage - layout 1 -->
+           <div class="more-shot-ways-link-wrapper" data-dimension="shop-more">
+            <h3>
+             More ways to shop
+            </h3>
+            <ul class="links-list">
+             <li>
+              <a data-pjax=".pjax-main" href="new-inventory">
+               New
+               <strong>
+                Cars
+               </strong>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="used-inventory">
+               Used
+               <strong>
+                Cars
+               </strong>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="used-inventory/?price_min=5000&amp;price_max=10000&amp;vehicle_type=Car&amp;page=home">
+               Cars from
+               <strong>
+                $5k-$10k
+               </strong>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="credit-application">
+               Need
+               <strong>
+                Financing
+               </strong>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="quote?requestType=goip">
+               <strong>
+                Get Our Internet Price
+               </strong>
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="row-fluid column-content-wrapper-home">
+         <div class="span3 row-fluid page-content-container page-content-container-1">
+          <div class="span11">
+           <div class="widget-editable largebuttonslist-wrapper" data-dimension="CTA" data-path="">
+            <ul class="large-buttons-list">
+             <li>
+              <a data-target="#get-internet-price" data-toggle="modal" href="quote/flip/?requestType=goip">
+               Request a
+               <strong>
+                Quote
+               </strong>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="trade-in">
+               Value Your
+               <strong>
+                Trade
+               </strong>
+               <div class="bb_ele">
+                <img src="/static/img/homepage/bb-image.png"/>
+               </div>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="credit-estimate">
+               Credit
+               <strong>
+                Estimator
+               </strong>
+               <div class="credit_ele">
+                <img src="/static/img/homepage/credit-estimator-shop.png"/>
+               </div>
+              </a>
+             </li>
+             <li>
+              <a data-pjax=".pjax-main" href="service-appointment">
+               Schedule
+               <strong>
+                Service
+               </strong>
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+          <div class="span1 hidden-phone">
+           <img src="/static/img/homepage/shop/lhs-shadow.png"/>
+          </div>
+         </div>
+         <div class="span6 page-content-container page-content-container-2">
+          <div class="widget-editable welcometext-wrapper">
+           <nav data-edit-dialog="ngds-admin/dmt/edit-welcome-text" data-edit-message="Edit Welcome Text" data-tooltip="Click on the hotspot to open the Edit Welcome Text dialog box" id="edit-welcome-text" role="edit-welcome-text">
+           </nav>
+           <h3 class="welcomeheading">
+            Welcome to
+            <strong>
+             Boss Motors, Inc.
+            </strong>
+           </h3>
+           Boss Motors, Inc., a Ford dealer in Marysville, Kansas offers new Ford Cars, Crossovers, SUVs and Trucks online at
+           <a href="http://www.bossmotors.net">
+            http://www.bossmotors.net
+           </a>
+           .
+           <a href="new-inventory">
+            Search
+           </a>
+           for all new 2017, 2018 and 2019 Ford, including C-MAX, EcoSport, Edge, Escape, Expedition, Explorer, F-150, Fiesta, Flex, Focus, Fusion, Mustang, SuperDuty, Taurus, Transit Connect, Transit Connect Wagon and Transit VanWagon. Find your dream car from our
+           <a href="showroom">
+            Ford showroom
+           </a>
+           of Cars, Crossovers, SUVs and Trucks or search our
+           <a href="new-inventory">
+            new Ford inventory
+           </a>
+           to see what is on our lot, get new car pricing and
+           <a href="quote">
+            free Ford price quotes
+           </a>
+           . View our
+           <a href="used-inventory">
+            used car inventory
+           </a>
+           , including our pre-owned Ford vehicles.
+          </div>
+         </div>
+         <div class="span3 rwo-fluid page-content-container page-content-container-3">
+          <div class="span1 hidden-phone">
+           <img src="/static/img/homepage/shop/rhs-shadow.png"/>
+          </div>
+          <div class="span11">
+           <div class="search-inventory-widget" data-load="home-inv-search" id="search-inventory-widget">
+            <h3>
+             SEARCH
+             <strong>
+              INVENTORY
+             </strong>
+            </h3>
+            <ul class="nav nav-tabs row-fluid " id="inventory-tab">
+             <li class="active new-inventory">
+              <a data-toggle="tab" href="#new-vehicle-search">
+               <span class="tag_short">
+                New
+               </span>
+               <span class="tag_long hide">
+                Search New Inventory
+               </span>
+              </a>
+             </li>
+             <li class="pre-owned">
+              <a data-toggle="tab" href="#pre-owned-search">
+               <span class="tag_short">
+                Pre-Owned
+               </span>
+               <span class="tag_long hide">
+                Search Used Inventory
+               </span>
+              </a>
+             </li>
+            </ul>
+            <div class="clearfix">
+            </div>
+            <div class="tab-content inv-forms" data-dimension="inv-widget">
+             <div class="tab-pane active new-inventory" id="new-vehicle-search">
+              <form action="new-inventory">
+               <select class="brand-select select-glossy odd-drop" name="make">
+                <option value="Ford">
+                 Ford
+                </option>
+               </select>
+               <select class="year-select select-glossy even-drop" ford="All" name="year">
+                <option>
+                 All
+                </option>
+                <option>
+                 2017
+                </option>
+                <option>
+                 2018
+                </option>
+                <option>
+                 2019
+                </option>
+               </select>
+               <select class="bodystyle-select select-glossy odd-drop" ford="truck" name="vehicle_type" vehicle_types='{ "car":"Cars", "crossover":"Crossovers", "suv":"SUVs", "truck":"Trucks" }'>
+                <option value="car">
+                 Cars
+                </option>
+                <option value="crossover">
+                 Crossovers
+                </option>
+                <option value="suv">
+                 SUVs
+                </option>
+                <option value="truck">
+                 Trucks
+                </option>
+               </select>
+               <select class="model-select select-glossy notranslate even-drop" name="models">
+                <option>
+                 All
+                </option>
+               </select>
+               <input id="site_default_model" lincoln_default="" type="hidden" value="All"/>
+               <div class="submit-action clearfix">
+                <button class="btn-metallic primary pull-right" type="button" value="SEARCH">
+                 SEARCH
+                 <i class="arrow">
+                 </i>
+                </button>
+               </div>
+              </form>
+             </div>
+             <div class="tab-pane pre-owned" id="pre-owned-search">
+              <ul class="inventory-links hide">
+               <li class="inventory-link">
+                <a data-pjax=".pjax-main" href="/used-inventory/?make=Lincoln">
+                 Search Lincoln Pre-Owned
+                </a>
+               </li>
+              </ul>
+              <form action="used-inventory" data-pjax=".pjax-main">
+               <select class="brand-select select-glossy odd-drop" name="make">
+                <option value="All Makes">
+                 All Makes
+                </option>
+               </select>
+               <select class="year-select select-glossy even-drop">
+                <option value="All Years">
+                 All Years
+                </option>
+               </select>
+               <input id="year_min" name="" type="hidden"/>
+               <input id="year_max" name="" type="hidden"/>
+               <select class="bodystyle-select select-glossy odd-drop" id="pre-owned-body-type" name="vehicle_type">
+                <option value="All">
+                 All Body Styles
+                </option>
+               </select>
+               <select class="mileage-select select-glossy even-drop">
+                <option value="All Mileage">
+                 All Mileage
+                </option>
+                <option value="0 - 10,000">
+                 0 - 10,000
+                </option>
+                <option value="10,001 - 20,000">
+                 10,001 - 20,000
+                </option>
+                <option value="20,001 - 30,000">
+                 20,001 - 30,000
+                </option>
+                <option value="30,001 - 40,000">
+                 30,001 - 40,000
+                </option>
+                <option value="40,001 - 150,000">
+                 40,001 - 150,000
+                </option>
+               </select>
+               <input id="mileage_min" name="mileage_min" type="hidden"/>
+               <input id="mileage_max" name="mileage_max" type="hidden"/>
+               <select class="prices-select select-glossy odd-drop">
+                <option value="All Prices">
+                 All Prices
+                </option>
+                <option value="$0 - $4,999">
+                 $0 - $4,999
+                </option>
+                <option value="$5,000 - $9,999">
+                 $5,000 - $9,999
+                </option>
+                <option value="$10,000 - $14,999">
+                 $10,000 - $14,999
+                </option>
+                <option value="$15,000 - $19,999">
+                 $15,000 - $19,999
+                </option>
+                <option value="$20,000 - $24,999">
+                 $20,000 - $24,999
+                </option>
+                <option value="$25,000 - $29,999">
+                 $25,000 - $29,999
+                </option>
+                <option value="$30,000 - $39,999">
+                 $30,000 - $39,999
+                </option>
+                <option value="$40,000 - $150,000">
+                 $40,000 - $150,000
+                </option>
+               </select>
+               <input id="price_min" name="price_min" type="hidden"/>
+               <input id="price_max" name="price_max" type="hidden"/>
+               <div class="submit-action clearfix">
+                <button class="btn-metallic primary pull-right" type="submit" value="SEARCH">
+                 <span class="tag_short">
+                  SEARCH
+                 </span>
+                 <span class="tag_long hide">
+                  Search Pre-Owned
+                 </span>
+                 <i class="arrow">
+                 </i>
+                </button>
+               </div>
+              </form>
+             </div>
+             <input id="dealer_models" translations_strings='{"all":"All" }' type="hidden" value='[{ "year":"2017","make":"Ford","vehicle_type":"car","name":"Fiesta","model_name":"Fiesta" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"Fiesta","model_name":"Fiesta" },{ "year":"2017","make":"Ford","vehicle_type":"car","name":"Focus","model_name":"Focus" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"Focus","model_name":"Focus" },{ "year":"2018","make":"Ford","vehicle_type":"crossover","name":"EcoSport","model_name":"EcoSport" },{ "year":"2017","make":"Ford","vehicle_type":"car","name":"Fusion","model_name":"Fusion" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"Fusion","model_name":"Fusion" },{ "year":"2017","make":"Ford","vehicle_type":"truck","name":"Transit Connect","model_name":"Transit Connect" },{ "year":"2018","make":"Ford","vehicle_type":"truck","name":"Transit Connect","model_name":"Transit Connect" },{ "year":"2017","make":"Ford","vehicle_type":"suv","name":"Escape","model_name":"Escape" },{ "year":"2018","make":"Ford","vehicle_type":"suv","name":"Escape","model_name":"Escape" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"C-MAX","model_name":"C-MAX" },{ "year":"2017","make":"Ford","vehicle_type":"car","name":"C-MAX","model_name":"C-MAX" },{ "year":"2017","make":"Ford","vehicle_type":"car","name":"Mustang","model_name":"Mustang" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"Mustang","model_name":"Mustang" },{ "year":"2019","make":"Ford","vehicle_type":"car","name":"Mustang","model_name":"Mustang" },{ "year":"2018","make":"Ford","vehicle_type":"crossover","name":"Transit Connect Wagon","model_name":"Transit Connect Wagon" },{ "year":"2017","make":"Ford","vehicle_type":"truck","name":"F-150","model_name":"F-150" },{ "year":"2017","make":"Ford","vehicle_type":"car","name":"Taurus","model_name":"Taurus" },{ "year":"2018","make":"Ford","vehicle_type":"car","name":"Taurus","model_name":"Taurus" },{ "year":"2018","make":"Ford","vehicle_type":"truck","name":"F-150","model_name":"F-150" },{ "year":"2017","make":"Ford","vehicle_type":"crossover","name":"Edge","model_name":"Edge" },{ "year":"2018","make":"Ford","vehicle_type":"crossover","name":"Edge","model_name":"Edge" },{ "year":"2017","make":"Ford","vehicle_type":"crossover","name":"Flex","model_name":"Flex" },{ "year":"2018","make":"Ford","vehicle_type":"crossover","name":"Flex","model_name":"Flex" },{ "year":"2019","make":"Ford","vehicle_type":"crossover","name":"Flex","model_name":"Flex" },{ "year":"2017","make":"Ford","vehicle_type":"truck","name":"Transit VanWagon","model_name":"Transit" },{ "year":"2017","make":"Ford","vehicle_type":"suv","name":"Explorer","model_name":"Explorer" },{ "year":"2018","make":"Ford","vehicle_type":"suv","name":"Explorer","model_name":"Explorer" },{ "year":"2018","make":"Ford","vehicle_type":"truck","name":"Transit VanWagon","model_name":"Transit" },{ "year":"2017","make":"Ford","vehicle_type":"truck","name":"SuperDuty","model_name":"Super Duty" },{ "year":"2018","make":"Ford","vehicle_type":"truck","name":"SuperDuty","model_name":"Super Duty" },{ "year":"2017","make":"Ford","vehicle_type":"suv","name":"Expedition","model_name":"Expedition" },{ "year":"2018","make":"Ford","vehicle_type":"suv","name":"Expedition","model_name":"Expedition" }]'/>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="clearfix">
+         </div>
+        </div>
+       </div>
+       <div class="page-loader show-when-loading">
+       </div>
+      </div>
+      <footer data-dimension="footer">
+       <nav class="footer-nav row-fluid" id="footer-nav">
+        <ul class="column-nav">
+         <!--<li class="column-1">-->
+         <li class="span3">
+          <div class="category">
+           <span class="name">
+            New Vehicles
+           </span>
+           <ul>
+            <li>
+             <i class="icon-nav search_new_vehicles_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/new-inventory/">
+              Search New Vehicles
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav resaerch_vehicle_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/showroom/">
+              Vehicle Showroom
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav let_us_find_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/letusfindit/">
+              Let Us Find It For You
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav ">
+             </i>
+             <a data-target="#build-and-price" data-toggle="modal" href="http://www.bossmotors.net/build-and-price/flip/?requestType=build_and_price">
+              Build &amp; Price
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav get_internet_price_icon">
+             </i>
+             <a data-target="#get-internet-price" data-toggle="modal" href="http://www.bossmotors.net/quote/flip/?requestType=goip">
+              Request a Quote
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav schedule_test_drive_icon">
+             </i>
+             <a data-target="#schedule-test-drive" data-toggle="modal" href="http://www.bossmotors.net/test-drive/flip/?requestType=test-drive">
+              Schedule a Test Drive
+             </a>
+            </li>
+           </ul>
+          </div>
+         </li>
+         <!--<li class="column-2">-->
+         <li class="span3">
+          <div class="category">
+           <span class="name">
+            Used Vehicles
+           </span>
+           <ul>
+            <li>
+             <i class="icon-nav search_pre-owned_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/used-inventory/">
+              Search Used Vehicles
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav ">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/aboutused/">
+              About Pre-Owned Sales
+             </a>
+            </li>
+           </ul>
+          </div>
+          <div class="category">
+           <span class="name">
+            Finance
+           </span>
+           <ul>
+            <li>
+             <i class="icon-nav special_offer_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/specials/">
+              View Special Offers
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav trade_in_appraisal_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/trade-in/">
+              Value Your Trade
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav credit_estimator_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/credit-estimate/">
+              Credit Estimator
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav apply_for_credit_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/credit-application/">
+              Ford Credit
+             </a>
+            </li>
+           </ul>
+          </div>
+         </li>
+         <!--<li class="column-3">-->
+         <li class="span3">
+          <div class="category">
+           <span class="name">
+            Service
+           </span>
+           <ul>
+            <li>
+             <i class="icon-nav schedule_services_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/service-appointment/">
+              Schedule Service
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav service_department_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/service/">
+              Service Department
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav parts_and_accesories_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/parts/">
+              Parts
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav ">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/accessories/">
+              Accessories
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav ">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/coupons/">
+              Coupons Page
+             </a>
+            </li>
+           </ul>
+          </div>
+         </li>
+         <!--<li class="column-4">-->
+         <li class="span3">
+          <div class="category">
+           <span class="name">
+            About Us
+           </span>
+           <ul>
+            <li>
+             <i class="icon-nav about_us_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/about/">
+              About Us
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav dealership_hours_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/hours/">
+              Dealership Hours
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav ">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/staff/">
+              Our Team
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav maps_direction_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/directions/">
+              Directions
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav contact_us_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/contact/">
+              Contact Us
+             </a>
+            </li>
+            <li>
+             <i class="icon-nav blog_icon">
+             </i>
+             <a data-pjax=".pjax-main" href="http://www.bossmotors.net/blog/">
+              Blog
+             </a>
+            </li>
+           </ul>
+          </div>
+         </li>
+         <!--<li class="column-5">-->
+         <li class="span3">
+         </li>
+        </ul>
+        <div class="social_media_links" style="display:none">
+         <span class="name">
+         </span>
+         <div class="social-icons" data-edit-dialog="ngds-admin/dmt/settings/#social-network" data-edit-message="Add Social Media" data-suppress-dialog="true" data-tooltip="Click on the hotspot to open Social Network Settings page" id="social_icons_span">
+         </div>
+        </div>
+       </nav>
+       <div id="footer-bottom">
+        <div class="social-icons">
+        </div>
+        <div id="footer-links">
+         <a href="sitemap">
+          Sitemap
+         </a>
+         |
+         <a class="privacy-tab-listener" data-load="base-tab" data-tab="tabford" data-toggle="modal" href="#privacy-policy">
+          Privacy Policy
+         </a>
+         |
+         <a data-toggle="modal" href="#disclosures">
+          *View Additional Disclosures
+         </a>
+         |
+         <a data-dealer="05182" data-load="ad-choices" href="#" id="_bapw-link" target="_blank">
+          <img id="ad-choices-icon" src="//c.betrad.com/pub/icon1.png"/>
+          <span>
+           AdChoices
+          </span>
+         </a>
+         <div data-edit-dialog="ngds-admin/dmt/settings/#privacy-policy" data-edit-message="Edit/Add Dealer Privacy Policy" data-suppress-dialog="true" data-tooltip="Click on the hotspot to open the Dealer Privacy Policy Settings page" data-tooltip-placement="top">
+         </div>
+         <div class="disclaimer-hotspot" data-edit-dialog="ngds-admin/dmt/settings/#dealer-disclaimer" data-edit-message="Edit/Add Dealer Disclosure" data-suppress-dialog="true" data-tooltip="Click on the hotspot to open the Dealer Disclosure Settings page" data-tooltip-placement="top">
+         </div>
+        </div>
+        <div id="footer-copyright">
+         © 2018 DealerDirect, LLC
+        </div>
+        <div class="clearfix">
+        </div>
+       </div>
+      </footer>
+      <div class="modal hide fade footer-popup" data-content-wrapper=".modal-body" data-load="base-tab" id="disclosures" role="base-tab">
+       <div class="modal-header">
+        <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+         ×
+        </button>
+        <h3 class="title">
+         Disclosures
+        </h3>
+       </div>
+       <div class="modal-body">
+        <div class="additionalDisclaimers" id="privacy-container">
+         <!--  Currently Empty - use this to add any static disclosures applicable across the site -->
+        </div>
+        <div>
+         <p>
+          <span style="font-family:verdana,geneva,sans-serif;">
+           <span style="color: rgb(0, 0, 0); font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; word-spacing: 0px; background-color: rgb(255, 255, 255); display: inline ! important; float: none;">
+            Although every reasonable effort has been made to insure the accuracy of the information contained on this site, absolute accuracy cannot be guaranteed. This site, and all information and materials appearing on it, are presented to the user "as is" without warranty of any kind, either express or implied. All vehicles are subject to prior sale. Price does not include applicable tax, title, license, processing, documentation and/or electronic filing fees, and destination charges.  Not responsible for typographical or data errors. See your local dealer for actual price of vehicles displayed.
+           </span>
+          </span>
+         </p>
+         <p>
+          <span font-size:="" helvetica="" line-height:="" style="font-weight: 700; color: rgb(0, 0, 0); font-family: ">
+           Definitions and Disclosures.
+          </span>
+         </p>
+         <p font-size:="" helvetica="" line-height:="" style="margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: ">
+          Ford dealers value the confidence you have in the Ford brand and to that end we want you to understand the terms and representations we make on our site.
+         </p>
+         <p font-size:="" helvetica="" line-height:="" style="margin: 0px 0px 10px; color: rgb(0, 0, 0); font-family: ">
+          Below are definitions and disclosures related to the terms and functionalities you may encounter while you explore the Ford brand. This list is not all-inclusive and we invite you to contact us directly using the information in the "Contact Us" section of our home page.
+         </p>
+         <ol font-size:="" helvetica="" line-height:="" style="padding-right: 0px; padding-left: 0px; margin: 0px 0px 10px 25px; color: rgb(0, 0, 0); font-family: ">
+          <li>
+           Manufacturers Suggested Retail Price (also referred to as "MSRP", "Base MSRP" or the "Starting At" price), excludes taxes, title, license, registration and/or electronic filing fees, destination freight and delivery charges, dealer fees, and optional equipment. The "MSRP" shown may also represent pricing for authenticated AXZ Plan (the "Plan") customers. Restrictions and eligibility requirements apply to the Plan. Not all AXZ Plan customers will qualify for the Plan pricing shown. AXZ Plan pricing where shown does not include taxes, title, license and registration fees, destination freight and delivery charges, dealer fees, and optional equipment. Ford Motor Company reserves the right to modify the terms of AXZ Plan pricing or availability at any time. Some dealers may also choose not to participate in plan pricing. For information on pricing, please contact us using the information in the "Contact Us" section of our home page or use our email form for more information.
+          </li>
+          <li>
+           The Estimate Monthly Payment will calculate a monthly payment based on the MSRP (or AXZ Plan pricing for authenticated Plan customers) of the vehicle you have chosen and configured. This may or may not include the dealer-installed accessories or all options chosen.
+           <span style="font-weight: 700;">
+            <em>
+             The Estimate Monthly Payment is for general estimation and illustrationpurposes, only.
+            </em>
+           </span>
+           Actual monthly payment is based on a variety of factors, including differing financing or leasing terms, accessory prices and installation costs. Financing payment calculations are estimates only, and are based on amount of down payment, APR, and term of financing, and does not take into account important individual information, such as your qualifications for the financing terms displayed. Lease payment calculations are estimates only, and are based on an annual mileage calculation determined by your dealer, and does not take into account important individual information, such as your qualifications for the leasing terms displayed. A charge is assessed for any mileage driven that exceeds mileage limits displayed or set by us at signing. Not all buyers will qualify for financing or a lease. Contact us for details or use our email form for more information.
+          </li>
+          <li>
+           "Option" or "Option Package" price and monthly payment displayed is for estimation and illustration purposes, only. Prices and monthly payments may vary based on features included in a package, financing terms and availability. Some Options or Option Packages are not available separately. Not all Options or Option Packages are available on all vehicles. Contact us for details or use our email form for more information.
+          </li>
+          <li>
+           "Dealer Accessories" are defined as items that do not appear on the factory window sticker that are installed by us, yourFord Dealer. Actual Prices for all accessories may vary and depend upon a variety of factors. Prices DO NOT include installation or painting, which may be required for particular items. Please check with us for complete pricing accuracy for all accessories and parts.
+          </li>
+          <li>
+           The "Trade in Appraisal" toll on our site provides trade-in value for your vehicle, only, and many factors that cannot be assessed without a physical inspection of the vehicle may affect actual value. We use the services of a third-party vendor to provide the Trade in tool. While we believe this information is reliable, we are not responsible for and do not guarantee the accuracy or reliability of the information. Contact us for details or use our email form for more information.
+          </li>
+          <li>
+           References through-out our site to gas mileage are EPA estimated city/highway mpg based on base engine/transmission configuration. Actual mileage will vary.
+          </li>
+          <li>
+           For Dealer Ordered vehicles, the vehicle has already been ordered by the dealer and is in the process of being manufactured by the factory. If you are interested in a vehicle marked "Dealer Ordered", contact us using the information in the "Contact Us" section of our home page.
+          </li>
+          <li>
+           Images shown are for information purposes only, and may not necessarily represent the configurable options selected or available on the vehicle. We cannot be responsible for typographical or other errors, including data transmission, display, or software errors, that may appear on the site. If you feel information displayed is in error, please contact us using the information in the "Contact Us" section of our home page.
+          </li>
+          <li>
+           While our inventory is generally updated on a daily basis, there are no guarantees that the inventory shown will be available at the dealership. Mid-model-year manufacturing changes, as well as dealer-added accessories on the actual vehicle may differ from the options and features listed. Vehicles that are identified as 'Exact Matches' may have a different price or different features not represented on the site. We make every effort to provide you with the most accurate, up-to-date information, however, for the most up-to-date and accurate information regarding actual vehicle availability please contact us using the information in the "Contact Us" section of our home page or use our email form for more information.
+          </li>
+          <li>
+           Offers and incentives shown may not be available to all customers. Incentives lists are examples of offers available at the time of posting and are subject to change and expiration. Not all incentives can be redeemed together. To take advantage of rebates, incentives and/or financing offers you must take new retail delivery from dealer stock by the expiration date noted. Not all buyers will qualify for all incentives, FordCredit Services financing or other offers. Restrictions apply. See us for complete details or use our email form for more information.
+          </li>
+         </ol>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="modal hide fade footer-popup" data-content-wrapper=".modal-body" data-load="base-tab" id="privacy-policy" role="base-tab">
+      <div class="modal-header">
+       <button aria-hidden="true" class="close" data-dismiss="modal" type="button">
+        ×
+       </button>
+       <h3 class="title">
+        Privacy Policy
+       </h3>
+      </div>
+      <div class="modal-body">
+       <div class="privacy-container" id="container_en">
+        <a name="top-en">
+        </a>
+        <div id="privacy-tabs">
+         <div class="tabford-tab privacy-tab active" data-tab="tabford" id="tabford-tab">
+          <div class="tab tab-left">
+          </div>
+          <div class="tab-center">
+           Ford Direct Privacy Policy
+          </div>
+          <div class="tab tab-right">
+          </div>
+         </div>
+         <div class="clearfix">
+         </div>
+        </div>
+        <div class="tabford privacy-content active">
+         <iframe class="load-iframe" data-src="https://www.forddirectprivacy.com/">
+         </iframe>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="quick-quote" data-content-url="quote/flip/?requestType=quickquote" data-content-wrapper="#qq-container" data-load="quick-quote" id="quick-quote" role="quick-quote">
+      <a class="stitch-quick-quote qqArrowRight_en" rel="hotspot">
+      </a>
+      <div class="container pull-left" id="qq-container">
+      </div>
+     </div>
+     <div class="lead-modals-global modal grey hide fade" id="get-internet-price">
+      <div class="modal-header">
+       <button aria-hidden="true" class="stitch-btn btn-close-white" data-dismiss="modal" type="button">
+       </button>
+       <h3 class="title" data-title="get our internet price">
+        Get Our Internet Price
+       </h3>
+      </div>
+      <div class="modal-body">
+      </div>
+     </div>
+     <div class="lead-modals-global modal grey hide fade" id="schedule-test-drive">
+      <div class="modal-header">
+       <button aria-hidden="true" class="stitch-btn btn-close-white" data-dismiss="modal" type="button">
+       </button>
+       <h3 class="title" data-title="schedule a test drive">
+        Schedule a Test Drive
+       </h3>
+      </div>
+      <div class="modal-body">
+      </div>
+     </div>
+     <div class="lead-modals-global modal grey hide fade" id="build-and-price">
+      <div class="modal-header">
+       <button aria-hidden="true" class="stitch-btn btn-close-white" data-dismiss="modal" type="button">
+       </button>
+       <h3 class="title" data-title="build and price">
+        Build And Price
+       </h3>
+      </div>
+      <div class="modal-body">
+      </div>
+     </div>
+     <nav category="page_background" data-edit-dialog="ngds-admin/image/list?category=page_background" data-edit-message="Edit Page Background" data-tooltip="Click on the hotspot to open the Edit Page Background dialog box" data-tooltip-placement="right" id="edit_page_background">
+     </nav>
+     <!--[if gt IE 8]><!-->
+     <script type="text/javascript">
+      function googleTranslateElementInit() {
+ 			new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,es', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+ 		}
+     </script>
+     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript">
+     </script>
+     <!--<![endif]-->
+    </div>
+    <script type="text/javascript">
+     var PAGE_DATA = {'path':'/'};
+         // is admin mode: False
+         // is edit mode: False
+         
+         var EDIT_MODE = false;
+         var LANG = "en";
+         if (EDIT_MODE) {
+             var DMT_LANG = "";
+         }
+         
+             var BING_MAP_MKT = 'en-US';
+             var CALENDER_CONTROL_LOCALE = 'en';
+    </script>
+    <script type="text/javascript">
+     window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","queueTime":0,"licenseKey":"fd9eab0b01","agent":"","transactionName":"Z1YGMRACXBJSBkYNWl4cIhAMAEYIXAsdClJUQEoVAwRXEh0NXQlQHkUNABUQCAlcCFc=","applicationID":"1913058,2067037","errorBeacon":"bam.nr-data.net","applicationTime":141}
+    </script>
+    <script src="/static/dist/site.min.js">
+    </script>
+    <input id="translations_global" leads_err_body="Leads may not be submitted while in the Dealer Maintenance Tool" leads_err_head="Lead Form Submission" map_invalid_addr_body="Please provide a valid Address" map_invalid_addr_head="Invalid User Address" maps_default="Address, City, Province, Postal Code" publish_conf="Changes have been saved and published to your site." publish_conf_head="Confirmation" publish_review_conf="Changes have been saved and published to your site. The request to Ansira to perform a review of these changes has been submitted." type="hidden"/>
+    <input id="analytics_id" type="hidden" value="UA-44048914-24"/>
+    <input id="global_analytics_id" type="hidden" value="UA-42162427-1"/>
+    <input id="dealer_analytics_id" type="hidden" value="false"/>
+    <input id="ga_accounts" type="hidden" value='["global", "dealer"]'/>
+    <input id="ga_user_type" type="hidden" value="user"/>
+    <script type="text/javascript">
+     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+         ga('create', 'UA-42162427-1', 'auto');
+         require(['ga'], function (google_tracker) {
+             google_tracker.init([
+                 
+                     ['dealer._setAccount', 'UA-44048914-24'],
+                 
+                 
+ 
+                 // The sample rate for the GA site speed display
+                 
+                     ['dealer._setSiteSpeedSampleRate', 75],
+                 
+                 
+             ])
+         });
+    </script>
+    <input id="edit_mode" type="hidden" value="false"/>
+    <input id="is_das" type="hidden" value="True"/>
+    <input id="is_das_visit" type="hidden" value="False"/>
+    <script src="//s.btstatic.com/tag.js#site=0b20dJp&amp;mode=async" type="text/javascript">
+    </script>
+    <!--Adobe Dynamic Tag Manager - NGDS-6433-->
+    <script>
+     _satellite.pageBottom();
+    </script>
+   </div>
+  </body>
+ </html>

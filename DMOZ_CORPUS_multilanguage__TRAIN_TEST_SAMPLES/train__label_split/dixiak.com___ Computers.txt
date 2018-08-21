@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+   <!-- Google Tag Manager -->
+   <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ 	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ 	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ 	})(window,document,'script','dataLayer','GTM-N6Z738G');
+   </script>
+   <!-- End Google Tag Manager -->
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <meta content="Dixiak Narco" name="author"/>
+   <meta content="Deuteros: The Next Millennium / Off-Grid GPS for WP and Android" name="description"/>
+   <meta content="dixiak narco www.dixiak.com" name="title"/>
+   <title>
+    dixiak narco www.dixiak.com
+   </title>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+   </script>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet"/>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js">
+   </script>
+   <link href="https://fonts.googleapis.com/css?family=Arimo:400italic,400,700italic,700" rel="stylesheet" type="text/css"/>
+   <style media="screen" type="text/css">
+    body {
+ 		padding: 0;
+ 		border: 0;
+ 		margin: 0;
+ 		font-size: 30px;
+ 		overflow: hidden;
+ 		font-family: "Arimo";
+ 		font-style: normal;
+ 		font-weight: 400;
+ 	}
+ 	#header {
+ 		height: auto;
+ 	}
+ 	#body {
+ 		position: relative;
+ 		height: 200px;
+ 		width: 200px;
+ 	}
+ 	#footer {
+ 		height: auto;
+ 	}
+ 	#bee {
+ 		position: absolute;
+ 		width: 32px;
+ 	}
+ 	#bounce {
+ 		position: absolute;
+ 		width: 320px;
+ 	}
+ 	#packcontainer {
+ 		position: relative;
+ 		height: 0;
+ 		width: 0;
+ 	}
+ 	.dash {
+ 		display: inline;
+ 		position: absolute;
+ 		width: 32px;
+ 		height: 1px;
+ 		background-color: #222;
+ 	}
+ 	div.links a {
+ 		color: white;
+ 	}
+   </style>
+   <script>
+    var $imgwidth = 0;
+ var $imgheight = 0;
+ 
+ var $beewidth = 0;
+ var $beeheight = 0;
+ 
+ var $usableheight = 0;
+ var $centerpoint = 0;
+ var $containerHeight = 0;
+ var $containerWidth = 0;
+ var $phase = 0;
+ var $nextphaseat = NaN;
+ var $phaselengths = [500, 500, 250, 1000, 255, 0];
+ var $phasesetups = [beesetup, beedepacksetup, beesetup, beedepacksetup, darkensetup, bouncesetup];
+ var $phaserun = [empty, depacking, empty, depacking, darken, bouncing];
+ 
+ var $darkenstart = 0;
+ 
+ $(document).ready(function() {
+ 	$("#bounce").one("load", updateContainer);
+ 	updateContainer();
+ 	$(window).resize(function () {
+ 		updateContainer();
+ 	});
+ 	gameloop();
+ });
+ 
+ function beesetup() {
+ 	$("#packcontainer").empty();
+ 	$("#bee").show();
+ 	$("#bounce").hide();
+ }
+ 
+ function beedepacksetup() {
+ 	$("#bee").show();
+ 	$("#bounce").hide();
+ 	for(i=0; i<128; i++) {
+ 		$("#packcontainer").append("<div class='dash'></div>");
+ 	}
+ }
+ 
+ function bouncesetup() {
+ 	$("body").css("background-color", "rgb(0,0,0)");
+ 	$("#packcontainer").empty();
+ 	$("#bee").hide();
+ 	$("#bounce").show();
+ }
+ 
+ function darkensetup(timestamp) {
+ 	$("#packcontainer").empty();
+ 	$("#bee").hide();
+ 	$("#bounce").hide();
+ 	$darkenstart = timestamp;
+ }
+ 
+ function gameloop(timestamp) {
+ 	requestAnimationFrame(gameloop);
+ 
+ 	if ($nextphaseat!=0) {
+ 		if (!isNaN($nextphaseat) && (timestamp>$nextphaseat)) {
+ 			$nextphaseat=NaN;
+ 			$phase++;
+ 		}
+ 		if (isNaN($nextphaseat)) {
+ 			$newoffset = $phaselengths[$phase];
+ 			$nextphaseat = ($newoffset==0)? 0 : (timestamp + $newoffset);
+ 			$phasesetups[$phase](timestamp);
+ 		}
+ 	}
+ 	if (!isNaN(timestamp)) {
+ 		$phaserun[$phase](timestamp);
+ 	}
+ }
+ 
+ function empty(timestamp) {
+ }
+ 
+ function darken(timestamp) {
+ 
+ 	var $fract = 255 - Math.round((255.0 * (timestamp - $darkenstart))/($nextphaseat - $darkenstart));
+ 	var $fractext = 255 - Math.round((192.0 * (timestamp - $darkenstart))/($nextphaseat - $darkenstart));
+ 	$("body").css("background-color", "rgb(" + $fract + "," + $fract + "," + $fract + ")");
+ 	$("div.links a").css("color", "rgb(" + $fractext + "," + $fractext + "," + $fractext + ")");
+ }
+ 
+ function bouncing(timestamp) {
+ 	var $nowpos = 0;
+ 	if ($usableheight!=0) {
+ 		$nowpos = $usableheight * (1.0 - Math.abs(Math.sin(timestamp / 1000)));
+ 	} else {
+ 		$nowpos = $centerpoint;
+ 	}
+ 	$("#bounce").css("top", $nowpos);
+ }
+ 
+ function depacking(timestamp) {
+ 	$(".dash").each(function() {
+ 		$(this).css("left", Math.random() * $containerWidth);
+ 		$(this).css("top", Math.random() * $containerHeight);
+ 	});
+ }
+ 
+ function updateContainer() {
+ 	$containerHeight = $(window).outerHeight(true);
+ 	$containerWidth = $(window).outerWidth(true);
+ 	if ($imgwidth==0) {
+ 		$imgwidth = $("#bounce").outerWidth(true);
+ 	}
+ 	if ($imgheight==0) {
+ 		$imgheight = $("#bounce").outerHeight(true);
+ 	}
+ 
+ 	if ($beewidth==0) {
+ 		$beewidth = $("#bee").outerWidth(true);
+ 	}
+ 	if ($beeheight==0) {
+ 		$beeheight = $("#bee").outerHeight(true);
+ 	}
+ 
+     var $headerHeight = $("#header").outerHeight(true);
+     var $footerHeight = $("#footer").outerHeight(true);
+ 
+     var $bodyHeight = $containerHeight - ($headerHeight + $footerHeight);
+     $("#bounce").css("left", ($(window).outerWidth()-$imgwidth)/2);
+     $("#bee").css("left", ($(window).outerWidth()-$beewidth)/2);
+     $("#bee").css("top", ($(window).outerHeight()-$beeheight)/2);
+     $("#body").outerHeight($bodyHeight);
+ 
+ 	$usableheight = $bodyHeight - $imgheight;
+ 	$centerpoint = $usableheight/2;
+ 	if ($usableheight<100) {
+ 		$usableheight = 0;
+ 	}
+ 	if ($centerpoint<0) {
+ 		$centerpoint = 0;
+ 	}
+ }
+   </script>
+  </head>
+  <body>
+   <!-- Google Tag Manager (noscript) -->
+   <noscript>
+    <iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-N6Z738G" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <!-- End Google Tag Manager (noscript) -->
+   <div id="packcontainer">
+   </div>
+   <div id="header">
+   </div>
+   <div id="body">
+    <img id="bee" src="bee.png"/>
+    <img id="bounce" src="insertdisk2.png"/>
+   </div>
+   <div id="footer">
+    <div class="container">
+     <div class="row">
+      <div class="col-sm-6 text-center links">
+       <a href="deuteros">
+        deuteros
+       </a>
+      </div>
+      <div class="col-sm-6 text-center links">
+       <a href="OffGridGPS">
+        off-grid gps
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+  </body>
+ </html>

@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+ <html lang="tr-TR">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <meta content="ThemeStarz" name="author"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/fonts/font-awesome.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/fonts/elegant-fonts.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/owl.carousel.css" rel="stylesheet"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/css/style.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/custom.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/color.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/responsive.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/css/owl.transitions.css" rel="stylesheet"/>
+   <link href="/Content/MimarlarOdasiTemplate/assets/css/owl.carousel.css" rel="stylesheet"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/style.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/prettyPhoto.css" rel="stylesheet" type="text/css"/>
+   <link href="/Content/MimarlarOdasiTemplate/css/jquery.bxslider.css" rel="stylesheet" type="text/css"/>
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+   <link href="https://fonts.googleapis.com/css?family=Khand:300,400,500,600,700&amp;subset=devanagari,latin-ext" rel="stylesheet"/>
+   <link href="/Content/html/external/slick/slick.css" rel="stylesheet"/>
+   <link href="/Content/html/external/slick/slick-theme.css" rel="stylesheet"/>
+   <link href="/Content/html/external/magnific-popup/magnific-popup.css" rel="stylesheet"/>
+   <link href="/Content/html/external/bootstrap-select/bootstrap-select.css" rel="stylesheet"/>
+   <link href="/Content/html/external/rs-plugin/css/settings.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/Content/html/css/style.css" rel="stylesheet"/>
+   <script src="/Content/html/external/modernizr/modernizr.js">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/jquery-2.2.1.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/jquery.min.js">
+   </script>
+   <script src="/Content/moment.min.js">
+   </script>
+   <script src="/Content/fullcalendar.min.js">
+   </script>
+   <script src="/Content/locale-all.js">
+   </script>
+   <link href="/Content/fullcalendar.min.css" rel="stylesheet"/>
+   <script>
+    $(document).ready(function () {
+ 
+             var date = new Date(),
+                 d = date.getDate(),
+                 m = date.getMonth(),
+                 y = date.getFullYear(),
+                 started,
+                 categoryClass;
+ 
+             var initialLocaleCode = 'tr';
+ 
+             $('#calendar').fullCalendar({
+                 header: {
+                     left: 'prev,next today',
+                     center: 'title',
+                     right: 'month,agendaWeek,agendaDay,listMonth'
+                 },
+                 defaultDate: date,
+                 locale: initialLocaleCode,
+                 buttonIcons: false, // show the prev/next text
+                 weekNumbers: true,
+                 navLinks: true, // can click day/week names to navigate views
+                 editable: true,
+                 eventLimit: true, // allow "more" link when too many events
+                 eventClick: function (calEvent, jsEvent, view) {
+                     //alert(calEvent.resim);
+                     $('#imgEtkinlikResim').attr("src", calEvent.resim);
+                     $('#txtEtkinlikBasTarih').val(calEvent.start1);
+                     $('#txtEtkinlikBitTarih').val(calEvent.end1);
+                     $('#txtEtkinlikHeadBaslik').html(calEvent.title);
+                     $('#txtEtkinlikBaslik').val(calEvent.title);
+                     $('#txtEtkinlikAciklama').html(calEvent.aciklama);
+                     jQuery('#myModal').modal();
+                 },
+                 events: "/Handler1.ashx"
+             });
+ 
+             // build the locale selector's options
+             $.each($.fullCalendar.locales, function (localeCode) {
+                 $('#locale-selector').append(
+                     $('<option/>')
+                         .attr('value', localeCode)
+                         .prop('selected', localeCode == initialLocaleCode)
+                         .text(localeCode)
+                 );
+             });
+ 
+             // when the selected option changes, dynamically change the calendar option
+             $('#locale-selector').on('change', function () {
+                 if (this.value) {
+                     $('#calendar').fullCalendar('option', 'locale', this.value);
+                 }
+             });
+ 
+         });
+   </script>
+  </head>
+  <body>
+   <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+     <!-- Modal content-->
+     <div class="modal-content">
+      <div class="modal-header">
+       <button class="close" data-dismiss="modal" type="button">
+        ×
+       </button>
+       <h4 class="modal-title">
+        <div id="txtEtkinlikHeadBaslik">
+        </div>
+       </h4>
+      </div>
+      <div class="modal-body">
+       <div class="row">
+        <div class="col-lg-12">
+         <img id="imgEtkinlikResim" width="100%"/>
+        </div>
+        <div class="col-lg-12">
+         <div class="row">
+          <div class="col-lg-6">
+           <label>
+            Baş tarih
+           </label>
+           <input class="form-control" id="txtEtkinlikBasTarih" type="text"/>
+          </div>
+          <div class="col-lg-6">
+           <label>
+            Bit tarih
+           </label>
+           <input class="form-control" id="txtEtkinlikBitTarih" type="text"/>
+          </div>
+          <div class="col-lg-12">
+           <label>
+            Baslik
+           </label>
+           <input class="form-control" id="txtEtkinlikBaslik" type="text"/>
+          </div>
+          <div class="col-lg-12">
+           <label>
+            Açıklama
+           </label>
+           <div id="txtEtkinlikAciklama">
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal" type="button">
+         Kapat
+        </button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <title>
+    Mimarlar Odası Adana Şubesi
+   </title>
+   <div class="outer-wrapper homepage">
+    <div class="hidden" style="background-color:white">
+     <nav id="off-canvas-menu">
+      <ul class="expander-list">
+       <li>
+        <span class="name">
+         <span class="expander">
+          -
+         </span>
+         <a href="/Dokumanlar/MimarlarOdasi?docID=1">
+          <span class="act-underline">
+           MİMARLAR ODASI
+          </span>
+         </a>
+        </span>
+        <ul>
+         <li>
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=8">
+            KURULUŞ VE AMAÇ
+           </a>
+          </span>
+         </li>
+         <li>
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=48">
+            MİMARLAR ODASI ŞUBE VE TEMSİLCİLİKLERİ
+           </a>
+          </span>
+         </li>
+         <li>
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=64">
+            ÜYELİK
+           </a>
+          </span>
+         </li>
+         <li>
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=74">
+            HUKUK
+           </a>
+          </span>
+         </li>
+         <li>
+          <span class="name">
+           <span class="expander">
+            -
+           </span>
+           <a href="#">
+            <i aria-hidden="true" class="fa fa-angle-right" style="color:#222">
+            </i>
+            İNSAN KAYNAKLARI
+           </a>
+          </span>
+          <ul>
+           <li>
+            <a href="/InsanKaynaklari/IsArayan">
+             İŞ ARAYANLAR
+            </a>
+           </li>
+           <li>
+            <a href="/InsanKaynaklari/ElemanArayanlar">
+             ELEMAN ARAYANLAR
+            </a>
+           </li>
+           <li>
+            <a href="/InsanKaynaklari/IlanFormu">
+             İŞ ARAYAN İLAN FORMU
+            </a>
+           </li>
+           <li>
+            <a href="/InsanKaynaklari/IsverenForm">
+             İŞVEREN İLAN FORMU
+            </a>
+           </li>
+           <li>
+            <a href="/InsanKaynaklari/AnlasmaliKurulus">
+             ANLAŞMALI KURULUŞLAR
+            </a>
+           </li>
+          </ul>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <span class="name">
+         <a href="/Dokumanlar/Index?docID=2">
+          <span class="act-underline">
+           ADANA ŞUBESİ
+          </span>
+         </a>
+        </span>
+        <ul>
+        </ul>
+       </li>
+       <li>
+        <span class="name">
+         <a href="/Dokumanlar/Index?docID=2">
+          <span class="act-underline">
+           MESLEKİ HİZMETLER
+          </span>
+         </a>
+        </span>
+        <ul>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=19">
+            EN AZ BEDEL HESABI
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=23">
+            MİMARİ PROJE ÇİZİM STANDARTLARI
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=24">
+            MİMARLIK HİZMET ŞARTI VE EN AZ BEDEL TARİFESİ
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=27">
+            KÜTÜPHANE
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=28">
+            BAĞLANTILAR
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=34">
+            SÜREKLİ MESLEKİ GELİŞİM MERKEZİ
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=35">
+            MEVZUAT
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=36">
+            İMAR YÖNETMELİĞİ
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=37">
+            PLAN NOTLARI
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=39">
+            İHALELER
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=43">
+            BELGELER TAAHHÜTNAME MUVAFFAKATNAME SÖZLEŞME
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=73">
+            MESLEKİ UYGULAMA
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Dokumanlar/MimarlarOdasi?docID=77">
+            YARIŞMALAR
+           </a>
+          </span>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <span class="name">
+         <span class="expander">
+          -
+         </span>
+         <a href="#">
+          <span class="act-underline">
+           HABERLER
+          </span>
+         </a>
+        </span>
+        <ul class="dropdown-menu megamenu image-links-layout" role="menu">
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Habers/Index">
+            <span class="act-underline">
+             HABERLER
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/BasinAciklamalari/Index">
+            <span class="act-underline">
+             BASIN AÇIKLAMASI
+            </span>
+           </a>
+          </span>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <span class="name">
+         <a href="http://adanamimarlikmerkezi.adanamimod.org.tr/" target="_blank">
+          <span class="act-underline">
+           MİMARLIK MERKEZİ
+          </span>
+         </a>
+        </span>
+       </li>
+       <li>
+        <span class="name">
+         <span class="expander">
+          -
+         </span>
+         <a href="#" target="_blank">
+          <span class="act-underline">
+           YAYINLAR
+          </span>
+         </a>
+        </span>
+        <ul>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/21">
+            <span class="act-underline">
+             Güney Mimarlık 1. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/22">
+            <span class="act-underline">
+             Güney Mimarlık 2. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/23">
+            <span class="act-underline">
+             Güney Mimarlık 3. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/24">
+            <span class="act-underline">
+             Güney Mimarlık 4. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/25">
+            <span class="act-underline">
+             Güney Mimarlık 5. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/26">
+            <span class="act-underline">
+             Güney Mimarlık 6. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/27">
+            <span class="act-underline">
+             Güney Mimarlık 7. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/28">
+            <span class="act-underline">
+             Güney Mimarlık 8. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/29">
+            <span class="act-underline">
+             Güney Mimarlık 9. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/30">
+            <span class="act-underline">
+             Güney Mimarlık 10. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/31">
+            <span class="act-underline">
+             Güney Mimarlık 11. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/32">
+            <span class="act-underline">
+             Güney Mimarlık 12. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/33">
+            <span class="act-underline">
+             Güney Mimarlık 13. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/34">
+            <span class="act-underline">
+             Güney Mimarlık 14. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/35">
+            <span class="act-underline">
+             Güney Mimarlık 15. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/36">
+            <span class="act-underline">
+             Güney Mimarlık 16. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/37">
+            <span class="act-underline">
+             Güney Mimarlık 17. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/38">
+            <span class="act-underline">
+             Güney Mimarlık 18. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/39">
+            <span class="act-underline">
+             Güney Mimarlık 19. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/40">
+            <span class="act-underline">
+             Güney Mimarlık 20. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/42">
+            <span class="act-underline">
+             Güney Mimarlık 21. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/43">
+            <span class="act-underline">
+             Güney Mimarlık 22. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/47">
+            <span class="act-underline">
+             YÜRÜRLÜKTEKİ YÖNETMELİKLER
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/48">
+            <span class="act-underline">
+             KENTSEL DÖNÜŞÜM ZİRVE SUNUMLARI
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/49">
+            <span class="act-underline">
+             2016 YILI ÇALIŞMA RAPORU
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/51">
+            <span class="act-underline">
+             KENTLİ HAKLARI PANELİ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/52">
+            <span class="act-underline">
+             14. DÖNEM GENEL KURUL BANT ÇÖZÜMLERİ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/53">
+            <span class="act-underline">
+             Güney Mimarlık 23
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/54">
+            <span class="act-underline">
+             Neden Mimarlık? Nasıl Mimarlık?
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/57">
+            <span class="act-underline">
+             KENTİN İHTİYACI VAR!
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/58">
+            <span class="act-underline">
+             KADİRLİ BELEDİYESİ HİZMET BİNASI VE KÜLTÜR MERKEZİ ULUSAL MİMARİ PROJE YARIŞMASI
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/59">
+            <span class="act-underline">
+             KENT YOKSULLUĞU VE MİMARLIK PANELİ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/60">
+            <span class="act-underline">
+             KENTLERİMİZİN YAŞAM KALİTESİ VE ADANA PANELİ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/61">
+            <span class="act-underline">
+             Adana Büyükşehir Belediyesi Ziyapaşa Mahallesi Mimar Sinan Parkı Kesimi Kentsel Tasarım Ulusal Proje Yarışması
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/69">
+            <span class="act-underline">
+             GÜNEY MİMARLIK 24. SAYI
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/70">
+            <span class="act-underline">
+             KENTSEL DÖNÜŞÜM NEDİR?
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/71">
+            <span class="act-underline">
+             İYİ KENTSEL DÖNÜŞÜM NASIL OLMALIDIR?
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/72">
+            <span class="act-underline">
+             BİR ÇALIŞAN OLARAK HAKLARIMIZ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/73">
+            <span class="act-underline">
+             Güney Mimarlık 25-26. Sayı
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/74">
+            <span class="act-underline">
+             XIV. DÖNEM ÇALIŞMA RAPORU
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/75">
+            <span class="act-underline">
+             ADANA MİMARLIK REHBERİ 1900-2005
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="/Yayinlar/Index/77">
+            <span class="act-underline">
+             Planlı Alanlar İmar Yönetmeliği Uygulamaları ve Görüşleri Kitabı Temmuz 2018
+            </span>
+           </a>
+          </span>
+         </li>
+        </ul>
+       </li>
+       <li>
+        <span class="name">
+         <span class="expander">
+          -
+         </span>
+         <a href="#">
+          <span class="act-underline">
+           ÜYE
+          </span>
+         </a>
+        </span>
+        <ul class="dropdown-menu megamenu image-links-layout" role="menu">
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="https://uye.mo.org.tr/" target="_blank">
+            <span class="act-underline">
+             ÜYE GİRİŞİ
+            </span>
+           </a>
+          </span>
+         </li>
+         <li class="col-one-fourth">
+          <span class="name">
+           <a href="http://mail.mo.org.tr/webmail/" target="_blank">
+            <span class="act-underline">
+             WEB MAIL
+            </span>
+           </a>
+          </span>
+         </li>
+        </ul>
+       </li>
+       <!--Anket-->
+       <li>
+        <span class="name">
+         <a href="/Anket/Index">
+          <span class="act-underline">
+           Ankete Katıl
+          </span>
+         </a>
+        </span>
+       </li>
+       <!--Anket-->
+       <li>
+        <span class="name">
+         <a href="/Home/Iletisim">
+          <span class="act-underline">
+           BİZE ULAŞIN
+          </span>
+         </a>
+        </span>
+       </li>
+      </ul>
+     </nav>
+    </div>
+    <!-- /mobile menu -->
+    <!-- HEADER section -->
+    <div class="header-wrapper">
+     <header class="header-layout-06" id="header">
+      <div class="container">
+       <div class="row stuck-nav" style="margin-left:0px; margin-right:0px">
+        <div class="col-lg-3 col-md-3">
+         <!-- logo start -->
+         <a href="/">
+          <img alt="" class="logo replace-2x img-responsive" src="/Content/MimarlarOdasiTemplate/images/logo.png"/>
+         </a>
+         <!-- logo end -->
+        </div>
+        <div class="col-lg-9 col-md-9 col-lg-push-12 text-center">
+         <div class="container">
+          <!-- navigation start -->
+          <div class="col-stuck-menu">
+           <nav class="navbar">
+            <div class="responsive-menu mainMenu">
+             <div class="head-top" style="background: white">
+              <div class="right-box col-md-12 col-lg-12 col-xs-12 col-sm-12">
+               <ul>
+                <li>
+                 <a href="#">
+                  <i aria-hidden="true" class="fa fa-facebook" style="color:#222">
+                  </i>
+                 </a>
+                </li>
+                <li>
+                 <a href="#">
+                  <i aria-hidden="true" class="fa fa-twitter" style="color:#222">
+                  </i>
+                 </a>
+                </li>
+                <li>
+                 <a href="#">
+                  <i aria-hidden="true" class="fa fa-linkedin" style="color:#222">
+                  </i>
+                 </a>
+                </li>
+               </ul>
+              </div>
+             </div>
+             <!-- Mobile menu Button-->
+             <div class="col-xs-2 visible-mobile-menu-on">
+              <div class="expand-nav compact-hidden">
+               <a class="off-canvas-menu-toggle" href="#off-canvas-menu">
+                <div class="navbar-toggle">
+                 <span class="icon-bar" style="background-color:black">
+                 </span>
+                 <span class="icon-bar" style="background-color:black">
+                 </span>
+                 <span class="icon-bar" style="background-color:black">
+                 </span>
+                 <span class="menu-text">
+                  MENU
+                 </span>
+                </div>
+               </a>
+              </div>
+             </div>
+             <!-- //end Mobile menu Button -->
+             <script>
+              $(function () {
+ 
+         var url = window.location.href;
+         $("#nav a").each(function () {
+             if (url == (this.href)) {
+                 $(this).closest("li").addClass("active");
+             }
+         });
+     });
+             </script>
+             <style>
+              #nav li.active {
+         text-decoration: underline;
+     }
+ 
+         #nav li.active a {
+             text-decoration: underline;
+         }
+ 
+     #nav li ul li {
+         border: none;
+     }
+ 
+     #nav li:hover {
+         text-decoration: underline;
+         color: #222;
+     }
+ 
+     #nav li a:hover {
+         color: #222;
+     }
+             </style>
+             <ul class="nav navbar-nav" id="nav" style="float:right">
+              <li class="dl-close">
+               <a href="#">
+                KAPAT
+               </a>
+              </li>
+              <li>
+               <a href="/Dokumanlar/MimarlarOdasi?docID=1" style="text-align:center">
+                MİMARLAR
+                <br/>
+                ODASI
+               </a>
+               <ul>
+                <li>
+                 <a href="/Dokumanlar/MimarlarOdasi?docID=74">
+                  HUKUK
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/MimarlarOdasi?docID=8">
+                  KURULUŞ VE AMAÇ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/MimarlarOdasi?docID=48">
+                  MİMARLAR ODASI ŞUBE VE TEMSİLCİLİKLERİ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/MimarlarOdasi?docID=64">
+                  ÜYELİK
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a href="/Dokumanlar/AdanaSubesi?docID=88" style="text-align:center">
+                ADANA
+                <br/>
+                ŞUBESİ
+               </a>
+               <ul>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=91">
+                  YÖNETİM KURULLARI
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=92">
+                  KOMİSYONLAR
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=93">
+                  2018 YILI TESCİLİ BÜROLAR  19 HAZİRAN 2018
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=94">
+                  2017 YILI KAMULAŞTIRMA BİLİRKİŞİ LİSTESİ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=102">
+                  ŞUBEMİZE BAĞLI BİRİMLER
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/AdanaSubesi?docID=103">
+                  ORGANLAR
+                 </a>
+                </li>
+                <li>
+                 <a href="/InsanKaynaklari/AnlasmaliKurulus">
+                  ANLAŞMALI KURULUŞLAR
+                 </a>
+                </li>
+                <li>
+                 <a href="/InsanKaynaklari/ElemanArayanlar">
+                  İNSAN KAYNAKLARI
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a href="/Dokumanlar/Index?docID=2" style="text-align:center">
+                MESLEKİ
+                <br/>
+                HİZMETLER
+               </a>
+               <ul>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=19">
+                  EN AZ BEDEL HESABI
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=23">
+                  MİMARİ PROJE ÇİZİM STANDARTLARI
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=24">
+                  MİMARLIK HİZMET ŞARTI VE EN AZ BEDEL TARİFESİ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=27">
+                  KÜTÜPHANE
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=28">
+                  BAĞLANTILAR
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=34">
+                  SÜREKLİ MESLEKİ GELİŞİM MERKEZİ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=35">
+                  MEVZUAT
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=36">
+                  İMAR YÖNETMELİĞİ
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=37">
+                  PLAN NOTLARI
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=39">
+                  İHALELER
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=43">
+                  BELGELER TAAHHÜTNAME MUVAFFAKATNAME SÖZLEŞME
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=73">
+                  MESLEKİ UYGULAMA
+                 </a>
+                </li>
+                <li>
+                 <a href="/Dokumanlar/Index?docID=77">
+                  YARIŞMALAR
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a class="menu" href="#" style="text-align:center">
+                <br/>
+                HABERLER
+               </a>
+               <ul>
+                <li>
+                 <a href="/Habers/Index">
+                  HABERLER
+                 </a>
+                </li>
+                <li>
+                 <a href="/BasinAciklamalari/Index">
+                  BASIN AÇIKLAMASI
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a class="menu" href="/Etkinliks/Index" style="text-align:center">
+                <br/>
+                ETKİNLİKLER
+               </a>
+              </li>
+              <li>
+               <a href="#" style="text-align:center">
+                <br/>
+                YAYINLAR
+               </a>
+               <ul>
+                <li>
+                 <a href="/Yayinlar/Index/2" style="text-transform: uppercase">
+                  Broşürler
+                 </a>
+                </li>
+                <li>
+                 <a href="/Yayinlar/Index/3" style="text-transform: uppercase">
+                  Kitaplar
+                 </a>
+                </li>
+                <li>
+                 <a href="/Yayinlar/Index/4" style="text-transform: uppercase">
+                  Çalışma Raporlari
+                 </a>
+                </li>
+                <li>
+                 <a href="/Yayinlar/Index/6" style="text-transform: uppercase">
+                  Güney Mimarlık
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a href="#" style="text-align:center">
+                <br/>
+                ÜYE
+               </a>
+               <ul>
+                <li>
+                 <a href="https://uye.mo.org.tr/" target="_blank">
+                  ÜYE GİRİŞİ
+                 </a>
+                </li>
+                <li>
+                 <a href="http://mail.mo.org.tr/webmail/" target="_blank">
+                  WEB MAIL
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a href="#" style="text-align:center">
+                ANKETE KATIL
+               </a>
+               <ul>
+                <li>
+                 <a href="/Anket/Index/7" style="text-transform: uppercase">
+                  Site Memnuniyet Anketi
+                 </a>
+                </li>
+               </ul>
+              </li>
+              <li>
+               <a href="/Home/Iletisim" style="text-align:center">
+                BİZE
+                <br/>
+                ULAŞIN
+               </a>
+              </li>
+             </ul>
+            </div>
+           </nav>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </header>
+    </div>
+    <div class="col-xs-12" style="padding-left:0px;padding-right:0px">
+     <div id="main">
+      <div class="owl-carousel owl-theme">
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1172">
+         <img class="sliderImg" src="/CropImege/29d49e8b-32b7-48a0-8429-357c9666b4454d8631b1-8cbc-448c-a7df-d5af6519c2ba.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          MARDİN - ŞANLIURFA– GÖBEKLİ TEPE GEZİSİ
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1173">
+         <img class="sliderImg" src="/CropImege/0778d61a-5c51-4274-a96c-08593eb5f839e935b4f2-585d-4025-8a38-be5e1ee43fdf.JPG" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          Planlı Alanlar İmar Yönetmeliğinde Değişiklik Yapılmasına Dair Yönetmelik Yayınlandı
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Yayinlar/YayinDetay/77">
+         <img class="sliderImg" src="/CropImege/35a2e351-cf66-4ba5-b148-1eb4a77520d8615cab81-fe13-4957-ab5b-98c9a0372aca.JPG" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          Planlı Alanlar İmar Yönetmeliği Uygulamaları ve Görüşleri Kitabı Temmuz 2018
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1171">
+         <img class="sliderImg" src="\Content\HaberFoto\bcc50358-3092-41d5-8f90-f289554690d5.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          PAÇVA TAŞ MEKTEP YAZ KAMPI BAŞVURU SONUÇLARI AÇIKLANDI:
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/66">
+         <img class="sliderImg" src="/CropImege/fe978762-67ff-46db-8e0b-a9e54d715050d8d95bc8-d8c0-45f8-b661-15981236c24e.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          KENTSEL DÖNÜŞÜMLER YENİ KENTSEL DÖNÜŞÜMLERE GEBE
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1170">
+         <img class="sliderImg" src="/CropImege/57511643-8c10-437d-883a-2c5b4c49c2b00a61fb46-448b-4a7e-b53c-0b6b14ea8c23.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          PAÇYA TAŞ MEKTEP YAZ OKULU
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/65">
+         <img class="sliderImg" src="/CropImege/edb86c92-8b7b-4277-8630-83ff05970c3a9fb964a3-a88d-4319-9689-cfa71a4eb82f.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          ADANA BİSİKLET ÇALIŞTAYI
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1169">
+         <img class="sliderImg" src="/CropImege/a6e95255-8c3a-428b-985a-6d7830f68d9facf2a7aa-b955-4342-ae3f-fd9e8ac2030e.jpeg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          KENT KÜLTÜRÜ OLARAK  BİSİKLET ÇALIŞTAYI
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1168">
+         <img class="sliderImg" src="/CropImege/969f83e7-dea0-4cf5-8131-039aef21ab1a75bbc517-5f43-41d7-b333-70fecaaa1517.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          Berlin'de Konut Yapımı - Kim Kimin İçin İnşaat Yapıyor.
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/64">
+         <img class="sliderImg" src="/CropImege/fe98e4a7-0fc4-4200-b514-6d0bed155bcaef6b043f-36b7-40a4-8649-e7edb33337c6.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          KAÇAK YAPILAŞMA KÖRÜKLENİYOR...
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1167">
+         <img class="sliderImg" src="\Content\HaberFoto\52671660-9f4d-474e-9b80-ca9d522b262a.jpeg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          DAYANIŞMA MİMARLIĞI SERGİSİ
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1165">
+         <img class="sliderImg" src="/CropImege/759b1eb8-5c2d-450d-9213-dea02f64789c1180227e-f196-4421-a227-7734489110ce.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          KÜTÜPHANE KURUYORUZ...
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1166">
+         <img class="sliderImg" src="/CropImege/2f8ef7f8-34ea-40f7-b398-3758d8551ae0656d0fb3-a852-413c-8241-051611c70385.jpeg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          ADANA YENİ MÜZE GEZİSİ
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/62">
+         <img class="sliderImg" src="/CropImege/669c2e99-36e2-49fc-9a9c-b823ee924f4b88c44b16-2434-4eab-ae72-1ab6745733d1.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          SİNAN ÇAĞINDA MİMARİ PLANLAMA TEKNOLOJİSİ
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/61">
+         <img class="sliderImg" src="/CropImege/5f6182d2-087f-4323-afb8-fad06e40370e3a08d391-ae93-46a0-886b-01094bcb7e2f.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          OKULLARDA RENKSEL DÖNÜŞÜM...
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/60">
+         <img class="sliderImg" src="/CropImege/d6480849-c963-4247-b95a-cd4bc1bf76b83bbff603-7e4a-4312-a370-6ec23654d4f6.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          MİMAR SİNAN ADANA'DA ANILDI...
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/63">
+         <img class="sliderImg" src="/CropImege/2f9d542b-e931-4cec-923a-2760b172bfb85613198f-910d-428b-ac98-cd34979966df.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          MİMARLIK MESLEK TANITIMI
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1164">
+         <img class="sliderImg" src="/CropImege/38bf5263-9e3e-4efe-846a-0a6db585640de6aaa996-28ba-4a43-96b4-4ff689ca1762.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          MİMARLIK BÖLÜMÜ ÖĞRENCİLERİNE STAJ YERİ İMKANI
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/BasinAciklamalari/BasinAciklamaDetay/58">
+         <img class="sliderImg" src="" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          FUAR - UMÖB 17,5 SUNUMU - ADANA'NIN GELECEĞİ VE YENİ KENT MODELİ SÖYLEŞİSİ
+         </h4>
+        </a>
+       </div>
+       <div class="item itemDiv">
+        <a href="/Habers/HaberDetay/1162">
+         <img class="sliderImg" src="\Content\HaberFoto\4a4853b4-4a4f-4740-9a84-6104a42e29da.jpg" style="height:330px"/>
+         <h4 class="sliderBaslik" style="color:white;opacity:0;background-color:#222;position:absolute;width:100%;height:60px;padding:5px">
+          PANEL "ADANA'NIN GELECEĞİ VE YENİ KENT MODELİ"
+         </h4>
+        </a>
+       </div>
+      </div>
+      <div>
+       <a href="/Habers/Index">
+        <span style="font-size:larger;font-weight:bold;margin:10px">
+         <u>
+          TÜM HABERLER
+         </u>
+        </span>
+       </a>
+      </div>
+      <div class="block" style="padding-bottom:80px">
+       <div class="container">
+        <div class="featured-blocks">
+         <div class="row">
+          <div class="col-md-12" style="padding-right:0px">
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="http://www.mo.org.tr/enazbedel/index.cfm" style="text-align:center" target="_blank">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/mimarlık hizmet bedeli.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                MİMARLIK HİZMET BEDELİ
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/Dokumanlar/Index?docID=35" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/mevzuat.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                MEVZUAT
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/Dokumanlar/Index?docID=36" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/imar yönetmeliği.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                İMAR YÖNETMELİĞİ
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="http://www.mo.org.tr/index.cfm?sayfa=giris&amp;fid=97&amp;ly=yarisma" style="text-align:center" target="_blank">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/yarışmalar.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                YARIŞMALAR
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="http://www.mo.org.tr/kutuphane/" style="text-align:center" target="_blank">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/kütüphane.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                KÜTÜPHANE
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/BasinAciklamalari/Index" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/basında.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                BASINDA MİMARLAR ODASI
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/Dokumanlar/Index?docID=37" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/plan notları.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                PLAN NOTLARI
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/Dokumanlar/MimarlarOdasi?docID=12" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/Komisyon (1).png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                KOMİSYONLAR
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/Dokumanlar/Index?docID=39" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/ihaleler.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                İHALELER
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="http://www.mo.org.tr/smgm/" style="text-align:center" target="_blank">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/s%c3%bcrekli mesleki gelişim.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                SÜREKLİ MESLEKİ GELİŞİM
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/InsanKaynaklari/ElemanArayanlar" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/İnsan Kaynakları.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                İNSAN KAYNAKLARI
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-xs-4 col-lg-1 col-sm-3" style="height:100%;max-height:230px;">
+            <div class="featured-block">
+             <div>
+              <a href="/InsanKaynaklari/AnlasmaliKurulus" style="text-align:center">
+               <img height="auto" src="/Content/MimarlarOdasiTemplate/NewFolder1/anlaşmalı.png" width="80%"/>
+               <h6 style="margin-top:10px; font-size:14px">
+                ANLAŞMALI KURULUŞLAR
+               </h6>
+              </a>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <style>
+       #tum-haberler {
+         padding: 10px;
+         text-align: center;
+         background-color: #949494;
+         color: #fff;
+         box-shadow: 0 1px 1px #ccc;
+         transition: all 600ms ease-in-out;
+         -webkit-transition: all 600ms ease-in-out;
+         -moz-transition: all 600ms ease-in-out;
+         -o-transition: all 600ms ease-in-out;
+         width: 100%;
+         border-radius: 12px;
+     }
+ 
+         #tum-haberler:hover {
+             background-color: #fff;
+             color: #33739E;
+         }
+      </style>
+      <section class="blog-section col-md-12" style="background-color:white">
+       <div class="container" style="padding-left:0px;padding-right:0px">
+        <div class="col-md-12" style="margin-top:15px;margin-bottom:20px;padding-right:0px;padding-left:0px">
+         <div class="col-md-5" style="background-color:black; height:20px;margin-top:10px">
+         </div>
+         <div class="col-md-2" style="text-align:center">
+          <span style="background-color:white;font-size:25px;font-weight:bold; color:black">
+           HABERLER
+          </span>
+         </div>
+         <div class="col-md-5" style="background-color:black; height:20px;margin-top:10px">
+         </div>
+        </div>
+        <section class="blog-section blog-3-col" style="margin-bottom:25px;background-color:white">
+         <div class="container">
+          <div class="row" style="padding-top:50px">
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                6.09.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/29d49e8b-32b7-48a0-8429-357c9666b4454d8631b1-8cbc-448c-a7df-d5af6519c2ba.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1172">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1172" style="color:#222">
+                  MARDİN - ŞANLIURFA– GÖBEKLİ TEPE GEZİSİ
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                28.07.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/0778d61a-5c51-4274-a96c-08593eb5f839e935b4f2-585d-4025-8a38-be5e1ee43fdf.JPG); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1173">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1173" style="color:#222">
+                  Planlı Alanlar İmar Yönetmeliğinde Değişiklik Yapılmasına Dair Yönetmelik Yayınlandı
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                9.07.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(\Content\HaberFoto\bcc50358-3092-41d5-8f90-f289554690d5.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1171">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1171" style="color:#222">
+                  PAÇVA TAŞ MEKTEP YAZ KAMPI BAŞVURU SONUÇLARI AÇIKLANDI:
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                29.05.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/57511643-8c10-437d-883a-2c5b4c49c2b00a61fb46-448b-4a7e-b53c-0b6b14ea8c23.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1170">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1170" style="color:#222">
+                  PAÇYA TAŞ MEKTEP YAZ OKULU
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                25.05.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/a6e95255-8c3a-428b-985a-6d7830f68d9facf2a7aa-b955-4342-ae3f-fd9e8ac2030e.jpeg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1169">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1169" style="color:#222">
+                  KENT KÜLTÜRÜ OLARAK  BİSİKLET ÇALIŞTAYI
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                14.05.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/969f83e7-dea0-4cf5-8131-039aef21ab1a75bbc517-5f43-41d7-b333-70fecaaa1517.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1168">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1168" style="color:#222">
+                  Berlin'de Konut Yapımı - Kim Kimin İçin İnşaat Yapıyor.
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                30.04.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(\Content\HaberFoto\52671660-9f4d-474e-9b80-ca9d522b262a.jpeg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1167">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1167" style="color:#222">
+                  DAYANIŞMA MİMARLIĞI SERGİSİ
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                28.04.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/759b1eb8-5c2d-450d-9213-dea02f64789c1180227e-f196-4421-a227-7734489110ce.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1165">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1165" style="color:#222">
+                  KÜTÜPHANE KURUYORUZ...
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                28.04.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/2f8ef7f8-34ea-40f7-b398-3758d8551ae0656d0fb3-a852-413c-8241-051611c70385.jpeg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1166">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1166" style="color:#222">
+                  ADANA YENİ MÜZE GEZİSİ
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                21.02.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(/CropImege/38bf5263-9e3e-4efe-846a-0a6db585640de6aaa996-28ba-4a43-96b4-4ff689ca1762.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1164">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1164" style="color:#222">
+                  MİMARLIK BÖLÜMÜ ÖĞRENCİLERİNE STAJ YERİ İMKANI
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                17.02.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(\Content\HaberFoto\4a4853b4-4a4f-4740-9a84-6104a42e29da.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1162">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1162" style="color:#222">
+                  PANEL "ADANA'NIN GELECEĞİ VE YENİ KENT MODELİ"
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="col-md-3 col-sm-4" style="padding:30px;">
+            <div class="post-box" style="min-height: 450px; margin-bottom:0px">
+             <div class="row" style="background-color:white;margin-left:0px;margin-right:0px">
+              <div class="col-md-12">
+               <p style="float:right;color:#222;font-weight:bold">
+                17.02.2018
+               </p>
+               <br/>
+               <div class="thumb col-xs-12 col-sm-12 col-md-12" style="background:url(\Content\HaberFoto\1a7f1200-f275-4381-bdfc-5481dfb57c17.jpg); height:330px; background-position:center center; background-repeat:no-repeat; background-size:contain; overflow:hidden">
+                <div class="caption">
+                 <a class="link" href="/Habers/HaberDetay/1163">
+                  <i aria-hidden="true" class="fa fa-link">
+                  </i>
+                 </a>
+                </div>
+               </div>
+               <br/>
+               <div class="text-box">
+                <h4 style="text-align:center">
+                 <a href="/Habers/HaberDetay/1163" style="color:#222">
+                  UMÖB
+                 </a>
+                </h4>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div style="margin-top:20px;margin-bottom:20px;text-align:center;">
+           <a href="/Habers/Index" id="tum-haberler">
+            Tüm haberler
+           </a>
+          </div>
+         </div>
+        </section>
+       </div>
+      </section>
+      <br/>
+      <br/>
+      <style>
+       .icerikResimAyar img {
+         width: 100%;
+         height: 300px;
+     }
+      </style>
+     </div>
+     <br/>
+     <footer id="page-footer" style="background:#222;overflow:visible">
+      <div class="footer-wrapper">
+       <div class="container">
+        <div class="row">
+         <div class="col-md-2 col-sm-2 col-xs-12" style="margin-top:10px; text-align:center">
+          <a class="logo" href="#">
+           <img alt="" src="/Content/MimarlarOdasiTemplate/NewFolder1/logo.png"/>
+          </a>
+         </div>
+         <div class="col-md-2 col-sm-2 col-xs-12" style="margin-top:22px; text-align:center">
+          <ul class="list-unstyled">
+           <li>
+            <a href="/Dokumanlar/MimarlarOdasi?docID=1" style="color:white">
+             MİMARLAR ODASI
+            </a>
+           </li>
+           <li>
+            <a href="/Dokumanlar/Index?docID=2" style="color:white">
+             MESLEKİ HİZMETLER
+            </a>
+           </li>
+           <li>
+            <a href="/Habers/Index" style="color:white">
+             HABERLER
+            </a>
+           </li>
+           <li>
+            <a href="/Etkinliks/Index" style="color:white">
+             ETKİNLİKLER
+            </a>
+           </li>
+           <li>
+            <a href="/BasinAciklamalari/Index" style="color:white">
+             BASIN AÇIKLAMASI
+            </a>
+           </li>
+           <li>
+            <a href="http://www.mimarlarodasi.org.tr/index.cfm?sayfa=yarisma&amp;sub=dlist&amp;bid=97&amp;mid=97&amp;tip=D" style="color:white" target="_blank">
+             YARIŞMALAR
+            </a>
+           </li>
+           <li>
+            <a href="/Yayinlar/Index" style="color:white">
+             YAYINLAR
+            </a>
+           </li>
+           <li>
+            <a href="https://uye.mo.org.tr/" style="color:white" target="_blank">
+             ÜYE GİRİŞİ
+            </a>
+           </li>
+           <li>
+            <a href="http://mail.mo.org.tr/webmail/" style="color:white" target="_blank">
+             WEB MAIL
+            </a>
+           </li>
+           <li>
+            <a href="/Home/Iletisim" style="color:white">
+             BİZE ULAŞIN
+            </a>
+           </li>
+          </ul>
+         </div>
+         <div class="col-md-2 col-sm-2 col-xs-12" style="margin-top:22px; text-align:center">
+          <span style="color:white">
+           <i aria-hidden="true" class="fa fa-bank">
+           </i>
+           Reşatbey Mh. 62009 Sk. No:4 Baskın Apt. Zemin Kat  Seyhan/ADANA
+           <br/>
+           <i aria-hidden="true" class="fa fa-phone">
+           </i>
+           0(322) 454-1795
+           <br/>
+           <i aria-hidden="true" class="fa fa-mobile">
+           </i>
+           0(533) 717-7018
+           <br/>
+           <i aria-hidden="true" class="fa fa-fax">
+           </i>
+           0(322) 457-2420
+           <br/>
+           <i aria-hidden="true" class="fa fa-envelope-o">
+           </i>
+           mimarlarodasiadana@gmail.com - adana@mo.org.tr
+          </span>
+         </div>
+         <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top:22px; text-align:center; padding-right:30px; margin-bottom:15px">
+          <iframe allowfullscreen="false" frameborder="0" height="150" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12746.531583170288!2d35.32907!3d36.994695!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x81599f6bbeb0cbc5!2smimarlar+odas%C4%B1+adana+%C5%9Fubesi!5e0!3m2!1str!2str!4v1480865775006" style="border:0" width="100%">
+          </iframe>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="copyright" style="text-align:center;background-color:white">
+       <div class="container" style="color:black">
+        (C) 2016
+        <a href="http://wiki.com.tr" target="_blank">
+         Powered By Wiki Software
+        </a>
+       </div>
+      </div>
+     </footer>
+    </div>
+   </div>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/jquery-migrate-1.2.1.min.js" type="text/javascript">
+   </script>
+   <script src="http://maps.google.com/maps/api/js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/bootstrap/js/bootstrap.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/jquery.validate.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/owl.carousel.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/waypoints.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/scrollReveal.min.js" type="text/javascript">
+   </script>
+   <script src="/Content/MimarlarOdasiTemplate/assets/js/custom.js" type="text/javascript">
+   </script>
+   <!-- jQuery 1.10.1-->
+   <script src="/Content/html/external/jquery/jquery-2.1.4.min.js">
+   </script>
+   <!-- Bootstrap 3-->
+   <script src="/Content/html/external/bootstrap/bootstrap.min.js">
+   </script>
+   <!-- Specific Page External Plugins -->
+   <script src="/Content/html/external/slick/slick.min.js">
+   </script>
+   <script src="/Content/html/external/bootstrap-select/bootstrap-select.min.js">
+   </script>
+   <script src="/Content/html/external/countdown/jquery.plugin.min.js">
+   </script>
+   <script src="/Content/html/external/countdown/jquery.countdown.min.js">
+   </script>
+   <script src="/Content/html/external/magnific-popup/jquery.magnific-popup.min.js">
+   </script>
+   <script src="/Content/html/external/isotope/isotope.pkgd.min.js">
+   </script>
+   <script src="/Content/html/external/imagesloaded/imagesloaded.pkgd.min.js">
+   </script>
+   <script src="/Content/html/external/colorbox/jquery.colorbox-min.js">
+   </script>
+   <script src="/Content/html/js/custom.js">
+   </script>
+   <script src="/Content/html/js/js-index-08.js">
+   </script>
+   <script src="/Content/html/js/js-index-06.js">
+   </script>
+   <script type="text/javascript">
+    google.maps.event.addDomListener(window, 'load', simpleMap());
+   </script>
+   <script>
+    $(document).ready(function () {
+             $('#sessionMessageModal').modal();
+             EditorImageResize();
+ 
+         });
+ 
+         function EditorImageResize() {
+             $('.icerikResimAyar img').removeAttr('width');
+             $('.icerikResimAyar img').removeAttr('height');
+         }
+   </script>
+   <!--[if lte IE 9]>
+     <script src="assets/js/ie.js"></script>
+     <![endif]-->
+   <style>
+    .owl-prev {
+             width: 50%;
+             float: left;
+         }
+ 
+         .owl-next {
+             width: 50%;
+             float: left;
+             text-align: right;
+         }
+   </style>
+   <script>
+    function change() {
+             document.getElementById("cboxClose").value = "KAPAT";
+         }
+   </script>
+   <script>
+    $(document).ready(function () {
+             //$(".sliderBaslik").mouseover(function () {
+             //    $(this).animate({
+ 
+             //        //width: "70%",
+             //        opacity: 1,
+             //        marginTop: "-0.6in",
+ 
+             //        //fontSize: "3em",
+             //        //borderWidth: "10px"
+             //    }, 300);
+             //});
+             $(".itemDiv").mouseover(function () {
+                 $(this).first().children().children().next().animate({
+ 
+                     //width: "70%",
+                     opacity: 1,
+                     marginTop: "-0.6in",
+ 
+                     //fontSize: "3em",
+                     //borderWidth: "10px"
+                 }, 300);
+             });
+             $(".itemDiv").mouseleave(function () {
+                 $(this).children().children().next().animate({
+ 
+                     //width: "70%",
+                     opacity: 0,
+                     marginTop: "0in",
+                     marginLeft: "0.0in",
+                     //fontSize: "3em",
+                     //borderWidth: "10px"
+                 }, 300);
+             });
+             $(".owl-carousel").owlCarousel({
+                 navText: [
+                     "<i class='fa fa-arrow-circle-left fa-3x' aria-hidden='true' style='margin-left:30px'></i>",
+                     "<i class='fa fa-arrow-circle-right fa-3x' aria-hidden='true' style='margin-right:30px'></i>"
+                 ],
+                 loop: false,
+                 margin: 10,
+                 nav: true,
+                 responsive: {
+                     0: {
+                         items: 1
+                     },
+                     450: {
+                         items: 2
+                     },
+                     900: {
+                         items: 3
+                     },
+                     1350: {
+                         items: 4
+                     },
+                     1800: {
+                         items: 5
+                     }
+ 
+                 }
+             });
+ 
+         });
+   </script>
+   <style>
+    #list-group li.active {
+             text-decoration: underline;
+         }
+ 
+             #list-group li.active a {
+                 text-decoration: underline;
+             }
+ 
+         #list-group li ul li {
+             border: none;
+         }
+ 
+         #list-group li:hover {
+             text-decoration: underline;
+             color: #222;
+         }
+ 
+         #list-group li a:hover {
+             color: #222;
+         }
+   </style>
+  </body>
+ </html>

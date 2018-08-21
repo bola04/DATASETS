@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+ <html class="no-js" lang="en">
+  <head>
+   <base href="https://www.knightonmusiccentre.com/"/>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <meta content="telephone=no" name="format-detection"/>
+   <title>
+    Knighton Music Centre
+   </title>
+   <link href="css/foundation.css" rel="stylesheet"/>
+   <link href="css/style.css" rel="stylesheet"/>
+   <link href="css/mq.css" rel="stylesheet"/>
+   <link href="css/sweetalert.css" rel="stylesheet"/>
+   <link href="img/favicon.png" rel="icon"/>
+   <link href="img/favicon.png" rel="shortcut icon"/>
+   <!--slider-->
+   <link href="css/flexslider.css" media="screen" rel="stylesheet" type="text/css"/>
+   <!--font-->
+   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800,700,400italic" rel="stylesheet" type="text/css"/>
+   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,900" rel="stylesheet" type="text/css"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet"/>
+   <link href="css/colorbox.css" rel="stylesheet"/>
+   <script src="js/modernizr.js">
+   </script>
+   <script src="js/idangerous.swiper-2.1.min.js">
+   </script>
+   <script src="js/jquery.js">
+   </script>
+   <script src="js/sweetalert.min.js">
+   </script>
+   <script src="js/jquery.colorbox-min.js">
+   </script>
+   <script src="https://maps.google.com/maps/api/js?sensor=false&amp;key=AIzaSyDktEavPJhrxbghkc0vCtFzd-SoTcp1Ioo" type="text/javascript">
+   </script>
+   <script src="js/jquery.gomap-1.3.2.js">
+   </script>
+   <script src="js/sweetalert.min.js">
+   </script>
+   <script src="js/jquery.jplayer.js">
+   </script>
+  </head>
+  <body class="">
+   <header>
+    <div class="row">
+     <div class="columns medium-12">
+      <h1>
+       <a href="/">
+       </a>
+      </h1>
+      <div class="topmenu">
+       <ul>
+        <li>
+         <a href="about-us/">
+          About Us
+         </a>
+        </li>
+        <li>
+         <a href="terms-conditions/">
+          Terms &amp; Conditions
+         </a>
+        </li>
+        <li>
+         <a href="privacy-policy/">
+          Privacy Policy
+         </a>
+        </li>
+        <li>
+         <a href="finding-us/">
+          Finding Us
+         </a>
+        </li>
+        <li>
+         <a href="contact-us/">
+          Contact Us
+         </a>
+        </li>
+       </ul>
+       <a class="fb" href="https://www.facebook.com/pages/Knighton-Music-Centre/113087668748810">
+       </a>
+       <a class="tw" href="https://twitter.com/knightonmusic">
+       </a>
+      </div>
+      <ul class="cartmenu">
+       <li>
+        <a data-reveal-id="login" href="#">
+         Login
+        </a>
+       </li>
+       <li>
+        <a href="register/">
+         Register
+        </a>
+       </li>
+       <li class="cart">
+        <a href="basket/">
+         <span id="cart-count">
+          (
+          <span id="basketq2">
+           0
+          </span>
+          )
+         </span>
+         <span class="items">
+          items
+         </span>
+         <span class="sep">
+          /
+         </span>
+         £
+         <span id="cart-total">
+          0.00
+         </span>
+        </a>
+       </li>
+      </ul>
+      <nav>
+       <ul>
+        <li>
+         <a href="products/electric-guitars/">
+          Electric guitars
+         </a>
+        </li>
+        <li>
+         <a href="products/acoustic-guitars/">
+          Acoustic Guitars
+         </a>
+        </li>
+        <li>
+         <a href="products/used-guitars/">
+          Used Guitars
+         </a>
+        </li>
+        <li>
+         <a href="products/bass-guitars/">
+          Bass Guitars
+         </a>
+        </li>
+        <li>
+         <a href="products/amplification/">
+          Amplification
+         </a>
+        </li>
+        <li>
+         <a href="products/accessories//">
+          Accessories
+         </a>
+        </li>
+        <li>
+         <a href="products/hi-tech-pedals//">
+          Hi-Tech &amp; Pedals
+         </a>
+        </li>
+       </ul>
+       <form action="">
+        <input type="text"/>
+       </form>
+      </nav>
+     </div>
+    </div>
+    <a class="mobileusermenu" data-reveal-id="login" href="#">
+     <i aria-hidden="true" class="fa fa-male">
+     </i>
+    </a>
+    <a class="mobilemenu" href="#">
+    </a>
+   </header>
+   <form action="" id="search">
+    <a class="close" href="">
+     <i aria-hidden="true" class="fa fa-times-circle">
+     </i>
+    </a>
+    <div class="inputout">
+     <input id="s" placeholder="Start typing your search" type="text"/>
+    </div>
+    <div class="row">
+     <div class="columns medium-12">
+      <ul class="medium-block-grid-2" id="results">
+      </ul>
+     </div>
+    </div>
+   </form>
+   <script>
+    $(document).ready(function () {
+ $('header form').click(function(e) {
+   $('body').addClass('searchopen');
+   setTimeout(function () {
+     $('#s').focus();
+   },200);
+   e.preventDefault();
+ });
+ 
+ $('#search').submit(function() {
+   return false;
+ });
+ 
+ $('#search .close').click(function(e) {
+   $('body').removeClass('searchopen');
+   e.preventDefault();
+ });
+ 
+ $('#search input').keyup(function () {
+   if ( $(this).val().length > 2 ) {
+ 
+     $(this).addClass('loading');
+     var t = this;
+     console.log($(this).val());
+     $.post("includes/actions.php", 
+       { 
+         action: "search" ,
+         s: $(this).val()
+       },
+       function(data){
+          $('#results').html(data);
+          $(t).removeClass('loading');
+        }
+   );
+ 
+   }
+ });
+ 
+ });
+   </script>
+   <div class="reveal-modal tiny" data-reveal="" id="usermenu">
+    <h2 id="Login">
+     User menu
+    </h2>
+    <ul>
+     <li>
+      <a class="login" href="myaccount/">
+       <i aria-hidden="true" class="fa fa-male">
+       </i>
+       My Account
+      </a>
+     </li>
+     <li>
+      <a class="orders" href="myorders/">
+       <i aria-hidden="true" class="fa fa-shopping-cart">
+       </i>
+       My Orders
+      </a>
+     </li>
+     <li>
+      <a class="logout" href="myaccount/?lo=1">
+       <i aria-hidden="true" class="fa fa-sign-out">
+       </i>
+       Log Out
+      </a>
+     </li>
+    </ul>
+    <a aria-label="Close" class="close-reveal-modal">
+     ×
+    </a>
+   </div>
+   <div class="reveal-modal tiny" data-reveal="" id="login">
+    <form action="" class="loginform text-center" method="post">
+     <h2 id="Login">
+      Login
+     </h2>
+     <input name="u" placeholder="Email" required="" type="email"/>
+     <input name="p" pattern="^[a-zA-Z0-9_]{4,}$" placeholder="Password" type="password"/>
+     <button class="button">
+      Send
+     </button>
+     <input name="action" type="hidden" value="login"/>
+     <div class="callout alert hide" data-alert="">
+      Email or password incorrect.
+     </div>
+     <hr/>
+     <div class="row text-center">
+      <div class="columns medium-6">
+       <h5>
+        Forgot your password?
+       </h5>
+       <a class="button tiny" href="http://www.knightonmusiccentre.com/resetpassword/">
+        Reset password
+       </a>
+      </div>
+      <div class="columns medium-6">
+       <h5>
+        Not a registered user?
+       </h5>
+       <a class="button tiny" href="register/">
+        Register now
+       </a>
+      </div>
+     </div>
+    </form>
+    <a aria-label="Close" class="close-reveal-modal">
+     ×
+    </a>
+   </div>
+   <script>
+    $(document).ready(function () {
+ 
+  $('.loginform').on('submit', function (e) {
+     console.log('login');
+     e.preventDefault();
+     $.post("https://www.knightonmusiccentre.com/includes/actions.php", 
+         $('.loginform').serialize(),
+ 
+         function(data){
+           console.log(data);
+             if (data == 0) {
+               $('.loginform .alert').removeClass('hide');
+             } else {
+               window.location.reload();
+             }
+          }
+     );
+      
+  });
+ 
+ 
+ });
+   </script>
+   <div class="row slider">
+    <div class="columns medium-12">
+     <div class="slider">
+      <div class="swiper-container">
+       <div class="swiper-wrapper">
+        <a class="swiper-slide" href="">
+         <div class="bg" style='background-image: url("photos/1100_500_1475058961-shop banner 1.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="https://www.knightonmusiccentre.com/products/electric-guitars/rob-williams-guitars/">
+         <div class="bg" style='background-image: url("photos/1100_500_1525807924-RobWilliamsBannerNEW.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="https://www.knightonmusiccentre.com/products/acoustic-guitars/atkin/">
+         <div class="bg" style='background-image: url("photos/1100_500_1468068317-atkin_banner.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="https://www.knightonmusiccentre.com/products/acoustic-guitars/lowden/">
+         <div class="bg" style='background-image: url("photos/1100_500_1467711721-lowden_banner.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="http://www.knightonmusiccentre.com/products/acoustic-guitars/larrive/">
+         <div class="bg" style='background-image: url("photos/1100_500_1472038926-Laurel Banner.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="https://www.knightonmusiccentre.com/products/accessories/lr-baggs-accessories/">
+         <div class="bg" style='background-image: url("photos/1100_500_1518899103-Baggs1.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="http://www.knightonmusiccentre.com/products/amplification/blackstar/">
+         <div class="bg" style='background-image: url("photos/1100_500_1467711695-blackstar_banner.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+        <a class="swiper-slide" href="">
+         <div class="bg" style='background-image: url("photos/1100_500_1509812676-Site bannerx.jpg")'>
+         </div>
+         <div class="text">
+          <h2>
+           Huge Selection Of High End Guitars
+          </h2>
+          <p>
+          </p>
+         </div>
+        </a>
+       </div>
+      </div>
+      <div class="pagination">
+      </div>
+     </div>
+     <script>
+      var mySwiper = new Swiper('.swiper-container',{
+     pagination: '.pagination',
+     loop:true,
+     grabCursor: true,
+     paginationClickable: true,
+     autoplay: 5000
+   })
+     </script>
+    </div>
+   </div>
+   <div class="list">
+    <div class="row">
+     <div class="columns medium-12">
+      <h3 class="sectiontitle">
+       Latest Guitars and Equipment
+      </h3>
+      <ul class="medium-block-grid-4 small-block-grid-2 xsmall-block-grid-1">
+       <li>
+        <a class="product" href="product/electric-guitars/rob-williams-guitars/rob-williams-super-strat-in-pearl-red/">
+         <figure>
+          <img alt="" src="photos/200_200_1532186173-RWSNDPR-058275.jpg"/>
+         </figure>
+         <span class="title">
+          Rob Williams Super Strat in Pearl Red
+         </span>
+         <span class="price">
+          £2450.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/atkin/atkin-lg47/">
+         <figure>
+          <img alt="" src="photos/200_200_1531754669-atkinTHE47-058596.jpg"/>
+         </figure>
+         <span class="title">
+          Atkin LG47
+         </span>
+         <span class="price">
+          £2799.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/larrivee/2008-usa-larrivee-rs-04-amber-bookmatched-flame-maple/">
+         <figure>
+          <img alt="" src="photos/200_200_1530969238-larriveeRS4amber-058572.jpg"/>
+         </figure>
+         <span class="title">
+          2008 USA Larrivee RS-04 Amber Bookmatched Flame Maple
+         </span>
+         <span class="price">
+          £1795.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/other-guitars/usa-made-1993-fender-custom-shop-stratocaster-in-rare-holoflake-finish/">
+         <figure>
+          <img alt="" src="photos/200_200_1530966838-fenderSTRATholo-058577.jpg"/>
+         </figure>
+         <span class="title">
+          USA Made 1993 Fender Custom Shop Stratocaster In RARE HoloFlake Finish
+         </span>
+         <span class="price">
+          £1795.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/amplification/acus-acoustic/acus-oneforstrings-5t-acoustic-amp-in-wood/">
+         <figure>
+          <img alt="" src="photos/200_200_1500898621-acus 5t.jpg"/>
+         </figure>
+         <span class="title">
+          Acus OneForStrings 5T Acoustic Amp in Wood
+         </span>
+         <span class="price">
+          £478.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/gibson/1998-gibson-les-paul-classic-gold-top/">
+         <figure>
+          <img alt="" src="photos/200_200_1529421682-98lpGT-058316.jpg"/>
+         </figure>
+         <span class="title">
+          1998 Gibson Les Paul Classic Gold Top
+         </span>
+         <span class="price">
+          £1695.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/hi-tech-pedals/guitar-fx/line-6/line-6-fbv-express-mkii-usb-guitar-effects-footswitch/">
+         <figure>
+          <img alt="" src="photos/200_200_1526905257-izse615h5kt6f9v40nep.jpg"/>
+         </figure>
+         <span class="title">
+          Line 6 FBV Express MKII USB Guitar Effects Footswitch
+         </span>
+         <span class="price">
+          £79.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/rob-williams-guitars/rob-williams-set-neck-model-in-qulited-amber/">
+         <figure>
+          <img alt="" src="photos/200_200_1529161800-RWSNQA-058256.jpg"/>
+         </figure>
+         <span class="title">
+          Rob Williams Set Neck Model in Qulited Amber
+         </span>
+         <span class="price">
+          £2800.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/hi-tech-pedals/pa-equipment/lr-baggs-synapse-personal-pa/">
+         <figure>
+          <img alt="" src="photos/200_200_1519736581-Synapse.jpg"/>
+         </figure>
+         <span class="title">
+          LR Baggs Synapse Personal PA
+         </span>
+         <span class="price">
+          £2299.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/amplification//panama-conqueror-5w-tube-combo/">
+         <figure>
+          <img alt="" src="photos/200_200_1496234847-panama 1.jpg"/>
+         </figure>
+         <span class="title">
+          Panama Conqueror 5W Tube Combo
+         </span>
+         <span class="price">
+          <span class="saleprice">
+           £479.00
+          </span>
+          £399.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/amplification/musicman-amps/musicman-212-hd-130-guitar-combo-amplifier/">
+         <figure>
+          <img alt="" src="photos/200_200_1513696413-1.jpg"/>
+         </figure>
+         <span class="title">
+          MusicMan 212 HD 130 Guitar Combo Amplifier
+         </span>
+         <span class="price">
+          £1249.99
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/rob-williams-guitars/rob-williams-set-neck-model-in-ocean-burst/">
+         <figure>
+          <img alt="" src="photos/200_200_1528555491-RWsetTransBlue-058113.jpg"/>
+         </figure>
+         <span class="title">
+          Rob Williams Set Neck Model in Ocean Burst
+         </span>
+         <span class="price">
+          £2750.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/esp/esp-e-ii-horizon-nt-ii-non-trem-limited-edition-in-reindeer-blue/">
+         <figure>
+          <img alt="" src="photos/200_200_1521119921-ESPe2HOR-056728.jpg"/>
+         </figure>
+         <span class="title">
+          ESP E-II Horizon NT II Non Trem Limited Edition in Reindeer Blue
+         </span>
+         <span class="price">
+          £1849.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/rob-williams-guitars/rob-williams-single-cutaway-model/">
+         <figure>
+          <img alt="" src="photos/200_200_1528550200-RWlespaul-058076_5.jpg"/>
+         </figure>
+         <span class="title">
+          Rob Williams Single Cutaway Model
+         </span>
+         <span class="price">
+          £3950.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/larrive/larrivee-p-03z-spruce-zebrano/">
+         <figure>
+          <img alt="" src="photos/200_200_1519472171-LARp03Z-056505.jpg"/>
+         </figure>
+         <span class="title">
+          Larrivee P-03Z Spruce / Zebrano
+         </span>
+         <span class="price">
+          £1299.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/faith/faith-natural-titan-neptune-electro-acoustic-bass-ftne/">
+         <figure>
+          <img alt="" src="photos/200_200_1530021906-FAITH FTNEbass.jpg"/>
+         </figure>
+         <span class="title">
+          Faith Natural Titan Neptune Electro Acoustic Bass FTNE
+         </span>
+         <span class="price">
+          £849.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/lowden/lowden-s35-indian-rosewood-and-sitka-spruce/">
+         <figure>
+          <img alt="" src="photos/200_200_1515846793-lowdenS35rs-055934.jpg"/>
+         </figure>
+         <span class="title">
+          Lowden S35 Indian Rosewood and Sitka Spruce
+         </span>
+         <span class="price">
+          £3200.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/amplification/musicman-amps/musicman-rd-50-112-combo/">
+         <figure>
+          <img alt="" src="photos/200_200_1524129564-112rd50-highres.jpg"/>
+         </figure>
+         <span class="title">
+          MusicMan RD-50 112 Combo
+         </span>
+         <span class="price">
+          £899.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/amplification/acus-acoustic/acus-oneforstrings-6-in-wood-last-one/">
+         <figure>
+          <img alt="" src="photos/200_200_1524644770-acus6.jpg"/>
+         </figure>
+         <span class="title">
+          Acus OneForStrings 6 in Wood - Last one!
+         </span>
+         <span class="price">
+          <span class="saleprice">
+           £589.00
+          </span>
+          £499.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/used-guitars/used-gibson/2008-gibson-j-45-sunburst-w-lr-baggs-pickup/">
+         <figure>
+          <img alt="" src="photos/200_200_1524323124-20180421_144949.jpg"/>
+         </figure>
+         <span class="title">
+          2008 Gibson J-45 Sunburst w/ LR Baggs Pickup
+         </span>
+         <span class="price">
+          £1895.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/electric-guitars/rob-williams-guitars/rob-williams-classic-57/">
+         <figure>
+          <img alt="" src="photos/200_200_1525527106-RWstratBlonde-056507.jpg"/>
+         </figure>
+         <span class="title">
+          Rob Williams Classic '57
+         </span>
+         <span class="price">
+          £2250.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/lowden/lowden-o-50-fan-fret-alpine-spruce-african-blackwood/">
+         <figure>
+          <img alt="" src="photos/new_site_LOWDEN/Lowden_O-50_Fan_Fret/1.800.jpg"/>
+         </figure>
+         <span class="title">
+          Lowden O-50 Fan Fret - Alpine Spruce &amp; African Blackwood
+         </span>
+         <span class="price">
+          <span class="saleprice">
+           £7100.00
+          </span>
+          £6950.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/larrive/larrivee-om-03z-spruce-zebrano-limited-edition/">
+         <figure>
+          <img alt="" src="photos/200_200_1496784069-larOM03Z-051955.jpg"/>
+         </figure>
+         <span class="title">
+          Larrivee OM-03Z Spruce / Zebrano Limited Edition
+         </span>
+         <span class="price">
+          £1449.00
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/drums//hayman-cajon-in-dark-ash-with-adjustable-snare/">
+         <figure>
+          <img alt="" src="photos/200_200_1532510455-37950 Dark Ash.jpg"/>
+         </figure>
+         <span class="title">
+          Hayman Cajon In Dark Ash With Adjustable Snare
+         </span>
+         <span class="price">
+          £74.99
+         </span>
+        </a>
+       </li>
+       <li>
+        <a class="product" href="product/acoustic-guitars/guild/guild-m-20-usa-made-with-deluxe-case/">
+         <figure>
+          <img alt="" src="photos/200_200_1532699953-m-20-usa-concert.jpg"/>
+         </figure>
+         <span class="title">
+          Guild M-20 USA Made With Deluxe Case
+         </span>
+         <span class="price">
+          <span class="saleprice">
+           £2137.00
+          </span>
+          £1339.00
+         </span>
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="columns medium-8 large-9 about">
+     <h3>
+      Video Tour
+     </h3>
+     <p>
+      <iframe height="445" src="https://www.youtube.com/embed/4CnTUGgQHhQ" width="800">
+      </iframe>
+     </p>
+    </div>
+    <div class="columns medium-4 large-3 about">
+     <h3>
+     </h3>
+     <div class="banner">
+      <div class="bg" style='background-image: url("img/temp/banner.jpg")'>
+      </div>
+      <div class="text">
+       Order Hotlines
+      </div>
+      <div class="tel">
+       <a href="tel:01547 528529">
+        01547 528529
+       </a>
+       <br/>
+       <a href="tel:01547 528529">
+        01547 529919
+       </a>
+       <br/>
+       <a class="m" href="mailto:sales@knightonmusiccentre.com">
+        sales@knightonmusiccentre.com
+       </a>
+      </div>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <div class="row">
+     <div class="columns medium-12 ">
+      <div id="mc_embed_signup">
+       <form action="//knightonmusiccentre.us13.list-manage.com/subscribe/post?u=837ff767c094b3a26c978b213&amp;id=ce1a328008" class="validate" id="mc-embedded-subscribe-form" method="post" name="mc-embedded-subscribe-form" novalidate="" target="_blank">
+        <div id="mc_embed_signup_scroll">
+         <div class="row collapse">
+          <div class="columns medium-5">
+           <label for="">
+            Subscribe to our newsletter
+           </label>
+          </div>
+          <div class="columns medium-3">
+           <input class="email" id="mce-EMAIL" name="EMAIL" placeholder="Email address" required="" type="email" value=""/>
+          </div>
+          <div class="columns medium-3 end">
+           <input class="button" id="mc-embedded-subscribe" name="subscribe" type="submit" value="Subscribe"/>
+          </div>
+         </div>
+         <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+         <div aria-hidden="true" style="position: absolute; left: -5000px;">
+          <input name="b_837ff767c094b3a26c978b213_ce1a328008" tabindex="-1" type="text" value=""/>
+         </div>
+        </div>
+       </form>
+      </div>
+      <!--End mc_embed_signup-->
+     </div>
+     <div class="columns medium-12">
+      <ul>
+       <li>
+        <a href="about-us/">
+         About Us
+        </a>
+       </li>
+       <li>
+        <a href="terms-conditions/">
+         Terms &amp; Conditions
+        </a>
+       </li>
+       <li>
+        <a href="privacy-policy/">
+         Privacy Policy
+        </a>
+       </li>
+       <li>
+        <a href="finding-us/">
+         Finding Us
+        </a>
+       </li>
+       <li>
+        <a href="contact-us/">
+         Contact Us
+        </a>
+       </li>
+      </ul>
+     </div>
+     <div class="columns medium-4 socialfooter">
+      <div class="valignout">
+       <div class="valignin">
+        <a class="fb" href="https://www.facebook.com/pages/Knighton-Music-Centre/113087668748810" target="_blank">
+        </a>
+        <a class="tw" href="https://twitter.com/knightonmusic" target="_blank">
+        </a>
+       </div>
+      </div>
+      <!--  valign  -->
+     </div>
+     <div class="columns medium-4">
+      <div class="valignout">
+       <div class="valignin">
+        <a class="footerlogo" href="http://www.knightonmusiccentre.com/">
+        </a>
+       </div>
+      </div>
+      <!--  valign  -->
+     </div>
+     <div class="columns medium-4">
+      <div class="valignout">
+       <div class="valignin">
+        <a class="vc" href="http://www.voodoochilli.com" target="_blank">
+         Web Design
+        </a>
+       </div>
+      </div>
+      <!--  valign  -->
+     </div>
+    </div>
+   </footer>
+   <script>
+    $(document).ready(function () {
+ $('.mobilemenu').click(function(e) {
+     $('body').toggleClass('menuopen')
+     e.preventDefault();
+ });
+ });
+   </script>
+   <script src="js/foundation.min.js">
+   </script>
+   <script>
+    $(document).foundation();
+   </script>
+  </body>
+ </html>

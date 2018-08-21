@@ -1,0 +1,993 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    KomChatten - chat gratis en gezellig
+   </title>
+   <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+   <meta content="nl" http-equiv="content-language"/>
+   <meta content="nl" name="language"/>
+   <meta content="KomChatten" name="author"/>
+   <meta content="http://www.komchatten.nl" name="copyright"/>
+   <meta content="chatten, chat, chatbox, gratis, profiel, profielen, members, date, vrienden, webcam, aanmelden, contact" name="keywords"/>
+   <meta content="Op KomChatten kun je gratis chatten met webcam en gratis een profiel aanmaken. Kom in contact met mensen of zoek een leuke date!" name="description"/>
+   <meta content="index, follow" name="robots"/>
+   <link href="/css/styles.css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="/cookie_tool/style.css" rel="stylesheet" type="text/css"/>
+   <script src="/cookie_tool/main.js" type="text/javascript">
+   </script>
+   <!-- Hintboxes bij aanmeldformulier -->
+   <style type="text/css">
+    #hintbox{ /*CSS for pop up hint box */
+ position:absolute;
+ top: 0;
+ background-color: lightblue;
+ width: 150px; /*Default width of hint.*/ 
+ padding: 3px;
+ border:1px solid black;
+ font:normal 11px Verdana;
+ line-height:18px;
+ z-index:100;
+ border-right: 3px solid black;
+ border-bottom: 3px solid black;
+ visibility: hidden;
+ }
+ 
+ .hintanchor{ /*CSS for link that shows hint onmouseover*/
+ font-weight: bold;
+ color: navy;
+ margin: 3px 8px;
+ }
+   </style>
+   <script type="text/javascript">
+    var horizontal_offset="9px" //horizontal offset of hint box from anchor link
+ 
+ /////No further editting needed
+ 
+ var vertical_offset="0" //horizontal offset of hint box from anchor link. No need to change.
+ var ie=document.all
+ var ns6=document.getElementById&&!document.all
+ 
+ function getposOffset(what, offsettype){
+ var totaloffset=(offsettype=="left")? what.offsetLeft : what.offsetTop;
+ var parentEl=what.offsetParent;
+ while (parentEl!=null){
+ totaloffset=(offsettype=="left")? totaloffset+parentEl.offsetLeft : totaloffset+parentEl.offsetTop;
+ parentEl=parentEl.offsetParent;
+ }
+ return totaloffset;
+ }
+ 
+ function iecompattest(){
+ return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+ }
+ 
+ function clearbrowseredge(obj, whichedge){
+ var edgeoffset=(whichedge=="rightedge")? parseInt(horizontal_offset)*-1 : parseInt(vertical_offset)*-1
+ if (whichedge=="rightedge"){
+ var windowedge=ie && !window.opera? iecompattest().scrollLeft+iecompattest().clientWidth-30 : window.pageXOffset+window.innerWidth-40
+ dropmenuobj.contentmeasure=dropmenuobj.offsetWidth
+ if (windowedge-dropmenuobj.x < dropmenuobj.contentmeasure)
+ edgeoffset=dropmenuobj.contentmeasure+obj.offsetWidth+parseInt(horizontal_offset)
+ }
+ else{
+ var windowedge=ie && !window.opera? iecompattest().scrollTop+iecompattest().clientHeight-15 : window.pageYOffset+window.innerHeight-18
+ dropmenuobj.contentmeasure=dropmenuobj.offsetHeight
+ if (windowedge-dropmenuobj.y < dropmenuobj.contentmeasure)
+ edgeoffset=dropmenuobj.contentmeasure-obj.offsetHeight
+ }
+ return edgeoffset
+ }
+ 
+ function showhint(menucontents, obj, e, tipwidth){
+ if ((ie||ns6) && document.getElementById("hintbox")){
+ dropmenuobj=document.getElementById("hintbox")
+ dropmenuobj.innerHTML=menucontents
+ dropmenuobj.style.left=dropmenuobj.style.top=-500
+ if (tipwidth!=""){
+ dropmenuobj.widthobj=dropmenuobj.style
+ dropmenuobj.widthobj.width=tipwidth
+ }
+ dropmenuobj.x=getposOffset(obj, "left")
+ dropmenuobj.y=getposOffset(obj, "top")
+ dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+obj.offsetWidth+"px"
+ dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+"px"
+ dropmenuobj.style.visibility="visible"
+ obj.onmouseout=hidetip
+ }
+ }
+ 
+ function hidetip(e){
+ dropmenuobj.style.visibility="hidden"
+ dropmenuobj.style.left="-500px"
+ }
+ 
+ function createhintbox(){
+ var divblock=document.createElement("div")
+ divblock.setAttribute("id", "hintbox")
+ document.body.appendChild(divblock)
+ }
+ 
+ if (window.addEventListener)
+ window.addEventListener("load", createhintbox, false)
+ else if (window.attachEvent)
+ window.attachEvent("onload", createhintbox)
+ else if (document.getElementById)
+ window.onload=createhintbox
+   </script>
+   <!-- Aangeklikte velden markeren -->
+   <script language="javascript" type="text/javascript">
+    var highlightcolor="lightblue"
+ 
+ var ns6=document.getElementById&&!document.all
+ var previous=''
+ var eventobj
+ 
+ //Regular expression to highlight only form elements
+ var intended=/INPUT|TEXTAREA|SELECT|OPTION/
+ 
+ //Function to check whether element clicked is form element
+ function checkel(which){
+ if (which.style&&intended.test(which.tagName)){
+ if (ns6&&eventobj.nodeType==3)
+ eventobj=eventobj.parentNode.parentNode
+ return true
+ }
+ else
+ return false
+ }
+ 
+ //Function to highlight form element
+ function highlight(e){
+ eventobj=ns6? e.target : event.srcElement
+ if (previous!=''){
+ if (checkel(previous))
+ previous.style.backgroundColor=''
+ previous=eventobj
+ if (checkel(eventobj))
+ eventobj.style.backgroundColor=highlightcolor
+ }
+ else{
+ if (checkel(eventobj))
+ eventobj.style.backgroundColor=highlightcolor
+ previous=eventobj
+ }
+ }
+   </script>
+   <script src="/js/ajax.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    function popUp( url ) {
+ 	window.open( "http://www.komchatten.nl/chat.php","chatWindow",'width=1000,height=850,status=no,scrollbars=no,location=no,toolbar=no,resizable=yes');
+ }
+   </script>
+   <script type="text/javascript">
+    var googletag = googletag || {};
+ googletag.cmd = googletag.cmd || [];
+ (function() {
+ var gads = document.createElement('script');
+ gads.async = true;
+ gads.type = 'text/javascript';
+ var useSSL = 'https:' == document.location.protocol;
+ gads.src = (useSSL ? 'https:' : 'http:') + 
+ '//www.googletagservices.com/tag/js/gpt.js';
+ var node = document.getElementsByTagName('script')[0];
+ node.parentNode.insertBefore(gads, node);
+ })();
+   </script>
+   <script type="text/javascript">
+    googletag.cmd.push(function() {
+ googletag.defineSlot('/28971320/500x500-18plus', [500, 500], 'div-gpt-ad-1416695261178-0').addService(googletag.pubads());
+ googletag.defineSlot('/28971320/500x500', [500, 500], 'div-gpt-ad-1416695261178-1').addService(googletag.pubads());
+ googletag.defineSlot('/28971320/banner-diversen', [468, 60], 'div-gpt-ad-1416695261178-2').addService(googletag.pubads());
+ googletag.pubads().enableSingleRequest();
+ googletag.enableServices();
+ });
+   </script>
+  </head>
+  <body>
+   <!-- Google Tag Manager -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-NTBRKB" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ })(window,document,'script','dataLayer','GTM-NTBRKB');
+   </script>
+   <!-- End Google Tag Manager -->
+   <div id="container">
+    <div id="header-abstop">
+     <div class="header-abstop-menu" style="width:50px;">
+      <a href="/" title="Terug naar de startpagina">
+       home
+      </a>
+     </div>
+     <div class="header-abstop-menu" style="width:60px;">
+      <a href="/contact" title="Neem contact op met KomChatten">
+       contact
+      </a>
+     </div>
+     <div class="header-abstop-menu">
+      <a href="/disclaimer" title="De privacy policy van KomChatten">
+       policy
+      </a>
+     </div>
+     <div class="header-abstop-menu" style="width:85px;">
+      <a href="/voorwaarden" title="De algemene voorwaarden van KomChatten">
+       voorwaarden
+      </a>
+     </div>
+     <div class="header-abstop-menu" style="width:10px;">
+      <a href="/faq" title="De meest gestelde vragen op KomChatten">
+       <b>
+        FAQ
+       </b>
+      </a>
+     </div>
+     <div class="header-abstop-menu-right">
+     </div>
+     <div style="clear:both;">
+     </div>
+    </div>
+    <div id="header">
+     <div id="header-logo">
+      <a href="/chat" title="KomChatten, gratis en gezellig">
+       <img alt="KomChatten" src="/img/logo.png"/>
+      </a>
+     </div>
+     <div id="facebook" style="height: 100px;">
+     </div>
+     <br/>
+     <div id="google">
+      <form action="http://www.komchatten.nl/zoekresultaten" id="cse-search-box">
+       <div>
+        <input name="cx" type="hidden" value="partner-pub-2001780741862934:7289387897"/>
+        <input name="cof" type="hidden" value="FORID:10"/>
+        <input name="ie" type="hidden" value="UTF-8"/>
+        <input name="q" size="30" type="text"/>
+        <input name="sa" type="submit" value="Zoeken"/>
+       </div>
+      </form>
+      <script src="http://www.google.nl/coop/cse/brand?form=cse-search-box&amp;lang=nl" type="text/javascript">
+      </script>
+     </div>
+    </div>
+    <div id="header-menu">
+     <ul class="mainmenu">
+      <li>
+       <a href="http://www.komdaten.nl" title="Ga naar de datingsite KomDaten">
+        <b>
+         dating
+        </b>
+       </a>
+      </li>
+      <li>
+       <a href="/zoeken" title="Zoeken naar members op KomChatten">
+        zoeken
+       </a>
+      </li>
+      <li>
+       <a href="/chat" title="Gezellig chatten">
+        chat
+       </a>
+      </li>
+      <li>
+       <a href="/games" title="Speel games op KomChatten">
+        games
+       </a>
+      </li>
+      <li>
+       <a href="/blog" title="Lees interessante artikelen over chatten">
+        weblog
+       </a>
+      </li>
+      <li>
+       <a href="/registreren" id="mainmenu-account" title="chat account aanmaken">
+       </a>
+      </li>
+     </ul>
+    </div>
+    <div id="content">
+     <!-- COLUMN 1 -->
+     <div id="col1">
+      <div class="block-header div-center div-middle">
+       <h2>
+       </h2>
+       <p>
+        Nieuwste chatprofiel
+       </p>
+      </div>
+      <div class="block-content block-bg div-center">
+       <img alt="Profielfoto van musica68" class="profile-image" height="70" src="/thumbs/musica68.jpg"/>
+       <p>
+        <a href="/musica68" title="Ga naar het chat profiel van musica68">
+         musica68
+        </a>
+       </p>
+      </div>
+      <div class="block-header div-center div-middle">
+       <h2>
+       </h2>
+       <p>
+        Inloggen members
+       </p>
+      </div>
+      <div class="block-content block-bg div-center">
+       <p>
+       </p>
+       <form action="/login2.php?action=login" method="post" name="login">
+        <p>
+         Gebruikersnaam:
+         <input name="nicknaam" required="" style="width:150px;" type="text"/>
+        </p>
+        <p>
+         Wachtwoord:
+         <input name="wachtwoord" required="" style="width:150px;" type="password"/>
+        </p>
+        <div class="less-margin-top" style="text-align:right;">
+         <p>
+          <input name="submit" type="hidden" value="Login"/>
+          <input class="button-small" style="float:right;margin-right:25px;margin-top:5px;" type="submit" value="Login"/>
+         </p>
+         <div style="clear:both;">
+         </div>
+         <p style="margin-right:25px;">
+          Blijf ingelogd
+          <input id="savepass" name="ingelogd_b" type="checkbox" value="yes"/>
+         </p>
+        </div>
+        <p>
+        </p>
+        <p>
+         <a href="/wachtwoord" title="Klik hier als je je wachtwoord vergeten bent">
+          Wachtwoord vergeten?
+         </a>
+         <br/>
+         <a href="/registreren" title="Meld je nu aan voor een chat profiel">
+          <b>
+           Registreren
+          </b>
+         </a>
+        </p>
+       </form>
+      </div>
+      <center>
+       <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+       </script>
+       <!-- index -->
+       <ins class="adsbygoogle" data-ad-client="ca-pub-2001780741862934" data-ad-slot="6740817698" style="display:inline-block;width:180px;height:150px">
+       </ins>
+       <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+       </script>
+      </center>
+      <br/>
+      <div class="block-header-pink div-center div-middle">
+       <h2>
+        Linkpartners
+       </h2>
+      </div>
+      <div class='block-content block-bg-pink div-center" style="text-align:left;"&gt; &lt;p&gt;&lt;a href="http://www.datingapps.nl" target="_blank"&gt;DatingApps.nl&lt;/a&gt;&lt;/p&gt; &lt;div style=' text-align:left="">
+       <p>
+        <a href="/uithits.php?action=tel&amp;id=379" onmouseout="window.status='';return true" onmouseover="window.status='Hard Streams Inhits:391  Uithits:884';return true" rel="nofollow" target="_blank" title=" Inhits: 391 | Uithits: 884">
+         Hard Streams
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top" style="text-align:left;">
+       <p>
+        <a href="/uithits.php?action=tel&amp;id=176" onmouseout="window.status='';return true" onmouseover="window.status='Dating ik wil het Inhits:181  Uithits:593';return true" rel="nofollow" target="_blank" title=" Inhits: 181 | Uithits: 593">
+         Dating ik wil het
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top" style="text-align:left;">
+       <p>
+        <a href="/uithits.php?action=tel&amp;id=253" onmouseout="window.status='';return true" onmouseover="window.status='2link Inhits:179  Uithits:427';return true" rel="nofollow" target="_blank" title=" Inhits: 179 | Uithits: 427">
+         2link
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top" style="text-align:left;">
+       <p>
+        <a href="/uithits.php?action=tel&amp;id=260" onmouseout="window.status='';return true" onmouseover="window.status='Chat.startkabel.nl Inhits:159  Uithits:528';return true" rel="nofollow" target="_blank" title=" Inhits: 159 | Uithits: 528">
+         Chat.startkabel.nl
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top" style="text-align:left;">
+       <p>
+        <a href="/uithits.php?action=tel&amp;id=332" onmouseout="window.status='';return true" onmouseover="window.status='Speel Spelletjes Inhits:155  Uithits:414';return true" rel="nofollow" target="_blank" title=" Inhits: 155 | Uithits: 414">
+         Speel Spelletjes
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top" style="text-align:left;">
+       <p>
+        <a href="http://www.datingapps.nl" target="_blank" title="DatingApps.nl">
+         Dating Apps
+        </a>
+       </p>
+      </div>
+      <div class="less-margin-top">
+       <p>
+        <a class="button-small" href="/linkpartners" style="float:left;" title="Bekijk alle linkpartners van KomChatten">
+         Alle partners
+        </a>
+       </p>
+      </div>
+      <br/>
+      <br/>
+     </div>
+     <!-- END COLUMN 1 -->
+     <!-- COLUMN 2 -->
+     <div id="col2">
+      <div class="block-header div-middle">
+       <h1>
+       </h1>
+       <p>
+        Gezellig en gratis chatten op KomChatten
+       </p>
+      </div>
+      <div class="block-content block-bg">
+       <p>
+        Wil je ook gezellig
+        <a href="/chat" title="gratis en gezellig chatten">
+         <b>
+          chatten
+         </b>
+        </a>
+        ? Kom gratis chatten op onze webcam chat.
+        <br/>
+        Kom in contact met mensen en maak nieuwe vrienden of vind een leuke date.
+ Een chatprofiel is helemaal gratis. Chatten kan ook zonder een profiel.
+       </p>
+       <p>
+       </p>
+       <table border="0" style="padding-left: 15px; padding-right: 15px; padding-bottom: 7px;" width="90%">
+        <tr>
+         <td width="50%">
+          <b>
+           Members
+          </b>
+         </td>
+         <td width="50%">
+          <b>
+           Niet members
+          </b>
+         </td>
+        </tr>
+       </table>
+       <table border="0" cellspacing="5px" style="padding-left: 15px; padding-right: 15px;" width="90%">
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Eigen profielpagina
+         </td>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Gratis toegang tot chatbox
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Chatprofiel
+         </td>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Profielen bekijken
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="40%">
+          Webcam chatten
+         </td>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="40%">
+          Geen webcams
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="40%">
+          Privéberichten versturen
+         </td>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="40%">
+          Openbare berichten sturen
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Foto's plaatsen
+         </td>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          <a href="/registreren" title="gratis profiel aanmaken">
+           <b>
+            Meld je gratis aan!
+           </b>
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Vrienden toevoegen
+         </td>
+         <td width="8%">
+         </td>
+         <td width="42%">
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          Chatpunten sparen
+         </td>
+         <td width="8%">
+         </td>
+         <td width="42%">
+         </td>
+        </tr>
+        <tr>
+         <td width="8%">
+          <img alt="voordeel" src="/img/check2.png" width="20px"/>
+         </td>
+         <td width="42%">
+          <a href="/upgraden" rel="nofollow" title="Bekijk de mogelijkheden voor goldmembers">
+           <u>
+            Goldmember worden
+           </u>
+          </a>
+         </td>
+         <td width="8%">
+         </td>
+         <td width="42%">
+         </td>
+        </tr>
+       </table>
+       <p>
+        <a class="button-big" href="/chat" onclick="javascript:popUp();" title="Chat direct">
+         <b>
+          Direct chatten
+         </b>
+        </a>
+        <a class="button-big" href="/registreren" style="float:right;" title="Chat profiel aanmaken">
+         <b>
+          Chatprofiel maken
+         </b>
+        </a>
+       </p>
+       <p>
+        <br/>
+        <br/>
+       </p>
+      </div>
+      <center>
+       <!---<script type='text/javascript' src='http://www.bingocamspartners.com/js/classes/App/Banner.js'></script>
+ <script type='text/javascript'>
+ var bcpBanner = new App_Banner();
+ document.write(
+ bcpBanner.setStringSize('468x60')
+ .setType('gif')
+ .setPath('http://www.bingocamspartners.com/v/2/580/7123/107256/468x60.gif')
+ .setUrl('http://www.bingocamspartners.com/c/2/580/7123/107256//0/')
+ .getHTML());
+ </script>
+ <a rel="nofollow" href="http://www.bingocammen.nl" target="_blank">Online beter bingo of bingocams spelen op BingoCammen.</a>
+ <a href="http://ds1.nl/c/?wi=226398&si=5958&li=1346064&ws=" target="_blank"><img src="http://b.ds1.nl/5958/1346064/index.php?wi=226398&si=5958&li=1346064&ws=" alt="Schrijf je gratis in en start met daten" style="border:none;" /></a>--->
+       <!-- Banner 468x60 div -->
+       <div id="div-gpt-ad-1416695261178-2" style="width:468px; height:60px;">
+        <script type="text/javascript">
+         googletag.cmd.push(function() { googletag.display('div-gpt-ad-1416695261178-2'); });
+        </script>
+       </div>
+      </center>
+      <br/>
+      <div class="block-header div-middle" style="margin-top:10px;">
+       <h2>
+       </h2>
+       <p>
+        Nieuwste members
+       </p>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/musica68" title="Ga naar het chat profiel van musica68">
+         musica68
+        </a>
+       </div>
+       <div class="block-gender-male">
+        <a href="/ricardo113" title="Ga naar het chat profiel van ricardo113">
+         ricardo113
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/akwa" title="Ga naar het chat profiel van akwa">
+         akwa
+        </a>
+       </div>
+       <div class="block-gender-female">
+        <a href="/mousiemam" title="Ga naar het chat profiel van mousiemam">
+         mousiemam
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/fransh" title="Ga naar het chat profiel van fransh">
+         fransh
+        </a>
+       </div>
+       <div class="block-gender-female">
+        <a href="/kaiyara" title="Ga naar het chat profiel van kaiyara">
+         kaiyara
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/pieterrr" title="Ga naar het chat profiel van pieterrr">
+         pieterrr
+        </a>
+       </div>
+       <div class="block-gender-female">
+        <a href="/_rqld" title="Ga naar het chat profiel van _rqld">
+         _rqld
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/captainhenk" title="Ga naar het chat profiel van captainhenk">
+         captainhenk
+        </a>
+       </div>
+       <div class="block-gender-male">
+        <a href="/karne" title="Ga naar het chat profiel van karne">
+         karne
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/roberto1968" title="Ga naar het chat profiel van roberto1968">
+         roberto1968
+        </a>
+       </div>
+       <div class="block-gender-male">
+        <a href="/jim0475" title="Ga naar het chat profiel van jim0475">
+         jim0475
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <div class="block-bg block-new-profiles">
+       <div class="block-gender-male">
+        <a href="/lorenzovo" title="Ga naar het chat profiel van lorenzovo">
+         lorenzovo
+        </a>
+       </div>
+       <div class="block-gender-female">
+        <a href="/dena" title="Ga naar het chat profiel van dena">
+         dena
+        </a>
+       </div>
+       <div style="clear:both;">
+       </div>
+      </div>
+      <center>
+       <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+       </script>
+       <!-- koppelingen index -->
+       <ins class="adsbygoogle" data-ad-client="ca-pub-2001780741862934" data-ad-slot="7017479468" style="display:inline-block;width:468px;height:15px">
+       </ins>
+       <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+       </script>
+      </center>
+      <br/>
+      <br/>
+      <div class="block-header div-middle">
+       <h2>
+       </h2>
+       <p>
+        Tagcloud
+       </p>
+      </div>
+      <div class="block-content block-bg">
+       <div style="text-align: center">
+        <ul class="tagcloud" style="padding: 5px;">
+         <li>
+          <a href="http://www.komchatten.nl/blog/chatroulette" style="font-family: Arial; font-size: 13px; color: #92615a;" title="chatroulette">
+           chatroulette
+          </a>
+         </li>
+         <li>
+          <a href="http://www.komchatten.nl/blog/chatten-met-vreemden" style="font-family: Arial; font-size: 18px; color: #af302d;" title="chatten met vreemden">
+           chatten met vreemden
+          </a>
+         </li>
+         <li>
+          <a href="http://www.komchatten.nl/blog/chatten-zonder-registratie" style="font-family: Arial; font-size: 22px; color: #cc0000;" title="chatten zonder registratie">
+           chatten zonder registratie
+          </a>
+         </li>
+         <li>
+          <a href="http://www.komchatten.nl/blog/webcam-chatten" style="font-family: Arial; font-size: 13px; color: #92615a;" title="webcam chatten">
+           webcam chatten
+          </a>
+         </li>
+        </ul>
+       </div>
+      </div>
+     </div>
+     <!-- END COLUMN 2 -->
+     <!-- COLUMN 3 -->
+     <div id="col3">
+      <div class="block-header-pink div-center div-middle">
+       <p>
+       </p>
+       <h2>
+        Profiel updates
+       </h2>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top">
+       <p>
+        <a href="/koolmeesje" title="Ga naar het chat profiel van koolmeesje">
+         koolmeesje
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top">
+       <p>
+        <a href="/mrgreen" title="Ga naar het chat profiel van mrgreen">
+         mrgreen
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top">
+       <p>
+        <a href="/joyfor2" title="Ga naar het chat profiel van joyfor2">
+         joyfor2
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top">
+       <p>
+        <a href="/jopieslim43" title="Ga naar het chat profiel van jopieslim43">
+         jopieslim43
+        </a>
+       </p>
+      </div>
+      <div class="block-content block-bg-pink div-center less-margin-top">
+       <p>
+        <a href="/bimmie" title="Ga naar het chat profiel van bimmie">
+         bimmie
+        </a>
+       </p>
+      </div>
+      <center>
+       <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+       </script>
+       <!-- index -->
+       <ins class="adsbygoogle" data-ad-client="ca-pub-2001780741862934" data-ad-slot="6740817698" style="display:inline-block;width:180px;height:150px">
+       </ins>
+       <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+       </script>
+      </center>
+      <br/>
+      <div class="block-header div-center div-middle">
+       <p>
+       </p>
+       <h2>
+        Jarige members
+       </h2>
+      </div>
+      <div class="block-content block-bg div-center ">
+       <p>
+        <a href="/harhar" title="harhar is vandaag jarig">
+         harhar
+        </a>
+        (57)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/deventerbi27" title="deventerbi27 is vandaag jarig">
+         deventerbi27
+        </a>
+        (32)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/er" title="er is vandaag jarig">
+         er
+        </a>
+        (30)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/harriecnossen" title="harriecnossen is vandaag jarig">
+         harriecnossen
+        </a>
+        (64)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/angelo" title="angelo is vandaag jarig">
+         angelo
+        </a>
+        (36)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/littlekim" title="littlekim is vandaag jarig">
+         littlekim
+        </a>
+        (28)
+       </p>
+      </div>
+      <div class="block-content block-bg div-center less-margin-top">
+       <p>
+        <a href="/mrdevil1984" title="mrdevil1984 is vandaag jarig">
+         mrdevil1984
+        </a>
+        (34)
+       </p>
+      </div>
+      <div class="less-margin-top" style="text-align:right;">
+       <p>
+        <a class="button-small" href="/jarigen" style="float:right;" title="Jarige members vandaag op KomChatten">
+         Meer jarigen
+        </a>
+       </p>
+      </div>
+     </div>
+     <!-- END COLUMN 3 -->
+     <div style="clear:both;">
+     </div>
+    </div>
+   </div>
+   <div id="footer">
+    <div id="footer-container">
+     <div style="float:left; margin-left:185px; margin-top: 10px;">
+      <font color="white" size="4px">
+       <b>
+        Nieuwe foto's
+       </b>
+      </font>
+      <p>
+      </p>
+      <table>
+       <tr>
+        <td class="footer-profile-img" style="width: 130px;">
+         <center>
+          <img alt="Foto van mousiemam" height="80" src="/thumbsx120/22407.jpg"/>
+          <br/>
+          <a href="/fotos/54548" style="color:black;" title="Ga naar het fotoalbum van mousiemam">
+           mousiemam
+          </a>
+         </center>
+        </td>
+        <td class="footer-profile-img" style="width: 130px;">
+         <center>
+          <img alt="Foto van tikgeit" height="80" src="/thumbsx120/22403.jpg"/>
+          <br/>
+          <a href="/fotos/53696" style="color:black;" title="Ga naar het fotoalbum van tikgeit">
+           tikgeit
+          </a>
+         </center>
+        </td>
+        <td class="footer-profile-img" style="width: 130px;">
+         <center>
+          <img alt="Foto van moontje" height="80" src="/thumbsx120/22402.jpg"/>
+          <br/>
+          <a href="/fotos/52475" style="color:black;" title="Ga naar het fotoalbum van moontje">
+           moontje
+          </a>
+         </center>
+        </td>
+        <td class="footer-profile-img" style="width: 130px;">
+         <center>
+          <img alt="Foto van moontje" height="80" src="/thumbsx120/22401.jpg"/>
+          <br/>
+          <a href="/fotos/52475" style="color:black;" title="Ga naar het fotoalbum van moontje">
+           moontje
+          </a>
+         </center>
+        </td>
+        <td class="footer-profile-img" style="width: 130px;">
+         <center>
+          <img alt="Foto van iwoni" height="80" src="/thumbsx120/22400.jpg"/>
+          <br/>
+          <a href="/fotos/53680" style="color:black;" title="Ga naar het fotoalbum van iwoni">
+           iwoni
+          </a>
+         </center>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <div id="footer-logo">
+      <a href="/">
+       <img alt="KomChatten" src="/img/footer-logo.png"/>
+      </a>
+     </div>
+    </div>
+   </div>
+   <!-- For 123 Web Messenger Code Begin -->
+   <script language="javascript" src="http://www.komchatten.nl:1560/js/config.js">
+   </script>
+   <script language="javascript" src="http://www.komchatten.nl/123webmessenger_config_js.php">
+   </script>
+   <script language="javascript" src="http://www.komchatten.nl:1560/js/123webmessenger_fb.js">
+   </script>
+   <!-- For 123 Web Messenger Code End -->
+   <!--Adblock Check-->
+   <script src="/js/ads.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    jQuery(document).ready(checkAds()); function checkAds(){if (document.getElementById('adsense')!=undefined){document.write("<script>_gaq.push(['_trackEvent', 'Adblock', 'Unblocked', 'false',,true]);</sc" + "ript>");}else{document.write("<script>_gaq.push(['_trackEvent', 'Adblock', 'Blocked', 'true',,true]);</sc" + "ript>");}}
+   </script>
+   <!--End Adblock Check-->
+   <p class="cookie_tool_powered" id="cookie_tool_link">
+    Powered by
+    <a href="http://adresults.nl/" target="_blank" title="AdResults">
+     AdResults
+    </a>
+   </p>
+   <script src="/cookie_tool/write.php?overwrite_url=http://www.komchatten.nl/&amp;q=639432" type="text/javascript">
+   </script>
+  </body>
+ </html>

@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+ <html lang="en">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="webkit" name="renderer"/>
+   <meta content="width=1100px" name="viewport"/>
+   <title>
+    中国环境监测总站
+   </title>
+   <meta content="中国环境监测总站" name="keywords"/>
+   <meta content="中国环境监测总站" name="description"/>
+   <script src="/cne/js/jquery-1.8.3.min.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/swiper.min.js">
+   </script>
+   <link href="/cne/css/index.css" rel="stylesheet" type="text/css"/>
+   <link href="/cne/css/public.css" rel="stylesheet" type="text/css"/>
+   <link href="/cne/css/swiper.min.css" rel="stylesheet" type="text/css"/>
+   <script src="/cne/js/echarts-all.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/highcharts.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/highcharts-more.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/solid-gauge.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/echartsTool.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/scroll.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/scrollMar.js" type="text/javascript">
+   </script>
+   <script src="/cne/js/index.js" type="text/javascript">
+   </script>
+   <script>
+    var userAgent = navigator.userAgent;
+ 	//定义全局变量
+ 	var curPage = 1;
+ 	var accessURL = "http://103.42.78.200:80/";
+ 	var siteid=2002;
+ 	var date = new Date();
+ 	var base = "";
+ 	
+ 	var localCityAQI;//当前所在地AQI，默认北京
+ 	var airList;//空气质量数据
+ 	var dayAirList;//空气日报数据
+ 	var waterRealTimeList;//水质实时数据
+ 	var waterDataTotal;//水质量统计数据
+ 	var waterWeekList;//水质周报的数据
+ 	var localPlace = "北京";//当前地址
+ 	var airDataTotal;//空气质量统计数据
+ 	var airForecastList;//空气质量预报
+ 	//滚动的全局变量
+ 	
+ 	function toAirQuality(){
+ 		window.open("http://106.37.208.233:20035/");
+ 	}
+ 	function toWaterQuality(){
+ 		window.open("http://58.68.130.147/");
+ 	}
+ 	function loginYW(){
+ 		/* var username = $("#username").val();
+ 		var password = $("#password").val();
+ 		window.open("http://58.68.130.130:8080/servlet/UserAction?actions=loginwithoutVC&currentPage=/login.jsp&goPage=/manageweb/main.jsp&username="+username+"&password="+password);*/
+ 		window.open("http://103.42.78.202:8080");
+ 	}
+ 	function submitForm(){
+ 		var keyword = $("#keyword").val();
+ 		if(null != keyword && "" != keyword){
+ 			$("#searchForm").submit();
+ 		}
+ 	}
+ 	function moreTz(){
+ 		window.location.href = base+"/jcyw2092901.jhtml";
+ 	}
+ 	function moreNews(){
+ 		window.location.href = base+"/monitorNewsUI.do?siteId="+siteid;
+ 	}
+   </script>
+  </head>
+  <body>
+   <div class="body_wrap">
+    <div class="header">
+     <div class="wrap">
+      <div class="L_div">
+       <div class="d_time1">
+        <span class="L_s1" id="riqi">
+         2017年4月17日
+        </span>
+        <span id="xingqi">
+         星期三
+        </span>
+       </div>
+       <div class="d_time2">
+        <span class="localPlace">
+         北京
+        </span>
+        <span>
+         AQI
+        </span>
+        <span class="L_time2_1" id="headLocalCityAQI">
+         -
+        </span>
+       </div>
+      </div>
+      <div class="R_div">
+       <!-- <div class="R_text">
+                         	<a href="http://103.42.78.202/">切换旧版</a>
+                         </div> -->
+       <div class="R_text">
+        <a href="https://106.37.208.240:4432" target="_blank">
+         OA登录
+        </a>
+       </div>
+       <div class="R_text">
+        <a href="http://mail.cnemc.cn/" target="_blank">
+         邮箱登录
+        </a>
+       </div>
+       <!-- <div class="R_text">
+                             <span class="R_s2">简</span>
+                             <span>|</span>
+                             <span><a href="/website/encnemc">EN</a></span>                            
+                         </div> -->
+       <div class="R_text">
+        <span class="t_btn" onclick="loginYW()">
+         登录
+        </span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- <img class="topimg_bg" src="/cne/images/navbg.png"> -->
+    <div class="nav">
+     <div class="topimg">
+      <div class="wrap">
+       <img alt="logo" class="logo_img" src="/cne/images/logo.png"/>
+       <div class="top_search">
+        <form action="/search.do" id="searchForm">
+         <input id="keyword" name="keyword" placeholder="搜索" type="text"/>
+         <a onclick="submitForm()">
+          <img alt="搜索" src="/cne/images/search.png"/>
+         </a>
+        </form>
+       </div>
+      </div>
+     </div>
+     <div class="top_navbg">
+      <img class="topimg_bg" src="/cne/images/nav_bg.jpg"/>
+      <ol>
+       <li class="li_current" name="2092890">
+        <a href="/">
+         首页
+        </a>
+       </li>
+       <li name="2092872">
+        <a href="/zzjj2092872.jhtml">
+         总站简介
+        </a>
+       </li>
+       <li name="2092873">
+        <a href="/gzdt2092873.jhtml">
+         工作动态
+        </a>
+       </li>
+       <li name="2092874">
+        <a href="/sssj2092874.jhtml">
+         实时数据
+        </a>
+       </li>
+       <li name="2092875">
+        <a href="/jcbg2092875.jhtml">
+         监测报告
+        </a>
+       </li>
+       <li name="2092877">
+        <a href="/bzgf2092877.jhtml">
+         监测规范
+        </a>
+       </li>
+       <li name="2092876">
+        <a href="/zlgl2092876.jhtml">
+         质量管理
+        </a>
+       </li>
+       <li name="2092878">
+        <a href="/zzzc2092878.jhtml">
+         党建纪检
+        </a>
+       </li>
+      </ol>
+      <div class="nav_bg" id="2092890" style="display:none;">
+      </div>
+      <div class="nav_bg" id="2092872" style="display:none;">
+       <ul>
+        <li>
+         <a href="/zyzz2092920.jhtml">
+          主要职责
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/xrld2092921.jhtml">
+          现任领导
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/sxzj2093180.jhtml">
+          专家团队
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/jgsz2092922.jhtml">
+          机构设置
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/jcwl2092923.jhtml">
+          监测网络
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/lxwm2092924.jhtml">
+          联系我们
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092873" style="display:none;">
+       <ul>
+        <li>
+         <a href="/wjtz2092926.jhtml">
+          文件通知
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/dfjcxx2092927.jhtml">
+          地方信息
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/hypx2092928.jhtml">
+          监测培训
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/hyxx2093303.jhtml">
+          会议信息
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/zygl2092929.jhtml">
+          科研管理
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/jcyq2092931.jhtml">
+          仪器检测
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/gjhz2092930.jhtml">
+          国际合作
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/zpxx2093040.jhtml">
+          诚聘英才
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092874" style="display:none;">
+       <ul>
+        <li>
+         <a href="/cskqzlrbxsb2092932.jhtml">
+          城市空气质量（日报，小时报）
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/csszzb2093030.jhtml">
+          水质自动监测周报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/szzdjcsssj2092933.jhtml">
+          水质自动监测实时数据
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/qgkqzlyb2092934.jhtml">
+          全国空气质量预报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/hsyczbxj2092935.jhtml">
+          海水浴场周报（夏季）
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092875" style="display:none;">
+       <ul>
+        <li>
+         <a href="/zghjzkgb2092936.jhtml">
+          中国环境状况公报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/shjzlyb2092937.jhtml">
+          全国地表水水质月报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/kqzlzkbgyb2092938.jhtml">
+          空气质量状况报告
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/zgjahyhjzlgb2092939.jhtml">
+          中国近岸海域环境质量公报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/jahyhsycszzb2092940.jhtml">
+          部分沿海城市海水浴场水质周报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/zjsxgcstyhjjcbgzjsxgcstyhjjcbg2092941.jhtml">
+          长江三峡工程生态与环境监测报告
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/csgnqshjzljb2092942.jhtml">
+          声环境报告
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/zghjtjnb2092943.jhtml">
+          中国环境统计年报
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/qgsthjzlbg2092944.jhtml">
+          全国生态环境质量报告
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/trhjjcsj2092945.jhtml">
+          土壤环境监测报告
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092877" style="display:none;">
+       <ul>
+        <li>
+         <a href="/zcfg2093240.jhtml">
+          政策法规
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/dqhj2092947.jhtml">
+          大气环境
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/shj2092948.jhtml">
+          水环境
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/trhj2092949.jhtml">
+          土壤环境
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/sthj2092950.jhtml">
+          生态/生物
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/wlhj2092951.jhtml">
+          声与振动
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/wry2092952.jhtml">
+          污染源
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/jcyq2092953.jhtml">
+          仪器检测
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/qtysgfxxd2092954.jhtml">
+          其他
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092876" style="display:none;">
+       <ul>
+        <li>
+         <a href="/znzltxyx2093050.jhtml">
+          站内质量体系运行
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/gjwzlgl2093051.jhtml">
+          国家网质量管理
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/zlkzzdsys2093052.jhtml">
+          质量控制重点实验室
+         </a>
+        </li>
+       </ul>
+      </div>
+      <div class="nav_bg" id="2092878" style="display:none;">
+       <ul>
+        <li>
+         <a href="/djgz2093251.jhtml">
+          党建工作
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li>
+         <a href="/jjgz2093253.jhtml">
+          纪检工作
+         </a>
+        </li>
+       </ul>
+       <ul>
+        <li class="li_noborder">
+         <a href="/qt2092962.jhtml">
+          群团工作
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="wrap">
+    <div class="news">
+     <div class="news_L">
+      <!-- 轮播图 -->
+      <div class="swiper-wrapper">
+       <div class="swiper-slide">
+        <a href="/showNewsContent.do?contentId=210005950&amp;siteId=2002" title="我站开展第二批共产党员先锋岗创建活动">
+         <img alt="" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20180709/dc2b5a61022a4d408b06403cf69cc14d.jpg"/>
+        </a>
+       </div>
+       <div class="swiper-slide">
+        <a href="/showNewsContent.do?contentId=210005898&amp;siteId=2002" title="正式确立总站精神：科学、创新、奉献、卓越">
+         <img alt="" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20180626/5ac17fd6b53a446b95174e3f4af35173.png"/>
+        </a>
+       </div>
+       <div class="swiper-slide">
+        <a href="/carouseUI.do?rollId=1701&amp;siteId=2002" title="地表水环境质量监测事权上收  专题栏目">
+         <img alt="" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20180515/97e2ae4ceec747b9abf333865fd406a4.jpg"/>
+        </a>
+       </div>
+       <div class="swiper-slide">
+        <a href="/carouseUI.do?rollId=1621&amp;siteId=2002" title="监测喜迎十九大  专题栏目 ">
+         <img alt="" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20171225/b4c7ed3136954c7b862c4268f97aac5b.jpg"/>
+        </a>
+       </div>
+      </div>
+      <!-- 分页器 -->
+      <div class="swiper-pagination">
+      </div>
+      <!-- 导航按钮
+                 <div class="swiper-button-prev"></div>
+     			<div class="swiper-button-next"></div>
+     			 -->
+      <!-- 轮播图标题内容 -->
+      <div class="img_tit">
+       <b id="carouselTitle">
+       </b>
+      </div>
+     </div>
+     <div class="news_R">
+      <div class="newscon">
+       <div class="new_importtit">
+        <a>
+         <img alt="监测动态" class="new_img1" id="showNews" onclick="moreTz()" src="/cne/images/yw_current.png"/>
+        </a>
+        <a>
+         <img alt="环保要闻" class="new_img2" id="showNotice" onclick="moreNews()" src="/cne/images/tz_default.png"/>
+        </a>
+       </div>
+       <ul id="newsUl">
+        <li>
+         <a class="span_L" href="https://mp.weixin.qq.com/s/2uYGV9QuJEqTAljceeWJOg" style="color: #333      " target="_blank" title="2018年上半年全国地表水环境质量状况">
+          2018年上半年全国地表水环境质量状况
+         </a>
+         <span class="span_R">
+          07-25
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="https://mp.weixin.qq.com/s/M0X08j3giM5zeGGeyIU7ew" style="color: #333      " target="_blank" title="《环境空气质量标准》主要修改了哪些内容？为什么说现行标准的首要问题是状态参数问题？">
+          《环境空气质量标准》主要修改了哪些内容？为什么说现行标准的首要问题是状态参数问题？
+         </a>
+         <span class="span_R">
+          07-24
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="https://mp.weixin.qq.com/s/VBl9DBADoWPwSSweSsPHWg" style="color: #333      " target="_blank" title="《环境空气质量标准》修改单向社会公开征求意见">
+          《环境空气质量标准》修改单向社会公开征求意见
+         </a>
+         <span class="span_R">
+          07-24
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="https://mp.weixin.qq.com/s/1RiY7PT0jCNow742RGKHUw" style="color: #333      " target="_blank" title="生态环境部有关负责人就扩大全国城市空气质量排名范围答记者问">
+          生态环境部有关负责人就扩大全国城市空气质量排名范围答记者问
+         </a>
+         <span class="span_R">
+          07-23
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="https://mp.weixin.qq.com/s/TEdg-L7cpYwe5r-J4U4jQg" style="color: #333      " target="_blank" title="生态环境部通报2018年6月和上半年全国空气质量状况 首次将排名城市范围扩大至169个地级及以上城市">
+          生态环境部通报2018年6月和上半年全国空气质量状况 首次将排名城市范围扩大至169个地级及以上城市
+         </a>
+         <span class="span_R">
+          07-23
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="/showReport.do?contentId=210006013&amp;siteId=2002&amp;cateId=2092902" style="color: #333      " title="环境监测仪器适用性检测合格产品名录链接汇总（截至2018年6月30日）">
+          环境监测仪器适用性检测合格产品名录链接汇总（截至2018年6月30日）
+         </a>
+         <span class="span_R">
+          07-20
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180717_446723.htm" style="color: #333      " target="_blank" title="7月中下旬全国空气质量预报会商结果">
+          7月中下旬全国空气质量预报会商结果
+         </a>
+         <span class="span_R">
+          07-17
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="/showReport.do?contentId=210005984&amp;siteId=2002&amp;cateId=2092902" style="color: #333      " title="深入学习领会习近平精准扶贫思想 精确定位把握总站扶贫工作重点">
+          深入学习领会习近平精准扶贫思想 精确定位把握总站扶贫工作重点
+         </a>
+         <span class="span_R">
+          07-16
+         </span>
+        </li>
+        <li class="li_last">
+         <a class="span_L" href="/showReport.do?contentId=210005969&amp;siteId=2002&amp;cateId=2092902" style="color: #333      " title="6大区域质控中心环境空气监督核查能力建设项目通过验收">
+          6大区域质控中心环境空气监督核查能力建设项目通过验收
+         </a>
+         <span class="span_R">
+          07-13
+         </span>
+        </li>
+       </ul>
+       <ul id="noticeUl" style="display: none">
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180725_447250.htm" style="color: #333      " target="_blank" title="生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月24日）">
+          生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月24日）
+         </a>
+         <span class="span_R">
+          07-26
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.cenews.com.cn/news/201807/t20180723_880706.html" style="color: #333      " target="_blank" title="进一步加强当前环境安全保障工作 有效防范和妥善应对次生环境事件">
+          进一步加强当前环境安全保障工作 有效防范和妥善应对次生环境事件
+         </a>
+         <span class="span_R">
+          07-25
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/xxgk/hjyw/201807/t20180720_446997.shtml" style="color: #333      " target="_blank" title="生态环境部开展贯彻落实党的十九大精神“大讨论”">
+          生态环境部开展贯彻落实党的十九大精神“大讨论”
+         </a>
+         <span class="span_R">
+          07-24
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180721_447063.htm" style="color: #333      " target="_blank" title="生态环境部召开部常务会议">
+          生态环境部召开部常务会议
+         </a>
+         <span class="span_R">
+          07-24
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180720_447036.htm" style="color: #333      " target="_blank" title="生态环境部要求进一步加强当前环境安全保障工作　有效防范和妥善应对自然灾害次生的突发环境事件">
+          生态环境部要求进一步加强当前环境安全保障工作　有效防范和妥善应对自然灾害次生的突发环境事件
+         </a>
+         <span class="span_R">
+          07-23
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180719_446993.htm" style="color: #333      " target="_blank" title="生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月18日）">
+          生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月18日）
+         </a>
+         <span class="span_R">
+          07-20
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180718_446856.htm" style="color: #333      " target="_blank" title="生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月17日）">
+          生态环境部通报2018-2019年蓝天保卫战重点区域强化督查工作进展（7月17日）
+         </a>
+         <span class="span_R">
+          07-20
+         </span>
+        </li>
+        <li>
+         <a class="span_L" href="http://www.mep.gov.cn/xxgk/hjyw/201807/t20180718_446821.shtml" style="color: #333      " target="_blank" title="生态环境部通报5起监测数据造假案 三人被追究刑事责任">
+          生态环境部通报5起监测数据造假案 三人被追究刑事责任
+         </a>
+         <span class="span_R">
+          07-18
+         </span>
+        </li>
+        <li class="li_last">
+         <a class="span_L" href="http://www.mep.gov.cn/gkml/sthjbgw/qt/201807/t20180717_446709.htm" style="color: #333      " target="_blank" title="生态环境部召开部党组（扩大）会议">
+          生态环境部召开部党组（扩大）会议
+         </a>
+         <span class="span_R">
+          07-17
+         </span>
+        </li>
+       </ul>
+      </div>
+     </div>
+    </div>
+    <div class="work">
+     <div class="data_title">
+      工作动态
+     </div>
+     <div class="notice_text">
+      <ul class="ul_L">
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006036&amp;siteId=2002" style="color: #333      " title="关于召开国家水质自动监测数据审核技术交流会的通知">
+         关于召开国家水质自动监测数据审核技术交流会的通知
+        </a>
+        <span class="text_s3">
+         07-25
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006033&amp;siteId=2002" style="color: #333      " title="酷暑应急大练兵  筑牢生态“防火墙” 辽宁强力打造环境监测铁军">
+         酷暑应急大练兵  筑牢生态“防火墙” 辽宁强力打造环境监测铁军
+        </a>
+        <span class="text_s3">
+         07-24
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006026&amp;siteId=2002" style="color: #333      " title="提升运维检测技术水平 保证监测数据真准全">
+         提升运维检测技术水平 保证监测数据真准全
+        </a>
+        <span class="text_s3">
+         07-23
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006022&amp;siteId=2002" style="color: #333      " title="关于召开国家生态环境监测网运行维护与质控检查技术交流会的通知">
+         关于召开国家生态环境监测网运行维护与质控检查技术交流会的通知
+        </a>
+        <span class="text_s3">
+         07-23
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006021&amp;siteId=2002" style="color: #333      " title="关于2018年水中总氮实验室能力考核结果的通报">
+         关于2018年水中总氮实验室能力考核结果的通报
+        </a>
+        <span class="text_s3">
+         07-23
+        </span>
+       </li>
+      </ul>
+      <ul class="ul_R">
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006013&amp;siteId=2002" style="color: #333      " title="环境监测仪器适用性检测合格产品名录链接汇总（截至2018年6月30日）">
+         环境监测仪器适用性检测合格产品名录链接汇总（截至2018年6月30日）
+        </a>
+        <span class="text_s3">
+         07-20
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210006008&amp;siteId=2002" style="color: #333      " title="2018年环境监测实验室分析技术实训顺利开展">
+         2018年环境监测实验室分析技术实训顺利开展
+        </a>
+        <span class="text_s3">
+         07-19
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210005984&amp;siteId=2002" style="color: #333      " title="深入学习领会习近平精准扶贫思想 精确定位把握总站扶贫工作重点">
+         深入学习领会习近平精准扶贫思想 精确定位把握总站扶贫工作重点
+        </a>
+        <span class="text_s3">
+         07-16
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="/showGroupContent.do?cateId=2092873&amp;contentId=210005982&amp;siteId=2002" style="color: #333      " title="关于公开征集地方建设的空气质量自动监测站和超级站直联网项目承接单位的公告">
+         关于公开征集地方建设的空气质量自动监测站和超级站直联网项目承接单位的公告
+        </a>
+        <span class="text_s3">
+         07-16
+        </span>
+       </li>
+       <li>
+        <span class="text_s1">
+         .
+        </span>
+        <a class="text_s2" href="http://www.rmxiongan.com/n2/2018/0710/c383557-31799681.html" style="color: #333      " target="_blank" title="一年多来，白洋淀是咋修复的？一图看清成绩单！">
+         一年多来，白洋淀是咋修复的？一图看清成绩单！
+        </a>
+        <span class="text_s3">
+         07-13
+        </span>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <div class="airQuality">
+     <div class="air_L">
+      <div class="air_img">
+       <div class="air_address">
+        <img alt="位置" src="/cne/images/address.png"/>
+        <span class="localPlace">
+         -
+        </span>
+       </div>
+       <div class="air_addressinfo">
+        <!-- top:-21% -->
+        <div id="airChart" style="width:100%;height:100%;position:absolute;top:-33%;">
+        </div>
+        <!-- <div id="container" style="width: 400px; height: 400px; margin: 0 auto"></div> -->
+        <!-- <img class="img_1" src="images/airQulity_bg.png" alt="实时空气图示"> 
+                         <img class="img_2" src="cne/images/airQulity_current.png">
+                         -->
+        <div class="air_zl">
+         <!--树叶图标  -->
+         <div class="air_icon">
+          <img src="/cne/images/air_icon.png"/>
+         </div>
+         <div class="air_txt">
+          <span>
+           空气质量等级：
+           <b id="airLevel">
+            -
+           </b>
+          </span>
+          <span>
+           首要污染物：
+           <b id="maxPoll">
+            -
+           </b>
+          </span>
+         </div>
+        </div>
+        <a class="a_air" href="http://106.37.208.233:20035/" target="_blank">
+         <img class="a_icon_img" src="/cne/images/air_country.png"/>
+         全国实时空气质量&gt;&gt;
+        </a>
+       </div>
+      </div>
+      <div class="air_datainfo">
+       <!--<div class="datatop">
+                          <div class="data_wd">22℃</div>
+                         <div class="data_sd">
+                             <i>22<span>22</span>级</i>
+                             <i>湿度<span>22%</span></i>
+                         </div> 
+                     </div> -->
+       <div class="datamiddle">
+        <div class="middle_L">
+         <i>
+          PM
+          <b class="b_num">
+           2.5
+          </b>
+          :
+          <span class="midd_s" id="PM25">
+           -
+          </span>
+         </i>
+         <i>
+          SO
+          <b class="b_num">
+           2
+          </b>
+          :
+          <span class="midd_s" id="SO2">
+           -
+          </span>
+         </i>
+         <i>
+          O
+          <b class="b_num">
+           3
+          </b>
+          :
+          <span class="midd_s" id="O3">
+           -
+          </span>
+         </i>
+        </div>
+        <div class="middle_R">
+         <i>
+          PM
+          <b class="b_num">
+           10
+          </b>
+          :
+          <span class="midd_s" id="PM10">
+           -
+          </span>
+         </i>
+         <i>
+          NO
+          <b class="b_num">
+           2
+          </b>
+          :
+          <span class="midd_s" id="NO2">
+           -
+          </span>
+         </i>
+         <i>
+          CO    :
+          <span class="midd_s" id="CO">
+           -
+          </span>
+         </i>
+        </div>
+       </div>
+       <span class="date_change">
+        更新时间：
+        <span id="updateTime">
+         -
+        </span>
+       </span>
+       <a class="air_prediction" href="http://106.37.208.228:8082" target="_blank">
+        <img src="/cne/images/air_prediction.png"/>
+        <!--<img src="cne/images/air_prediction.jpg"> -->
+       </a>
+       <div class="air_level">
+        <div class="level_div">
+         <span class="lev_s1" id="today">
+          -
+         </span>
+         <span id="todayAQI">
+          -
+         </span>
+         <!-- <span id="todayLevel" class="lev_scolor2">-</span> -->
+         <img id="todayLevel" src=""/>
+        </div>
+        <div class="level_div">
+         <span class="lev_s1" id="tomorrow">
+          -
+         </span>
+         <span id="tomorrowAQI">
+          -
+         </span>
+         <!-- <span id="tomorrowLevel" class="lev_scolor2">-</span>  -->
+         <img id="tomorrowLevel" src=""/>
+        </div>
+        <div class="level_div">
+         <span class="lev_s1" id="afterDay">
+          -
+         </span>
+         <span id="afterDayAQI">
+          -
+         </span>
+         <img id="afterDayLevel" src=""/>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="air_R">
+      <div class="air_R_code">
+       <span class="s_code">
+        空气质量发布APP
+       </span>
+       <!-- <img class="s_code_img" src="images/airQuality_imgcode.jpg"> -->
+       <img alt="iosApp" class="s_code_img" src="/cne/images/apple.png"/>
+       <img alt="Andrio" class="s_code_img" src="/cne/images/andrio.png"/>
+       <span class="s_code">
+        官方微信公众号
+       </span>
+       <img alt="微信公众号" class="s_code_img" src="/cne/images/weixin.png"/>
+      </div>
+      <div class="index_img" name="index_img">
+       <div id="div11">
+        <img name="color_2" src="/cne/images/color_2.png"/>
+        <a href="/ywbl2093021.jhtml" id="color_2" style="display:none;">
+         <img src="/cne/images/color_2_hover.png"/>
+        </a>
+       </div>
+       <div id="div13">
+        <img name="color_3" src="/cne/images/color_3.jpg"/>
+        <a href="/hypx2092928.jhtml" id="color_3" style="display:none;">
+         <img src="/cne/images/color_3.png"/>
+        </a>
+       </div>
+       <div id="div15">
+        <img name="color_5" src="/cne/images/color_5.png"/>
+        <a href="/zbxx2093220.jhtml" id="color_5" style="display:none;">
+         <img src="/cne/images/color_55.png"/>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- <div class="real-time_data">
+             <div class="data_title">实时数据</div>
+             <div class="data_L" >
+              <a href="http://106.37.208.233:20035/" target="_blank">
+                 <div class="divtit">
+ 	                    <span>全国实时空气质量监测</span>
+ 	                    <span>>></span>
+                 </div>
+              </a>
+                 <div class="L_img" id="airQualityChart" onclick="toAirQuality()">
+                 </div>
+                 <div class="mapimgdiv">
+                     <img src="/cne/images/map_down.jpg">
+                 </div>
+             </div>
+             <div class="data_L">
+             	<a href="http://58.68.130.147/" target="_blank">
+                 <div class="divtit">
+                     <span>全国水质自动监测</span>
+                     <span>>></span>
+                 </div>
+                 </a>
+                 <div class="L_img" id="waterQualityChart" onclick="toWaterQuality()">
+                 </div>
+                 <div class="mapimgdiv">
+                     <img src="/cne/images/map_down.jpg">
+                 </div>
+             </div>
+         </div> -->
+    <div class="RealTimeScroll">
+     <div class="data_title">
+      实时数据
+     </div>
+     <!--实时数据左边  空气实时数据  -->
+     <div class="L_air_realtime">
+      <div class="title_realtime">
+       <a href="http://106.37.208.233:20035/" target="_blank">
+        <span>
+         全国实时空气质量监测&gt;&gt;
+        </span>
+       </a>
+       <span class="titleTime" id="updateTime2">
+        -
+       </span>
+      </div>
+      <ul id="cityAirRealtimeULTitle">
+       <li class="li_title">
+        <span class="s_1">
+         城市
+        </span>
+        <span class="s_2">
+         首要污染物
+        </span>
+        <span class="s_2">
+         等级
+        </span>
+        <span class="s_3">
+         AQI
+        </span>
+       </li>
+      </ul>
+      <div class="scroll_list" id="cityAirRealtimeScroll">
+       <div id="airRealtimeData1">
+        <ul id="cityAirRealtimeUL">
+        </ul>
+       </div>
+       <div id="airRealtimeData2">
+       </div>
+      </div>
+     </div>
+     <!--实时数据右边  水质量实时数据  -->
+     <div class="R_water_realtime">
+      <div class="title_realtime">
+       <a href="http://123.127.175.45:8082/ " target="_blank">
+        <span>
+         全国水质自动监测&gt;&gt;
+        </span>
+       </a>
+       <span class="titleTime" id="updateTime3">
+       </span>
+      </div>
+      <ul id="cityWaterRealtimeULTitle">
+       <li class="li_title">
+        <span class="w_1">
+         监测断面
+        </span>
+        <span class="w_2">
+         测量时间
+        </span>
+        <span class="w_3">
+         水质类别
+        </span>
+       </li>
+      </ul>
+      <div class="scroll_list" id="waterRealtimeScroll">
+       <div id="waterRealtimeData1">
+        <ul id="waterRealtimeUL">
+        </ul>
+       </div>
+       <div id="waterRealtimeData2">
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="Daily">
+     <div class="data_title">
+      日报统计
+     </div>
+     <div class="L_statistics">
+      <div class="title_airandwater">
+       <span class="s_current" id="airSpan">
+        空气日报统计
+       </span>
+       <span id="waterSpan">
+        水质周报统计
+       </span>
+      </div>
+      <div class="div_current" id="airDailyChart" style="width: 550px; ">
+       <!-- <img src="res/image/water_img.jpg"> -->
+      </div>
+      <div class="div_current" id="waterWeekChart" style="width: 550px;display:none;">
+       <!-- <img src="res/image/water_img.jpg"> -->
+      </div>
+     </div>
+     <div class="R_daily">
+      <div class="title_airandwater">
+       <span class="s_current" id="cityAirDailySpan">
+        城市空气日报
+       </span>
+       <span id="cityWaterDailySpan">
+        水质自动监测周报
+       </span>
+       <!-- 空气 -->
+       <div class="title_other" id="air_title_other">
+        <span class="s_other" id="riqi2">
+        </span>
+        <span class=" s_other">
+         <a href="http://106.37.208.233:20035/" target="_blank">
+          详情&gt;&gt;
+         </a>
+        </span>
+       </div>
+       <div class="title_other" id="water_title_other" style="display:none">
+        <span class="s_other" id="riqi3">
+        </span>
+        <span class="s_other">
+         <a href="/csszzb2093030.jhtml">
+          详情&gt;&gt;
+         </a>
+        </span>
+       </div>
+      </div>
+      <ul id="cityAirDailyULTitle">
+       <li class="li_title">
+        <span class="s_1">
+         城市
+        </span>
+        <span class="s_2">
+         首要污染物
+        </span>
+        <span class="s_2">
+         等级
+        </span>
+        <span class="s_3">
+         AQI
+        </span>
+       </li>
+      </ul>
+      <div class="scroll_list" id="cityAirDailyScroll">
+       <div id="demo1">
+        <ul id="cityAirDailyUL">
+        </ul>
+       </div>
+       <div id="demo2">
+       </div>
+      </div>
+      <ul id="cityWaterDailyULTitle" style="display:none">
+       <li class="li_title">
+        <span class="w_1">
+         监测断面
+        </span>
+        <span class="w_2">
+         主要污染指标
+        </span>
+        <span class="w_4">
+        </span>
+        <span class="w_3">
+         水质类别
+        </span>
+       </li>
+      </ul>
+      <div class="scroll_list" id="cityWaterDailyScroll" style="display:none;">
+       <div id="colee_02_1">
+        <ul id="cityWaterDailyUL">
+        </ul>
+       </div>
+       <div id="colee_02_2">
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="notice">
+     <div class="data_title">
+      相关系统平台
+     </div>
+     <div class="out_link">
+      <ul>
+       <li>
+        <a href="http://www.cnemce.cn/ch/index.aspx" target="_blank" title="《中国环境监测》杂志">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/b1f14eb03eb449bf83f88bec20d6aa62.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://123.127.175.57:8090" target="_blank" title="国家环境监测网实验室能力考核系统平台">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/16136b197c3040d2831436f6b98040c8.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://218.241.184.18:7006/SBTJ" target="_blank" title="环境监测仪器企业信息统计">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/a7e9696d19a74ff180602853e003b7d5.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://114.251.10.192:9002/" target="_blank" title="仪器检测申报系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/1a0bbe3ecedc48e480b778d5f1ec0cda.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://182.92.173.41:6015/Login/Index" target="_blank" title="固定污染源颗粒物监测信息管理系统">
+         <img class="right_margin" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/3c4514c3ac7d47b4838797fcf9cd32dd.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://114.251.10.183:50005/" target="_blank" title="水质监测仪器实验室数据采集及处理系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/66bd916051524eab9cd90472cab3d40a.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://111.207.16.250:9003" target="_blank" title="环境空气污染物检测系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/439707efabb247a7943a3288bb8fd058.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://czsgks.cnemc.cn" target="_blank" title="环境监测持证上岗考试管理信息系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170830/558b5cd82a20435a97a185f0053981ba.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://www.zhb.gov.cn/hdjl/dflzxfjbpt/" target="_blank" title="环保部党风廉政信访举报平台">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170504/a7b1920df0dd4bc59624573f9dcf54a3.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://123.127.175.57" target="_blank" title="环境空气自动监测数据质量监视专家系统">
+         <img class="right_margin" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170830/c11cee753e964b7d99e3b1579f53bca3.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://123.127.175.46:8080/ev_soil/index.do" target="_blank" title="土壤环境监测采样管理系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170920/8aff8cec5ee64296a825cce684934cd7.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://60.205.143.100" target="_blank" title="国家网气态污染物比对测试系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170830/862e987f27e7407e85b39eeb60d94e15.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="https://106.37.208.244:50001/Home/Login" target="_blank" title="国家考核断面样品采集保存与交接管理系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20170921/9285d4e048664f34ae1e200d38520444.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://106.37.208.243:7017" target="_blank" title="跨国界水体水质联合监测信息系统">
+         <img src="http://103.42.78.200:80/uploadFiles/uploadImgs/20180515/a2fdf5bc8c7a4f17a0115c9eb54cee9f.png"/>
+        </a>
+       </li>
+       <li>
+        <a href="http://106.37.208.243:8068/GJZ/Business/Publish/Main.aspx" target="_blank" title="国家水质自动综合监管平台">
+         <img class="right_margin" src="http://103.42.78.200:80/uploadFiles/uploadImgs/20180523/53cfd46cf71d4631bf8bf9bcd1ca7a87.png"/>
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <div class="wrap">
+     <iframe frameborder="0" height="320px" scrolling="no" src="/footUI.do?siteId=2002" style="margin:0 auto;" width="1100px">
+     </iframe>
+    </div>
+   </div>
+  </body>
+ </html>
+ <!-- Swiper JS -->

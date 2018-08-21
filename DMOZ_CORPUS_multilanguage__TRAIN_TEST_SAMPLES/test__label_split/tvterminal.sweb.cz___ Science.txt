@@ -1,0 +1,743 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+ <html>
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="en" http-equiv="Content-Language"/>
+   <meta content="ST" name="AUTHOR"/>
+   <meta content="TV terminal microcontroller" name="description"/>
+   <meta content="TV terminal, microcontroller, keyboard, display" name="keywords"/>
+   <title>
+    Small TV terminal
+   </title>
+  </head>
+  <body>
+   <h1>
+    Small TV terminal
+   </h1>
+   <center>
+    <img alt="TV terminal" src="tvterm2.jpg" vspace="20"/>
+   </center>
+   <h2>
+    Introduction
+   </h2>
+   <p>
+    When you use microcontrollers in your designs, sometime you face a problem how 
+ to show user required data. Several LEDs, 7 segment display or LCD module can be solution. 
+ But if you must show a lot of information simultaneously, it can be difficulty. Large LCD 
+ modules are expensive and graphic modules require complicated control. You can solve it 
+ with a help of PC. Just send data via serial line to the computer and display everything 
+ on computer's display. But another user usually occupies computer or you need it 
+ for another job ... :-)
+   </p>
+   <p>
+    I have had to solve the same problem some time ago. I have chosen normal small TV set
+ for that. A lot of families change TV in this time because of digital broadcasting or 
+ modern flat and slim LCD and plasma displays. So they put older TV set away and it is 
+ dormant somewhere. Or you can buy older TV very cheap.
+   </p>
+   <h2>
+    Aim of construction
+   </h2>
+   <p>
+    The display unit must be maximum easy. For data displaying is text mode with semigraphic 
+ mode sufficient. Just only 1 integrated circuit - microcontroller - must guarantee every 
+ function of the unit. A keyboard will be useful for data input.
+   </p>
+   <p>
+    "Button by button" assembling of keyboard is complicated and mechanical design is a 
+ weak point in hobby construction. Special keyboards are usually inaccessible or expensive. 
+ That's why I have chosen standard IBM PC keyboard. PC keyboard solves as design as character 
+ variability - there are all characters on keyboard. Economic view is very advantageous 
+ and accessibility is almost unbeatable. The size is disadvantage of PC keyboard but beside 
+ TV set it doesn't matter.
+   </p>
+   <p>
+    I have developed 2 versions of TV terminal.
+    <a href="tvtermsmd.jpg">
+     "Built-in"
+    </a>
+    version is designed for utilization in device. The second version is
+    <a href="tvterm.jpg">
+     standalone device
+    </a>
+    with external power source.
+   </p>
+   <p>
+    The described TV terminal accomplishes these results:
+   </p>
+   <table>
+    <tr>
+     <td width="300">
+      <b>
+       Display mode:
+      </b>
+     </td>
+     <td>
+      black and white
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Text mode:
+      </b>
+     </td>
+     <td>
+      40 characters x 25 lines
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Semigraphic mode:
+      </b>
+     </td>
+     <td>
+      80 x 75 "points"
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Printable characters:
+      </b>
+     </td>
+     <td>
+      ASCII 32 - 127
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Keyboard:
+      </b>
+     </td>
+     <td>
+      IBM PC AT compatible
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Control characters:
+      </b>
+     </td>
+     <td>
+      11
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Serial line speeds:
+      </b>
+     </td>
+     <td>
+      1200 Bd to 115.2 kBd
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Power supply:
+      </b>
+     </td>
+     <td>
+      9 - 12 V or 5 V (built-in version)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <b>
+       Current consumption:
+      </b>
+     </td>
+     <td>
+      cca 30 mA + keyboard consumption
+     </td>
+    </tr>
+   </table>
+   <h2>
+    Wiring diagram
+   </h2>
+   <p>
+    TV terminal utilization is very easy. Connect video output to video (AV) 
+ input on TV set. Set communication speed on J1 jumpers. You can connect PC keyboard
+ but it isn't necessary. Turn terminal ON and display will show current parameters. 
+ The terminal is in full operation 3 seconds later.
+   </p>
+   <center>
+    <img alt="TV terminal utilization" src="use.gif" vspace="20"/>
+   </center>
+   <p>
+    Schematic wiring is similar for  both versions. You can find differences in the 
+ power supply part and in the serial line interface. Standalone version has got  
+ voltage regulator and simple RS232 to TTL converter. I have used only 2 transistors for 
+ logic voltage converter. Integrated circuit takes much more space.
+   </p>
+   <center>
+    <img alt="Standalone version" hspace="20" src="tvterm.gif"/>
+    <p>
+     Wiring diagram for standalone version
+    </p>
+    <img alt="Built-in version" hspace="20" src="tvtermsmd.gif"/>
+    <p>
+     Wiring diagram for built-in version
+    </p>
+   </center>
+   <p>
+    As you can see wiring diagram is very easy. Most of the functions are centred 
+ in the microcontroller U1. There must be minimally 1 kB RWM for 40x25 character 
+ screen. I have selected well-known and available type - ATmega8.
+   </p>
+   <p>
+    The U1 microcontroller has to maintain 3 independent processes:
+    <br/>
+    - Video signal generation.
+    <br/>
+    - Character reception from the keyboard, decoding and dispatch to serial line.
+    <br/>
+    - Receiving characters from serial line and storing it in the memory.
+    <br/>
+    Independency for every of these 3 processes was the most complicated task. Video 
+ signal must be generated utterly on the dot. Program was created in assembler and 
+ compiled code is
+    <a href="terminal.hex">
+     here
+    </a>
+    .
+   </p>
+   <p>
+    Microcontroller clock is on maximum frequency - 20 MHz. Frequency 22 MHz would be 
+ better, but for reproducibility I accepted 20 MHz. This backtracking brings slight 
+ differences in the horizontal width of pixels. Forgive me - it is only hobby design 
+ (or maybe you will notice this never :-).
+   </p>
+   <p>
+    The power supply voltage regulator and logic level converter are included in the standalone 
+ version. To keep circuit easy I selected (inspired by biprog) simple converter with 
+ 2 transistors. There is no problem with short serial line. But if you connect long 
+ wires with bigger capacity then communication can produce errors in higher speeds. 
+ Be careful with used keyboard. Consumption most of them is reasonable low, but 
+ there are types with consumption above 100 mA. High current causes overheating of 
+ U2 voltage regulator. Use voltage regulator 7805 in the TO220 case or reduce power 
+ supply voltage in this event.
+   </p>
+   <h2>
+    Setting in operation
+   </h2>
+   <p>
+    It is very easy to make both versions of TV terminal. Mount and solder every component 
+ to PC board. Check up complete device. The last operation is downloading program into 
+ microcontroller. Set fuses: 
+ RESET=ON, BROWN-OUT LEVEL 4.0V, OSCILLATOR=EXT. CRYSTAL HIGH FREQ.
+   </p>
+   <p>
+    Component bill is
+    <a href="compbill.htm">
+     here
+    </a>
+    ...
+   </p>
+   <center>
+    <a href="tvtermpcb.gif">
+     <img alt="PCB for standalone version" src="tvtermpcbm.gif" vspace="20"/>
+    </a>
+    <p>
+     PCB for standalone version
+    </p>
+   </center>
+   <center>
+    <a href="tvtermsmdpcb.gif">
+     <img alt="PCB for SMD version" src="tvtermsmdpcbm.gif" vspace="20"/>
+    </a>
+    <p>
+     PCB for built-in (SMD) version
+    </p>
+   </center>
+   <p>
+    ... and circuit layout is here.
+   </p>
+   <center>
+    <a href="tvterms.gif">
+     <img alt="Circuit layout for standalone version" src="tvtermsm.gif" vspace="20"/>
+    </a>
+    <p>
+     For standalone version
+    </p>
+   </center>
+   <center>
+    <a href="tvtermsmds.gif">
+     <img alt="Circuit layout for SMD" src="tvtermsmdsm.gif" vspace="20"/>
+    </a>
+    <p>
+     For built-in (SMD) version
+    </p>
+   </center>
+   <p>
+    Click on the picture for 600 dpi picture (save it and print).
+   </p>
+   <p>
+    Properly programmed microcontroller with running oscillator will produce video 
+ signal. Change slightly value of R7 when TV doesn't synchronize.
+   </p>
+   <p>
+    Connect built-in version directly to other microcontroller. Logic levels respond 
+ standard convention (log. "1" = 5 V). I suggest connecting serial line input and output 
+ for the first test. Type text on keyboard and check TV screen.
+   </p>
+   <p>
+    PCB for standalone version is designed to suit in KG22M plastic box (see programmer
+    <a href="http://ruckl.wz.cz/biprog_en/biprog_en.php">
+     biprog
+    </a>
+    ). 
+ Make 3 rectangle and 1 round holes in box (style "attach, see and then use file or drill").
+   </p>
+   <h2>
+    Application of TV terminal
+   </h2>
+   <p>
+    TV terminal responds to 3 character types:
+   </p>
+   <ol>
+    <li>
+     Control characters (11 selected characters)
+    </li>
+    <li>
+     Printable ASCII characters 32 - 127
+    </li>
+    <li>
+     Semigraphic characters 128 - 191
+    </li>
+   </ol>
+   All remaining control characters (21) are displayed as a square. Characters 192 - 255 
+ are ignored.
+   <p>
+    Active control characters are in the table. To tell the truth, I have modified 
+ function for control characters SOH, STX, DC1,... DC4. Emulation e.g. VT100 terminal is 
+ to no effect for such easy device. Terminal control is easier and quicker with this reduction.
+ Default "new line" is achieved by CR+LF.
+   </p>
+   <table border="1">
+    <tr>
+     <td width="50">
+      <b>
+       Character
+      </b>
+     </td>
+     <td width="50">
+      <b>
+       Decimal value
+      </b>
+     </td>
+     <td width="50">
+      <b>
+       Hexadecimal
+      </b>
+     </td>
+     <td>
+      <b>
+       Description
+      </b>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      SOH
+     </td>
+     <td>
+      1
+     </td>
+     <td>
+      0x01
+     </td>
+     <td>
+      Set mode "CR or LF for new line" (Unix, Apple like)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      STX
+     </td>
+     <td>
+      2
+     </td>
+     <td>
+      0x02
+     </td>
+     <td>
+      Set mode "CR and LF for new line" (Microsoft like)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      BS
+     </td>
+     <td>
+      8
+     </td>
+     <td>
+      0x08
+     </td>
+     <td>
+      Backspace
+     </td>
+    </tr>
+    <tr>
+     <td>
+      TAB
+     </td>
+     <td>
+      9
+     </td>
+     <td>
+      0x09
+     </td>
+     <td>
+      Horizontal TAB - move cursor to position modulo 8
+     </td>
+    </tr>
+    <tr>
+     <td>
+      LF
+     </td>
+     <td>
+      10
+     </td>
+     <td>
+      0x0A
+     </td>
+     <td>
+      Line feed (see SOH and STX as well)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      FF
+     </td>
+     <td>
+      12
+     </td>
+     <td>
+      0x0C
+     </td>
+     <td>
+      Form feed (clear screen)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      CR
+     </td>
+     <td>
+      13
+     </td>
+     <td>
+      0x0D
+     </td>
+     <td>
+      Carriage return (see SOH and STX as well)
+     </td>
+    </tr>
+    <tr>
+     <td>
+      DC1
+     </td>
+     <td>
+      17
+     </td>
+     <td>
+      0x11
+     </td>
+     <td>
+      Cursor ON
+     </td>
+    </tr>
+    <tr>
+     <td>
+      DC2
+     </td>
+     <td>
+      18
+     </td>
+     <td>
+      0x12
+     </td>
+     <td>
+      Cursor OFF
+     </td>
+    </tr>
+    <tr>
+     <td>
+      DC3
+     </td>
+     <td>
+      19
+     </td>
+     <td>
+      0x13
+     </td>
+     <td>
+      Next byte will specify X position of cursor
+     </td>
+    </tr>
+    <tr>
+     <td>
+      DC4
+     </td>
+     <td>
+      20
+     </td>
+     <td>
+      0x14
+     </td>
+     <td>
+      Next byte will specify Y position of cursor
+     </td>
+    </tr>
+   </table>
+   <p>
+    Cursor positions start in the upper left corner. Upper left corner is 0,0 - bottom 
+ right corner is 39,24.
+   </p>
+   <p>
+    Semigraphic characters are split into 6 squares. Semigraphic code is explained in the 
+ picture.
+   </p>
+   <center>
+    <img alt="Semigraphic characters" src="semigraf.gif" vspace="20"/>
+   </center>
+   <p>
+    IBM PC AT compatible keyboard can be connected to terminal. You can use both keyboard 
+ types - with PS2 connector or original DIN5. Standalone version is ready for PS2 connector. 
+ Use DIN5/PS2 reduction for keyboard with old DIN5 connector.
+   </p>
+   <p>
+    You can type printable characters directly. Special characters (e.g. control 
+ characters or characters above 127) can be placed as well. Left ALT must be pressed at
+ first and then 2 hexadecimal characters follow. E.g.: for LF character press successively 
+ keys "left ALT" + "0" + "A". This way you can place all characters 0 to 255.
+   </p>
+   <p>
+    Special keyboard mode is remnant from the development time. When you press F12 key 
+ then keyboard is switched into "SCAN mode". Pressing of key will produce text string 
+ with base SCAN code of the key. E.g. press keys "A" and "B" - terminal will send 
+ text string "1C 32 ". Key F12 stops this mode as well.
+   </p>
+   <p>
+    There must be the same speed on the both devices for the proper communication. 
+ Serial line speed is conditioned through JUMPERs J1-0, J1-1 and J1-2 (see table). 
+ Communication is 8 bit always. Communication parameters are displayed for about 3 seconds 
+ on the screen after the start.
+   </p>
+   <table border="1">
+    <tr>
+     <td width="100">
+      <b>
+       Speed
+      </b>
+     </td>
+     <td width="50">
+      <b>
+      </b>
+      <center>
+       J1 - 2
+      </center>
+     </td>
+     <td width="50">
+      <b>
+      </b>
+      <center>
+       J1 - 1
+      </center>
+     </td>
+     <td width="50">
+      <b>
+      </b>
+      <center>
+       J1 - 0
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      115200 Bd
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      57600 Bd
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      38400 Bd
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      19200 Bd
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      9600 Bd
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      4800 Bd
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      2400 Bd
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       ON
+      </center>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      1200 Bd
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+     <td>
+      <center>
+       OFF
+      </center>
+     </td>
+    </tr>
+   </table>
+   <h2>
+    Conclusion
+   </h2>
+   <p>
+    This TV terminal is very easy device. Even a beginner should assemble it without 
+ problems. TV terminal is practical for your  microcontroller-controlled device. 
+ Most of modern microcontrollers have built-in universal serial unit. So you can design 
+ user interface very easy with TV terminal and few line code in your microcontroller.
+   </p>
+   <p>
+    TV terminal is advantageous for:
+    <br/>
+    - device with a lot of displayed information,
+    <br/>
+    - debugging phase of design (I work on the PC and TV terminal is interface for debugged microcontroller),
+    <br/>
+    - to make keyboard and display for occasionally gadget is waste of time.
+   </p>
+  </body>
+ </html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <base href="http://gorod-nsk.ru/vid/"/>
+   <title>
+    фотографии новосибирска
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="новосибирск, фотографии улиц" name="description"/>
+   <meta content="фотографии, новосибирск, фотографии, улицы, достопримечательности, с высоты" name="keywords"/>
+   <link href="usastyle.css" rel="stylesheet" type="text/css"/>
+   <link href="favicon.ico" rel="icon" type="image/x-icon"/>
+   <link href="favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <script src="js/usafunc.js" type="text/javascript">
+   </script>
+   <script src="js/usafotobase.js" type="text/javascript">
+   </script>
+   <script src="js/newjs.js" type="text/javascript">
+   </script>
+   <script src="jquery.js" type="text/javascript">
+   </script>
+   <script src="highslide/highslide-full.js" type="text/javascript">
+   </script>
+   <link href="highslide/highslide.css" rel="stylesheet" type="text/css"/>
+   <script src="usahighslide.js" type="text/javascript">
+   </script>
+   <style>
+    .opisnew {
+ 	font-family: Arial, Helvetica, sans-serif;
+ 	font-size: 16px;
+ 	font-weight: bold;
+ 	color: #878787;
+ 	margin:auto;
+ }
+   </style>
+   <script language="JavaScript" type="text/javascript">
+    $(document).ready(function(){
+ 
+ 	$('#contentNEvent').hide().fadeIn(1000);
+ 
+ });
+ 
+ function prepnew(zaamm1,trig1,ident1,it1,idatey1) {
+ // распределяет, что делать при нажатии на картинку - закрывать блок или открывать
+ 	
+ 	iident1='#'+ident1;
+ 	var itext1=$(iident1).text();
+ 	var iopen1=itext1.indexOf("закрыть");
+ 	var isame1=itext1.indexOf(idatey1);	
+ 	
+ 	if (iopen1>0 && isame1>=0) {
+ 		del_tablenew(ident1);
+ 	} else {
+ 		dtnew(zaamm1,trig1,ident1,it1,idatey1);
+ 	}
+ }
+ 
+ // построение таблицы с эскизами
+ function dtnew(zaamm,trig,ident,it,idatey) {
+ 
+ iident='#'+ident;
+ 
+ // Проверяются условия, что сейчас октрыто в блоке, в зависимости от этого SlideDown или FadeOut-In
+ // ищет текст, который уже находится в блоке
+ var itext=$(iident).text();
+ var iopen=itext.indexOf("закрыть");
+ var isame=itext.indexOf(idatey);// при странице 0 ищет дату, если такая есть, то это старый блок (затухание), если нет, то новый - слайд
+ 
+ 
+ picnum=zaamm.num;
+ 
+ // начало таблицы с эскизами - "закрыть", "все фотографии на одной странице"
+ table_begin='<table cellspacing="5" align="center"><tr><td colspan="4" class="content"><center>'+it+'</center></td></tr><tr>';
+ zakryt = '<td valign="top" class="contentcenter"><a href="javascript:del_tablenew(&quot;'+ident+'&quot;);" class="whiteclose">закрыть</a></td>';
+ 
+ vsena1stranice = '<td colspan="3" valign="top" class="contentright"><a href="allhtml/'+zaamm.ide+'.html" class="yellow14">открыть все фотографии на одной странице&nbsp;&nbsp;&nbsp;</a></td>';
+ 
+ p000=table_begin+zakryt+vsena1stranice+'</tr><tr>';
+ 
+ pall="";
+ pz="";
+ 
+     for (var i=1; i<=picnum; i++){
+ 	
+ 	// подпись, которая появляется при раскрытии большой фотки
+ 	picheading=zaamm.fbig[i].fstreet+',&nbsp;'+zaamm.fbig[i].descr1+'&nbsp;'+zaamm.fbig[i].descr2+'<br>'+zaamm.fbig[i].fotodate;
+ 	
+ 	// ссылка на карту
+ 	if (zaamm.fbig[i].coorlong>0){
+ 	picref='<a href=&quot;#&quot; onclick=&quot;return hs.htmlExpand(this)&quot;><b>показать на карте</b></a><div class=&quot;highslide-maincontent&quot;><img src=&quot;http://static-maps.yandex.ru/1.x/?z=16&l=map&pt='+zaamm.fbig[i].coorlong+','+zaamm.fbig[i].coorlat+',pm2dbm&quot;></div>';
+ 	}
+ 	else
+ 	{
+ 	picref='&nbsp;';
+ 	}
+ 
+ // первой строкой пишется улица		
+ firststring = zaamm.fbig[i].fstreet;
+ 
+ 		// здесь создаётся картинка с подписями
+         pictu='<td class="contentsmall"><a href="image'+zaamm.fbig[i].folder+'/'+zaamm.fbig[i].filename+'.jpg" class="highslide" onclick="return hs.expand(this,config1)"><img src="image'+zaamm.fbig[i].folder+'/'+zaamm.fbig[i].filename+'_resize.jpg" border="0" alt="'+picref+'" title="'+picheading+'"></a><br>'+firststring+'<br>'+zaamm.fbig[i].descr1+'<br>'+zaamm.fbig[i].descr2+'</td>';
+ 		
+         pall=pall+pictu; // последовательность эскизов с подписями в виде таблицы
+ 		
+         if (i%4==0)
+         {
+         pall=pall+'</tr><tr>';
+ 		}
+ 		
+     }
+ pz=pz+'</td></tr></table>';
+ 
+ 
+ // Условия, как будет открываться блок - затухать или слайд
+ if (trig==0){
+ 	// проверка, открыт уже блок или нет
+ 	if (iopen>0) {
+ 		// проверка, это открывается нулевая страница того же блока или новый
+ 		if (isame>=0) {
+ 			$(iident).fadeOut(500,function(){$(iident).html(p000+pall+pz)}).fadeIn(500);
+ 		} else {
+ 			$(iident).slideUp(500,function(){$(iident).html(p000+pall+pz)}).slideDown(500);
+ 		}
+ 	} else {
+ 		$(iident).html(p000+pall+pz).slideDown(500);
+ 	}
+ } else {
+ 	// переключение страниц в открытом блоке
+ 	$(iident).fadeOut(500,function(){$(iident).html(p000+pall+pz)}).fadeIn(500);
+ }
+ 
+ 
+ }
+ 
+ // Delete Table of photo
+ function del_tablenew(backident) {
+ 	
+ iident='#'+backident;
+ 
+   $(iident).slideUp(500,function(){
+ 		$(iident).html('<table><tr><td></td></tr></table>');
+ 			});
+ }
+ 
+ ///////////////////////////////////////////
+ // ////////////формирует строку для двух баннеров
+ function createbanner(wnew1,wnew2,idd){
+ 
+ it1=wnew1.datey+'<br>'+wnew1.opis;
+ it2=wnew2.datey+'<br>'+wnew2.opis;
+ 
+ DW('<td><div class="banners"><a href="javascript:prepnew('+wnew1.ide+',0,&quot;'+idd+'&quot;,&quot;'+it1+'&quot;,&quot;'+wnew1.datey+'&quot;);"><img src="image'+wnew1.banner+'.jpg"><span>'+it1+'<br>'+wnew1.num+'&nbsp;фото</span></a></div></td>');
+ DW('<td><div class="banners"><a href="javascript:prepnew('+wnew2.ide+',0,&quot;'+idd+'&quot;,&quot;'+it2+'&quot;,&quot;'+wnew2.datey+'&quot;);"><img src="image'+wnew2.banner+'.jpg"><span>'+it2+'<br>'+wnew2.num+'&nbsp;фото</span></a></div></td>');
+ DW('</tr><tr><td colspan="2"><div id='+idd+' class="newta" style="display:none"><table border="0" cellspacing="0" cellpadding="0"><tr><td></td></tr></table></div></td></tr><tr>');
+ 
+ }
+ 
+ 
+ //////////// Таблица Для Лучших (5 колонок)
+ function tabl3(stree2){
+ 
+ pall="";
+ picnum2=stree2.length - 1;
+ p000='<div><table cellspacing="5"><tr>';
+ 
+ var pictu=new Array(picnum2); // массив кодов, для каждой картинки - строка кода
+ 	
+ for (var i=1; i<=picnum2; i++){
+ 
+ 	// подпись, которая появляется при раскрытии большой фотки
+ 	picheading='Новосибирск, '+stree2[i].fstreet+',&nbsp;'+stree2[i].descr1+'&nbsp;'+stree2[i].descr2+'<br>'+stree2[i].fotodate;
+ 	
+ 	// ссылка на карту
+ 	if (stree2[i].coorlong>0){
+ 	picref='<a href=&quot;#&quot; onclick=&quot;return hs.htmlExpand(this)&quot;><b>показать на карте</b></a><div class=&quot;highslide-maincontent&quot;><img src=&quot;http://static-maps.yandex.ru/1.x/?z=16&l=map&pt='+stree2[i].coorlong+','+stree2[i].coorlat+',pm2dbm&quot;></div>';
+ 	}
+ 	else
+ 	{
+ 	picref='&nbsp;';
+ 	}
+ 		
+ 	
+ 		pictu[i]='<td class="contentsmall"><a href="image'+stree2[i].folder+'/'+stree2[i].filename+'.jpg" class="highslide" onclick="return hs.expand(this,config2)"><img src="image'+stree2[i].folder+'/'+stree2[i].filename+'_resize.jpg" border="0" alt="'+picref+'" title="'+picheading+'"></a><br>'+stree2[i].fstreet+'<br>'+stree2[i].descr1+'<br>'+stree2[i].descr2+'<br>&nbsp;</td>';
+ 	
+ 	pall=pall+pictu[i];
+ 	
+ 	if (Math.floor(i/5) == i/5)
+     {
+         pall=pall+'</tr><tr>';
+ 	}
+ }
+ 
+ pz='</tr></table></div>';
+ 
+ DW(p000+pall+pz);
+ }
+   </script>
+  </head>
+  <body>
+   <script language="JavaScript" type="text/javascript">
+    topblock("левменю");
+ 	
+ 	DW('<div id="container">');
+ 	
+ 	leftmenu("Новые фотографии");
+   </script>
+   <!-- ////////////////////////////////// НАЧАЛА КОДА /////////////////////////////////////////////////// -->
+   <style type="text/css">
+    .lp a:link, a:active {color:#6c600f;font-size:12px;}.lp a:visited {color:#6c600f;font-size:12px;}.lp a:hover {color:#938314;text-decoration:none;font-size:12px;}.lp {position:absolute; padding:620px 0px 0px 10px; z-index:10; width:200px}
+   </style>
+   <div class="lp">
+    <div style="color:#474444; position:absolute; width:200px;font-size:12px;">
+     <script type="text/javascript">
+      <!--
+ var _acic={dataProvider:10};(function(){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src="//www.acint.net/aci.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})()
+ //-->
+     </script>
+     Делаем картины из ваших фото и доставляем по Новосибирску -
+     <a href="https://www.artwall.ru/products/upload" target="_blank">
+      www.Artwall.ru
+     </a>
+     <br/>
+     <br/>
+    </div>
+   </div>
+   <!-- ////////////////////////////////// КОНЕЦ КОДА ///////////////////////////////////////////////////// -->
+   <div id="contentNEvent">
+    <script language="JavaScript" type="text/javascript">
+     DW('<h2 class="stripe">Новое</h2>');
+ 
+ DW('<table border="0" cellspacing="3"><tbody><tr>');
+ 
+ createbanner(Pcbn[10],Pcbn[9],"nw109")
+ createbanner(Pcbn[8],Pcbn[7],"nw87")
+ createbanner(Pcbn[6],Pcbn[5],"nw65")
+ createbanner(Pcbn[4],Pcbn[3],"nw43")
+ createbanner(Pcbn[2],Pcbn[1],"nw21")
+ 
+ DW('</tbody></table>');
+ 
+ <!-- Видео -->
+ <!-- Одинаковые места -->
+ 
+ nwv();
+ nwom();
+ 
+ //////////////////
+ DW('<br><br>');
+ DW('<h2 class="stripe">Лучшее в новом</h2>');
+ 
+ tabl3(bnf);
+    </script>
+   </div>
+   <!--end contentN-->
+   <!-- НАЧАЛА КОДА СТАТИСТИКА -->
+   <table style="position:absolute; padding:60px 0px 0px 950px; z-index:10">
+    <tr>
+     <td>
+      <script language="javascript">
+       awp="";
+ vision="1.0";
+ gorod=""+Math.random()+"&r="+escape(document.referrer)+"&pg="+escape(window.location.href);
+ document.cookie="sg=1; path=/";
+ gorod+="&c="+(document.cookie?"1":"0");
+ if (self!=top) {fr=1;} else {fr=0;}
+ gorod+="&fr="+fr;
+ mt=(new Date()).getTimezoneOffset();
+ gorod+="&mt="+mt;
+      </script>
+      <script language="javascript1.1">
+       vision="1.1";
+ gorod+="&j="+(navigator.javaEnabled()?"1":"0")
+      </script>
+      <script language="javascript1.2">
+       vision="1.2";
+ gorod+="&wh="+screen.width+'x'+screen.height+"&px="+
+ (((navigator.appName.substring(0,3)=="Mic"))?
+ screen.colorDepth:screen.pixelDepth)
+      </script>
+      <script language="javascript1.3">
+       vision="1.3"
+      </script>
+      <script language="javascript">
+       gorod+="&jv="+vision+"&js=1"+"&awp="+awp;
+ document.write("<img "+" src='/page/counter.php?"+gorod+"&' border=0 width=88 height=31>")
+      </script>
+      <noscript>
+       <img border="0" src="/page/counter.php?nojs=1"/>
+      </noscript>
+     </td>
+     <td style="padding:0px 0px 0px 10px">
+      <img border="0" height="31" src="http://www.yandex.ru/cycounter?gorod-nsk.ru" width="88"/>
+     </td>
+    </tr>
+   </table>
+   <!-- КОНЕЦ КОДА СТАТИСТИКА -->
+   <script language="JavaScript" type="text/javascript">
+    footerss();
+   </script>
+   <!-- закрыт container -->
+  </body>
+ </html>

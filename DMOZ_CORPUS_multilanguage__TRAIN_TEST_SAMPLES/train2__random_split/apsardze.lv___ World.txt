@@ -1,0 +1,766 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    anaZana
+   </title>
+   <meta content="" name="description"/>
+   <meta content="" name="keywords"/>
+   <meta content="anaZana" property="og:title"/>
+   <meta content="" property="og:description"/>
+   <meta content="lv" http-equiv="content-language"/>
+   <meta content="© 2009 anazana" name="copyright"/>
+   <link href="/assets/i/logo_icon.png" rel="shortcut icon" type="image/x-icon"/>
+   <link href="/assets/i/logo_icon.png" rel="icon" type="image/x-icon"/>
+   <!--[if lte IE 8]><link href="/css_v2/ie8.css" rel="stylesheet" type="text/css" /><![endif]-->
+   <!--[if IE 7]><link href="/css_v2/ie7.css" rel="stylesheet" type="text/css" /><![endif]-->
+   <script src="https://www.anazana.com/cdn-assets/jquery.js?v=1.8.1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ 
+ 	originalTitle = document.title;
+ 
+ 	var LANG = "2";
+ 	var ADMIN_LANGS = "lv";
+ 
+     var zCore = {
+ 
+         allowedModules : [
+     		'zSliders',				// pageblock's slider blug-in
+     		'zSearch',				// google search API plug-in
+     		'zBenchmark',			// server side performace benchmark script
+     		'ProductsFilter',		// products filter plug-in
+     		'zScrollCart',			// scroll shopping cart on window scroll
+     		'zSettings'				// stores site settings
+           ], // Class width init(), onload() functions
+         
+     	stack : new Array, // stack of anaZana modules
+ 
+     	push : function(module, params)
+     	{
+     		if($.inArray(module, this.allowedModules)==-1) return;
+ 
+     		var o = { 
+     			module : module,
+     			params : (params != undefined ? params : {}) 
+     		};
+ 
+     		if(!this.stack[module]) this.stack[module] = new Array;
+ 
+     		if(module == 'zSettings')
+     		{
+     			this.stack[module][0] = o;
+         	}
+     		else
+     		{
+     			this.stack[module].push(o);
+     		}
+ 
+     		return this;
+     	},
+ 
+     	get : function(_module)
+     	{
+     		for(module in this.stack)
+     		{
+     			for(x in this.stack[module])
+         		{
+ 	        		if(_module != undefined && this.stack[module][x].module==_module && this.stack[module][x].object != undefined)
+ 	        		{
+ 	        			return this.stack[module][x].object;
+ 	            	}
+         		}
+     		}
+     		return;
+         },
+     	
+     	init : function(_module)
+     	{
+     		for(module in this.stack)
+     		{
+     			for(x in this.stack[module])
+         		{
+ 	        		if(_module != undefined && this.stack[module][x].module==_module && this.stack[module][x].object != undefined)
+ 	        		{
+ 	        			this.stack[module][x].object.init();
+ 	            	}
+ 	        		else if(_module == undefined)
+ 	        		{
+ 		        		if(window[this.stack[module][x].module])
+ 			        	{
+ 				    		var obj = eval('new ' + this.stack[module][x].module);
+ 				    		obj.init(this.stack[module][x].params);
+ 				    		this.stack[module][x].object = obj;
+ 		        		}
+ 		        		else
+ 		        		{
+ 							delete this.stack[module][x];
+ 		            	}
+ 	        		}
+         		}
+     		}
+     		
+     		return this;
+     	},
+     		
+     	reload : function()
+     	{
+     		for(module in this.stack)
+     		{
+     			for(x in this.stack[module])
+         		{
+ 	    			var o = this.stack[module][x];
+ 	
+ 	    			if(typeof o.object != 'object' || !o.object.hasOwnProperty('onload')) continue;
+ 	    			
+ 	    			o.object.onload();
+         		}
+    			}
+     	}
+     };
+ 
+     zCore.push('zSettings', {
+ 		siteLang: "2",
+ 		siteLangS: "lv",
+ 		adminLang: "2",
+ 		adminLangS: "lv",
+ 		siteLanguages: {"2":"lv","3":"ru"}    });
+     
+     $(function(){ 
+         setTimeout(function(){ 
+             zCore.init().reload();
+         }, 1); 
+ 	});
+     
+ 	phrases = new Array();
+ 
+ 	phrases['alert'] = "Attention";
+ 	phrases['button_confirm'] = "Confirm";
+ 	phrases['button_cancel'] = "Cancel";
+ 	phrases['button_close'] = "Close";
+ 
+ 	whiteLayerId = 'white-layer';
+ 	alertContainerId = 'alert-container';
+ 	currentLeafId = 'current-leaf-id';
+ 
+ 	$(function() {
+ 
+ 		$('<div></div>').attr('id', alertContainerId).addClass('hidden').prependTo('body');
+ 		$('<div></div>').attr('id', whiteLayerId).addClass('hidden').prependTo('body');
+ 
+ 		$('<span></span>').attr('id', currentLeafId).addClass('hidden').html("0").prependTo('body');
+ 	});
+ 
+ /* ]]> */
+   </script>
+   <script async="" src="https://www.google.com/jsapi" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var LOGIN_URL = "https://www.anazana.com/lv/common/login-s/"
+ 	var REGISTER_URL = "https://www.anazana.com/lv/common/signup-s/"
+ 	var SITE_ID = "1628"
+ 	var SITE_LANGS = "lv";
+ 	var LANGS = SITE_LANGS;
+     var SITE_HOST = "www.apsardze.lv";
+     var SITE_LANGUAGES = {"2":"lv","3":"ru"};
+     var ADMIN_MODE = false;
+ 	var OFFICE_IP = 0;
+ 
+ 	phrases['button_notice_cancel'] = "Close"
+     $(function(){
+ 
+     	zCore.push('zSettings', {
+ 			siteLang: "2",
+ 			siteLangS: "lv",
+ 			adminLang: "2",
+ 			adminLangS: "lv",
+ 			siteLanguages: {"2":"lv","3":"ru"},
+ 			siteHost : "www.apsardze.lv",
+ 			treeId : 0,
+ 			siteDesign : {
+ 				customPage : 0,
+ 				customHeaderOptions : {"authorization_position_x":281,"authorization_position_y":24}			},
+ 			functionsStack : new Array,
+ 			addCallback : function(f, params)
+ 			{
+ 				eval('var obj = { ' + f + ' : params }');
+ 				this.functionsStack.push(obj);
+ 				zCore.reload();
+ 			}
+ 	    });
+         zCore.push('ProductsFilter');
+ 	});
+   </script>
+   <!--[if IE]><link type="text/css" rel="stylesheet" href="/css/general/ie6.css" /><![endif]-->
+   <!--[if lte IE 7]><link href="/../public-css/66-apsardze/ie.css" rel="stylesheet" type="text/css" /><![endif]-->
+   <!--[if IE 6]><link href="/../public-css/66-apsardze/ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+   <link href="/cdn-assets/css/9c8ba16a2f10c0bec20ab8b922f716be80451050.css" rel="stylesheet" type="text/css"/>
+   <link href="/lv/common/lovers-css?siteId=1628&amp;template=66-apsardze" rel="stylesheet" type="text/css"/>
+   <!--[if lte IE 8]><link href="/lv/common/lovers-css?siteId=1628&ie&template=66-apsardze" rel="stylesheet" type="text/css" /><![endif]-->
+  </head>
+  <body class="page-intro" style="background-color: rgb(201,201,201)">
+   <div class="page" id="page">
+    <div id="site-footer-bg" style="">
+     <div id="site-header-bg" style="">
+      <div id="bg-1">
+       <div id="bg-2">
+        <div id="wrapper">
+         <div id="head">
+          <div id="header">
+           <div class="headerin">
+            <div id="logo">
+             <a href="/lv/" title="anaZana">
+              <img alt="anaZana" src="/assets/i/no-logo.png"/>
+             </a>
+             <div class="ui-icon">
+              <!-- resize icon -->
+             </div>
+            </div>
+            <div class="slogan">
+             <div class="text">
+              <p>
+               <span style="font-size: x-small;">
+                <span style="color: #000000;">
+                 <span style="font-size: medium;">
+                  <span style="color: #000080;">
+                   <span style="font-size: small;">
+                    <strong>
+                     APSARDZES MOBILĀ GRUPA
+                    </strong>
+                   </span>
+                  </span>
+                 </span>
+                </span>
+               </span>
+              </p>
+             </div>
+             <div class="ui-icon">
+              <!-- resize icon -->
+             </div>
+            </div>
+            <div id="lang-holder">
+             <ul id="languages">
+              <li class="first active lv">
+               <a href="/lv/">
+                Lv
+               </a>
+              </li>
+              <li class="ru">
+               <a href="/ru/">
+                Ru
+               </a>
+              </li>
+             </ul>
+            </div>
+            <div class="hidden" id="search-holder">
+             <form action="" class="search-form" method="post">
+              <fieldset>
+               <legend>
+                Search form
+               </legend>
+               <input type="text" value=""/>
+               <div class="btn">
+                <a href="#">
+                 <span>
+                  Search
+                 </span>
+                </a>
+               </div>
+              </fieldset>
+             </form>
+            </div>
+            <div class="logon-block">
+             <ul class="logon-list">
+              <li class="label">
+               <span>
+                Ienākt ar:
+               </span>
+              </li>
+              <li class="anazana">
+               <a class="login-s" href="https://www.anazana.com/lv/common/login-s/">
+                <span>
+                 anazana
+                </span>
+               </a>
+              </li>
+              <li class="facebook">
+               <a class="login-s-facebook" href="https://www.anazana.com/lv/common/facebook/">
+                <span>
+                 facebook
+                </span>
+               </a>
+              </li>
+             </ul>
+            </div>
+            <div class="height-icon">
+             <!-- resize height -->
+            </div>
+           </div>
+          </div>
+          <div class="menu-block">
+           <!-- Horizontal Menu Start { -->
+           <div id="menu">
+            <ul>
+             <li class="menu-1 first" id="menu_id_13325">
+              <a class="" href="/lv/par-amg-13325">
+               <span>
+                Par AMG
+               </span>
+              </a>
+             </li>
+             <li class="menu-2" id="menu_id_13326">
+              <a class="" href="/lv/pakalpojumi-13326">
+               <span>
+                Pakalpojumi
+               </span>
+              </a>
+             </li>
+             <li class="menu-3" id="menu_id_13329">
+              <a class="" href="/lv/fotogalerija-13329">
+               <span>
+                Fotogalerija
+               </span>
+              </a>
+             </li>
+             <li class="menu-4" id="menu_id_13327">
+              <a class="" href="/lv/draugi-13327">
+               <span>
+                Draugi
+               </span>
+              </a>
+             </li>
+             <li class="menu-5" id="menu_id_13331">
+              <a class="" href="/lv/rekviziiti-13331">
+               <span>
+                Rekvizīti
+               </span>
+              </a>
+             </li>
+            </ul>
+           </div>
+          </div>
+          <div class="clr">
+           <!-- clear -->
+          </div>
+          <div class="header-image">
+           <!-- header image -->
+          </div>
+          <div id="path">
+           <div class="inner">
+            <ul class="bc">
+             <li class="home">
+              <a href="/lv/">
+               Sākums
+              </a>
+             </li>
+            </ul>
+            <ul class="cart">
+             <li>
+              <!-- filler -->
+             </li>
+            </ul>
+            <div class="clr">
+             <!-- clear -->
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="content-inner">
+          <div class="clrfix" id="content">
+           <div class="boxes box2 fLeft">
+            <div class="boxes box1 fLeft">
+            </div>
+            <div class="box2 highlight3">
+             <div class="inner">
+              <div class="block-holder notitle">
+               <div class="top-left">
+               </div>
+               <div class="top-right">
+               </div>
+               <div class="bottom-left">
+               </div>
+               <div class="bottom-right">
+               </div>
+               <div class="side-top">
+               </div>
+               <div class="side-right">
+               </div>
+               <div class="side-bottom">
+               </div>
+               <div class="side-left">
+               </div>
+               <div class="block">
+                <div class="inner">
+                 <div class="innerin txt">
+                  <p style="text-align: center;">
+                   <span style="font-size: medium;">
+                    <b>
+                     <span style="color: #000080;">
+                      <span style="font-size: small;">
+                       <span style="font-size: medium;">
+                        DROŠĪBAS PAKALPOJUMI
+                       </span>
+                       <br/>
+                      </span>
+                     </span>
+                    </b>
+                   </span>
+                   <span style="font-size: medium;">
+                    <b>
+                     <span style="color: #000080;">
+                      <span style="font-size: small;">
+                       <br/>
+                       <span style="font-size: xx-small;">
+                       </span>
+                      </span>
+                     </span>
+                    </b>
+                   </span>
+                   <span style="font-size: medium;">
+                    <b>
+                     <span style="color: #000080;">
+                      <span style="font-size: x-large;">
+                       VISĀ LATVIJAS TERITORIJĀ
+                       <br/>
+                       <br/>
+                       <span style="font-size: small;">
+                        <span style="font-size: medium;">
+                         BEZMAKSAS KONSULTĀCIJAS
+                         <br/>
+                        </span>
+                        LABĀKIE RISINĀJUMI, INDIVIDUĀLA PIEEJA KATRAM
+                        <br/>
+                       </span>
+                      </span>
+                     </span>
+                    </b>
+                   </span>
+                  </p>
+                  <div class="clr">
+                   <!-- clear -->
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="boxes box2 fRight">
+            <div class="box2 highlight2">
+             <div class="inner">
+              <div class="block-holder notitle">
+               <div class="top-left">
+               </div>
+               <div class="top-right">
+               </div>
+               <div class="bottom-left">
+               </div>
+               <div class="bottom-right">
+               </div>
+               <div class="side-top">
+               </div>
+               <div class="side-right">
+               </div>
+               <div class="side-bottom">
+               </div>
+               <div class="side-left">
+               </div>
+               <div class="block">
+                <div class="inner">
+                 <div class="innerin txt">
+                  <p style="text-align: center;">
+                   <span style="color: #000000;">
+                    <strong>
+                     <span style="font-size: medium;">
+                      <br/>
+                      TĀLRUNIS UZZIŅĀM
+                      <br/>
+                      <span style="font-size: xx-small;">
+                      </span>
+                     </span>
+                    </strong>
+                   </span>
+                  </p>
+                  <p style="text-align: center;">
+                   <span style="color: #000000;">
+                    <strong>
+                    </strong>
+                    <strong>
+                     <span style="font-size: xx-large;">
+                      26441590
+                     </span>
+                    </strong>
+                   </span>
+                  </p>
+                  <p style="text-align: center;">
+                   <span style="color: #000000;">
+                    <strong>
+                     <span style="font-size: xx-large;">
+                      67710454
+                     </span>
+                    </strong>
+                   </span>
+                  </p>
+                  <div class="clr">
+                   <!-- clear -->
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="box4 highlight3">
+            <div class="inner">
+             <div class="block-holder">
+              <div class="top-left">
+              </div>
+              <div class="top-right">
+              </div>
+              <div class="bottom-left">
+              </div>
+              <div class="bottom-right">
+              </div>
+              <div class="side-top">
+              </div>
+              <div class="side-right">
+              </div>
+              <div class="side-bottom">
+              </div>
+              <div class="side-left">
+              </div>
+              <div class="block">
+               <div class="inner">
+                <h3>
+                 <span>
+                  REAĢĒŠANAS KARTE
+                 </span>
+                </h3>
+                <div class="innerin txt">
+                 <p style="text-align: center;">
+                  <iframe height="360" src="http://maps.google.com/maps/ms?hl=lv&amp;ie=UTF8&amp;msa=0&amp;msid=107124965906420524605.0004898fc2552b5145504&amp;source=embed&amp;ll=56.740674,25.532227&amp;spn=2.169252,9.228516&amp;z=7&amp;output=embed" width="840">
+                  </iframe>
+                  <br/>
+                  <small>
+                   Skatīt
+                   <a href="http://maps.google.com/maps/ms?hl=lv&amp;ie=UTF8&amp;msa=0&amp;msid=107124965906420524605.0004898fc2552b5145504&amp;source=embed&amp;ll=56.740674,25.532227&amp;spn=2.169252,9.228516&amp;z=7" style="color:#0000FF;text-align:left">
+                    AMG
+                   </a>
+                   lielākā kartē
+                  </small>
+                 </p>
+                 <div class="clr">
+                  <!-- clear -->
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="box4 highlight3">
+            <div class="inner">
+             <div class="block-holder notitle">
+              <div class="top-left">
+              </div>
+              <div class="top-right">
+              </div>
+              <div class="bottom-left">
+              </div>
+              <div class="bottom-right">
+              </div>
+              <div class="side-top">
+              </div>
+              <div class="side-right">
+              </div>
+              <div class="side-bottom">
+              </div>
+              <div class="side-left">
+              </div>
+              <div class="block">
+               <div class="inner">
+                <div class="innerin txt">
+                 <p style="text-align: center;">
+                  <strong>
+                   <span style="color: #000080;">
+                    <span style="font-size: x-large;">
+                     REAĢĒŠANA   PATRULĒŠANA   PAVADĪŠANA   FIZISKĀ APSARDZE
+                    </span>
+                   </span>
+                  </strong>
+                 </p>
+                 <div class="clr">
+                  <!-- clear -->
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+           <div class="box4 highlight4">
+            <div class="inner">
+             <div class="block-holder notitle">
+              <div class="top-left">
+              </div>
+              <div class="top-right">
+              </div>
+              <div class="bottom-left">
+              </div>
+              <div class="bottom-right">
+              </div>
+              <div class="side-top">
+              </div>
+              <div class="side-right">
+              </div>
+              <div class="side-bottom">
+              </div>
+              <div class="side-left">
+              </div>
+              <div class="block">
+               <div class="inner">
+                <div class="innerin txt">
+                 <p style="text-align: center;">
+                  <span style="font-size: small;">
+                   <strong>
+                    <span style="font-size: large;">
+                     <span style="color: #ff0000;">
+                      <span style="font-size: x-large;">
+                       UZMANĪBU!
+                      </span>
+                     </span>
+                    </span>
+                   </strong>
+                  </span>
+                 </p>
+                 <p style="text-align: center;">
+                  <span style="color: #ff0000;">
+                   <strong>
+                    <span style="font-size: medium;">
+                     <span style="color: #0000ff;">
+                     </span>
+                    </span>
+                   </strong>
+                  </span>
+                 </p>
+                 <p style="text-align: center;">
+                  <span style="color: #ff0000;">
+                   <strong>
+                    <span style="font-size: medium;">
+                     <span style="color: #0000ff;">
+                      SIA "Apsardzes Mobilā Grupa" piedāvā apsardzes komersantiem sadarbību reaģēšanā uz trauksmes signāliem.
+                     </span>
+                    </span>
+                   </strong>
+                  </span>
+                 </p>
+                 <p style="text-align: center;">
+                  <span style="color: #ff0000;">
+                   <strong>
+                    <span style="font-size: medium;">
+                     <span style="color: #0000ff;">
+                      Mēs aizbrauksim Jūsu vietā un apsekosim Jūsu objektu.
+                     </span>
+                    </span>
+                   </strong>
+                  </span>
+                 </p>
+                 <p style="text-align: center;">
+                  <span style="color: #ff0000;">
+                   <strong>
+                    <span style="font-size: medium;">
+                     <span style="color: #0000ff;">
+                      Mūs izvēlas visas lielākās apsardzes kompānijas Latvijā.
+                      <br/>
+                     </span>
+                    </span>
+                   </strong>
+                  </span>
+                  <span style="color: #0000ff; font-size: medium; font-weight: bold;">
+                   Šobrīd sadarbība ar vairāk, kā 30 apsardzes komersantiem visā Latvijā!
+                  </span>
+                 </p>
+                 <p style="text-align: center;">
+                  <span style="font-size: small;">
+                   <strong>
+                    <br/>
+                   </strong>
+                  </span>
+                 </p>
+                 <div class="clr">
+                  <!-- clear -->
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="footer">
+          <div class="height-icon">
+           <!-- resize height -->
+          </div>
+          <div class="inner">
+           <div class="top-block" style="padding:20px;">
+           </div>
+           <div class="left-block" style="padding:20px;">
+            <p class="copy">
+             Security company from Latvia
+            </p>
+           </div>
+           <div class="right-block" style="padding:0 20px 0 20px;">
+            <p>
+             <a href="https://www.anazana.com" target="_blank">
+              <img alt="Create online store | Create website | anaZana" height="17" src="/assets/i/sig.png" title="Create online store | Create website | anaZana" width="81"/>
+             </a>
+            </p>
+           </div>
+           <div class="clr">
+            <!-- clear -->
+           </div>
+          </div>
+         </div>
+         <script type="text/javascript">
+          $(function(){newBlockGenerationURL = "?treeId=0&site_lang=2";
+ newBlockType = null;
+ });
+         </script>
+        </div>
+       </div>
+      </div>
+     </div>
+     <script type="text/javascript">
+      var _gaq = _gaq || [];
+   _gaq.push(['_setAccount', 'UA-8273234-8']);
+   _gaq.push(['_setDomainName', 'anazana.com']);
+   _gaq.push(['_setAllowLinker', true]);
+   _gaq.push(['_trackPageview']);
+ 
+   (function() {
+     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+     ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+   })();
+     </script>
+     <!-- Start Alexa Certify Javascript -->
+     <script type="text/javascript">
+      _atrk_opts = { atrk_acct:"EKb6i1aoZM00yL", domain:"anazana.com",dynamic: true};
+ (function() { var as = document.createElement('script'); as.type = 'text/javascript'; as.async = true; as.src = "https://d31qbv1cthcecs.cloudfront.net/atrk.js"; var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(as, s); })();
+     </script>
+     <noscript>
+      <img alt="" height="1" src="https://d5nxst8fruw4z.cloudfront.net/atrk.gif?account=EKb6i1aoZM00yL" style="display:none" width="1"/>
+     </noscript>
+     <!-- End Alexa Certify Javascript -->
+     <script src="/cdn-assets/js/54bf2b07f454a93880898a46d40e2026838ab1ef.js" type="text/javascript">
+     </script>
+    </div>
+   </div>
+  </body>
+ </html>

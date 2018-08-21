@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="ja" xml:lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    旅する長崎学　〜たびなが〜
+   </title>
+   <meta content="width=device-width" name="viewport"/>
+   <meta content="561106950654261" property="fb:app_id"/>
+   <meta content="website" property="og:type"/>
+   <meta content="旅する長崎学" property="og:title"/>
+   <meta content="旅する長崎学" property="og:description"/>
+   <meta content="http://tabinaga.jp/" property="og:url"/>
+   <meta content="旅する長崎学" property="og:site_name"/>
+   <meta content="http://tabinaga.jp/images2012/article/tabina.png" property="og:image"/>
+   <meta content="text/javascript" http-equiv="Content-Script-Type"/>
+   <meta content="text/css" http-equiv="Content-Style-Type"/>
+   <link href="./css/template.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/template_sp.css" media="screen and (max-width: 640px)" rel="stylesheet"/>
+   <link href="./css/template_t.css" media="screen and (min-width: 641px) and (max-width: 999px)" rel="stylesheet"/>
+   <script src="./js/jquery-1.7.1.min.js" type="text/javascript">
+   </script>
+   <script src="./js/jquery.cookie.js" type="text/javascript">
+   </script>
+   <script src="./js/jquery.fontsizechange.js" type="text/javascript">
+   </script>
+   <script src="./js/tabinaga.js" type="text/javascript">
+   </script>
+   <link href="css/top.css" rel="stylesheet" type="text/css"/>
+   <!--
+ <link rel="stylesheet" href="js/fullcalendar/fullcalendar.css">
+ <link rel="stylesheet" media="print" href="js/fullcalendar/fullcalendar.print.css">
+  -->
+   <link href="css/top_sp.css" media="screen and (max-width: 400px)" rel="stylesheet"/>
+   <link href="css/top_t.css" media="screen and (min-width: 401px) and (max-width: 999px)" rel="stylesheet"/>
+   <script src="js/jquery.flexslider.js" type="text/javascript">
+   </script>
+   <script src="js/fullcalendar/fullcalendar.js" type="text/javascript">
+   </script>
+   <style type="text/css">
+    div.resize_block {overflow: hidden}
+   </style>
+   <script type="text/javascript">
+    $(document).ready(function() {
+ 		//windowサイズ変更に応じて、注目トピックスの画像に合わせて
+ 		//他の画像をリサイズします。
+ 		var topicImage = $('#topic_image');
+ 		topicImage.bind('load',function(){
+ 			sizeChange();
+ 		});
+ 		topicImage.attr('src',"img/topic_title.gif");
+ 		$(window).resize(function() {
+ 			sizeChange();
+ 		});
+ 		var sizeChange = function(){
+ 			var topicImage = $("#topic_image");
+ 			$(".resize_block").each(function(){
+ 				$(this).width(topicImage.width());
+ 				$(this).height(topicImage.height());
+ 			});
+ 		}
+ 
+ 		$('#calendar').fullCalendar({
+ 			viewDisplay: function(view) {
+ 				var d = $("#calendar").fullCalendar('getDate');
+ 				var strDate = d.getFullYear() + "-" + parseInt(d.getMonth()+1) + "-" + d.getDate();
+ 				$.ajax({
+ 					url: "json-events.php",
+ 					dataType: 'json',
+ 					type:"post",
+ 					'data': {
+ 						"calDate": strDate,
+ 					},
+ 					success: function(EventSource) {
+ 						$('#calendar').fullCalendar('removeEvents');
+ 						$('#calendar').fullCalendar('addEventSource', EventSource);
+ 						$('#eventList').empty();
+ 						var len = EventSource.length;
+ 						var startMonth;
+ 						var endMonth;
+ 						var eventStart;
+ 						var eventEnd;
+ 						for(var i=0; i < len; i++){
+ 							startMonth = (EventSource[i].start).getMonth();
+ 							if(EventSource[i].end) {
+ 								endMonth = (EventSource[i].end).getMonth();
+ 								if(startMonth == d.getMonth() || endMonth == d.getMonth()) {
+ 									eventStart = (EventSource[i].start).getFullYear() + '年' + parseInt((EventSource[i].start).getMonth()+1) + '月' + (EventSource[i].start).getDate() + '日';
+ 									eventEnd = (EventSource[i].end).getFullYear() + '年' + parseInt((EventSource[i].end).getMonth()+1) + '月' + (EventSource[i].end).getDate() + '日';
+ 									$("#eventList").append('<dt>' + eventStart + '〜' + eventEnd + '</dt><dd><a href=' + EventSource[i].url + '>' + EventSource[i].title + '</dd>');
+ 								}
+ 							} else {
+ 								if(startMonth == d.getMonth()) {
+ 									eventStart = (EventSource[i].start).getFullYear() + '年' + parseInt((EventSource[i].start).getMonth()+1) + '月' + (EventSource[i].start).getDate() + '日';
+ 									$("#eventList").append('<dt>' + eventStart + '</dt><dd><a href=' + EventSource[i].url + '>' + EventSource[i].title + '</dd>');
+ 								}
+ 							}
+ 						}
+ 					}
+ 				});
+ 			},
+ 			eventMouseover: function(event, allDay, jsEvent) {
+ 				$(this).css('background-color', '#F9D2CE');
+ 			},
+ 			eventMouseout: function(event, allDay, jsEvent) {
+ 				$(this).css('background-color', '#D8E7BD');
+ 			},
+ 		});
+ 	});
+   </script>
+  </head>
+  <body>
+   <!-- メニューナビ -->
+   <style>
+    /* CSS */
+ #main_menu li {
+ 	width: 120px;
+ 	height: 40px;
+ }
+ #main_menu a {
+ 	width: 120px;
+ 	padding: 6px 0px 0px 2px;
+ 	color: #FFF;
+ 	font-size: 15px;
+ }
+ 
+ @media screen and (max-width: 999px) {
+ 	#main_menu li {
+ 		width: 33.3%;
+ 		height: auto;
+ 	}
+ 	#main_menu a {
+ 		width: 95%;
+ 		height: 48px;
+ 		padding: 5% 0 0 5%;
+ 		font-size: 16px;
+ 		line-height: 100%;
+ 	}
+ }
+ @media screen and (max-width: 640px) {
+ 	#main_menu li {
+ 		width: 33.3%;
+ 		height: auto;
+ 	}
+ }
+ 
+ #main_menu .n6 > div {
+ 	width: 240px;
+ 	right: 0px;
+ 	background-color: #D50168;
+ 	margin-right: 3px;
+ }
+ 
+ #main_menu .n6 li.n1 {
+ 	width: 230px;
+ 	margin: 0px auto;
+ 	display: block;
+ 	float: none;
+ 	position: relative;
+ }
+ 
+ #main_menu .n6 li.n1 ul {
+ 	position: absolute;
+ 	top: 0;
+ 	left: 0;
+ }
+ 
+ /*//////////////////////////////////////////////////////////////*/
+ /* フッター */
+ /*//////////////////////////////////////////////////////////////*/
+ #footer {
+ 	margin-top: 20px;
+ }
+   </style>
+   <div id="changeArea">
+    <div id="header">
+     <div>
+      <h1>
+       <a class="btn" href="./">
+        旅する長崎学
+       </a>
+      </h1>
+      <ul class="stoper" id="option">
+       <li class="n1">
+        <a class="btn" href="./">
+         <img alt="ホーム" src="./img/option_icon1.gif"/>
+         ホーム
+        </a>
+       </li>
+       <li class="n2">
+        <a class="btn" href="./sitemap/index.php">
+         <img alt="サイトマップ" src="./img/option_icon2.gif"/>
+         サイトマップ
+        </a>
+       </li>
+       <li class="n3">
+        <a class="btn" href="./post/index.php?ct=inquire">
+         <img alt="お問い合わせ" src="./img/option_icon3.gif"/>
+         お問い合わせ
+        </a>
+       </li>
+       <li class="n4" style="float:left;">
+        文字
+        <ul id="fontSize" style="display:inline-block;">
+         <li class="n1 changeBtn">
+          小
+         </li>
+         <li class="n2 changeBtn">
+          中
+         </li>
+         <li class="n3 changeBtn">
+          大
+         </li>
+        </ul>
+       </li>
+       <li class="n5">
+        <form action="http://www.google.co.jp/search" method="get">
+         <span>
+          <input id="search_w" name="q" type="text" value=""/>
+          <input alt="検索" src="./img/search_btn.gif" type="image"/>
+         </span>
+         <input name="sitesearch" type="hidden" value="http://tabinaga.jp"/>
+         <input name="ie" type="hidden" value="EUC-JP"/>
+         <input name="oe" type="hidden" value="EUC-JP"/>
+         <input name="hl" type="hidden" value="ja"/>
+        </form>
+       </li>
+      </ul>
+      <ul class="stoper" id="main_menu">
+       <li class="n1">
+        <a class="btn" href="./">
+         たびなが
+         <br/>
+         コラム
+        </a>
+        <div>
+         <ul class="stoper">
+          <li>
+           <a href="./column/index.php?category=1">
+            キリシタン
+           </a>
+          </li>
+          <li>
+           <a href="./column/index.php?category=2">
+            近代化にむけて
+           </a>
+          </li>
+          <li>
+           <a href="./column/index.php?category=3">
+            自然・風土
+           </a>
+          </li>
+          <li>
+           <a href="./column/index.php?category=4">
+            長崎貿易
+           </a>
+          </li>
+          <li>
+           <a href="./column/index.php?category=5">
+            長崎みやげ話
+           </a>
+          </li>
+         </ul>
+        </div>
+       </li>
+       <li class="n2">
+        <a class="btn" href="./">
+         ながさき
+         <br/>
+         歴史の旅
+        </a>
+        <div>
+         <ul class="stoper">
+          <li>
+           <a href="./history/index.php?category=1">
+            歴史発見ドライブルート
+           </a>
+          </li>
+          <li>
+           <a href="./history/index.php?category=2">
+            テーマで歩く歴史散策
+           </a>
+          </li>
+          <li>
+           <a href="./history/index.php?category=3">
+            ながさき歴史散歩
+           </a>
+          </li>
+         </ul>
+        </div>
+       </li>
+       <li class="n3">
+        <a class="btn" href="./">
+         動画で見る
+         <br/>
+         ながさき
+        </a>
+        <div>
+         <ul class="stoper">
+          <li>
+           <a href="./video/index.php?category=1">
+            探訪！体験！長崎紀行
+           </a>
+          </li>
+          <li>
+           <a href="./video/index.php?category=2">
+            動画で見る長崎史 時間旅行
+           </a>
+          </li>
+          <li>
+           <a href="./video/index.php?category=3">
+            動画で見る歴史スポット
+           </a>
+          </li>
+         </ul>
+        </div>
+       </li>
+       <li class="n4">
+        <a class="btn" href="./">
+         みんなでつくる
+         <br/>
+         「たびなが」
+        </a>
+        <div>
+         <ul class="stoper">
+          <li>
+           <a href="./tabi/index.php?category=1">
+            旅の情報おすそわけ
+           </a>
+          </li>
+          <li>
+           <a href="./photo/index.php?category=2">
+            ふるさと写真館
+           </a>
+          </li>
+         </ul>
+        </div>
+       </li>
+       <li class="n5">
+        <a class="btn" href="./">
+         エリアで見る
+         <br/>
+         「たびなが」
+        </a>
+        <div>
+         <ul class="stoper">
+          <li class="n1">
+           <img alt="エリアで見るたびなが" src="./img/map_nagasaki.jpg"/>
+           <ul>
+            <li class="n2">
+             <a class="btn" href="./area/south.php?category=1&amp;area=1">
+              県南エリア
+             </a>
+            </li>
+            <li class="n3">
+             <a class="btn" href="./area/north.php?category=1&amp;area=2">
+              県北エリア
+             </a>
+            </li>
+            <li class="n4">
+             <a class="btn" href="./area/island.php?category=1&amp;area=3">
+              しまエリア
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+        </div>
+       </li>
+       <li class="n6">
+        <a class="btn" href="./">
+         ナンコイ!?新十景
+        </a>
+        <div>
+         <ul class="stoper">
+          <li>
+           <a href="./nankoi/index.php?category=1">
+            ナンコイ!?新十景
+           </a>
+          </li>
+          <!--
+ 						<li><a href="./nankoi/index.php?category=2">過去の投票結果</a></li>
+ 					-->
+         </ul>
+        </div>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <div id="second_menu">
+     <ul class="stoper">
+      <li>
+       <a href="./tanken/index.php">
+        長崎学Web学会
+       </a>
+      </li>
+      <li>
+       <a href="./quiz/quiz.php">
+        歴史クイズ
+       </a>
+      </li>
+      <li>
+       <a href="./manga/index.php?submenu=3">
+        長崎歴史まんが
+       </a>
+      </li>
+      <li>
+       <a href="./book/index.php">
+        旅する長崎学ガイドブック
+       </a>
+      </li>
+      <li>
+       <a href="./link/index.php">
+        リンク集
+       </a>
+      </li>
+      <li>
+       <a href="./link/link.php">
+        リンクについて
+       </a>
+      </li>
+     </ul>
+    </div>
+    <!-- スライダー -->
+    <div id="image">
+     <div class="flexslider">
+      <ul class="stoper slides">
+       <li>
+        <img alt="長崎くんち　龍踊［長崎市］" src="img/top/photo01.jpg"/>
+        <div>
+         <span>
+          長崎くんち　龍踊［長崎市］
+         </span>
+        </div>
+       </li>
+       <li>
+        <img alt="大浦天主堂［長崎市］" src="img/top/photo02.jpg"/>
+        <div>
+         <span>
+          大浦天主堂［長崎市］
+         </span>
+        </div>
+       </li>
+       <li>
+        <img alt="軍艦島（端島）［長崎市］" src="img/top/photo03.jpg"/>
+        <div>
+         <span>
+          軍艦島（端島）［長崎市］
+         </span>
+        </div>
+       </li>
+       <li>
+        <img alt="オランダ商館［平戸市］" src="img/top/photo04.jpg"/>
+        <div>
+         <span>
+          オランダ商館［平戸市］
+         </span>
+        </div>
+       </li>
+       <li>
+        <img alt="卓袱料理［長崎市］" src="img/top/photo05.jpg"/>
+        <div>
+         <span>
+          卓袱料理［長崎市］
+         </span>
+        </div>
+       </li>
+       <li>
+        <img alt="淵ノ元カトリック墓碑群［五島市］" src="img/top/photo06.jpg"/>
+        <div>
+         <span>
+          淵ノ元カトリック墓碑群［五島市］
+         </span>
+        </div>
+       </li>
+      </ul>
+     </div>
+     <div class="shadow">
+     </div>
+     <script type="text/javascript">
+      $(window).load(function() {
+ 		$('.flexslider').flexslider({
+ 			animation: "slide"
+ 		});
+ 	});
+     </script>
+    </div>
+    <!-- 紹介 -->
+    <div id="intro">
+     <div>
+      <h2>
+       長崎県の歴史・文化をわかりやすく楽しく学び、
+       <br/>
+       歴史の旅に出かけたくなるような「歴史の旅と遊学サイト」
+      </h2>
+      <p>
+       古代より「海の道の要」として、また「日本の窓口」として、大海原のむこうにある異文化の国々と交流してきた長崎県の歴史はとても多彩で個性豊かです。
+       <br/>
+       魏志倭人伝に一支国の名で登場する壱岐、遣唐使船の日本最期の寄港地であった五島、日朝外交・友好の重責を担った対馬、西洋との架け橋となった平戸・長崎、キリシタン文化が華開いた島原半島、さらに、日本の近代化のさきがけとなった産業の遺構など、長崎県には歴史を物語る文化財などが数多く残り、この地を舞台に繰り広げられた先人たちの歩みをいまに伝えています。そして、これらの歴史や文化をつくってきた人々のドラマと、その舞台となった地に息づく文化のいぶきが、私たちの心を捉え、旅へといざなう魅力になるのです。
+      </p>
+     </div>
+    </div>
+    <!-- コンテンツ -->
+    <div class="stoper" id="contents">
+     <!-- 注目トピックス -->
+     <div class="stoper" id="topic_box">
+      <div id="topics">
+       <ul class="stoper">
+        <li class="title">
+         <h2>
+          注目トピックス
+         </h2>
+         <img alt="" id="topic_image" name="topic_image"/>
+         <dl>
+          <dt>
+           TOPICS
+          </dt>
+          <dd>
+           <a href="./topics/index.php">
+            &gt;&gt; もっと見る
+           </a>
+          </dd>
+         </dl>
+        </li>
+        <li>
+         <span>
+          長崎学Web学会
+         </span>
+         <div class="resize_block">
+          <a href="./tanken/view.php?hid=20171127195822">
+           <img alt="長崎学Web学会" src="/tanken/files/vol5.jpg"/>
+          </a>
+         </div>
+         <dl>
+          <dt>
+           2017年11月27日
+          </dt>
+          <dd>
+           <a href="./tanken/view.php?hid=20171127195822">
+            千々石ミゲル墓所推定地　第３次発掘調査について（その5）
+           </a>
+          </dd>
+         </dl>
+        </li>
+        <li>
+         <span>
+          長崎学Web学会
+         </span>
+         <div class="resize_block">
+          <a href="./tanken/view.php?hid=20171102135133">
+           <img alt="長崎学Web学会" src="/tanken/files/その3.bmp"/>
+          </a>
+         </div>
+         <dl>
+          <dt>
+           2017年11月02日
+          </dt>
+          <dd>
+           <a href="./tanken/view.php?hid=20171102135133">
+            千々石ミゲル墓所推定地　第３次発掘調査について（その3）
+           </a>
+          </dd>
+         </dl>
+        </li>
+        <li>
+         <span>
+          長崎学Web学会
+         </span>
+         <div class="resize_block">
+          <a href="./tanken/view.php?hid=20171102134653">
+           <img alt="長崎学Web学会" src="/tanken/files/その2.bmp"/>
+          </a>
+         </div>
+         <dl>
+          <dt>
+           2017年11月02日
+          </dt>
+          <dd>
+           <a href="./tanken/view.php?hid=20171102134653">
+            千々石ミゲル墓所推定地　第３次発掘調査について（その2）
+           </a>
+          </dd>
+         </dl>
+        </li>
+       </ul>
+      </div>
+      <div id="pickup">
+       <h2>
+        ピックアップ
+       </h2>
+       <ul class="stoper">
+        <li>
+         <a href="http://tabinaga.jp/museum/">
+          <img alt="ミュージアム県ながさき" src="img/banner_museum.jpg"/>
+         </a>
+        </li>
+        <li>
+         <a href="http://tabinaga.jp/sonbunumeya/">
+          <img alt="孫文梅屋庄吉と長崎" src="img/banner_sonbun.jpg"/>
+         </a>
+        </li>
+        <li>
+         <a href="http://www.nagasaki-museum.jp">
+          <img alt="長崎県美術館" src="img/banner_bijyutsukan.jpg"/>
+         </a>
+        </li>
+        <li>
+         <a href="http://www.nmhc.jp">
+          <img alt="長崎歴史文化博物館" src="img/banner_rekibun.jpg"/>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+     <!-- イベントカレンダー -->
+     <div id="event">
+      <div class="wrapper">
+       <h2>
+        イベントカレンダー
+       </h2>
+       <div id="calendar">
+       </div>
+       <dl id="eventList">
+       </dl>
+      </div>
+     </div>
+     <!-- ソーシャル -->
+     <div id="social">
+      <script type="text/javascript">
+       (function(d, s, id) {
+ 			 var js, fjs = d.getElementsByTagName(s)[0];
+ 			 if (d.getElementById(id)) return;
+ 			 js = d.createElement(s); js.id = id;
+ 			 js.src = "//connect.facebook.net/ja_JP/all.js#xfbml=1";
+ 			 fjs.parentNode.insertBefore(js, fjs);
+ 			 }(document, 'script', 'facebook-jssdk'));
+      </script>
+      <div class="fb-like-box" data-colorscheme="light" data-header="true" data-height="290" data-href="http://www.facebook.com/pages/%E6%97%85%E3%81%99%E3%82%8B%E9%95%B7%E5%B4%8E%E5%AD%A6/598991973452095" data-show-border="true" data-show-faces="false" data-stream="true" data-width="280" style="background-color:#ffffff;">
+      </div>
+      <div id="fb-root">
+      </div>
+      <br/>
+      <a class="twitter-timeline" data-widget-id="421175529023094785" height="290" href="https://twitter.com/tabinaga" lang="ja" xml:lang="ja">
+       @tabinaga からのツイート
+      </a>
+      <script type="text/javascript">
+       !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+      </script>
+     </div>
+    </div>
+    <!-- フッター -->
+    <div id="footer">
+     <div id="foot_menu">
+      <ul class="stoper">
+       <li>
+        <a href="./index.php">
+         ホーム
+        </a>
+       </li>
+       <li>
+        <a href="./guide/privacy.php">
+         個人情報保護について
+        </a>
+       </li>
+       <li>
+        <a href="./guide/copyright.php">
+         免責事項・著作権について
+        </a>
+       </li>
+       <li>
+        <a href="./post/index.php?ct=inquire">
+         お問い合わせ
+        </a>
+       </li>
+       <li>
+        <a href="./sitemap/index.php">
+         サイトマップ
+        </a>
+       </li>
+      </ul>
+      <a href="#header" id="go_top">
+       <img alt="ページトップへ" src="./img/go_top.png"/>
+       ページトップへ
+      </a>
+     </div>
+     <div class="stoper" id="info">
+      <dl>
+       <dt>
+        長崎県文化振興課
+       </dt>
+       <dd>
+        長崎市尾上町3番1号　電話：095-895-2762
+       </dd>
+      </dl>
+      <p>
+       Copyright © 長崎県文化振興課. All Rights Reserved.
+      </p>
+     </div>
+    </div>
+   </div>
+  </body>
+ </html>

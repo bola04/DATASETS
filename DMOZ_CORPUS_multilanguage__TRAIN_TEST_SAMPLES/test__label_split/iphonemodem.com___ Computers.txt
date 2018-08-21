@@ -1,0 +1,692 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    iPhoneModem - fast and easy sharing of iPhone's Internet connection
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="en" name="language"/>
+   <meta content="Addition, Lda" name="Author"/>
+   <meta content="iphone software" name="Category"/>
+   <meta content="iPhoneModem fast and easy sharing of iPhone's Internet connection" name="Description"/>
+   <meta content="iphone,modem,tethering,internet,sharing,windows,mac,tiger,addition" name="Keywords"/>
+   <meta content="index,follow" name="robots"/>
+   <meta content="38.711918,-9.157043" name="ICBM"/>
+   <meta content="38.711918,-9.157043" name="geo.position"/>
+   <meta content="Addition, Lisbon, Portugal" name="geo.placename"/>
+   <link href="http://www.addition.pt" rel="developer" title="A product by Addition"/>
+   <link href="http://www.addition.pt" rel="company" title="Addition, Lda."/>
+   <link href="/img/favico.png" rel="shortcut icon"/>
+   <link href="/rss.xml" rel="alternate" title="RSS" type="application/rss+xml"/>
+   <link href="css.css" rel="stylesheet" type="text/css"/>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" type="text/javascript">
+   </script>
+   <script src="/js/fb/jquery.fancybox-1.3.1.pack.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    //<![CDATA[
+ 
+ 
+     function getQueryVariable(variable) {
+         var query = window.location.search.substring(1);
+         var vars = query.split("&");
+         for (var i = 0; i < vars.length; i++) {
+             var pair = vars[i].split("=");
+             if (pair[0] == variable) {
+                 return pair[1] == null ? "" : pair[1];
+             }
+         }
+         return null;
+     }
+ 
+     var TIM = 15 * 1000;
+ 
+     function rssInit() {
+         var posts = new Array();
+         $("#rssDiv").append("<ul id=\"rssUL\"></ul>");
+ 
+         $("#rssDiv").click(function() {
+             var ca = $("<A>");
+             $(document.body).append(ca);
+             ca.attr("href", "news.jsp").fancybox({
+                 width: 620,autoDimensions:false
+             }).click();
+         });
+ 
+         $.ajax({
+             type: "GET",
+             url: "rss.xml",
+             dataType: "xml",
+             success: function(rss) {
+                 $("item", rss).each(function() {
+                     var post = {};
+                     $(this).find("link").each(function() {
+                         post.link = getNodeText(this);
+                     });
+                     $(this).find("title").each(function() {
+                         post.title = getNodeText(this);
+                     });
+                     $(this).find("pubDate").each(function() {
+                         post.date = new Date(Date.parse(getNodeText(this)));
+                     });
+                     $(this).find("description").each(function() {
+                         post.desc = getNodeText(this);
+                     });
+                     posts[posts.length] = post;
+                 });
+                 $.each(posts, function() {
+                     var dt = "";
+                     dt += this.date.getFullYear() + "/";
+                     dt += this.date.getMonth() + 1 + "/";
+                     dt += this.date.getDate();
+                     $("#rssUL").html($("#rssUL").html() + "<li>" + dt + " " + this.title + "</li>")
+                 });
+                 window.lis = $("#rssUL li");
+                 lis.css("display", "none");
+                 $("#rssUL").css("display", "inline");
+                 $(lis[0]).css("display", "inline").attr("imon", 1);
+                 window.setTimeout(rssTimer, TIM);
+ 
+             }
+         });
+ 
+     }
+ 
+     function getNodeText(node) {
+         var text = "";
+         if (node.text) text = node.text;
+         if (node.firstChild) text = node.firstChild.nodeValue;
+         return text;
+     }
+ 
+     function rssTimer() {
+         var lion = $("#rssUL li[imon=1]");
+         if (lis.length <= 1 || !lion.length) return;
+         var pos = jQuery.inArray(lion[0], lis);
+         var npos = pos == (lis.length - 1) ? 0 : pos + 1;
+ 
+         lion.animate({opacity:0}, TIM / 15, function() {
+             lion.attr("imon", 0);
+             lion.css({display:"none"});
+             lion = $(lis[npos]);
+             lion.attr("imon", 1);
+             lion.css({opacity:0,display:"inline"});
+             lion.animate({opacity:1}, TIM / 15);
+             window.setTimeout(rssTimer, TIM);
+         })
+     }
+ 
+     $(function() {
+         rssInit();
+ 
+         if (getQueryVariable("u") != null) {
+             $("#uuid").val(getQueryVariable("u"));
+             window.scrollTo(0, $("#tbuy").offset().top);
+         }
+ 
+         if (getQueryVariable("sucess") != null) {
+             var ca = $(document.createElement("A"));
+             $(document.body).append(ca);
+             ca.attr("href", "thanks.html").fancybox({
+                 width: 620,autoDimensions:false, padding:10
+             }).click();
+         }
+ 
+         $('a.fancybox').each(function() {
+             var isimg = $("img", this).length;
+             if (!isimg) {
+                 $(this).fancybox({
+                     hideOnContentClick:true,
+                     width: 620,autoDimensions:false, padding:10
+ 
+                 });
+             } else {
+                 $(this).fancybox({
+                     hideOnContentClick:true,
+                     padding:0
+ 
+                 });
+             }
+         });
+ 
+ 
+         $("a.toogleDiv").click(function() {
+             var w = this.href;
+             w = w.substr(w.indexOf("#"));
+             $(w).toggle();
+             return false
+         });
+ 
+ 
+         $("#buy input[type='text'], .txtInp").click(
+                 function() {
+                     if (!this.cleared) {
+                         this.oldv = this.value;
+                         this.value = "";
+                         this.cleared = true;
+                     }
+                 }
+                 );
+         $("#buy input[type='text'], .txtInp").blur(
+                 function() {
+                     if (this.cleared && this.value == "") {
+                         this.value = this.oldv;
+                         this.cleared = false;
+                     }
+                 }
+                 );
+         $("#uuid").change(function() {
+             $("#errBuy").remove()
+         });
+         $("#buy form").submit(function() {
+             var v = $("#uuid").val();
+             if (v.length != 6 || !(v.toUpperCase().match(/^[0-9A-F]+$/))) {
+                 alert("Your must enter the last 6 characters of your phone's identifier. Please check it.");
+                 return false;
+             }
+         });
+ 
+     });
+     //]]>
+   </script>
+   <script type="text/javascript">
+    var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-164509-21']);
+     _gaq.push(['_setDomainName', '.iphonemodem.com']);
+     _gaq.push(['_trackPageview']);
+ 
+     (function() {
+         var ga = document.createElement('script');
+         ga.type = 'text/javascript';
+         ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0];
+         s.parentNode.insertBefore(ga, s);
+     })();
+   </script>
+  </head>
+  <body>
+   <div id="out">
+    <div id="topout">
+     <table cellpadding="0" cellspacing="0" id="top">
+      <tr>
+       <td>
+        <a href="#aabout" onclick="_gaq.push(['_trackEvent', 'Toolbar', 'About']);">
+         <img alt="about" height="47" src="img/about.png" width="83"/>
+        </a>
+       </td>
+       <td>
+        <img alt="-" height="47" src="img/sep.png" width="21"/>
+       </td>
+       <td>
+        <a href="#abuy" onclick="_gaq.push(['_trackEvent', 'Toolbar', 'Buy']);">
+         <img alt="buy" height="47" src="img/buy.png" width="47"/>
+        </a>
+       </td>
+       <td>
+        <img alt="" height="47" src="img/sep.png" width="21"/>
+       </td>
+       <td>
+        <a href="#ahelp" onclick="_gaq.push(['_trackEvent', 'Toolbar', 'Help']);">
+         <img alt="help" height="47" src="img/help.png" width="56"/>
+        </a>
+       </td>
+       <td>
+        <img alt="" height="47" src="img/sep.png" width="21"/>
+       </td>
+       <td>
+        <a href="support.html" onclick="_gaq.push(['_trackEvent', 'Toolbar', 'Support']);">
+         <img alt="support" height="47" src="img/support.png" width="90"/>
+        </a>
+       </td>
+       <td>
+        <img alt="-" height="47" src="img/bk.png" width="110"/>
+       </td>
+       <td>
+        <a href="http://www.addition.pt?lang=false" onclick="_gaq.push(['_trackEvent', 'Toolbar', 'Addition']);" target="_blank">
+         <img alt="addition" height="47" src="img/addition.png" width="149"/>
+        </a>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <a href="/" onclick="_gaq.push(['_trackEvent', 'Logo', 'Home']);">
+     <img alt="Addition's iPhoneModem" height="214" src="img/logoIP.png" width="643"/>
+    </a>
+    <a href="http://www.itsplayingapp.com/?ipm2" onclick="_gaq.push(['_trackEvent', 'ITSP2', 'Home']);">
+     <img alt="It's playing 2.0" height="197" src="img/imdownloadingIP.png" width="643"/>
+    </a>
+    <!--
+ <a onclick="_gaq.push(['_trackEvent', 'Logo', 'Home']);" href="/"><img src="img/logoIP.png" alt="Addition's iPhoneModem"
+                                                                        height="214" width="643"/></a>
+ <a onclick="_gaq.push(['_trackEvent', 'ITSPLAYING', 'Home']);" href="http://www.imdownloading.com/its-playing/?ipm2"><img src="img/imdownloadingIP.png" alt="It's playing for the iPad"
+                                                                        height="197" width="643"/></a>
+ -->
+    <table cellspacing="0" class="twocol">
+     <tr>
+      <td colspan="2">
+       <h1>
+        <img alt="With iPhoneModem it's now easy to share the iPhone Internet connection with your computer" height="69" src="img/h1.png" width="607"/>
+       </h1>
+       <div id="rssDiv">
+       </div>
+      </td>
+     </tr>
+     <tr>
+      <td class="left">
+       <h2 class="h2helper">
+        <a name="ahelper">
+         Helper App
+        </a>
+       </h2>
+       <p>
+        iPhoneModem's right hand is an Helper App for the Mac or the PC that automatically configures your
+                 computer and re-configures it back when you disconnect.
+       </p>
+       <p>
+        <br/>
+        Download iPhoneModem Helper application to provide one-click connectivity.
+       </p>
+       <table cellpadding="0" cellspacing="0" style="margin-top:10px">
+        <tr>
+         <td>
+          <a href="iPhoneModem.dmg" onclick="_gaq.push(['_trackEvent', 'Downloads', 'Mac']);">
+           <img alt="iPhoneModem Helper for Mac" height="27" src="img/mac.png" width="96"/>
+          </a>
+         </td>
+         <td style="vertical-align:middle;padding:0 5px">
+          <h3 style="font-weight:bold;font-size:12px;margin:0;padding:0">
+           Download it!
+          </h3>
+         </td>
+         <td>
+          <a href="iPhoneModem.msi.zip" onclick="_gaq.push(['_trackEvent', 'Downloads', 'Windows']);">
+           <img alt="iPhoneModem Helper for Windows" height="27" src="img/win.png" width="98"/>
+          </a>
+         </td>
+        </tr>
+       </table>
+      </td>
+      <td class="right">
+       <h2 class="h2buy">
+        <a name="abuy">
+         Buy
+        </a>
+       </h2>
+       <div id="buy">
+        <p>
+         After testing and making sure it's working, you can disable the registration reminder by
+                     purchasing a license which is based on a
+         <a class="fancybox" href="uuid.html" onclick="_gaq.push(['_trackEvent', 'General', 'UUID']);">
+          6 character phone
+                         identifier
+         </a>
+         given on iPhoneModem's registration screen.
+        </p>
+        <p>
+         All purchases will be handled by PayPal. The price is
+         <strong>
+          $9.99
+         </strong>
+         .
+        </p>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+         <input name="cmd" type="hidden" value="_xclick"/>
+         <input name="business" type="hidden" value="sales@iphonemodem.com"/>
+         <input name="item_name" type="hidden" value="iPhoneModem"/>
+         <input name="item_number" type="hidden" value="ipm100"/>
+         <input name="amount" type="hidden" value="9.99"/>
+         <input name="no_shipping" type="hidden" value="1"/>
+         <input name="return" type="hidden" value="http://www.iphonemodem.com/?sucess"/>
+         <input name="cancel_return" type="hidden" value="http://www.iphonemodem.com/?cancel"/>
+         <input name="logo_custom" type="hidden" value="http://www.iphonemodem.com/img/paypal.png"/>
+         <input name="no_note" type="hidden" value="1"/>
+         <input name="currency_code" type="hidden" value="USD"/>
+         <input name="lc" type="hidden" value="US"/>
+         <input name="bn" type="hidden" value="PP-BuyNowBF"/>
+         <input name="on0" type="hidden" value="uuid"/>
+         <input name="cpp_header_image" type="hidden" value="http://www.iphonemodem.com/img/payPalBanner.png"/>
+         <input name="cpp_headerback_color" type="hidden" value="#3366CC"/>
+         <table cellpadding="0" cellspacing="0">
+          <tr>
+           <td>
+            <input alt="uuid" id="uuid" maxlength="6" name="os0" type="text" value="Enter your phone identifier"/>
+           </td>
+           <td id="paypaltd">
+            <input alt="PayPal - The safer, easier way to pay online!" name="submit" onclick="_gaq.push(['_trackEvent', 'Paypal', 'Buy']);" src="img/paypal.png" type="image"/>
+           </td>
+          </tr>
+         </table>
+         <!--<img alt="-" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1"/>-->
+        </form>
+       </div>
+      </td>
+     </tr>
+    </table>
+    <div id="tsteps">
+     <img alt="steps" height="14" src="img/steps.png" width="607"/>
+    </div>
+    <div id="steps">
+     <a class="fancybox" href="thumbs/1.png" rel="ss1" title="Open on the mac and click connect">
+      <img alt="1. Open on the mac and click connect" onclick="_gaq.push(['_trackEvent', 'Thumbs', '1']);" src="thumbs/1s.png"/>
+     </a>
+     <a class="fancybox" href="thumbs/2.png" onclick="_gaq.push(['_trackEvent', 'Thumbs', '2']);" rel="ss1" title="WiFi network created">
+      <img alt="2. WiFi network created" src="thumbs/2s.png"/>
+     </a>
+     <a class="fancybox" href="thumbs/3.png" onclick="_gaq.push(['_trackEvent', 'Thumbs', '3']);" rel="ss1" title="Open on iPhone">
+      <img alt="3. Open on iPhone" src="thumbs/3s.png"/>
+     </a>
+     <a class="fancybox" href="thumbs/4.png" onclick="_gaq.push(['_trackEvent', 'Thumbs', '4']);" rel="ss1" title="Open a web browser and surf on">
+      <img alt="4. Open a web browser and surf on" src="thumbs/4s.png"/>
+     </a>
+    </div>
+    <table cellspacing="0" class="twocol">
+     <tr>
+      <td colspan="2">
+       <h2 class="h2about">
+        <a name="aabout">
+         About
+        </a>
+       </h2>
+      </td>
+     </tr>
+     <tr>
+      <td class="left">
+       <h3>
+        What is iPhoneModem
+       </h3>
+       <p>
+        iPhoneModem enables sharing of the iPhone's Internet connection with your Mac or PC.
+       </p>
+       <p>
+        It's a simple and small footprint application for the iPhone and the Desktop Computer that anyone can use
+                 on a few seconds.
+       </p>
+       <p>
+        iPhoneModem is available for Jailbreaked devices using the
+        <a class="fancybox" href="thumbs/cydia.png" onclick="_gaq.push(['_trackEvent', 'Thumbs', 'Cydia']);" rel="ss1" title="iPhoneModem on Cydia">
+         cydia package manager
+        </a>
+        on the phone.
+       </p>
+       <p>
+        To make connecting a one click task, you should also download the helper application for your
+                 computer.
+       </p>
+       <h3>
+        What's new
+       </h3>
+       <p>
+        In version 5.0
+       </p>
+       <p>
+        <strong>
+         1. iOS5 optimized; continues to work fine on iPhoneOS 2.x,3.x and 4.x.
+        </strong>
+       </p>
+       <p>
+        <strong>
+         2. Free upgrading for all users, same $9.99 price to disable the registration reminder.
+        </strong>
+       </p>
+       <p>
+        <a class="toogleDiv" href="#changelog" onclick="_gaq.push(['_trackEvent', 'General', 'Change Log']);">
+         [change
+                 log...]
+        </a>
+       </p>
+       <div id="changelog" style="display:none;">
+        <p>
+         <span class="o">
+          2010/Set/29
+         </span>
+         <br/>
+         4.0 Mac/iPhone/Windows -
+                     iOS 4 optimized, faster and more responsive, retina display UI, iOS multitasking, revised registration method.
+        </p>
+        <p>
+         <span class="o">
+          2009/Nov/12
+         </span>
+         <br/>
+         3.2 Mac -
+                     New update engine, improved Snow Leopard support, new report crash feature, various bug fixes.
+        </p>
+        <p>
+         <span class="o">
+          2009/Sep/29
+         </span>
+         <br/>
+         3.1.2 iPhone -
+                     Bug fixes and enhanced logging.
+        </p>
+        <p>
+         <span class="o">
+          2009/Sep/18
+         </span>
+         <br/>
+         3.1 iPhone -
+                     iPhone OS 3.0.1 support.
+         <br/>
+         3.1 Mac - Mac OS X 10.6 (Snow Leopard) support.
+        </p>
+        <p>
+         <span class="o">
+          2009/Jul/1
+         </span>
+         <br/>
+         3.0 iPhone -
+                     iPhone OS 3.0, full TCP and UDP tethering, new connectivity engine including DHCP support,
+                     enhanced background mode, revised user interface.
+        </p>
+        <p>
+         <span class="o">
+          2008/Nov/27
+         </span>
+         <br/>
+         2.1 iPhone -
+                     Run in background support for registered users, new 2.0 user interface,enhanced HTTP/HTTPS proxy,
+                     anonymous mode on HTTP/HTTPS, support for FTP clients (fetch and cyberduck).
+        </p>
+        <p>
+         <span class="o">
+          2008/Nov/18
+         </span>
+         <br/>
+         2.0 iPhone/Mac/Windows - revised SOCKS,
+                     HTTP/HTTPS and DNS
+                     proxies; traffic monitoring.
+        </p>
+        <p>
+         <span class="o">
+          2008/Sep/18
+         </span>
+         <br/>
+         1.1 Mac - Adding WiFi security and MacOS 10.4 Tiger support
+        </p>
+        <p>
+         <span class="o">
+          2008/Sep/13
+         </span>
+         <br/>
+         1.0 Mac | 1.0 iPhone - Initial Release
+        </p>
+       </div>
+      </td>
+      <td class="right">
+       <h3>
+        Features
+       </h3>
+       <p>
+        <strong>
+         Compatibility:
+        </strong>
+        iPhoneModem has been tested on all iPhoneOS and iOS devices since version
+                 2.0
+                 (September 2008)
+       </p>
+       <p>
+        <strong>
+         Sharing:
+        </strong>
+        the internet connection can be used by several devices.
+       </p>
+       <p>
+        <strong>
+         Security:
+        </strong>
+        you can use WiFi security to protect the shared internet connection.
+       </p>
+       <p>
+        <strong>
+         Speed:
+        </strong>
+        full 7.2 Mbps 3.5G speeds can be achieved (with optimal network reception).
+       </p>
+       <p>
+        <strong>
+         Usage:
+        </strong>
+        iPhoneModem and the helper app on the computer provide a simple one-click
+                 solution to
+                 internet sharing.
+       </p>
+       <h3>
+        How does it work
+       </h3>
+       <p>
+        iPhoneModem has two sides: the Modem application on the iPhone and the iPhoneModem helper for the Mac or
+                 the PC.
+       </p>
+       <p>
+        On the computer, the helper application creates a new computer-to-computer (or ad-hoc) WiFi network and
+                 configures the system preferences to use the iPhone as an Internet gateway and proxy.
+       </p>
+       <p>
+        On the iPhone, the application opens a routing engine, DHCP, DNS, HTTP, HTTPS and SOCKS proxies and
+                 connects to the helper on the computer.
+       </p>
+      </td>
+     </tr>
+     <tr>
+      <td colspan="2">
+       <h2 class="h2help">
+        <a name="ahelp">
+         Help
+        </a>
+       </h2>
+      </td>
+     </tr>
+     <tr>
+      <td class="left">
+       <h3>
+        How to Install
+       </h3>
+       <p>
+        1. Jailbreak
+                 the iPhone (if you haven't already)
+       </p>
+       <p>
+        2. On the iPhone use "Cydia" to install iPhoneModem - it's filed on the Networking
+                 category. After installing a
+                 new App named "Modem" should be available on the iPhone.
+       </p>
+       <p>
+        3. Download and install the
+        <a href="#ahelper" onclick="_gaq.push(['_trackEvent', 'General', 'Helper Application']);">
+         helper application
+        </a>
+        .
+       </p>
+       <h3>
+        How to Use it
+       </h3>
+       <p>
+        After installing iPhoneModem on the phone and on the computer, open the iPhoneModem on the
+                 computer and click "connect".
+       </p>
+       <p>
+        A new WiFi network is created by the computer and, on the iPhone you should select it and open
+                 the "Modem" application. When connected everything should be automatically
+                 configured.
+       </p>
+      </td>
+      <td class="right">
+       <h3>
+        Guides
+       </h3>
+       <p>
+        Try using the great jailbreak wizard on
+        <a href="http://www.iclarified.com/jailbreak/" onclick="_gaq.push(['_trackEvent', 'General', 'iClarified Jailbreak Wizzard']);" target="_blank" title="iClarified Jailbreak Wizzard">
+         iClarified
+        </a>
+        <br/>
+        For the latest news on jailbreaking procedures:
+        <a href="http://www.iclarified.com/tutorials/iphone/index.php" onclick="_gaq.push(['_trackEvent', 'General', 'iClarified Tutorials']);" target="_blank" title="iClarified Tutorials">
+         iClarified
+                     Tutorials
+        </a>
+       </p>
+       <h3>
+        Requirements
+       </h3>
+       <p>
+        <span class="o">
+         iPhone
+        </span>
+        jailbreaked with iPhoneOS &gt;= 2.0 [tested up to iOS 5.0]
+       </p>
+       <p>
+        <span class="o">
+         Mac
+        </span>
+        WiFi capable Intel or PowerPC with 10.5 (leopard),10.6 (snow leopard) or 10.7 (lion);
+       </p>
+       <p>
+        <span class="o">
+         PC
+        </span>
+        WiFi capable computer running Microsoft Windows Vista, XP or 7. latest service
+                 packs are
+                 recommended . service pack 3 is a requirement on XP . installer will refer to Bonjour and .Net Framework
+                 installation
+       </p>
+       <p>
+        We stopped supporting Tiger on version 3.2, if you are using Tiger you can download version 3.1
+        <a href="http://www.iphonemodem.com/iPhoneModem_3.1.dmg" onclick="_gaq.push(['_trackEvent', 'Downloads', 'Tiger']);">
+         here
+        </a>
+        .
+       </p>
+       <h3>
+        Who we are
+       </h3>
+       <p>
+        iPhoneModem has been developed by
+        <a href="http://www.addition.pt/?lang=false" onclick="_gaq.push(['_trackEvent', 'General', 'Addition']);" target="_blank">
+         Addition, Lda.
+        </a>
+        mainly
+                 by Diogo Vitorino and
+                 Fábio Bernardo; all graphic and interface design is attributed to
+        <a href="http://www.prude.pt" onclick="_gaq.push(['_trackEvent', 'General', 'Prude']);" target="_blank">
+         Pedro
+                     Rufino
+        </a>
+        .
+        <br/>
+        Addition was established on 1998 and has since then been on the mobile applications market with
+                 a, now quite old
+                 product, for the PalmOS named
+        <a href="http://www.addition4palm.com" onclick="_gaq.push(['_trackEvent', 'General', 'Addition4Palm']);" target="_blank">
+         Addition4Palm
+        </a>
+        .
+        <br/>
+       </p>
+      </td>
+     </tr>
+    </table>
+   </div>
+  </body>
+ </html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    architekti 4a
+   </title>
+   <link href="../../images/favicon.ico" rel="shortcut icon"/>
+   <style media="screen" title="css" type="text/css">
+    @import "../../../css/jqueryUi/smoothness/jquery-ui-1.8.20.custom.css";
+ 	@import "../../../css/base.css";
+ 	/*@import "../css/flex.css";*/
+   </style>
+   <script type="text/javascript">
+    var ROOT_FRONT = '../../';
+   </script>
+   <script src="../../js/jquery-1.7.2.min.js" type="text/javascript">
+   </script>
+   <script src="../../js/jquery-ui-1.8.20.custom.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /*docasne plneni promennych do galerie => v pozdejsi fazi php */
+ 
+ /* pocty obrazku v galeriich */
+ /**indexovana polozka reprezentuje jednu polozku menu
+  *poradi posloupnosti zobrazovani (ciselny index 2 rozmeru pole
+  *pocet fotografii pod kazdym nahledem (pocet fotek projektu) */
+  
+ //pro kazdou polozku menu (other, retail, offices...) nacti zvlast pole
+ //do ciselneho indexu pole nacti hodnotu pocet fotek pod kazdou jednou fotografii nahledu
+ 
+ /**funkce presmerovava stranku na uvedenou url*/
+ function presmeruj(url)
+ {
+   window.location.href = url;
+ }
+ 
+ var imgcount = new Array();
+ /* rozbalovani/sbalovani hlavnich sekci */
+ //kolik je polozek menu, tolik bude indexu pole imgcount
+ function setAttribs()
+ {}
+ 
+ 
+ 
+ /* funkce znemoznovala zapis do vyhledavaciho formularoveho pole search boxu*
+ *puvodne mela zabranit oznacovani textu pri horlivejsim poklepani na menu boxy rozbalovacich sekci*/
+ 
+ function disabletext(e)
+ {
+   return false;
+ }
+ function reEnable()
+ {
+   return true;
+ }
+ 
+ //bindovani primo na document ZPUSOBI, ZE NENI MOZNE Manualne dat focus na input a textarea - proto jsem to zakomentoval (pridano jquery a rebind primo na element - v index.php hlavicce)
+ //document.onselectstart = new Function ("return false");
+ if (window.sidebar){
+   //document.onmousedown=disabletext;
+   //document.onclick=reEnable;
+ }
+ 
+ 
+ /**funkce zpracovava zavirani a otevirani "supliku" ve vypisu work*/
+ function menuFolder(elementId)
+ {
+   elem = document.getElementById(elementId);
+   child_elem = document.getElementById(elementId+"_cont");  //upraveno, melo byt _display
+   if(child_elem.style.display == "none")
+   {
+     //hideAll();
+     child_elem.style.display = "block";
+     elem.style.background = "url(../../images/b2.gif) no-repeat 897px 8px";    
+     if(elementId == 'a0')
+     {
+       elem.style.backgroundColor = "#ed008c";
+     }
+   }
+     else
+     {
+       child_elem.style.display = "none";
+       if(elementId == 'a0')
+       {
+         elem.style.background = "#ed008c url(../../images/b0.gif) no-repeat 897px 8px";
+       }
+         else
+         {
+           elem.style.background = "url(../../images/b1.gif) no-repeat 897px 8px";
+         }
+     }
+ }
+ 
+ /**funkce zpracovava zavirani a otevirani "supliku" ve vypisu work-chrono a work-scale, ktere se lisi od zobrazeni work prvni polozkou*/
+ function menuFolder_other(elementId)
+ {
+   elem = document.getElementById(elementId);
+   child_elem = document.getElementById(elementId+"_cont");  //upraveno, melo byt _display
+   if(child_elem.style.display == "none")
+   {
+     child_elem.style.display = "block";
+     elem.style.background = "url(../../images/b2.gif) no-repeat 897px 8px";
+   }
+     else
+     {
+       child_elem.style.display = "none";
+       elem.style.background = "url(../../images/b1.gif) no-repeat 897px 8px";
+     }
+ }
+ 
+ function menuFolder_other_text(elementId)
+ {
+   elem = document.getElementById('textik');
+   child_elem = document.getElementById(elementId+"_cont");  //upraveno, melo byt _display
+   if(child_elem.style.display == "none")
+   {
+     child_elem.style.display = "block";
+     elem.style.background = "url(../../images/b2.gif) no-repeat 897px 8px"; 
+     /*alert(elem.style.background);*/
+   }
+     else
+     {
+       child_elem.style.display = "none";
+       elem.style.background = "url(../../images/b1.gif) no-repeat 897px 8px";
+     }
+ }
+ 
+ 
+ 
+ /* parsovani URL parametru */
+ function readParam(param){
+   param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+   var regexS = "[\\?&]"+param+"=([^&#]*)";
+   var regex = new RegExp(regexS);
+   var results = regex.exec(document.location.href);
+   if(results == null)
+   {
+     return -1;
+   }
+     else
+     {
+       return results[1];
+     }
+ }
+   
+ 
+ /* test na parametr rozbaleni (onload) */
+ /**rozbaluje a sbaluje jednotlive polozky menu*/
+ 
+ function checkParam(page)
+ {
+   if(page=="index")
+   {
+     fields=new Array(); //typy projektu '0','office','resident','retail','leisure','others'
+   }  
+   if(page=="about")
+   {
+     fields=new Array(); //about typ 'profile','publications','awards','exhibitions','team'
+   } 
+   //zobrazeni galerie
+   if(page=="galerie")
+   {
+     generateSwitcher();
+   }
+   /*
+     else
+     {
+       check = readParam('q');
+       if(check>fields.length-1) return false;
+       if(check>-1)
+       {
+         menuFolder(fields[check]);
+       }
+     }
+     */
+ }
+ 
+ 
+ /* vypis & skryti informaci k nahledu */
+ function thumbInfo(imgId) {
+   elem=document.getElementById(imgId);
+   ecnt=imgId.substring(imgId.length-2,imgId.length)*1;
+   tmp=elem.id.split("_");
+   targ=document.getElementById('a'+tmp[0]+"_info");
+   targ.innerHTML=thumbs[tmp[0]][ecnt];
+   targ.style.display="block";
+ }
+ 
+ function clearInfo(imgId) {
+   elem=document.getElementById(imgId);
+   tmp=elem.id.split("_");
+   targ=document.getElementById('a'+tmp[0]+"_info");
+   targ.innerHTML="";
+   targ.style.display="none";
+ }
+ 
+ /* generovani URL pro zobrazeni galerie (onlick nahledu na hlavni strane) */
+ function openGallery(imgId,returnPage) {
+   if(returnPage=="" || returnPage!="index" || returnPage!="about") {returnPage="index";}
+   elem=document.getElementById(imgId);
+   ecnt=imgId.substring(imgId.length-2,imgId.length)*1;
+   tmp=elem.id.split("_");
+   newurl="gallery.html?gallery="+tmp[0]+"&gid="+ecnt+"&back="+returnPage;
+   document.location.href = newurl;
+ }
+ 
+ 
+ function generateSwitcher(gname,galid)
+ {
+   var msg = new Array();
+   selem = document.getElementById('gal_navig_sw');
+ showImage("","0");hoverOn('sw0');  
+ }
+ 
+ 
+ /**zrejme zobrazeni fotografii, volano z funce genereateSwitcher(gname, galid);*/
+ function showImage(gname,pic)
+ {
+   ielem = document.getElementById('picInfo');
+   ielem.style.display = "block";
+   oldpic = document.getElementById('currentPic').value;
+   if(oldpic != "" && oldpic != pic)
+   {
+     document.getElementById('sw'+oldpic).src="../images/bi.gif";
+   }
+   //alert("url(../galerie/final/"+gname+") no-repeat 0 0");
+   document.getElementById('gal_display').style.background = "url(../galerie/final/"+gname+") no-repeat 0 0";
+   updateCounter(gname,galid,pic);
+   document.getElementById('currentPic').value = pic;
+   hoverOn("sw"+pic);
+ }
+ 
+ /**funkce meni obrazek switcheru pri najeti mysi nad obrazek*/
+ function hoverOn(swid)
+ {
+   helem = document.getElementById(swid);
+   helem.src = "../images/ba.gif";
+ }
+ /**funkce zmeni obrazek po opusteni mysi prostoru nad switcherem*/
+ function hoverOff(swid)
+ {
+   helem = document.getElementById(swid);
+   //vyrazeno, pri prechodu na php a refresh stranky nepoustelo obarvenou verzi obrazku na 0 pozici switcheru
+   //curpic = document.getElementById('currentPic').value;
+   //curval = swid.substring(2,4);
+   //if(curpic!=curval)
+   //{
+     helem.src="../images/bi.gif";
+   //}
+ }
+ 
+ /**funkce zobrazuje cislo zobrazovane fotografie z celkoveho poctu fotek*/
+ function updateCounter(gname,galid,pic)
+ {
+   document.getElementById('gal_navig_cntr').innerHTML= 'aaa';
+ }
+ 
+ function hideArrow(arrid) {
+   document.getElementById(arrid).style.display="none";
+ }
+ function showArrow(arrid)
+ {
+   document.getElementById(arrid).style.display = "block";
+ }
+ 
+ /**funkce zobrazi stranku s fotografii predchazejici soucasne pozici*/
+ function prevImage()
+ {
+ document.location.href = "?foto=-1";  /*
+   curgal=document.getElementById('currentGal').value;
+   curgid=document.getElementById('currentGid').value;
+   curpic=document.getElementById('currentPic').value;
+   document.getElementById('sw'+curpic).src="images/bi.gif";
+   if(curpic<1){curpic=imgcount[curgal][curgid]-1;}else{curpic=curpic-1;}
+   document.getElementById('currentPic').value=curpic;
+   showImage(curgal,curgid,curpic);
+   */
+ }
+ //funkce zobrazi nasledujici stranku soucasne fotografie
+ function nextImage()
+ {
+ document.location.href = "?foto=0";/*
+   curgal=document.getElementById('currentGal').value;
+   curgid=document.getElementById('currentGid').value;
+   curpic=document.getElementById('currentPic').value;
+   if(curpic>imgcount[curgal][curgid]-1){curpic=imgcount[curgal][curgid]-1;}
+   document.getElementById('sw'+curpic).src="images/bi.gif";
+   if(curpic>=imgcount[curgal][curgid]-1){curpic=0;}else{curpic=(curpic*1+1);}
+   document.getElementById('currentPic').value=curpic;
+   showImage(curgal,curgid,curpic);
+   */
+ }
+ 
+ /**galerie.php ???*/
+ /*
+ function showInfo() 
+ {
+   curgal=document.getElementById('currentGal').value;
+   curgid=document.getElementById('currentGid').value;
+   curpic=document.getElementById('currentPic').value;
+   elem=document.getElementById('picInfo');
+   elem.innerHTML=imgInfo[curgal][curgid][curpic];
+   elem.style.display="block";
+   pelem=document.getElementById('gal_navig_iswitch');
+   pelem.innerHTML="img";
+   pelem.onclick="showImage("+curgal+","+curgid+","+curpic+");";
+ }
+ */
+ 
+ /**funkce pro zobrazeni informace o fotce, na kterou najela mys, souvisi s funkci uvedenou hned nize*/
+ function include_rpc(script_filename)
+ {
+   var html_doc = document.getElementsByTagName('head').item(0);
+   var js = document.createElement('script');
+   js.setAttribute('language', 'javascript');
+   js.setAttribute('type', 'text/javascript');
+   js.setAttribute('src', script_filename);
+   html_doc.appendChild(js);
+   return false;
+ } 
+ 
+ /**funkce nacte php souboru s pristupem do db, ktery vypis do divu "id_divu" informace o portfoliu
+  *na zaklade predaneho id radku db zaznamu bez refreshe stranky
+  *souvisi s funkci uvedenou vyse */
+ function show_info_about(id_divu, id_radku_db)
+ {
+   //zobrazi informace na zaklade db dat
+   include_rpc('../..//js/about_info.php?div='+id_divu+'&id='+id_radku_db);
+ }
+ /**funkce vymaze text z divu plneneho funkci show_info
+  *souvisi s funkci vyse*/
+ function hide_info_about(id_divu)
+ {
+   document.getElementById(id_divu).innerHTML = "";
+ }
+ 
+ /**funkce nacte php souboru s pristupem do db, ktery vypis do divu "id_divu" informace o portfoliu
+  *na zaklade predaneho id radku db zaznamu bez refreshe stranky
+  *souvisi s funkci uvedenou vyse */
+  /*
+ function show_info(id_divu, id_radku_db)
+ {
+   //zobrazi informace na zaklade db dat
+   include_rpc('../..//js/portfolio_info.php?div='+id_divu+'&id='+id_radku_db);
+ }
+ */
+ 
+ /**funkce zobrazuje data vztahujici se k portfoliu zastoupene danym nahledovym obrazkem a vypisuje tato do informacni listy*/
+ function show_info(element, kam_zobrazit) //skryty prvek, prostor, kam zobrazit
+ {
+   var text_to_show = document.getElementById('source_'+element).value;
+   document.getElementById(kam_zobrazit).innerHTML = text_to_show;
+ }
+ 
+ /**funkce vymaze text z divu plneneho funkci show_info
+  *souvisi s funkci vyse*/
+ function hide_info(id_divu)
+ {
+   document.getElementById(id_divu).innerHTML = "";
+ }
+ 
+ function showArrowLeft()
+ {
+   showArrow('gal_prev');
+ }
+ function showArrowRight()
+ {
+   showArrow('gal_next');
+ }
+ function clearMO(aid) {
+   document.getElementById(aid).mouseout="";
+ }
+ function setMO_left() {
+   document.getElementById('gal_left').mouseout="hideArrow('gal_prev')";
+ }
+ function setMO_right() {
+   document.getElementById('gal_right').mouseout="hideArrow('gal_next')";
+ }
+ function goBack() {
+   galname=document.getElementById('currentGal').value;
+   ppage=document.getElementById('backURL').value;
+   if(ppage=="index") {pfields=new Array('0','office','resident','retail','leisure','others');}
+   if(ppage=="about") {pfields=new Array('profile','publications','awards','exhibitions','team');}
+   pgid=pfields.indexOf(galname);
+   backURL=ppage+".html?q="+pgid;
+   document.location.href=backURL;
+ }
+ 
+ function showInfo()
+ {
+   //nacist info o danem portfoliu na zaklade $_GET['hodnoty'].htm
+   if(document.getElementById('gal_infoscreen').style.display == "none")
+   {
+     document.getElementById('gal_infoscreen').style.display="block";  
+     //RADKY INFO
+     //nutno dat sem dolu, netusim proc, modlm
+     curgal=document.getElementById('currentGal').value;
+     curgid=document.getElementById('currentGid').value;
+     curpic=document.getElementById('currentPic').value;
+     actual=itext[curgal][curgid][curpic];
+     info=actual.split('|');
+     
+   }
+     else
+     {
+       document.getElementById('gal_infoscreen').style.display="none";
+     }
+ }
+   </script>
+   <script src="../../js/texty.js" type="text/javascript">
+   </script>
+   <script src="../../js/flexcroll.js" type="text/javascript">
+   </script>
+   <script src="../../js/AC_RunActiveContent.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function(){
+ 		//$('.menuitem').unbind(); //unbind all
+ 		$('.menuitem').disableSelection();
+ 	})
+   </script>
+  </head>
+  <body onload="checkParam('index'); setAttribs(); document.getElementById('cover').style.display='none'; ">
+   <div id="fb-root">
+   </div>
+   <script>
+    (function(d, s, id) {
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) return;
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/cs_CZ/all.js#xfbml=1&appId=131709423582042";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+   </script>
+   <div id="container">
+    <div id="topnav">
+     <div id="logonav">
+      <div id="logo">
+       <a class="logo" href="/JAZYK//?r" title="architekti 4a">
+       </a>
+      </div>
+      <div id="topmenu">
+       <a href="/JAZYK/REWRITE_WORK/">
+        WORK
+       </a>
+       <a href="/JAZYK/REWRITE_ABOUT/">
+        ABOUT
+       </a>
+       <a href="/JAZYK/REWRITE_NEWS/">
+        NEWS
+       </a>
+      </div>
+      <div id="langswitch">
+       <a href="/intro/?jazyk=cs">
+        cz
+       </a>
+       /
+       <a href="/intro/?jazyk=en">
+        eng
+       </a>
+      </div>
+     </div>
+     <div class="clr">
+     </div>
+     <div style="position: absolute; width:64px; height: 24px; _right:300px; right:300px; top:0px">
+      <a href="http://www.facebook.com/pages/4A-Architekti/216196955122421" target="_blank" title="facebook">
+       <img alt="FACEBOOK" class="ui-corner-all" src="../../images/facebookIcon_h24.png" style="border:none"/>
+      </a>
+     </div>
+     <div style="text-align: right;">
+      <div class="fb-like" data-href="https://www.facebook.com/pages/4A-Architekti/216196955122421" data-layout="button_count" data-send="false" data-show-faces="false" data-width="140" style="position: absolute; width:140px; overflow: hidden;_right:150px;right: 150px;top: 1px;">
+      </div>
+     </div>
+     <form action="/JAZYK/REWRITE_VYSLEDKY_VYHLEDAVANI/" method="post">
+      <!--<input type="text" style="border: 1px solid #CCC; width:140px; background:#fff; color:#000" name="retezec" onClick="document.onmousedown=reEnable();" onMouseOut="document.onmousedown=disabletext;" />-->
+      <input name="retezec" style="border: 1px solid #CCC; width:140px; background:#fff; color:#000" type="text"/>
+      <br/>
+      <input class="searchButton" type="submit" value="search"/>
+     </form>
+     <div id="checktab">
+      <input id="chrono" name="chrono" onclick="presmeruj('/JAZYK/REWRITE_WORK/?filtr=chrono');" type="radio"/>
+      <label for="chrono">
+       <a class="checkbox_sort" href="/JAZYK/REWRITE_WORK/?filtr=chrono">
+        chrono
+       </a>
+      </label>
+      <input id="program" name="chrono" onclick="presmeruj('/JAZYK/REWRITE_WORK/?filtr=program');" type="radio"/>
+      <label for="program">
+       <a class="checkbox_sort" href="/JAZYK/REWRITE_WORK/?filtr=program">
+        program
+       </a>
+      </label>
+      <input id="scale" name="scale" onclick="presmeruj('/JAZYK/REWRITE_WORK/?filtr=scale');" type="radio"/>
+      <label for="scale">
+       <a class="checkbox_sort" href="/JAZYK/REWRITE_WORK/?filtr=scale">
+        scale
+       </a>
+      </label>
+     </div>
+     <!--topnav end-->
+    </div>
+    <div id="maincontent">
+     <div class="cover" id="cover">
+     </div>
+     <script type="text/javascript">
+      if (AC_FL_RunContent == 0)
+   {
+ 		alert("This page requires AC_RunActiveContent.js.");
+ 	}
+     else
+     {
+     var flash = '4AarchitektiIntroEn';
+ 		AC_FL_RunContent(
+ 			'codebase', 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0',
+ 			'width', '920',
+ 			'height', '650',
+ 			'src', '../flash/'+flash,
+ 			'quality', 'high',
+ 			'pluginspage', 'http://www.macromedia.com/go/getflashplayer',
+ 			'align', 'middle',
+ 			'play', 'true',
+ 			'loop', 'true',
+ 			'scale', 'showall',
+ 			'wmode', 'window',
+ 			'devicefont', 'false',
+ 			'id', flash,
+ 			'bgcolor', '#ed008c',
+ 			'name', flash,
+ 			'menu', 'true',
+ 			'allowFullScreen', 'false',
+ 			'allowScriptAccess','sameDomain',
+ 			'movie', '../flash/'+flash,
+ 			'salign', ''
+ 			); //end AC code
+ 	  }
+     </script>
+     <noscript>
+      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" height="650" id="4AarchitektiIntroEn" width="920">
+       <param name="allowScriptAccess" value="sameDomain">
+       </param>
+       <param name="allowFullScreen" value="false">
+       </param>
+       <param name="movie" value="../4AarchitektiIntroEn.swf">
+       </param>
+       <param name="quality" value="high">
+       </param>
+       <param name="bgcolor" value="#ed008c">
+       </param>
+       <embed allowfullscreen="false" allowscriptaccess="sameDomain" bgcolor="#ed008c" height="650" name="4AarchitektiIntroEn" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high" src="../flash/4AarchitektiIntroEn.swf" type="application/x-shockwave-flash" width="920">
+       </embed>
+      </object>
+     </noscript>
+     <a href="/JAZYK/REWRITE_WORK/" style="color:#ed008c; text-decoration:none;">
+      SKIP_INTRO
+     </a>
+     <div style="clear:both;">
+     </div>
+     <br/>
+     <div id="disclaimer" style="line-height:20px">
+      <div style="float:left">
+       <h1>
+        4a architekti
+       </h1>
+       Na Valech 2/290, CZ 160 00 Prague 6, tel. +420 233 350 720, fax: +420 233 355 696
+       <strong>
+        Contact:
+       </strong>
+      </div>
+      <div style="position:relative; float:left;">
+       <a class="button_email" style="display:block;height:16px;width:16px;margin:0px;padding:0px">
+        Napište nám
+       </a>
+      </div>
+      <script src="../../js/contact-form.js" type="text/javascript">
+      </script>
+      <div class="pzero" style="float:right">
+       <strong>
+        Created by:
+       </strong>
+       <a class="email" href="http://www.positivezero.co.uk/" target="_blank" title="PositiveZero.co.uk - Positive Creative Studio">
+        PositiveZero
+       </a>
+      </div>
+      <div style="clear:both">
+      </div>
+     </div>
+     <!--maincontent end-->
+    </div>
+    <!--container end-->
+   </div>
+   <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    _uacct = "UA-955026-21";
+ urchinTracker();
+   </script>
+  </body>
+ </html>

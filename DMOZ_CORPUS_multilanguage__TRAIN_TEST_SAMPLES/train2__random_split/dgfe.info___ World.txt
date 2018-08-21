@@ -1,0 +1,1782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="de" xml:lang="de" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Dt. Gesellschaft fόr Epileptologie - Informationspool Epilepsie
+   </title>
+   <script language="JavaScript" type="text/javascript">
+    <!--
+     window.name = "rootWin";
+     if (window != top.window) top.location.href = location.href;
+     /* Scripte fuer C::Web-Anbindung */
+ /* AMMMa AG			 */
+ 
+ var wins = new Array();
+ var _validators = new Array();
+ 
+ if (!document.layers&&!document.all){
+   event="";
+ }
+ 
+ /* Setze Hφhe eines Elementes anhand der eines anderen */
+ function setHeightByElement (targetId, sourceId, delay) {
+     var source = document.getElementById(sourceId);
+     var target = document.getElementById(targetId);
+     var targetHeight = source.offsetHeight + delay;
+     if (targetHeight > target.offsetHeight){
+ 	target.style.height = targetHeight + "px";//
+     }
+ }
+  
+ /* Setze Hφhe eines Elementes anhand der zweier anderer */
+ function setHeightByElements (targetId, firstSourceId, secondSourceId, delay) {
+     var firstSource = document.getElementById(firstSourceId);
+     var secondSource = document.getElementById(secondSourceId);
+     var target = document.getElementById(targetId);
+     var targetHeight = firstSource.offsetHeight > secondSource.offsetHeight ? firstSource.offsetHeight + delay : secondSource.offsetHeight + delay;
+     if (targetHeight > target.offsetHeight){
+ 	target.style.height = targetHeight + "px";//
+     }
+ }
+  
+ /* Validiere generierte Metadatenformulare */
+ function validateMDForm(form) {
+     for (var i = 0; i < _validators.length; i++) {
+         if (!_validators[i](form)) return false;
+     }
+     return true;
+ }
+ 
+ /* Waehle alles aus einer Checkboxgruppe */
+ function checkAll(formElement,flagElement) {
+     if (formElement.length){
+ 	var j;	
+ 	for (j = 0; j < formElement.length; j++){
+ 	    formElement[j].checked = flagElement.checked;
+ 	}
+     }
+     else {
+ 	formElement.checked = flagElement.checked;
+     }
+ }
+ 
+ 
+ /*
+  * Swiches between print and display styles.
+  */
+ function switchStyles ()
+ {
+     var link = document.getElementById("printstyle");
+     if (!link) return;
+     if (link.href.indexOf("print.css") >= 0) {
+         link.href = "";
+     } else {
+         link.href = "inc/styles/print.css";
+     }
+     window.location.href='#top';
+ }
+ 
+ 
+ function openPopupWindow(script, args) {
+  if (!script) {
+    w = window.open(args,"CWebPopup", "width=500,height=500,scrollbars,resizable,menubar");
+  }
+  else {
+    w = window.open("popup.html" + "?" + args,"CWebPopup", "width=500,height=500,scrollbars,resizable,menubar");
+  }
+  w.focus();
+ }
+ 
+ function openSizedPopupWindow(id, args, props) {
+   openWindow('popup.html' + ((id || args) ? '?' + (id ? 'id='+id+(args ? '&' : '') : '') + (args ? args : '') : ''), "CWebPopup" + id, props);
+ }
+ 
+ 
+ /*
+  * Anmelden
+  */
+ 
+ 
+ function openUserEdit() {
+     openWindow('useredit.html', "CWebSub", "width=600,height=600,scrollbars,resizable");
+ }
+ 
+ function openSitemap(args) {
+   openWindow('sitemap.html' + (args?'?' + args:''), "CWebSitemap", "width=480,height=400,scrollbars,resizable");
+ }
+ 
+ function openSearch(searchterms, args) {
+   var openstr = 'search.html' + (searchterms ? ('?gl_mode=extended&gl_searchstring='+searchterms+(args ? '&'+args : '')) : (args ? '?'+args : ''));
+   openWindow(openstr, "CWebSuche", "width=516,height=500,scrollbars,resizable");
+ }
+ 
+ function openNewsletter(form) {
+   for(var i = 0; i < form.length; i++)
+     if(form[i].name == 'action' && form[i].checked)
+       u = (form[i].value == 'abonnieren' ? '0' : '1');
+   var url = 'newsletter.cw?email=' + form.email.value + '&amp;unreg=' + u;
+   openWindow(url,'CWebSub','width=440,height=200,scrollbars,resizable');
+ }
+ 
+ function openDownload(id) {
+   openWindow('download.html' + (id ? '?id='+id : ''), "CWebSub", "width=750,height=450,resizable");
+ }
+ 
+ function openMessages(args) {
+   openWindow('nachrichten.html' + (args ? '?'+args : ''), "CWebNachrichten", "width=616,height=300,scrollbars,resizable");
+ }
+ 
+ function openMessage(args) {
+   openWindow('email.html' + (args ? '?'+args : ''), "CWebNachricht", "width=316,height=400,scrollbars,resizable");
+ }
+ 
+ function notifyMessages() {
+   var count = 0;
+   if (count > 0 && confirm('Sie haben ' + count + ' neue Nachricht(en). Mφchten Sie diese jetzt lesen?')) {
+     openMessages();
+   }
+   }
+ 
+ function openWindow(url, name, props, focus) {
+   if(wins[name]) wins[name].close();
+   wins[name] = window.open(url, name, props);
+   if(focus != false) wins[name].focus();
+ }
+ 
+ function loadDocWindow(url, name, props, focus) {
+   if(wins[name]) {
+     wins[name] = window.open(url, name);
+     if(focus != false) wins[name].focus();
+   }
+   else { openWindow(url, name, props, focus); }
+ }
+ 
+ function closeWindow(name) {
+   if(wins[name]) wins[name].close();
+ }
+ 
+ function toggleElementDisplay(elem_id,
+ 			      link_id,
+ 			      text_toggle_on,
+ 			      text_toggle_off){
+     var elem = document.getElementById(elem_id);
+     var link = document.getElementById(link_id);
+ 
+     if (elem.style.display == "none" ||
+ 	!elem.style.display){
+ 	elem.style.display = "block";
+ 	link.innerHTML = text_toggle_off;
+     }
+     else {
+ 	elem.style.display = "none";
+ 	link.innerHTML = text_toggle_on;
+     }
+ }
+ -->
+   </script>
+   <link href="contrib/jquery.steps.css" rel="stylesheet"/>
+   <link href="//cdn.jsdelivr.net/qtip2/2.2.0/jquery.qtip.min.css" rel="stylesheet"/>
+   <style type="text/css">
+    <!--
+     /* ######################################################################################################
+ ** # "Yet Another Multicolum Layout" (c) by Dirk Jesse (http://www.highresolution.info/webdesign/yaml/) #
+ ** ######################################################################################################
+ ** 
+ **  YAML Version: 2.3
+ **  Dateiversion: 09.04.06 
+ **  Datei       : layout_3col_vlines.css
+ **  Funktion    : Zentrales Stylesheet 3-Spalten-Layout mit grafikfreien Spaltentrennern
+ **
+ */
+ @import url(inc/styles/content.css);
+ @import url(inc/styles/ize.css);
+ 
+ 
+ -->
+   </style>
+   <link href="" id="printstyle" rel="stylesheet" type="text/css"/>
+   <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+   <!--[if lt IE 7]>
+   	<link type="text/css" rel="stylesheet" href="inc/styles/ize_lt_ie7.css" />
+   <![endif]-->
+   <!--[if IE 7]>
+   	<link type="text/css" rel="stylesheet" href="inc/styles/ize_ie7.css" />
+   <![endif]-->
+   <!-- Contrib -->
+   <script src="contrib/jquery-1.6.1.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function(){
+             $('#slide2nd').click(function(){
+                 $('ul#navmain').animate({ height: 'hide', opacity: 'hide' }, "slow" );
+                 $('ul#nav2nd').animate({ height: 'show', opacity: 'show' }, "slow", function(){document.location = "index,id,563.html"});
+             }),
+             $('#slidemain').click(function(){
+                 $('ul#nav2nd').animate({ height: 'hide', opacity: 'hide' }, "slow" );
+                 $('ul#navmain').animate({ height: 'show', opacity: 'show' }, "slow", function(){document.location = "index,id,519.html"});
+             })
+         });
+   </script>
+  </head>
+  <body onload="">
+   <a class="noheight" name="top">
+   </a>
+   <div id="main">
+    <div id="header">
+     <a href="./" id="homelink" title="home">
+     </a>
+     <div id="search">
+      <div id="searchtitle">
+       Suche
+      </div>
+      <form action="index.html" id="searchform" method="get">
+       <input class="search_input" id="searchinput" name="searchquery" type="text"/>
+       <input class="search_button" id="searchbutton" name="searchbutton" src="images/button_search.gif" type="image"/>
+      </form>
+     </div>
+     <div id="top_navigation">
+      <a href="/home_a/secure/login.cw" title="Loggen Sie sich ein">
+       Login
+      </a>
+      <a class="" href="index,id,11.html" title="Nehmen Sie Kontakt auf">
+       Kontakt
+      </a>
+      <a href="#" id="printlink" onclick="switchStyles(); return false;" target="_blank" title="Drucken">
+       Drucken
+      </a>
+     </div>
+    </div>
+    <div id="col1">
+     <div class="navigation">
+      <div class="sliderbtn" id="slidemain">
+      </div>
+      <ul class="dgfe" id="navmain">
+       <li class="naventry_selected" id="navli_selected">
+        <a class="naventry_selected" href="./index,id,361.html" id="nava_selected" title="News">
+         News
+        </a>
+       </li>
+       <li class="naventry" id="navli_520">
+        <a class="naventry" href="./index,id,520.html" id="nava_520" title="άber die DGfE">
+         άber die DGfE
+        </a>
+       </li>
+       <li class="naventry" id="navli_538">
+        <a class="naventry" href="./index,id,538.html" id="nava_538" title="DGfE Tagung">
+         DGfE Tagung
+        </a>
+       </li>
+       <li class="naventry" id="navli_639">
+        <a class="naventry" href="./index,id,639.html" id="nava_639" title="Drittmittel-Beratung">
+         Drittmittel-Beratung
+        </a>
+       </li>
+       <li class="naventry" id="navli_567">
+        <a class="naventry" href="./index,id,567.html" id="nava_567" title="EURAP">
+         EURAP
+        </a>
+       </li>
+       <li class="naventry" id="navli_616">
+        <a class="naventry" href="./index,id,616.html" id="nava_616" title="Fφrderungen Preise">
+         Fφrderungen Preise
+        </a>
+       </li>
+       <li class="naventry" id="navli_566">
+        <a class="naventry" href="./index,id,566.html" id="nava_566" title="Formulare">
+         Formulare
+        </a>
+       </li>
+       <li class="naventry" id="navli_636">
+        <a class="naventry" href="./index,id,636.html" id="nava_636" title="ILAE">
+         ILAE
+        </a>
+       </li>
+       <li class="naventry" id="navli_528">
+        <a class="naventry" href="./index,id,528.html" id="nava_528" title="Kommissionen">
+         Kommissionen
+        </a>
+       </li>
+       <li class="naventry" id="navli_543">
+        <a class="naventry" href="./index,id,543.html" id="nava_543" title="Mitteilungen-Stellungnahmen">
+         Mitteilungen-Stellungnahmen
+        </a>
+       </li>
+       <li class="naventry" id="navli_64">
+        <a class="naventry" href="./index,id,64.html" id="nava_64" title="Spenden">
+         Spenden
+        </a>
+       </li>
+       <li class="naventry" id="navli_625">
+        <a class="naventry" href="./index,id,625.html" id="nava_625" title="Stellenangebote">
+         Stellenangebote
+        </a>
+       </li>
+       <li class="naventry" id="navli_554">
+        <a class="naventry" href="./index,id,554.html" id="nava_554" title="Zeitschrift fόr Epileptologie">
+         Zeitschrift fόr Epileptologie
+        </a>
+       </li>
+       <li class="naventry" id="navli_537">
+        <a class="naventry" href="./index,id,537.html" id="nava_537" title="Zertifikat">
+         Zertifikat
+        </a>
+       </li>
+       <li class="naventry" id="navli_568">
+        <a class="naventry" href="./index,id,568.html" id="nava_568" title="Mitgliederbereich">
+         Mitgliederbereich
+        </a>
+       </li>
+       <li class="naventry" id="navli_658">
+        <a class="naventry" href="./index,id,658.html" id="nava_658" title="Mitglied werden">
+         Mitglied werden
+        </a>
+       </li>
+      </ul>
+     </div>
+     <div class="ft_navigation">
+     </div>
+     <div id="hd_navigation">
+     </div>
+     <div class="navigation">
+      <div class="sliderbtn" id="slide2nd">
+      </div>
+      <ul class="dgfe" id="nav2nd" style="display: none">
+       <li class="naventry" id="navli_17">
+        <a class="naventry" href="./index,id,17.html" id="nava_17" title="Wir όber uns">
+         Wir όber uns
+        </a>
+       </li>
+       <li class="naventry" id="navli_18">
+        <a class="naventry" href="./index,id,18.html" id="nava_18" title="Erstinformation Epilepsie">
+         Erstinformation Epilepsie
+        </a>
+       </li>
+       <li class="naventry" id="navli_31">
+        <a class="naventry" href="./index,id,31.html" id="nava_31" title="Service">
+         Service
+        </a>
+       </li>
+       <li class="naventry" id="navli_32">
+        <a class="naventry" href="./index,id,32.html" id="nava_32" title="Download-Center">
+         Download-Center
+        </a>
+       </li>
+       <li class="naventry" id="navli_425">
+        <a class="naventry" href="./index,id,425.html" id="nava_425" title="Aktuelle Studien">
+         Aktuelle Studien
+        </a>
+       </li>
+       <li class="naventry" id="navli_38">
+        <a class="naventry" href="./index,id,38.html" id="nava_38" title="Adressen &amp;amp; Links">
+         Adressen &amp; Links
+        </a>
+       </li>
+       <li class="naventry" id="navli_50">
+        <a class="naventry" href="./index,id,50.html" id="nava_50" title="Gesundheitswesen">
+         Gesundheitswesen
+        </a>
+       </li>
+       <li class="naventry" id="navli_53">
+        <a class="naventry" href="./index,id,53.html" id="nava_53" title="Bildung">
+         Bildung
+        </a>
+       </li>
+       <li class="naventry" id="navli_57">
+        <a class="naventry" href="./index,id,57.html" id="nava_57" title="Recht">
+         Recht
+        </a>
+       </li>
+       <li class="naventry" id="navli_427">
+        <a class="naventry" href="./index,id,427.html" id="nava_427" title="Kunst">
+         Kunst
+        </a>
+       </li>
+       <li class="naventry" id="navli_59">
+        <a class="naventry" href="./index,id,59.html" id="nava_59" title="Kooperationen">
+         Kooperationen
+        </a>
+       </li>
+       <li class="naventry" id="navli_414">
+        <a class="naventry" href="./index,id,414.html" id="nava_414" title="Newsletter ..δltere">
+         Newsletter ..δltere
+        </a>
+       </li>
+       <li class="naventry" id="navli_149">
+        <a class="naventry" href="./index,id,149.html" id="nava_149" title="Archiv">
+         Archiv
+        </a>
+       </li>
+      </ul>
+     </div>
+     <div class="ft_navigation">
+     </div>
+    </div>
+    <div id="col2">
+     <a id="content" name="content">
+     </a>
+     <!-- Skiplink-Anker: Content -->
+     <div id="printheader">
+      <span>
+       <a href="#" onclick="window.print(); return false;">
+        Seite drucken
+       </a>
+       <a href="#" onclick="switchStyles(); return false;">
+        Zurück
+       </a>
+      </span>
+     </div>
+     <div id="content_main">
+      <h1>
+       News
+      </h1>
+      <div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          24
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Genmutationen
+         </h2>
+         <p>
+          Schδden von hemmenden Botenstoffrezeptoren  - Epilepsie
+          <a class="morelink" href="index,aid,6970.html" title="Lesen Sie mehr zu Genmutationen">
+           <img alt="Mehr-Link Genmutationen" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          23
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Programmhinweis Die Story
+         </h2>
+         <p>
+          Cannabis und Epilepsie am 1.8.2018
+          <a class="morelink" href="index,aid,6968.html" title="Lesen Sie mehr zu Programmhinweis Die Story">
+           <img alt="Mehr-Link Programmhinweis Die Story" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jun
+         </div>
+         <div class="day">
+          26
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Medaille
+         </h2>
+         <p>
+          Ehrung fόr Prof. Hermann Stefan
+          <a class="morelink" href="index,aid,6965.html" title="Lesen Sie mehr zu Medaille">
+           <img alt="Mehr-Link Medaille" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Mai
+         </div>
+         <div class="day">
+          22
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Hermann Doose
+         </h2>
+         <p>
+          Trauer um Prof. Dr. Hermann Doose
+          <a class="morelink" href="index,aid,6925.html" title="Lesen Sie mehr zu Hermann Doose">
+           <img alt="Mehr-Link Hermann Doose" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          epidogs
+         </h2>
+         <p>
+          Forscherprojekt zu Hund und Epilepsie
+          <a class="morelink" href="index,aid,6897.html" title="Lesen Sie mehr zu epidogs">
+           <img alt="Mehr-Link epidogs" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          23
+         </div>
+         <div class="year">
+          2018
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Valproat und Frauen
+         </h2>
+         <p>
+          Deutsche άbersetzung zu Valproat und Frauen von Torbjφrn Tomson
+          <a class="morelink" href="index,aid,6835.html" title="Lesen Sie mehr zu Valproat und Frauen">
+           <img alt="Mehr-Link Valproat und Frauen" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Dez
+         </div>
+         <div class="day">
+          13
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Filme όber Epilepsie
+         </h2>
+         <p>
+          Junge Frau mit Epilepsie lδuft und lδuft und...
+          <a class="morelink" href="index,aid,6751.html" title="Lesen Sie mehr zu Filme όber Epilepsie">
+           <img alt="Mehr-Link Filme όber Epilepsie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Dez
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Neue Auflage Kinderwunsch 2017
+         </h2>
+         <p>
+          Broschόre Kinderwunsch von EURAP erschienen
+          <a class="morelink" href="index,aid,6740.html" title="Lesen Sie mehr zu Neue Auflage Kinderwunsch 2017">
+           <img alt="Mehr-Link Neue Auflage Kinderwunsch 2017" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Nov
+         </div>
+         <div class="day">
+          16
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          International Epilepsy Day 2018
+         </h2>
+         <p>
+          Fotowettbewerb: Das Leben ist schφn
+          <a class="morelink" href="index,aid,6712.html" title="Lesen Sie mehr zu International Epilepsy Day 2018">
+           <img alt="Mehr-Link International Epilepsy Day 2018" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Nov
+         </div>
+         <div class="day">
+          14
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          INES 2018
+         </h2>
+         <p>
+          Einladung zur 8. Internationalen Summer School fόr Neuropathologie und Epilepsiechirurgie
+          <a class="morelink" href="index,aid,6703.html" title="Lesen Sie mehr zu INES 2018">
+           <img alt="Mehr-Link INES 2018" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Okt
+         </div>
+         <div class="day">
+          26
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsiechirurgie
+         </h2>
+         <p>
+          Frόhe Operation gibt Hoffnung
+          <a class="morelink" href="index,aid,6690.html" title="Lesen Sie mehr zu Epilepsiechirurgie">
+           <img alt="Mehr-Link Epilepsiechirurgie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Aug
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Valproat-Hinweis
+         </h2>
+         <p>
+          Patienten-Erinnerungskarte zu Valproat
+          <a class="morelink" href="index,aid,6628.html" title="Lesen Sie mehr zu Valproat-Hinweis">
+           <img alt="Mehr-Link Valproat-Hinweis" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jun
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Schwere Epilepsie - Gen-Mutation SCN2A
+         </h2>
+         <p>
+          Linderung durch Behandlung mit Natrium-Kanalblocker
+          <a class="morelink" href="index,aid,6551.html" title="Lesen Sie mehr zu Schwere Epilepsie - Gen-Mutation SCN2A">
+           <img alt="Mehr-Link Schwere Epilepsie - Gen-Mutation SCN2A" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Mai
+         </div>
+         <div class="day">
+          08
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Preise auf Dreilδndertagung in Wien
+         </h2>
+         <p>
+          Verleihung Epilepsieforschungspreise
+          <a class="morelink" href="index,aid,6532.html" title="Lesen Sie mehr zu Preise auf Dreilδndertagung in Wien">
+           <img alt="Mehr-Link Preise auf Dreilδndertagung in Wien" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          18
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Definition Epilepsie
+         </h2>
+         <p>
+          Internationale Liga stellt aktualisierte Klassifikation vor
+          <a class="morelink" href="index,aid,6528.html" title="Lesen Sie mehr zu Definition Epilepsie">
+           <img alt="Mehr-Link Definition Epilepsie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          07
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Cannabis und Epilepsietherapie
+         </h2>
+         <p>
+          Stellungnahme zu Cannabis in der Epilepsiebehandlung
+          <a class="morelink" href="index,aid,6523.html" title="Lesen Sie mehr zu Cannabis und Epilepsietherapie">
+           <img alt="Mehr-Link Cannabis und Epilepsietherapie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          23
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Neugeborenen-Anfδlle
+         </h2>
+         <p>
+          Aktualisiertes Blatt zu Neugeborenen-Anfδlle
+          <a class="morelink" href="index,aid,6469.html" title="Lesen Sie mehr zu Neugeborenen-Anfδlle">
+           <img alt="Mehr-Link Neugeborenen-Anfδlle" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          10
+         </div>
+         <div class="year">
+          2017
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Trauer um Dieter Janz
+         </h2>
+         <p>
+          Nachruf
+          <a class="morelink" href="index,aid,6460.html" title="Lesen Sie mehr zu Trauer um Dieter Janz">
+           <img alt="Mehr-Link Trauer um Dieter Janz" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Nov
+         </div>
+         <div class="day">
+          07
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsieberatung
+         </h2>
+         <p>
+          Anerkennung als Epilepsieberatungsstelle per Antrag
+          <a class="morelink" href="index,aid,6345.html" title="Lesen Sie mehr zu Epilepsieberatung">
+           <img alt="Mehr-Link Epilepsieberatung" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Okt
+         </div>
+         <div class="day">
+          19
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          EDAY
+         </h2>
+         <p>
+          Wettbewerb fόr den Europδischen Tag der Epilepsie 2017
+          <a class="morelink" href="index,aid,6330.html" title="Lesen Sie mehr zu EDAY">
+           <img alt="Mehr-Link EDAY" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Sep
+         </div>
+         <div class="day">
+          12
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Uwe Heinemann
+         </h2>
+         <p>
+          Trauer um Uwe Heinemann
+          <a class="morelink" href="index,aid,6321.html" title="Lesen Sie mehr zu Uwe Heinemann">
+           <img alt="Mehr-Link Uwe Heinemann" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Sep
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Tag der Epilepsie feiert 20 Jahre
+         </h2>
+         <p>
+          Epilepsie braucht Offenheit
+          <a class="morelink" href="index,aid,6312.html" title="Lesen Sie mehr zu Tag der Epilepsie feiert 20 Jahre">
+           <img alt="Mehr-Link Tag der Epilepsie feiert 20 Jahre" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          19
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Reisen Urlaub Ferien
+         </h2>
+         <p>
+          Tipps fόr Urlaubsaufenthalte im Ausland
+          <a class="morelink" href="index,aid,6258.html" title="Lesen Sie mehr zu Reisen Urlaub Ferien">
+           <img alt="Mehr-Link Reisen Urlaub Ferien" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jun
+         </div>
+         <div class="day">
+          29
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Neues Infoblatt zu schwerer Epilepsie erschienen
+         </h2>
+         <p>
+          Aktualisiertes Infoblatt  zu schwer behandelbaren Epilepsien
+          <a class="morelink" href="index,aid,6238.html" title="Lesen Sie mehr zu Neues Infoblatt zu schwerer Epilepsie erschienen">
+           <img alt="Mehr-Link Neues Infoblatt zu schwerer Epilepsie erschienen" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          13
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Feierlaune bei Kφlner Selbsthilfe und Epilepsieberatung Dresden
+         </h2>
+         <p>
+          35 Jahre Selbsthilfe Kφln und 10 Jahre Epilepsieberatung Dresden, 20 Jahre IM Mόnchen
+          <a class="morelink" href="index,aid,6188.html" title="Lesen Sie mehr zu Feierlaune bei Kφlner Selbsthilfe und Epilepsieberatung Dresden">
+           <img alt="Mehr-Link Feierlaune bei Kφlner Selbsthilfe und Epilepsieberatung Dresden" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Feb
+         </div>
+         <div class="day">
+          23
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Physiotherapie
+         </h2>
+         <p>
+          Infoblatt zur Physiotherapie bei schwerer Epilepsie
+          <a class="morelink" href="index,aid,6128.html" title="Lesen Sie mehr zu Physiotherapie">
+           <img alt="Mehr-Link Physiotherapie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Feb
+         </div>
+         <div class="day">
+          04
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Campi
+         </h2>
+         <p>
+          Internationaler Epilepsy Day am Montag
+          <a class="morelink" href="index,aid,6109.html" title="Lesen Sie mehr zu Campi">
+           <img alt="Mehr-Link Campi" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Feb
+         </div>
+         <div class="day">
+          04
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          IQWiG und Epilepsie-Information
+         </h2>
+         <p>
+          Seit Januar Epilepsie-Information beim Institut fόr Qualitδt und Wirtschaftlichkeit im Gesundheitswesen
+          <a class="morelink" href="index,aid,6108.html" title="Lesen Sie mehr zu IQWiG und Epilepsie-Information">
+           <img alt="Mehr-Link IQWiG und Epilepsie-Information" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          20
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Packungsgrφίen werden eingestellt
+         </h2>
+         <p>
+          Carbamazepin Desitin retard
+          <a class="morelink" href="index,aid,6072.html" title="Lesen Sie mehr zu Packungsgrφίen werden eingestellt">
+           <img alt="Mehr-Link Packungsgrφίen werden eingestellt" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          13
+         </div>
+         <div class="year">
+          2016
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Wirkstoff Perampanel
+         </h2>
+         <p>
+          Einstellung des Individualimports fόr Perampanel zum 1.4.2016
+          <a class="morelink" href="index,aid,5985.html" title="Lesen Sie mehr zu Wirkstoff Perampanel">
+           <img alt="Mehr-Link Wirkstoff Perampanel" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Dez
+         </div>
+         <div class="day">
+          07
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsiezentrum
+         </h2>
+         <p>
+          Schwarzenbruck hat ein Epilepsiezentrum
+          <a class="morelink" href="index,aid,6004.html" title="Lesen Sie mehr zu Epilepsiezentrum">
+           <img alt="Mehr-Link Epilepsiezentrum" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Okt
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Systemfehler
+         </h2>
+         <p>
+          Was bedeutet  ZUSATZNUTZEN bei Medikamenten
+          <a class="morelink" href="index,aid,5935.html" title="Lesen Sie mehr zu Systemfehler">
+           <img alt="Mehr-Link Systemfehler" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Sep
+         </div>
+         <div class="day">
+          30
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Korker Beratungsangebot am 5.10.2015
+         </h2>
+         <p>
+          Zum Tag der Epilepsie Beratung durch Spezialisten
+          <a class="morelink" href="index,aid,5931.html" title="Lesen Sie mehr zu Korker Beratungsangebot am 5.10.2015">
+           <img alt="Mehr-Link Korker Beratungsangebot am 5.10.2015" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Sep
+         </div>
+         <div class="day">
+          24
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Tag der Epilepsie 2015
+         </h2>
+         <p>
+          Epilepsie im Wandel der Zeit
+          <a class="morelink" href="index,aid,5928.html" title="Lesen Sie mehr zu Tag der Epilepsie 2015">
+           <img alt="Mehr-Link Tag der Epilepsie 2015" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Aug
+         </div>
+         <div class="day">
+          28
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Betriebsferien der Geschδftsstelle
+         </h2>
+         <p>
+          Unsere Geschδftsstelle ist am 28.9.15 wieder  besetzt
+          <a class="morelink" href="index,aid,5922.html" title="Lesen Sie mehr zu Betriebsferien der Geschδftsstelle">
+           <img alt="Mehr-Link Betriebsferien der Geschδftsstelle" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Aug
+         </div>
+         <div class="day">
+          12
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Nachruf
+         </h2>
+         <p>
+          Zum Gedenken an Jean Aicardi
+          <a class="morelink" href="index,aid,5905.html" title="Lesen Sie mehr zu Nachruf">
+           <img alt="Mehr-Link Nachruf" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          29
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Arzneimittel-Fδlschung
+         </h2>
+         <p>
+          Gefδlschter Saft in Flasche mit deutscher Sprache in Tόrkei entdeckt
+          <a class="morelink" href="index,aid,5886.html" title="Lesen Sie mehr zu Arzneimittel-Fδlschung">
+           <img alt="Mehr-Link Arzneimittel-Fδlschung" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          08
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Impf-Empfehlungen
+         </h2>
+         <p>
+          Impfen bei Epilepsien
+          <a class="morelink" href="index,aid,5875.html" title="Lesen Sie mehr zu Impf-Empfehlungen">
+           <img alt="Mehr-Link Impf-Empfehlungen" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          07
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsieberatung in Karlsruhe
+         </h2>
+         <p>
+          Auίenstelle der Epilepsieberatung Kork
+          <a class="morelink" href="index,aid,5873.html" title="Lesen Sie mehr zu Epilepsieberatung in Karlsruhe">
+           <img alt="Mehr-Link Epilepsieberatung in Karlsruhe" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jul
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Regensburg
+         </h2>
+         <p>
+          Regensburger Klinik fόr Neurologie als Moses-Schulungszentrum anerkannt
+          <a class="morelink" href="index,aid,5867.html" title="Lesen Sie mehr zu Regensburg">
+           <img alt="Mehr-Link Regensburg" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jun
+         </div>
+         <div class="day">
+          15
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Stellungnahme Zusatznutzen
+         </h2>
+         <p>
+          Stellungnahme zum Beschluss des G-BA
+          <a class="morelink" href="index,aid,5818.html" title="Lesen Sie mehr zu Stellungnahme Zusatznutzen">
+           <img alt="Mehr-Link Stellungnahme Zusatznutzen" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Mai
+         </div>
+         <div class="day">
+          08
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsie-Petition eingereicht
+         </h2>
+         <p>
+          50 000 Unterschriften in 4 Wochen nφtig
+          <a class="morelink" href="index,aid,5802.html" title="Lesen Sie mehr zu Epilepsie-Petition eingereicht">
+           <img alt="Mehr-Link Epilepsie-Petition eingereicht" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          29
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Keine Verfόgbarkeit in Deutschland
+         </h2>
+         <p>
+          Wissenschaftler entschuldigen sich
+          <a class="morelink" href="index,aid,5779.html" title="Lesen Sie mehr zu Keine Verfόgbarkeit in Deutschland">
+           <img alt="Mehr-Link Keine Verfόgbarkeit in Deutschland" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          15
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Berufsgenossenschaftliche Empfehlungen bei Epilepsie
+         </h2>
+         <p>
+          Neu! Wichtigstes Instrument zur Beantwortung beruflicher Eignungsfragen bei Epilepsie
+          <a class="morelink" href="index,aid,5755.html" title="Lesen Sie mehr zu Berufsgenossenschaftliche Empfehlungen bei Epilepsie">
+           <img alt="Mehr-Link Berufsgenossenschaftliche Empfehlungen bei Epilepsie" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Apr
+         </div>
+         <div class="day">
+          01
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Ambassador
+         </h2>
+         <p>
+          Prof. Ingmar Blόmcke erhδlt den Ambassador Award 2013
+          <a class="morelink" href="index,aid,5742.html" title="Lesen Sie mehr zu Ambassador">
+           <img alt="Mehr-Link Ambassador" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Mδr
+         </div>
+         <div class="day">
+          12
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Gen-Mutation
+         </h2>
+         <p>
+          Studie zeigt Bedeutung von Kaliumkanδlen bei frόhkindlichen Epilepsien
+          <a class="morelink" href="index,aid,5722.html" title="Lesen Sie mehr zu Gen-Mutation">
+           <img alt="Mehr-Link Gen-Mutation" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Mδr
+         </div>
+         <div class="day">
+          12
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Hamburg AUF ZACK
+         </h2>
+         <p>
+          Anerkennung  der Hamburger Epilepsieberatungsstelle als MOSES-Schulungszentrum
+          <a class="morelink" href="index,aid,5721.html" title="Lesen Sie mehr zu Hamburg AUF ZACK">
+           <img alt="Mehr-Link Hamburg AUF ZACK" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Internationaler Epilepsie-Tag
+         </h2>
+         <p>
+          Epilepsie - heraus aus dem Schatten
+          <a class="morelink" href="index,aid,5649.html" title="Lesen Sie mehr zu Internationaler Epilepsie-Tag">
+           <img alt="Mehr-Link Internationaler Epilepsie-Tag" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Wirkmechanismus
+         </h2>
+         <p>
+          <a class="morelink" href="index,aid,5620.html" title="Lesen Sie mehr zu Wirkmechanismus">
+           <img alt="Mehr-Link Wirkmechanismus" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Epilepsyday
+         </h2>
+         <p>
+          <a class="morelink" href="index,aid,5652.html" title="Lesen Sie mehr zu Epilepsyday">
+           <img alt="Mehr-Link Epilepsyday" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Musterbrief
+         </h2>
+         <p>
+          <a class="morelink" href="index,aid,6026.html" title="Lesen Sie mehr zu Musterbrief">
+           <img alt="Mehr-Link Musterbrief" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateOdd">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          Selbsthilfe Kφln 35 Jahre
+         </h2>
+         <p>
+          <a class="morelink" href="index,aid,6187.html" title="Lesen Sie mehr zu Selbsthilfe Kφln 35 Jahre">
+           <img alt="Mehr-Link Selbsthilfe Kφln 35 Jahre" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="newsentry">
+        <div class="dateEven">
+         <div class="month">
+          Jan
+         </div>
+         <div class="day">
+          06
+         </div>
+         <div class="year">
+          2015
+         </div>
+        </div>
+        <div class="newsContent">
+         <h2>
+          PM
+         </h2>
+         <p>
+          <a class="morelink" href="index,aid,6971.html" title="Lesen Sie mehr zu PM">
+           <img alt="Mehr-Link PM" src="/home/imgs/more.gif"/>
+          </a>
+         </p>
+        </div>
+       </div>
+       <div class="news-archive-link">
+        <a class="news-archive-link" href="index,id,192.html" title="Zum Newsarchiv">
+         Δltere Meldungen
+        </a>
+       </div>
+      </div>
+     </div>
+     <div id="infoboxes">
+      <img alt="infobox_top" height="13" src="images/hd_topnews.jpg" width="201"/>
+      <div class="topnews">
+       <p>
+        <a href="/home/index,id,361,selid,6968,type,VAL_MEMO.html" title="/DGfE/News/Programmhinweis Die Story">
+         <img alt="/DGfE/News/Grafiken/MDR" data-size="1" data-zoom="false" height="120" src="/cweb2/cgi-bin-noauth/cache/VAL_BLOB/6969/6969/1738/MDR-kleiner.jpg" width="160"/>
+        </a>
+       </p>
+       <p>
+        <strong>
+         <a href="/home/index,id,361,selid,6968,type,VAL_MEMO.html" title="/DGfE/News/Programmhinweis Die Story">
+          Programmhinweis 1.8.2018
+         </a>
+        </strong>
+       </p>
+      </div>
+      <!--
+ 	  <div id="divDonate" class="donations">
+ 	    <a href="index,action,donate.html" title="Spenden Sie f&uuml;r die DGfE"><img src="images/donate.png" width="198" /></a>
+ 	  </div>
+ -->
+      <div class="IZE_infobox" id="veranstaltungen">
+       <a href="index,id,362.html" title="Zum Veranstaltungskalendar">
+        Veranstaltungen
+       </a>
+      </div>
+      <div class="topnews topnewsmiddle">
+      </div>
+      <!--
+ 	  <div id="newsletter">
+             <form action="newsletter.cw" target="_blank" method="post" onsubmit="openNewsletter(this); return false;">
+             <span class="news_text">Newsletter</span>
+             <br/>
+             <input id="newsinput" name="email" class="news_input" type="text" size="19" maxlength="150">
+             <br/>
+             <span class="email_text">eMail</span>
+             <br/>
+             <input id="newsbutton" name="btnAdd" class="news_button" type="submit" value="abonnieren">
+             <input id="newsbutton" name="btnRm" class="news_button" type="submit" value="abbestellen">
+             </form>
+            </div>
+ -->
+     </div>
+     <div style="clear:both">
+     </div>
+    </div>
+    <div id="footer">
+     <a class="footerlink" href="#top" id="toplink" title="Zur Seitenanfang">
+      Top
+     </a>
+     <a class="footerlink" href="index,id,67.html" id="impressumlink" title="Impressum aufrufen">
+      Impressum
+     </a>
+     <a class="footerlink" href="index,id,671.html" id="dslink" title="Datenschutzerklärung aufrufen">
+      Datenschutzerklärung
+     </a>
+     <!-- <a id="printlink"
+          class="footerlink"
+          href="#" 
+          onclick="switchStyles(); return false;" 
+          title="Drucken" 
+          target="_blank">Drucken</a> -->
+     <!--
+       <a id="tipafriendlink"
+          class="footerlink"
+          title="Die Adresse dieser Seite per E-Mail verschicken"
+          href="index,action,tipafriend,id,361,aid,0.html">Senden</a>
+       -->
+     <!-- <a id="homelink"
+          class="footerlink"
+          title="Zur Startseite"
+          href="index,id,1.html">Startseite</a> -->
+    </div>
+   </div>
+  </body>
+ </html>

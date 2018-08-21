@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+ <html class="" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <!-- ========= Meta Tags ========= -->
+   <!-- PWA settings -->
+   <script>
+    function toHash(str){var hash=5381,i=str.length;while(i){hash=hash*33^str.charCodeAt(--i)}return hash>>>0}
+     var cacheKey = '-1401712678~f3cf2265~home~~false~desktop:::pages.shortCache:::1532598940000';
+     var hashedCacheKey = cacheKey ? toHash(cacheKey) : '';
+   </script>
+   <script>
+    (function(global){
+     const cacheKey = global.cacheKey;
+     const isOffline = ('onLine' in navigator) && (navigator.onLine === false);
+     const hasServiceWorkerSupport = 'serviceWorker' in navigator;
+     if(isOffline) {
+         console.log('offline mode');
+     }
+     if(!hasServiceWorkerSupport){
+         console.log('service worker is not supported');
+     }
+     if (hasServiceWorkerSupport && !isOffline) {
+ 
+         window.addEventListener('load', function() {
+             const serviceWorkerPath = '/runtime-service-worker.js?v=1';
+             navigator.serviceWorker.register(serviceWorkerPath, { scope: './' }).then(function(registration) {
+                 // Registration was successful
+                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                 checkCacheKey().then(function(result) {
+                     if(result && result.newKey) {
+                         // stale version
+                         console.log('stale version, current key:', cacheKey, ';;; new key:', result.newKey);
+                         messageServiceWorker({ command: 'deletePagesCache'});
+                     }
+                 });
+             }, function(err) {
+                 // registration failed :(
+                 console.log('ServiceWorker registration failed: ', err);
+             }).catch(function(err) {
+                 console.log(err)
+             });
+         });
+ 
+         // helper function to refresh the page
+         var refreshPage = (function(){
+             var refreshing;
+             return function(){
+                 if (refreshing) return;
+                 // prevent multiple refreshes
+                 var refreshkey = 'refreshed' + location.href;
+                 var prevRefresh = localStorage.getItem(refreshkey);
+                 if(prevRefresh) {
+                     localStorage.removeItem(refreshkey);
+                     if((Date.now() - prevRefresh) < 30000) {
+                         return; // dont go into a refresh loop
+                     }
+                 }
+                 refreshing = true;
+                 localStorage.setItem(refreshkey, Date.now());
+                 console.log('refereshing page');
+                 window.location.reload();
+             }
+         }())
+ 
+         // checks the updated cache key
+         function checkCacheKey() {
+             var cacheKeyUrl = location.href + (location.search ? '&' : '?') + 'getCacheKey=true&_dm_no_cache';
+             return fetch(cacheKeyUrl)
+             .then(function(resp) {
+                 return (resp && resp.json) ? resp.json() : {};
+             })
+             .then(function(cacheObj) {
+                 if(cacheObj && cacheObj.cacheKey) {
+                     if(cacheObj.cacheKey !== cacheKey) {
+                         // stale version
+                         return { newKey: cacheObj.cacheKey };
+                     }
+                 }
+             })
+             .catch(function(err) {
+                 return {};
+             });
+         }
+ 
+         function messageServiceWorker(data) {
+             return new Promise(function(resolve, reject) {
+                 if(navigator.serviceWorker.controller) {
+                     var worker = navigator.serviceWorker.controller;
+                     var messageChannel = new MessageChannel();
+                     messageChannel.port1.onmessage = replyHandler;
+                     worker.postMessage(data, [messageChannel.port2]);
+                     function replyHandler (event) {
+                         resolve(event.data);
+                     }
+                 } else {
+                     resolve();
+                 }
+             })
+         }
+     }
+ }(window))
+   </script>
+   <!-- Add manifest -->
+   <link href="/manifest.json" rel="manifest"/>
+   <!-- Tell the browser it's a PWA -->
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <!-- Tell iOS it's a PWA -->
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <!-- End PWA settings -->
+   <meta content="text/html;charset=utf-8" http-equiv="Content-type"/>
+   <meta charset="utf-8"/>
+   <link href="/" rel="canonical"/>
+   <meta content=", initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" id="view" name="viewport"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <!--Add favorites icons-->
+   <link href="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/home-icon.png" rel="apple-touch-icon"/>
+   <link href="https://irp-cdn.multiscreensite.com/f3cf2265/site_favicon_16_1509799072647.ico" rel="icon" type="image/x-icon"/>
+   <!-- End favorite icons -->
+   <!-- render the required CSS and JS in the head section -->
+   <style id="criticalCss">
+    .pswp,html{-webkit-text-size-adjust:100%}.dmRespRow,.dmRespRow .dmRespColsWrapper{width:100%}.pswp,.pswp__bg,.pswp__caption,.pswp__container,.pswp__share-modal,.pswp__share-tooltip,.pswp__top-bar{-webkit-backface-visibility:hidden}nav,section{display:block}html{font-family:Source Sans Pro;-ms-text-size-adjust:100%}h1{margin:.67em 0}b{font-weight:700}hr{box-sizing:content-box;height:0}*,.dmPopup,:after,:before{box-sizing:border-box}img{border:0;max-width:100%;-ms-interpolation-mode:bicubic;display:inline-block}button,input{font-family:inherit;font-size:100%;margin:0;line-height:normal}button{text-transform:none;-webkit-appearance:button}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}.dmRespRow.dmRespRowNoPadding{padding:0}.dmRespRow{position:relative;max-width:960px;padding-top:15px;padding-bottom:15px;margin:0 auto}.dmRespRow:after,.dmRespRow:before{content:" ";display:table}.dmRespRow:after{clear:both}.dmRespRow .dmRespCol{position:relative;width:100%;display:inline-block;vertical-align:top;float:left}.dmRespRow .dmRespCol>*{max-width:100%}.dmDesktopBody .dmRespRow .large-6{position:relative;width:50%}.dmDesktopBody .dmRespRow .large-12{position:relative;width:100%}@font-face{font-family:Alike;font-style:normal;font-weight:400;src:local('Alike Regular'),local('Alike-Regular'),url(https://fonts.gstatic.com/s/alike/v10/HI_EiYEYI6BIoHjGQ5Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:italic;font-weight:100;src:local('Lato Hairline Italic'),local('Lato-HairlineItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u-w4BMUTPHjxsIPx-mPCLQ7A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:italic;font-weight:100;src:local('Lato Hairline Italic'),local('Lato-HairlineItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u-w4BMUTPHjxsIPx-oPCI.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:italic;font-weight:300;src:local('Lato Light Italic'),local('Lato-LightItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI9w2_FQft1dw.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:italic;font-weight:300;src:local('Lato Light Italic'),local('Lato-LightItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI9w2_Gwft.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:italic;font-weight:400;src:local('Lato Italic'),local('Lato-Italic'),url(https://fonts.gstatic.com/s/lato/v14/S6u8w4BMUTPHjxsAUi-qJCY.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:italic;font-weight:400;src:local('Lato Italic'),local('Lato-Italic'),url(https://fonts.gstatic.com/s/lato/v14/S6u8w4BMUTPHjxsAXC-q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:italic;font-weight:700;src:local('Lato Bold Italic'),local('Lato-BoldItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI5wq_FQft1dw.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:italic;font-weight:700;src:local('Lato Bold Italic'),local('Lato-BoldItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI5wq_Gwft.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:italic;font-weight:900;src:local('Lato Black Italic'),local('Lato-BlackItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI3wi_FQft1dw.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:italic;font-weight:900;src:local('Lato Black Italic'),local('Lato-BlackItalic'),url(https://fonts.gstatic.com/s/lato/v14/S6u_w4BMUTPHjxsI3wi_Gwft.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:normal;font-weight:100;src:local('Lato Hairline'),local('Lato-Hairline'),url(https://fonts.gstatic.com/s/lato/v14/S6u8w4BMUTPHh30AUi-qJCY.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:normal;font-weight:100;src:local('Lato Hairline'),local('Lato-Hairline'),url(https://fonts.gstatic.com/s/lato/v14/S6u8w4BMUTPHh30AXC-q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:normal;font-weight:300;src:local('Lato Light'),local('Lato-Light'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh7USSwaPGR_p.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:normal;font-weight:300;src:local('Lato Light'),local('Lato-Light'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh7USSwiPGQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:normal;font-weight:400;src:local('Lato Regular'),local('Lato-Regular'),url(https://fonts.gstatic.com/s/lato/v14/S6uyw4BMUTPHjxAwXjeu.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:normal;font-weight:400;src:local('Lato Regular'),local('Lato-Regular'),url(https://fonts.gstatic.com/s/lato/v14/S6uyw4BMUTPHjx4wXg.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:normal;font-weight:700;src:local('Lato Bold'),local('Lato-Bold'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh6UVSwaPGR_p.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:normal;font-weight:700;src:local('Lato Bold'),local('Lato-Bold'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh6UVSwiPGQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Lato;font-style:normal;font-weight:900;src:local('Lato Black'),local('Lato-Black'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh50XSwaPGR_p.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Lato;font-style:normal;font-weight:900;src:local('Lato Black'),local('Lato-Black'),url(https://fonts.gstatic.com/s/lato/v14/S6u9w4BMUTPHh50XSwiPGQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:200;src:local('Oswald ExtraLight'),local('Oswald-ExtraLight'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-1h4Tvs9CE5Q.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:200;src:local('Oswald ExtraLight'),local('Oswald-ExtraLight'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-1h4Ttc9CE5Q.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:200;src:local('Oswald ExtraLight'),local('Oswald-ExtraLight'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-1h4TtM9CE5Q.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:200;src:local('Oswald ExtraLight'),local('Oswald-ExtraLight'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-1h4Tus9C.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:300;src:local('Oswald Light'),local('Oswald-Light'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-sh0Tvs9CE5Q.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:300;src:local('Oswald Light'),local('Oswald-Light'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-sh0Ttc9CE5Q.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:300;src:local('Oswald Light'),local('Oswald-Light'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-sh0TtM9CE5Q.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:300;src:local('Oswald Light'),local('Oswald-Light'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-sh0Tus9C.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:400;src:local('Oswald Regular'),local('Oswald-Regular'),url(https://fonts.gstatic.com/s/oswald/v16/TK3iWkUHHAIjg752HT8Ghe4.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:400;src:local('Oswald Regular'),local('Oswald-Regular'),url(https://fonts.gstatic.com/s/oswald/v16/TK3iWkUHHAIjg752Fj8Ghe4.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:400;src:local('Oswald Regular'),local('Oswald-Regular'),url(https://fonts.gstatic.com/s/oswald/v16/TK3iWkUHHAIjg752Fz8Ghe4.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:400;src:local('Oswald Regular'),local('Oswald-Regular'),url(https://fonts.gstatic.com/s/oswald/v16/TK3iWkUHHAIjg752GT8G.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:500;src:local('Oswald Medium'),local('Oswald-Medium'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-6hwTvs9CE5Q.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:500;src:local('Oswald Medium'),local('Oswald-Medium'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-6hwTtc9CE5Q.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:500;src:local('Oswald Medium'),local('Oswald-Medium'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-6hwTtM9CE5Q.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:500;src:local('Oswald Medium'),local('Oswald-Medium'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-6hwTus9C.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:600;src:local('Oswald SemiBold'),local('Oswald-SemiBold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-xhsTvs9CE5Q.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:600;src:local('Oswald SemiBold'),local('Oswald-SemiBold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-xhsTtc9CE5Q.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:600;src:local('Oswald SemiBold'),local('Oswald-SemiBold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-xhsTtM9CE5Q.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:600;src:local('Oswald SemiBold'),local('Oswald-SemiBold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-xhsTus9C.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Oswald;font-style:normal;font-weight:700;src:local('Oswald Bold'),local('Oswald-Bold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-ohoTvs9CE5Q.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Oswald;font-style:normal;font-weight:700;src:local('Oswald Bold'),local('Oswald-Bold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-ohoTtc9CE5Q.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Oswald;font-style:normal;font-weight:700;src:local('Oswald Bold'),local('Oswald-Bold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-ohoTtM9CE5Q.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Oswald;font-style:normal;font-weight:700;src:local('Oswald Bold'),local('Oswald-Bold'),url(https://fonts.gstatic.com/s/oswald/v16/TK3hWkUHHAIjg75-ohoTus9C.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEz0dL_nz.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEzQdL_nz.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEzwdL_nz.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEzMdL_nz.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEz8dL_nz.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEz4dL_nz.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:100;src:local('Roboto Thin Italic'),local('Roboto-ThinItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOiCnqEu92Fr1Mu51QrEzAdLw.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc3CsTKlA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc-CsTKlA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc2CsTKlA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc5CsTKlA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc1CsTKlA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc0CsTKlA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:300;src:local('Roboto Light Italic'),local('Roboto-LightItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TjASc6CsQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xFIzIFKw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xMIzIFKw.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xEIzIFKw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xLIzIFKw.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xHIzIFKw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xGIzIFKw.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:400;src:local('Roboto Italic'),local('Roboto-Italic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1Mu51xIIzI.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc3CsTKlA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc-CsTKlA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc2CsTKlA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc5CsTKlA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc1CsTKlA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc0CsTKlA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:500;src:local('Roboto Medium Italic'),local('Roboto-MediumItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51S7ACc6CsQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic3CsTKlA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic-CsTKlA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic2CsTKlA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic5CsTKlA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic1CsTKlA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic0CsTKlA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:700;src:local('Roboto Bold Italic'),local('Roboto-BoldItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TzBic6CsQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc3CsTKlA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc-CsTKlA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc2CsTKlA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc5CsTKlA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc1CsTKlA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc0CsTKlA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:italic;font-weight:900;src:local('Roboto Black Italic'),local('Roboto-BlackItalic'),url(https://fonts.gstatic.com/s/roboto/v18/KFOjCnqEu92Fr1Mu51TLBCc6CsQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxFIzIFKw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxMIzIFKw.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxEIzIFKw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxLIzIFKw.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxHIzIFKw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxGIzIFKw.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:100;src:local('Roboto Thin'),local('Roboto-Thin'),url(https://fonts.gstatic.com/s/roboto/v18/KFOkCnqEu92Fr1MmgVxIIzI.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:300;src:local('Roboto Light'),local('Roboto-Light'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:400;src:local('Roboto'),local('Roboto-Regular'),url(https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fCRc4EsA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fABc4EsA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fCBc4EsA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fBxc4EsA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fCxc4EsA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fChc4EsA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:500;src:local('Roboto Medium'),local('Roboto-Medium'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:700;src:local('Roboto Bold'),local('Roboto-Bold'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfCRc4EsA.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfABc4EsA.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfCBc4EsA.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfBxc4EsA.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfCxc4EsA.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfChc4EsA.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:Roboto;font-style:normal;font-weight:900;src:local('Roboto Black'),local('Roboto-Black'),url(https://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmYUtfBBc4.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdh18Smxg.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdo18Smxg.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdg18Smxg.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdv18Smxg.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdj18Smxg.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSdi18Smxg.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:200;src:local('Source Sans Pro ExtraLight Italic'),local('SourceSansPro-ExtraLightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZYokSds18Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkidh18Smxg.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkido18Smxg.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkidg18Smxg.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkidv18Smxg.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkidj18Smxg.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkidi18Smxg.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:300;src:local('Source Sans Pro Light Italic'),local('SourceSansPro-LightItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZMkids18Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7qsDJT9g.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7jsDJT9g.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7rsDJT9g.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7ksDJT9g.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7osDJT9g.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7psDJT9g.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:400;src:local('Source Sans Pro Italic'),local('SourceSansPro-Italic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7nsDI.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdh18Smxg.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdo18Smxg.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdg18Smxg.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdv18Smxg.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdj18Smxg.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCdi18Smxg.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:600;src:local('Source Sans Pro SemiBold Italic'),local('SourceSansPro-SemiBoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZY4lCds18Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdh18Smxg.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdo18Smxg.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdg18Smxg.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdv18Smxg.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdj18Smxg.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSdi18Smxg.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:700;src:local('Source Sans Pro Bold Italic'),local('SourceSansPro-BoldItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZclSds18Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydh18Smxg.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydo18Smxg.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydg18Smxg.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydv18Smxg.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydj18Smxg.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklydi18Smxg.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:italic;font-weight:900;src:local('Source Sans Pro Black Italic'),local('SourceSansPro-BlackItalic'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKwdSBYKcSV-LCoeQqfX1RYOo3qPZZklyds18Q.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wmhduz8A.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wkxduz8A.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wmxduz8A.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wlBduz8A.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wmBduz8A.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wmRduz8A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:200;src:local('Source Sans Pro ExtraLight'),local('SourceSansPro-ExtraLight'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i94_wlxdu.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmhduz8A.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwkxduz8A.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmxduz8A.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlBduz8A.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmBduz8A.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwmRduz8A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:300;src:local('Source Sans Pro Light'),local('SourceSansPro-Light'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdu.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNa7lqDY.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qPK7lqDY.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNK7lqDY.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qO67lqDY.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qN67lqDY.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qNq7lqDY.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:400;src:local('Source Sans Pro Regular'),local('SourceSansPro-Regular'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xK3dSBYKcSV-LCoeQqfX1RYOo3qOK7l.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmhduz8A.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwkxduz8A.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmxduz8A.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlBduz8A.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmBduz8A.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwmRduz8A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:600;src:local('Source Sans Pro SemiBold'),local('SourceSansPro-SemiBold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3i54rwlxdu.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmhduz8A.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwkxduz8A.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmxduz8A.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlBduz8A.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmBduz8A.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwmRduz8A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:700;src:local('Source Sans Pro Bold'),local('SourceSansPro-Bold'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3ig4vwlxdu.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwmhduz8A.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C88,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwkxduz8A.woff2) format('woff2');unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwmxduz8A.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwlBduz8A.woff2) format('woff2');unicode-range:U+0370-03FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwmBduz8A.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwmRduz8A.woff2) format('woff2');unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Source Sans Pro';font-style:normal;font-weight:900;src:local('Source Sans Pro Black'),local('SourceSansPro-Black'),url(https://fonts.gstatic.com/s/sourcesanspro/v11/6xKydSBYKcSV-LCoeQqfX1RYOo3iu4nwlxdu.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Alef Hebrew';font-style:normal;font-weight:400;src:url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Regular.eot);src:url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Regular.eot?#iefix) format("embedded-opentype"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Regular.woff2) format("woff2"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Regular.woff) format("woff"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Regular.ttf) format("truetype")}@font-face{font-family:'Alef Hebrew';font-style:normal;font-weight:700;src:url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Bold.eot);src:url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Bold.eot?#iefix) format("embedded-opentype"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Bold.woff2) format("woff2"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Bold.woff) format("woff"),url(//fonts.gstatic.com/ea/alefhebrew/v4/Alef-Bold.ttf) format("truetype")}@font-face{font-family:FontAwesome;src:url(/_dm/s/rt/css/font-icons/font-awesome/font/fontawesome-webfont.eot?v=6);src:url(/_dm/s/rt/css/font-icons/font-awesome/font/fontawesome-webfont.eot?#iefix&v=6) format("embedded-opentype"),url(/_dm/s/rt/css/font-icons/font-awesome/font/fontawesome-webfont.woff?v=6) format("woff"),url(/_dm/s/rt/css/font-icons/font-awesome/font/fontawesome-webfont.ttf?v=6) format("truetype"),url(/_dm/s/rt/css/font-icons/font-awesome/font/fontawesome-webfont.svg#fontawesomeregular?v=6) format("svg");font-weight:400;font-style:normal}#dm div.dmContent [class*=" icon-"],[class*=" icon-"]{font-family:FontAwesome!important;font-weight:400;font-style:normal;text-decoration:inherit;-webkit-font-smoothing:antialiased}[class*=" icon-"]:before{text-decoration:none;display:inline-block;speak:none}a [class*=" icon-"]{display:inline}[class*=" icon-"]{display:inline;width:auto;height:auto;line-height:normal;vertical-align:baseline;background-image:none;background-position:0 0;background-repeat:repeat;margin-top:0}.icon-star:before{content:"\f005"}.icon-phone:before{content:"\f095"}.icon-angle-down:before{content:"\f107"}@font-face{font-family:dm-font;src:url(/_dm/s/rt/css/font-icons/dm-font/fonts/dm-font.eot?v=12);src:url(/_dm/s/rt/css/font-icons/dm-font/fonts/dm-font.eot?v=12#iefix-ss0txf) format("embedded-opentype"),url(/_dm/s/rt/css/font-icons/dm-font/fonts/dm-font.ttf?v=12) format("truetype"),url(/_dm/s/rt/css/font-icons/dm-font/fonts/dm-font.woff?v=12) format("woff"),url(/_dm/s/rt/css/font-icons/dm-font/fonts/dm-font.svg?v=12#dm-font) format("svg");font-weight:400;font-style:normal}[class*=" dm-icon-"]{font-family:dm-font;speak:none;font-style:normal;font-weight:400;font-variant:normal;text-transform:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.dm-icon-x_close_popup:before{content:"\eb6c"}.dmInner{min-height:100vh!important;position:relative}.dmPopup,.dmPopupMask{position:fixed;left:0}.display_None{display:none}.dmDisplay_None{display:none!important}.clearfix:after{clear:both;visibility:hidden;line-height:0;height:0}.clearfix:after,.clearfix:before{content:" ";display:table}.clearfix{display:inline-block}#dm .dmWidget .icon{font-size:26px}body:not(.noFontIcons) #dm .dmOuter .dmInner .dmWidget .icon.hasFontIcon{height:26px;margin-top:-13px;line-height:normal;text-align:center;background-image:none}.supportsFontIcons .hasFontIcon{background-image:none!important}#dm .dmNav.dmNavCustom .dmHideFromNav,#dm .dmn .dmHideFromNav{display:none!important}.dmPopupMask{margin:0;display:none;width:10px;z-index:1000000999;top:0}.dmPopup{padding:10px;text-align:left;margin:0 10px;top:10px;width:93%;z-index:1000009999!important;background:#f5f5f5;overflow-y:auto;height:100%;display:block}.dmDesktopBody #dm .dmInner .dmRespRow.desktop-no-padding,.dmRespRow.fullBleedMode{padding-left:0!important;padding-right:0!important}.dmPopupClose,.dmPopupClose:before{position:absolute;visibility:visible}.dmPopup .dmPopupTitle{text-align:left;font:700 19px Helvetica,Arial;margin:20px 20px 35px;color:#999}#dmPopup{display:none}.dmPopupClose{border-radius:25px;width:27px;height:27px;top:12px;right:12px;z-index:1;background-color:rgba(255,255,255,.4)}.dmPopupClose:before{display:block;font-size:25px;color:#000;top:2px;right:0}body.dmDesktopBody:not(.mac) .data::-webkit-scrollbar{width:5px;height:5px}body.dmDesktopBody:not(.mac) .data::-webkit-scrollbar-track{background:rgba(0,0,0,.1)}body.dmDesktopBody:not(.mac) .data::-webkit-scrollbar-thumb{background:#c8c8c8;box-shadow:inset 0 1px 2px #454545;border-radius:45px}#dm div.dmInner .dmform .dmforminput label[hide=true]{display:none}.dmform .dmforminput label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#dm .dmRespRow .dmRespCol>.dmWidget,body.fix-mobile-scrolling{overflow:initial}[class*=" dm-icon-"]:before{font-family:dm-font!important}.dmRespRow.fullBleedMode>.dmRespColsWrapper{width:100%!important;max-width:100%!important}.pswp,.pswp__bg,.pswp__scroll-wrap{width:100%;height:100%}[data-display-type=block]{display:block}#dm .dmRespRow .dmRespColsWrapper{display:-ms-flexbox;display:-webkit-flex;display:flex}#dm .dmInner .dmWidget.align-center,.align-center{margin-left:auto;margin-right:auto}p.rteBlock{margin:0}#dmRoot{text-decoration-skip-ink:none}body{-webkit-overflow-scrolling:touch}.pswp__scroll-wrap{top:0!important;position:absolute;left:0;overflow:hidden}.pswp,.pswp__bg,.pswp__container,.pswp__item{position:absolute;top:0;left:0}.pswp{z-index:9999999999!important;display:none;overflow:hidden;-ms-touch-action:none;touch-action:none;outline:0}.pswp *{-webkit-box-sizing:border-box;box-sizing:border-box}.pswp__bg{background:#000;opacity:0;will-change:opacity}.pswp__container{-webkit-touch-callout:none;-ms-touch-action:none;touch-action:none;right:0;bottom:0;will-change:transform}.pswp__item{right:0;bottom:0;overflow:hidden}.pswp__button{position:relative;overflow:visible;-webkit-appearance:none;display:block;border:0;padding:0;margin:0;float:right;opacity:.75;-webkit-box-shadow:none;box-shadow:none}.pswp__button::-moz-focus-inner{padding:0;border:0}.pswp__button,.pswp__button--arrow--left:before,.pswp__button--arrow--right:before{background:url(/_dm/s/rt/scripts/vendor/photoswipe4/icons/default-skin.png) no-repeat;background-size:264px 88px;width:44px;height:44px}.pswp__button--close{background-position:0 -44px}.pswp__button--share{background-position:-44px -44px}.pswp__button--fs{display:none}.pswp__button--zoom{display:none;background-position:-88px 0}.pswp__button--arrow--left,.pswp__button--arrow--right{background:0 0;top:50%;margin-top:-50px;width:70px;height:100px;position:absolute}.pswp__button--arrow--left{left:0}.pswp__button--arrow--right{right:0}.pswp__button--arrow--left:before,.pswp__button--arrow--right:before{content:'';top:35px;background-color:rgba(0,0,0,.3);height:30px;width:32px;position:absolute}.pswp__button--arrow--left:before{left:6px;background-position:-138px -44px}.pswp__button--arrow--right:before{right:6px;background-position:-94px -44px}.pswp__share-modal{display:block;background:rgba(0,0,0,.5);width:100%;height:100%;top:0;left:0;padding:10px;position:absolute;z-index:1600;opacity:0;will-change:opacity}.pswp__share-modal--hidden{display:none}.pswp__share-tooltip{z-index:1620;position:absolute;background:#FFF;top:56px;border-radius:2px;display:block;width:auto;right:44px;-webkit-box-shadow:0 2px 5px rgba(0,0,0,.25);box-shadow:0 2px 5px rgba(0,0,0,.25);-webkit-transform:translateY(6px);-ms-transform:translateY(6px);transform:translateY(6px);will-change:transform}.pswp__counter,.pswp__preloader{height:44px;position:absolute;top:0}.pswp__counter{left:0;font-size:13px;line-height:44px;color:#FFF;opacity:.75;padding:0 10px}.pswp__caption{position:absolute;left:0;bottom:0;width:100%;min-height:44px}.dmRespRow:not(.dmPlaceHolderRespRow) .dmRespCol:not(.content-removed):empty,.titleLine hr{min-height:1px}.pswp__caption__center{max-width:95%;margin:0 auto;font-size:16px;padding:10px;line-height:20px;color:#CCC;width:960px;font-weight:700;text-align:center}.pswp__preloader{width:44px;left:50%;margin-left:-22px;opacity:0;will-change:opacity}.pswp__preloader__icn{width:20px;height:20px;margin:12px}@media screen and (max-width:1024px){.pswp__preloader{position:relative;left:auto;top:auto;margin:0;float:right}}.pswp__ui{-webkit-font-smoothing:auto;visibility:visible;opacity:1;z-index:1550}.pswp__top-bar{position:absolute;left:0;top:0;height:44px;width:100%}.pswp__caption,.pswp__top-bar{will-change:opacity;background-color:rgba(0,0,0,.5)}.pswp__ui--hidden .pswp__button--arrow--left,.pswp__ui--hidden .pswp__button--arrow--right,.pswp__ui--hidden .pswp__caption,.pswp__ui--hidden .pswp__top-bar{opacity:.001}.dmLargeBody #dm .dmRespRow .dmRespCol>.dmWidget{width:280px;max-width:100%}#dm .dmInner .dmWidget:not(.displayNone){display:inline-block}#dm .dmInner .dmWidget:not(.displayNone)[data-display-type=block]{display:block}#dm .dmInner .dmWidget{text-decoration:none;margin:10px 0;clear:both;position:relative;text-align:center;line-height:22px;box-shadow:none;background-image:none;padding:0 0 0 40px;height:auto;border:0;white-space:nowrap}#dm .dmInner .dmWidget:after{content:'';display:inline-block;height:100%;vertical-align:middle;width:0;margin-right:-.25em}#dm .dmInner .dmWidget .iconBg{position:absolute;left:0;width:50px;top:50%;margin-top:-13px}#innerBar,.dmHeader,.imageWidget:not(.displayNone) img,body{width:100%}#dm .dmWidget .text{display:inline-block;vertical-align:middle;font-size:1.125em;line-height:normal;white-space:normal;padding:10px 7px;max-width:98%}#dm .dmInner .dmBody .hide-for-large,#dm .dmNav.dmNavCustom .dmHideFromNav-desktop,#dm .dmn .dmHideFromNav-desktop,#dm [data-buttonstyle^=FLAT]:not([data-buttonstyle*="_ICON"]) .dmWidget:not([data-buttonstyle]):not([data-buttonstyle*="_ICON"]) .iconBg,.hide-for-large{display:none!important}#dm [data-buttonstyle^=FLAT] .dmWidget:not([data-buttonstyle]){background-clip:border-box}.dmHeader,.dmInner{background:#fff;color:#b8b8b8}#dm [data-buttonstyle^=FLAT]:not([data-buttonstyle*="_ICON"]) .dmWidget:not([data-buttonstyle]):not([data-buttonstyle*="_ICON"]){padding:0}#dm [data-buttonstyle^=FLAT]:not([data-buttonstyle*="_ICON"]) .dmWidget:not([data-buttonstyle]):not([data-buttonstyle*="_ICON"]) .text{padding:10px 7px}#dm .dmRespRow.dmRespRowNoPadding,.dmContent,.dmInner ul:not(.defaultList){padding:0}*{border:0 solid #c32b2b;scrollbar-arrow-color:#fff;scrollbar-track-color:#f2f2f2;scrollbar-face-color:silver;scrollbar-highlight-color:silver;scrollbar-3dlight-color:silver;scrollbar-shadow-color:silver;scrollbar-darkshadow-color:silver;scrollbar-width:12px}body{overflow:hidden;-webkit-text-size-adjust:100%!important;-ms-text-size-adjust:100%!important}A IMG{border:0}h1,h3,ul{margin-left:0;margin-right:0}.dmInner *{-webkit-font-smoothing:antialiased}.clearfix,a,img,li,ul{vertical-align:top}#iscrollBody,#site_content{position:relative}.dmOuter{word-wrap:break-word}.dmInner{font-size:16px}.dmDesktopBody .dmInner{min-width:960px}.dmHeader{text-align:center;position:relative;max-width:100%}DIV.dmBody{padding:0;clear:both}.dmContent{margin:0}#innerBar{position:relative;height:36px;font-size:20px;margin:0;z-index:80}.dmLargeBody .dmBody .dmRespRowsWrapper,.dmRespRow.dmInnerBarRow{background-color:#fff}.dmRespRowsWrapper{max-width:960px;margin:0 auto}.dmRespCol>[dmle_extension]:not(:first-child){margin-top:10px}.dmNav{margin-top:20px}.dmNav li{position:relative}.dmNav li a{height:100%;display:block;padding:17px 10px;text-decoration:none}.dmLargeBody .imageWidget:not(.displayNone){display:inline-block;max-width:100%}.dmDivider.defaultDivider{min-height:1px;background-color:rgba(184,184,184,.2);margin:0}#dm .dmRespColsWrapper{display:block}.dmNewParagraph{text-align:left;margin:8px 0;padding:2px 0}.dmLargeBody .dmRespRowsWrapper>.dmRespRow .dmRespCol,.dmLargeBody .fHeader .dmRespRow .dmRespCol{padding-left:.75%;padding-right:.75%}.dmLargeBody .dmRespRowsWrapper>.dmRespRow .dmRespCol:first-child,.dmLargeBody .fHeader .dmRespRow .dmRespCol:first-child{padding-left:0;padding-right:1.5%}.dmLargeBody .dmRespRowsWrapper>.dmRespRow .dmRespCol:last-child,.dmLargeBody .fHeader .dmRespRow .dmRespCol:last-child{padding-right:0}.dmLargeBody .dmRespRowsWrapper>.dmRespRow .dmRespCol:only-child,.dmLargeBody .fHeader .dmRespRow .dmRespCol:only-child{padding-left:0;padding-right:0}#innerBar.lineInnerBar{display:table;width:100%;box-shadow:none;-webkit-box-shadow:none;-moz-box-shadow:none;font-size:20px;margin-top:30px;margin-bottom:30px;background-color:transparent;color:#b8b8b8}#innerBar .titleLine{display:table-cell;vertical-align:middle;width:50%}.dmPageTitleRow:not(#innerBar){display:none}.titleLine hr{background-color:rgba(184,184,184,.2)}.dmLargeBody .dmFooterResp>.dmRespRow .dmRespCol{padding-left:.75%;padding-right:.75%}.dmLargeBody .dmFooterResp>.dmRespRow .dmRespCol:first-child{padding-left:0;padding-right:1.5%}.dmLargeBody .dmFooterResp>.dmRespRow .dmRespCol:last-child{padding-right:0;padding-left:1.5%}.dmLargeBody .dmFooterResp>.dmRespRow .dmRespCol:only-child{padding-left:0;padding-right:0}.dmStandardDesktop{display:block}.skinnyHeaderLayout .dmHeader .dmRespCol{display:table;float:none;height:50px}.skinnyHeaderLayout .fHeader .dmHeader .dmRespCol{float:left;display:block;height:auto}.dmInner a{color:#b8b8b8;outline:0;vertical-align:inherit}.dmLinksMenu>ul{display:block;margin:0;font-size:inherit}.dmStandardDesktop{margin:0 auto}#dm .dmInner .dmWidget{color:#1a1a1a;background-color:rgba(0,0,0,0)}#dm [data-buttonstyle=FLAT] .dmWidget:not([data-buttonstyle]){border-color:transparent}#dm .dmDivider{display:block;margin:10px 0}body{background-color:#eee}.dmDivider{min-height:2px;border:0 currentColor;color:grey;background:0 0}#dm .dmDividerWrapper{display:block}.main-navigation.unifiednav{-js-display:flex;display:flex;justify-content:flex-start;align-items:stretch;overflow:visible}.main-navigation.unifiednav ul{list-style:none;padding:0;margin:0;font-size:1rem}.main-navigation.unifiednav .unifiednav__container{-js-display:flex;display:flex;justify-content:flex-start;list-style:none}.main-navigation.unifiednav .unifiednav__container>.unifiednav__item-wrap{-js-display:flex;display:flex;justify-content:flex-start;position:relative;font-weight:400}.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap::after,.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap::before{content:'';align-self:center;font-weight:700}.main-navigation.unifiednav .unifiednav__container>.unifiednav__item-wrap>.unifiednav__item{-js-display:flex;display:flex;justify-content:flex-start;align-items:center;flex-direction:row;color:inherit;text-decoration:none;position:relative;padding:12px 15px;margin:0;font-weight:inherit;letter-spacing:.03em}.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item{padding:0 15px}.main-navigation.unifiednav .unifiednav__container>.unifiednav__item-wrap>.unifiednav__item .nav-item-text{white-space:nowrap}.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item .nav-item-text::after,.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item .nav-item-text::before{content:'';width:100%;height:0;border:0 solid transparent;border-top-color:currentColor;display:block;opacity:0}.dmFooterContainer .dmRespRow.dmDividerRow,.dmLargeBody #innerBar.lineInnerBar,.main-navigation.unifiednav .unifiednav__container .unifiednav__item:not(.unifiednav__item_has-sub-nav) .icon{display:none}.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item.dmNavItemSelected .nav-item-text::after,.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item.dmNavItemSelected .nav-item-text::before{opacity:1}.main-navigation.unifiednav.effect-text-color{padding:12px 15px}.main-navigation.unifiednav.effect-text-color .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item.dmNavItemSelected{color:#9a9a9a}.main-navigation.unifiednav:not(.unifiednav_vertical)>.unifiednav__container{justify-content:inherit}#dm .p_hfcontainer nav.main-navigation.unifiednav{min-width:9em!important;text-align:initial!important}#dm .main-navigation.unifiednav:not([data-nav-structure=VERTICAL])>.unifiednav__container .nav-item-text::before,.dmforminput label{text-align:left}#dm .main-navigation.unifiednav:not([data-nav-structure=VERTICAL])>.unifiednav__container{flex-wrap:wrap;justify-content:inherit}#dm .main-navigation.unifiednav:not([data-nav-structure=VERTICAL]) .unifiednav__container:not([data-depth])>.unifiednav__item-wrap:not(:last-child)::after,#dm .main-navigation.unifiednav:not([data-nav-structure=VERTICAL]) .unifiednav__container:not([data-depth])>.unifiednav__item-wrap:not(:last-child)::before,#dm .main-navigation.unifiednav:not([data-nav-structure=VERTICAL])[data-divider]:not([data-direction=RIGHT]) .unifiednav__container:not([data-depth])>.unifiednav__item-wrap:not(:last-child)::before{content:''}#dm .dmBody .dmRespRowsWrapper{max-width:none;background-color:transparent}div.dmInner{font-weight:300;font-family:Roboto}h1,h3{font-family:Oswald;font-weight:400}.dmLargeBody .dmRespRow{width:100%;max-width:none;margin-left:0;margin-right:0;padding-left:40px;padding-right:40px}.dmRespRow:not(.desktopHeaderBox) .dmRespColsWrapper{max-width:960px}section.dmRespRow{padding-top:0;padding-bottom:0}h1{font-size:56px}h3{font-size:30px}.dmInner .dmSectionParallex{background-attachment:fixed;background-position:50% 0;background-size:cover;background-repeat:no-repeat;margin-top:0;background-image:url(https://dd-cdn.multiscreensite.com/themes/sky-patrol/sky-patrol-hp-strip1.jpg);padding-top:200px;padding-bottom:200px}#dm .dmBody a.u_1398289156,#dm .dmBody a.u_1510834756,#dm .dmBody a.u_1549746079,#dm .dmBody a.u_1964949322,#dm .dmBody section.u_1860777710{background-repeat:no-repeat!important;background-size:cover!important}.dmFullRowRespTmpl section{padding:50px 40px}.dmLargeBody .dmFullRowRespTmpl .dmRespRow .large-6:first-child{padding-right:40px}.dmLargeBody .dmFullRowRespTmpl .dmRespRow .large-6:last-child{padding-left:40px}.dmform .dmforminput label{font-weight:400;font-size:16px}#dm div.dmInner h1,#dm div.dmInner h3{font-family:'Alef Hebrew'}#dm [data-buttonstyle] div.dmInner .dmWidget{border-width:1px;border-style:solid;border-color:#b8b8b8}#dm [data-buttonstyle] div.dmInner .dmWidget span.text{font-weight:700}#dm [data-buttonstyle] div.dmInner .dmWidget span.text,#dm div.dmContent h1,#dm div.dmContent h3{color:#9b9b9b}#dm div.dmContent A,#dm div.dmContent A *{text-decoration:none}#dm div.dmRespCol>*{line-height:normal}#dm .dmform .dmforminput label,#dm div.dmInner,#dm div.dmInner .dmRespCol{font-family:Lato;font-size:18px}#dm div.dmContent h1{font-family:Alike;font-size:55px}#dm div.dmContent h3{font-family:Lato;font-size:30px}#dm .dmNewParagraph a,#dm div.dmNewParagraph a{text-decoration:none}#dm .dmNewParagraph,#dm .rteBlock,#dm h1,#dm h3{direction:ltr;text-align:left}.imageWidget:not(.displayNone) img{border-radius:0;-webkit-border-radius:0;-moz-border-radius:0}.dmform .dmforminput label{font-family:roboto}#dm [data-buttonstyle] .dmWidget span.iconBg,#dm [data-buttonstyle] .dmWidget span.text{color:#9d9d9d}.dmNewParagraph{direction:rtl}::-webkit-input-placeholder{color:#414141}::-moz-placeholder{color:#414141}:-ms-input-placeholder{color:#414141}:-moz-placeholder{color:#414141}#dm .p_hfcontainer div.dmform-error,#dm .p_hfcontainer div.u_1071518837 .dmform-success{padding-top:40px!important;padding-bottom:345px!important}#dm .dmInner div.u_hcontainer,#dm .p_hfcontainer div.u_1464410382{float:none!important;top:auto!important;padding:0!important;width:100%!important}#dm .dmBody a.u_1959972652{margin-left:67px!important}#dm .dmBody a.u_1045706779{margin-left:299px!important}.dmRespRow .dmRespColsWrapper{max-width:1149px!important;position:relative!important;margin:0 auto!important}#dm .dmInner div#hcontainer.u_hcontainer{box-shadow:0 2px 3px -2px gray}.dmLargeBody .dmRespRowsWrapper>.dmRespRow .dmRespCol:last-child,.dmLargeBody .fHeader .dmRespRow .dmRespCol:last-child{padding-left:0!important}#dm .p_hfcontainer div.u_1022264334{background-color:rgba(223,24,32,1)!important}#dm .p_hfcontainer div.u_1056751160,#dm .p_hfcontainer div.u_1464410382{border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:rgba(153,153,153,1)!important}#dm .dmBody a.u_1045706779,#dm .dmBody a.u_1398289156,#dm .dmBody a.u_1510834756,#dm .dmBody a.u_1549746079,#dm .dmBody a.u_1959972652,#dm .dmBody a.u_1964949322{border-style:solid!important;border-width:0!important}#dm .p_hfcontainer .u_1931408407.main-navigation.unifiednav:not([data-nav-structure=VERTICAL]) .unifiednav__container:not([data-depth])>.unifiednav__item-wrap:not(:last-child)::after,#dm .p_hfcontainer .u_1931408407.main-navigation.unifiednav:not([data-nav-structure=VERTICAL]) .unifiednav__container:not([data-depth])>.unifiednav__item-wrap:not(:last-child)::before{font-size:18px!important}#dm .p_hfcontainer nav.u_1931408407.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item{color:rgba(0,0,0,1)!important;font-size:18px!important}#dm .p_hfcontainer nav.u_1931408407.main-navigation.unifiednav .unifiednav__container:not([data-depth])>.unifiednav__item-wrap>.unifiednav__item.dmNavItemSelected{color:rgba(223,24,32,1)!important}#dm .p_hfcontainer div.u_1071518837 input:not([type=submit]){background-color:rgba(223,24,32,.33)!important;margin:10px 0!important}#dm .p_hfcontainer div.dmform-error,#dm .p_hfcontainer div.dmform-error .rteBlock,#dm .p_hfcontainer div.u_1071518837 .dmform-success,#dm .p_hfcontainer div.u_1071518837 .dmform-success .rteBlock{color:rgba(65,65,65,1)!important;font-size:25px!important}#dm .p_hfcontainer div.u_1071518837 .dmforminput input{font-style:normal!important;color:rgba(0,0,0,1)!important;font-size:14px!important}#dm .dmInner div.u_hcontainer{max-width:100%!important;left:0!important;position:relative!important;min-width:0!important;text-align:center!important;height:auto!important;margin:0 auto!important}#dm .p_hfcontainer div.u_1464410382{max-width:none!important;left:0!important;position:relative!important;min-width:0!important;text-align:center!important;height:auto!important;margin:0 auto!important}#dm .p_hfcontainer div.u_1999009424,#dm .p_hfcontainer nav.u_1931408407{max-width:100%!important;min-width:0!important;text-align:center!important;float:none!important;top:0!important;left:0!important;position:relative!important;height:auto!important;margin:0 auto!important}#dm .p_hfcontainer nav.u_1931408407{width:100%!important;justify-content:center!important;align-items:stretch!important;padding:12px 15px!important}#dm .p_hfcontainer div.u_1999009424{width:397px!important;display:block!important;padding:0!important}#dm .p_hfcontainer div.u_1407726187{float:none!important;top:0!important;left:0!important;width:100%!important;position:relative!important;height:auto!important;max-width:calc(100% - 0px)!important;min-width:25px!important;text-align:center!important;display:block!important;padding:2px 0!important;margin:0 auto!important}#dm .dmBody div.u_1078299952,#dm .dmBody h3.u_1634623272{max-width:100%!important;min-width:0!important;display:block!important;top:0!important;padding:2px 0!important;float:none!important;left:0!important;width:100%!important;position:relative!important;text-align:center!important;height:auto!important}#dm .dmBody a.u_1959972652 span.text{color:rgba(223,24,32,1)!important;font-weight:400!important;font-size:18px!important}#dm .dmBody a.u_1398289156 span.text,#dm .dmBody a.u_1510834756 span.text,#dm .dmBody a.u_1549746079 span.text,#dm .dmBody a.u_1964949322 span.text{color:rgba(255,255,255,1)!important;font-weight:400!important}#dm .dmBody div.u_1110863263{background-color:rgba(223,24,32,1)!important}#dm .dmBody a.u_1045706779 span.text{font-weight:400!important;color:rgba(223,24,32,1)!important;font-size:18px!important}#dm .dmBody section.u_1860777710{background-position:0 50%!important;background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/home-page-banner.jpg)!important;background-color:#eee!important}#dm .dmBody a.u_1959972652{border-color:transparent!important;background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/button.png)!important}#dm .dmBody a.u_1964949322{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/about-us-mobile-button.png)!important}#dm .dmBody a.u_1398289156{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/services-mobile-button.png)!important}#dm .dmBody a.u_1510834756{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/licenses-mobile-button.png)!important}#dm .dmBody a.u_1549746079{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/contact-mobile-button.png)!important}#dm .dmBody a.u_1045706779{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/desktop/button.png)!important}@media all and (min-width:1920px),all and (-webkit-min-device-pixel-ratio:1.5),all and (min--moz-device-pixel-ratio:1.5),all and (-o-min-device-pixel-ratio:3/2),all and (min-device-pixel-ratio:1.5){#dm .dmBody a.u_1045706779,#dm .dmBody a.u_1398289156,#dm .dmBody a.u_1510834756,#dm .dmBody a.u_1549746079,#dm .dmBody a.u_1959972652,#dm .dmBody a.u_1964949322{border-style:solid!important;border-width:0!important}#dm .dmBody a.u_1045706779,#dm .dmBody a.u_1398289156,#dm .dmBody a.u_1510834756,#dm .dmBody a.u_1549746079,#dm .dmBody a.u_1959972652,#dm .dmBody a.u_1964949322,#dm .dmBody section.u_1860777710{background-repeat:no-repeat!important;background-size:cover!important}#dm .dmBody section.u_1860777710{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/home-page-banner.jpg)!important;background-color:#eee!important}#dm .dmBody a.u_1959972652{border-color:transparent!important;background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/button.png)!important}#dm .dmBody a.u_1964949322{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/about-us-mobile-button.png)!important}#dm .dmBody a.u_1398289156{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/services-mobile-button.png)!important}#dm .dmBody a.u_1510834756{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/licenses-mobile-button.png)!important}#dm .dmBody a.u_1549746079{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/contact-mobile-button.png)!important}#dm .dmBody a.u_1045706779{background-image:url(https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/background/button.png)!important}}#dm .dmBody h3.u_1634623272{margin:0 auto!important}#dm .dmBody div.u_1078299952{margin:8px auto!important}#dm .dmBody h1.u_1847885527{display:block!important;float:none!important;top:0!important;left:0!important;width:100%!important;position:relative!important;height:auto!important;max-width:calc(100% - 0px)!important;min-width:25px!important;text-align:center!important;padding:2px 0!important;margin:32px auto 0!important}#dm .dmBody section.u_1860777710{float:none!important;top:auto!important;max-width:none!important;left:0!important;width:100%!important;position:relative!important;min-width:0!important;text-align:center!important;height:auto!important;background-attachment:initial!important;padding:50px 40px 150px!important}#dm .dmBody a.u_1045706779,#dm .dmBody a.u_1959972652{background-repeat:no-repeat!important;background-size:contain!important;width:225px!important;height:58px!important;display:block!important;float:none!important;top:0!important;left:0!important;position:relative!important;margin-right:0!important;margin-bottom:0!important;min-width:25px!important;text-align:center!important;padding:0 0 5px!important}#dm .dmBody a.u_1959972652{max-width:calc(100% - 67px)!important;margin-top:20px!important}#dm .dmBody a.u_1045706779{background-position:50% 50%!important;margin-top:-58px!important}:root{--button-color:#F66035;--button-hover-color:#F86F4C;--text-on-light:#F66035;--text-on-dark:#F66035;--text-on-button:#FFF;--header-color:#313131}#imageZone{position:absolute;margin:auto}.coloumns{border-radius:3px;background-color:#f9980d;height:18px;width:6px;-webkit-animation-name:loader;-webkit-animation-duration:1s;-webkit-animation-iteration-count:infinite;-webkit-animation-direction:linear;-moz-animation-name:loader;-moz-animation-duration:1s;-moz-animation-iteration-count:infinite;-moz-animation-direction:linear;opacity:.25;-webkit-transform:scale(.7);-webkit-transform-origin:50% 180%;-moz-transform:scale(.7);-moz-transform-origin:50% 180%;position:absolute}#coloumn1{-webkit-transform:rotate(0);-webkit-animation-delay:-.914s;-moz-transform:rotate(0);-moz-animation-delay:-.914s}#coloumn2{-webkit-transform:rotate(30deg);-webkit-animation-delay:-.831s;-moz-transform:rotate(30deg);-moz-animation-delay:-.831s}#coloumn3{-webkit-transform:rotate(60deg);-webkit-animation-delay:-.747s;-moz-transform:rotate(60deg);-moz-animation-delay:-.747s}#coloumn4{-webkit-transform:rotate(90deg);-webkit-animation-delay:-.664s;-moz-transform:rotate(90deg);-moz-animation-delay:-.664s}#coloumn5{-webkit-transform:rotate(120deg);-webkit-animation-delay:-.581s;-moz-transform:rotate(120deg);-moz-animation-delay:-.581s}#coloumn6{-webkit-transform:rotate(150deg);-webkit-animation-delay:-.498s;-moz-transform:rotate(150deg);-moz-animation-delay:-.498s}#coloumn7{-webkit-transform:rotate(180deg);-webkit-animation-delay:-.415s;-moz-transform:rotate(180deg);-moz-animation-delay:-.415s}#coloumn8{-webkit-transform:rotate(210deg);-webkit-animation-delay:-.332s;-moz-transform:rotate(210deg);-moz-animation-delay:-.332s}#coloumn9{-webkit-transform:rotate(240deg);-webkit-animation-delay:-.249s;-moz-transform:rotate(240deg);-moz-animation-delay:-.249s}#coloumn10{-webkit-transform:rotate(270deg);-webkit-animation-delay:-.166s;-moz-transform:rotate(270deg);-moz-animation-delay:-.166s}#coloumn11{-webkit-transform:rotate(300deg);-webkit-animation-delay:-83ms;-moz-transform:rotate(300deg);-moz-animation-delay:-83ms}#coloumn12{-webkit-transform:rotate(330deg);-moz-transform:rotate(330deg)}
+     .dmDesktopBody [data-anim-desktop] {
+         visibility: hidden;
+     }
+   </style>
+   <!-- End render the required css and JS in the head section -->
+   <title>
+    Skip hire services Newquay, Perranporth, Cornwall: KM Skip Hire
+   </title>
+   <meta content="Skip hire services, Newquay, Perranporth, St Austell, Cornwall, KM Skip Hire, waste management, site clearance, waste removal services," name="keywords"/>
+   <meta content="Skip hire services Newquay, Perranporth, St Austell, Cornwall: KM Skip Hire. Established company providing skip hire, waste management, site clearance and waste removal services. Contact us now." name="description"/>
+   <script type="text/javascript">
+    !function(){function t(){var t=r("utm_content");if(t){var e=new Date;e.setDate(e.getDate()+30),document.cookie=t+";expires="+e.toGMTString()+";path=/"}else if(document.cookie)for(var o=document.cookie.split(/; */),n=0;n<o.length;n++)if(0===o[n].toLowerCase().trim().indexOf("utm_content=")){t=o[n];break}return t}function e(t){try{console.log(t)}catch(e){alert(t)}}function r(t){var e=top.location.search?top.location.search.substring(1):null;if(e)for(var r=e.split("&"),o=0;o<r.length;o++)if(0===r[o].toLowerCase().trim().indexOf(t+"="))return r[o];return null}var o="",n=r("mctest");if(n)e("dnr tag version: 20160125"),o="http://localhost:8080/rip/library/dnr/mcDnrTag.debug.js";else{var a=t(),c="";a&&(c=top.location.search?0<=top.location.search.indexOf("utm_content")?top.location.search:top.location.search+"&"+a:"?"+a,o="https://script.advertiserreports.com/redirector/dnr"+c)}if(o){var i=document.createElement("script");i.src=o,i.type="text/javascript",scriptTag=document.getElementsByTagName("script")[0],scriptTag.parentNode.appendChild(i)}}();
+   </script>
+   <meta content="summary" name="twitter:card"/>
+   <meta content="Skip hire services Newquay, Perranporth, Cornwall: KM Skip Hire" name="twitter:title"/>
+   <meta content="Skip hire services Newquay, Perranporth, St Austell, Cornwall: KM Skip Hire. Established company providing skip hire, waste management, site clearance and waste removal services. Contact us now." name="twitter:description"/>
+   <meta content="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/social-image-icon.png" name="twitter:image:src"/>
+   <meta content="Skip hire services Newquay, Perranporth, St Austell, Cornwall: KM Skip Hire. Established company providing skip hire, waste management, site clearance and waste removal services. Contact us now." property="og:description"/>
+   <meta content="Skip hire services Newquay, Perranporth, Cornwall: KM Skip Hire" property="og:title"/>
+   <meta content="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/social-image-icon.png" property="og:image"/>
+  </head>
+  <body class="supportsFontIcons supportsFontIcons dmRoot dmDesktopBody fix-mobile-scrolling dmResellerSite dmLargeBody " id="dmRoot" style="padding:0;margin:0;">
+   <div id="disabledImageZone" style="display:none;z-index:-1">
+    <style type="text/css">
+     #imageZone {
+                     position: absolute;
+                     margin: auto;
+                 }
+ 
+                 .coloumns {
+                     border-radius: 3px;
+                     background-color: rgb(249, 152, 13); /*border:1px solid #999;*/
+                     height: 18px;
+                     width: 6px;
+                     -webkit-animation-name: loader;
+                     -webkit-animation-duration: 1s;
+                     -webkit-animation-iteration-count: infinite;
+                     -webkit-animation-direction: linear;
+                     -moz-animation-name: loader;
+                     -moz-animation-duration: 1s;
+                     -moz-animation-iteration-count: infinite;
+                     -moz-animation-direction: linear;
+                     opacity: .25;
+                     -webkit-transform: scale(0.7);
+                     -webkit-transform-origin: 50% 180%;
+                     -moz-transform: scale(0.7);
+                     -moz-transform-origin: 50% 180%;
+                     position: absolute;
+                 }
+ 
+                 #coloumn1 {
+                     -webkit-transform: rotate(0deg);
+                     -webkit-animation-delay: -.914s;
+                     -moz-transform: rotate(0deg);
+                     -moz-animation-delay: -.914s;
+                 }
+ 
+                 #coloumn2 {
+                     -webkit-transform: rotate(30deg);
+                     -webkit-animation-delay: -.831s;
+                     -moz-transform: rotate(30deg);
+                     -moz-animation-delay: -.831s;
+                 }
+ 
+                 #coloumn3 {
+                     -webkit-transform: rotate(60deg);
+                     -webkit-animation-delay: -.747s;
+                     -moz-transform: rotate(60deg);
+                     -moz-animation-delay: -.747s;
+                 }
+ 
+                 #coloumn4 {
+                     -webkit-transform: rotate(90deg);
+                     -webkit-animation-delay: -.664s;
+                     -moz-transform: rotate(90deg);
+                     -moz-animation-delay: -.664s;
+                 }
+ 
+                 #coloumn5 {
+                     -webkit-transform: rotate(120deg);
+                     -webkit-animation-delay: -.581s;
+                     -moz-transform: rotate(120deg);
+                     -moz-animation-delay: -.581s;
+                 }
+ 
+                 #coloumn6 {
+                     -webkit-transform: rotate(150deg);
+                     -webkit-animation-delay: -.498s;
+                     -moz-transform: rotate(150deg);
+                     -moz-animation-delay: -.498s;
+                 }
+ 
+                 #coloumn7 {
+                     -webkit-transform: rotate(180deg);
+                     -webkit-animation-delay: -.415s;
+                     -moz-transform: rotate(180deg);
+                     -moz-animation-delay: -.415s;
+                 }
+ 
+                 #coloumn8 {
+                     -webkit-transform: rotate(210deg);
+                     -webkit-animation-delay: -.332s;
+                     -moz-transform: rotate(210deg);
+                     -moz-animation-delay: -.332s;
+                 }
+ 
+                 #coloumn9 {
+                     -webkit-transform: rotate(240deg);
+                     -webkit-animation-delay: -.249s;
+                     -moz-transform: rotate(240deg);
+                     -moz-animation-delay: -.249s;
+                 }
+ 
+                 #coloumn10 {
+                     -webkit-transform: rotate(270deg);
+                     -webkit-animation-delay: -.166s;
+                     -moz-transform: rotate(270deg);
+                     -moz-animation-delay: -.166s;
+                 }
+ 
+                 #coloumn11 {
+                     -webkit-transform: rotate(300deg);
+                     -webkit-animation-delay: -.083s;
+                     -moz-transform: rotate(300deg);
+                     -moz-animation-delay: -.083s;
+                 }
+ 
+                 #coloumn12 {
+                     -webkit-transform: rotate(330deg);
+                     -moz-transform: rotate(330deg);
+                 }
+ 
+                 @-webkit-keyframes loader {
+                     0% {
+                         opacity: 1;
+                     }
+                     100% {
+                         opacity: .25;
+                     }
+                 }
+ 
+                 @-moz-keyframes loader {
+                     0% {
+                         opacity: 1;
+                     }
+                     100% {
+                         opacity: .25;
+                     }
+                 }
+    </style>
+    <div id="imageZone">
+     <div class="coloumns" id="coloumn1">
+     </div>
+     <div class="coloumns" id="coloumn2">
+     </div>
+     <div class="coloumns" id="coloumn3">
+     </div>
+     <div class="coloumns" id="coloumn4">
+     </div>
+     <div class="coloumns" id="coloumn5">
+     </div>
+     <div class="coloumns" id="coloumn6">
+     </div>
+     <div class="coloumns" id="coloumn7">
+     </div>
+     <div class="coloumns" id="coloumn8">
+     </div>
+     <div class="coloumns" id="coloumn9">
+     </div>
+     <div class="coloumns" id="coloumn10">
+     </div>
+     <div class="coloumns" id="coloumn11">
+     </div>
+     <div class="coloumns" id="coloumn12">
+     </div>
+    </div>
+   </div>
+   <!-- ========= Site Content ========= -->
+   <div class="dmwr" id="dm">
+    <div class="dm_wrapper standard-var5 widgetStyle-3 standard">
+     <div class="dm-home-page" dmwrapped="true" id="1554514795" themewaschanged="true">
+      <div class="skinnyHeaderLayout dm-bfs dm-layout-home hasAnimations dmPageBody d-page-1734971351 dmFreeHeader" data-background-attachment="fixed" data-background-fullbleed="false" data-background-hide-inner="true" data-background-image="url(https://dd-cdn.multiscreensite.com/themes/sky-patrol/sky-patrol-hp-main-img.jpg)" data-background-parallax-selector=".dmHomeSection1, .dmSectionParallex" data-background-parallax-speed="0.2" data-background-position="50% 0%" data-background-repeat="no-repeat" data-background-size="cover" data-buttonstyle="FLAT" data-page-class="1734971351" dmtemplateid="skinnyHeaderLayout" id="dm-outer-wrapper">
+       <div class="dmOuter" id="dmStyle_outerContainer">
+        <div class="dmInner" id="dmStyle_innerContainer">
+         <div class="dmLayoutWrapper standard-var dmStandardDesktop">
+          <ul class="dmn dmLayoutNav hiddenNavPlaceHolder navPlaceHolder dmDisplay_None">
+          </ul>
+          <div class="dmHeaderContainer fHeader d-header-wrapper">
+           <div class="u_hcontainer dmHeader p_hfcontainer" freeheader="true" id="hcontainer">
+            <div class="dmHeaderResp noSwitch" dm:templateorder="76" id="1261229135">
+             <div class="dmRespRow u_1022264334" id="1022264334" style="text-align: center;">
+              <div class="dmRespColsWrapper" id="1410334000">
+               <div class="dmRespCol small-12 medium-12 large-12" id="1274299059">
+                <div class="u_1407726187 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1407726187" style="transition: none; display: block;">
+                 <font style="">
+                  <span style="color: rgb(255, 255, 255); font-weight: 400;">
+                   Give us a call!
+                  </span>
+                  <b style="">
+                   <a href="tel:01726 861051" runtime_url="tel:01726 861051" style="color: rgb(255, 255, 255);">
+                    <font style="color: rgb(255, 255, 255);">
+                     01726 861051
+                    </font>
+                   </a>
+                   <font style="color: rgb(255, 255, 255);">
+                    /
+                   </font>
+                   <a href="tel:01726 860879" runtime_url="tel:01726 860879" style="">
+                    <font style="color: rgb(255, 255, 255);">
+                     01726 860879
+                    </font>
+                   </a>
+                  </b>
+                 </font>
+                </div>
+               </div>
+              </div>
+             </div>
+             <div class="dmRespRow u_1056751160" id="1056751160" style="text-align: center;">
+              <div class="dmRespColsWrapper" id="1113178475">
+               <div class="dmRespCol small-12 medium-12 large-12" id="1567657666">
+                <div class="u_1999009424 imageWidget align-center" data-element-type="image" data-widget-type="image" editablewidget="true" id="1999009424">
+                 <a href="/" id="1664088577">
+                  <img alt="KM Skip Hire in Newquay, Perranporth, Cornwall" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/KMSKIPLOGO.png" id="1264332823" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/tablet/KMSKIPLOGO.png"/>
+                 </a>
+                </div>
+               </div>
+              </div>
+             </div>
+             <div class="u_1464410382 dmRespRow dmHeaderContent freeHeaderRowSide fullBleedChanged fullBleedMode desktop-no-padding" id="1464410382">
+              <div class="dmRespColsWrapper clearfix" id="1098123824">
+               <div class="u_1233033753 dmRespCol small-12 medium-12 large-12" id="1233033753">
+                <nav adwords="" class="u_1931408407 effect-text-color main-navigation unifiednav dmLinksMenu" custom-a-class="" custom-inner-ul-class="" custom-li-class="" custom-nested-inner-ul-class="" custom-span-class="" custom-ul-class="" data-divider="" data-dmtmpl="true" data-element-type="onelinksmenu" data-from-nav="true" data-items="5" data-links-level="0" data-nav-structure="HORIZONTAL" data-show-vertical-sub-items="HOVER" data-sub-nav="true" data-uialign="center" dmle_extension="onelinksmenu" icon="true" id="1931408407" layout-main="horizontal_nav_layout_2" layout-sub="submenu_horizontal_1" navigation-id="unifiedNav" role="navigation" surround="false" wr="false">
+                 <ul class="unifiednav__container ">
+                  <li class=" unifiednav__item-wrap ">
+                   <a class="unifiednav__item dmNavItemSelected dmUDNavigationItem_00 " data-target-page-alias="" href="/" target="">
+                    <span class="nav-item-text " data-link-text="
+                   
+          Home
+         
+                 ">
+                     Home
+                     <span class="icon icon-angle-down">
+                     </span>
+                    </span>
+                   </a>
+                  </li>
+                  <li class=" unifiednav__item-wrap ">
+                   <a class="unifiednav__item dmUDNavigationItem_01 " data-target-page-alias="" href="/about-km" target="">
+                    <span class="nav-item-text " data-link-text="
+                   
+          About KM
+         
+                 ">
+                     About KM
+                     <span class="icon icon-angle-down">
+                     </span>
+                    </span>
+                   </a>
+                  </li>
+                  <li class=" unifiednav__item-wrap ">
+                   <a class="unifiednav__item dmUDNavigationItem_02 " data-target-page-alias="" href="/services" target="">
+                    <span class="nav-item-text " data-link-text="
+                   
+          Services
+         
+                 ">
+                     Services
+                     <span class="icon icon-angle-down">
+                     </span>
+                    </span>
+                   </a>
+                  </li>
+                  <li class=" unifiednav__item-wrap ">
+                   <a class="unifiednav__item dmUDNavigationItem_010101919629 " data-target-page-alias="" href="/licenses" target="">
+                    <span class="nav-item-text " data-link-text="
+                   
+          Licenses
+         
+                 ">
+                     Licenses
+                     <span class="icon icon-angle-down">
+                     </span>
+                    </span>
+                   </a>
+                  </li>
+                  <li class=" unifiednav__item-wrap ">
+                   <a class="unifiednav__item dmUDNavigationItem_03 " data-target-page-alias="" href="/contact" target="">
+                    <span class="nav-item-text " data-link-text="
+                   
+          Contact
+         
+                 ">
+                     Contact
+                     <span class="icon icon-angle-down">
+                     </span>
+                    </span>
+                   </a>
+                  </li>
+                 </ul>
+                </nav>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+          <div id="desktopBodyBox">
+           <div id="iscrollBody">
+            <div id="site_content">
+             <div class="dmRespRow dmRespRowStable dmRespRowNoPadding dmPageTitleRow dmInnerBarRow">
+              <div class="dmRespColsWrapper">
+               <div class="large-12 dmRespCol">
+                <div class="innerBar lineInnerBar dmDisplay_None" id="innerBar">
+                 <div class="titleLine display_None">
+                  <hr/>
+                 </div>
+                 <!-- Page title is hidden in css for new responsive sites. It is left here only so we don't break old sites. Don't copy it to new layouts -->
+                 <div id="pageTitleText">
+                 </div>
+                 <div class="titleLine display_None">
+                  <hr/>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+             <div class="dmBody u_dmStyle_template_home dm-home-page" dmwrapped="true" id="1554514795" themewaschanged="true">
+              <div class="allWrapper" id="allWrapper">
+               <!-- navigation placeholders -->
+               <div class="dmContent" id="dm_content">
+                <div class="dmFullRowRespTmpl mainBorder dmRespRowsWrapper" dm:templateorder="117" id="1734971351">
+                 <section class="u_1860777710 dmRespRow dmSectionParallex dmSectionNoParallax" data-gallery-bg="eyJzbGlkZXMiOlsiaHR0cHM6Ly9pcnAtY2RuLm11bHRpc2NyZWVuc2l0ZS5jb20vZjNjZjIyNjUvZG1zM3JlcC9tdWx0aS9ob21lLXBhZ2UtYmFubmVyLmpwZyJdLCJ0cmFuc2l0aW9uIjoic2xpZGVSaWdodCJ9" id="1860777710">
+                  <div class="dmRespColsWrapper" id="1773330556">
+                   <div class="u_1378920269 dmRespCol small-12 medium-5 large-6 hide-for-small" id="1378920269">
+                   </div>
+                   <div class="dmRespCol small-12 medium-7 large-6 u_1402371797" id="1402371797">
+                    <span id="1059405468">
+                    </span>
+                    <h1 class="u_1847885527 dmNewParagraph" data-anim-desktop="fadeIn" data-element-type="paragraph" data-uialign="center" id="1847885527">
+                     <font style=";color: rgb(237, 43, 51);">
+                      CORNWALL RECYCLING
+                     </font>
+                    </h1>
+                    <h3 class="u_1634623272 dmNewParagraph" data-element-type="paragraph" data-uialign="center" id="1634623272" style="">
+                     <font style="color: rgb(0, 0, 0); font-weight: normal;">
+                      <span style="font-weight: 400;">
+                       WASTE REMOVAL EXPERTS
+                      </span>
+                     </font>
+                    </h3>
+                    <div class="u_1078299952 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1078299952" style="transition: opacity 1s ease-in-out;">
+                     <font style="color: rgb(0, 0, 0);">
+                      <span style="font-weight: 400;">
+                       WITH CALL-OUTS WITHIN 24 HOURS
+                      </span>
+                     </font>
+                    </div>
+                    <a adwords="" class="u_1959972652 default dmDefaultGradient align-center dmCall voipReplacement dmWidget dmNoMark dmWwr" contenteditable="false" data-display-type="block" data-element-type="clicktocall" description="01726 861051" dm_dont_rewrite_url="true" dmle_extension="clicktocall" href="tel:01726 861051" icon="true" icon-name="icon-phone" id="1959972652" image="" onclick=";return dm_gaq_push_event('ClickToCall', 'Call',null,'f3cf2265', this);" phone="01726 861051" surround="true" text="" wr="true">
+                     <span class="iconBg">
+                      <span class="icon hasFontIcon icon-phone">
+                      </span>
+                     </span>
+                     <span class="text" dmle_select_parent="1">
+                      01726 861051
+                     </span>
+                    </a>
+                    <a class="u_1045706779 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" data-display-type="block" data-element-type="dButtonLinkId" dm_dont_rewrite_url="false" file="false" href="/contact" id="1045706779">
+                     <span class="iconBg" id="1633892863">
+                      <span class="icon hasFontIcon icon-star" id="1922291653">
+                      </span>
+                     </span>
+                     <span class="text" id="1350882672">
+                      Book A Skip Now
+                     </span>
+                    </a>
+                   </div>
+                  </div>
+                 </section>
+                 <div class="dmRespRow u_1926427325" id="1926427325" style="text-align: center;">
+                  <div class="dmRespColsWrapper" id="1215590373">
+                   <div class="u_1724726201 dmRespCol small-12 medium-12 large-12" id="1724726201">
+                    <span id="1107173468">
+                    </span>
+                    <h2 class="u_1967271529 dmNewParagraph" data-anim-desktop="fadeIn" data-element-type="paragraph" data-uialign="center" id="1967271529">
+                     <font style="color: rgb(223, 24, 32); font-weight: normal;">
+                      <span style="font-weight: 400;">
+                       What We Do
+                      </span>
+                     </font>
+                    </h2>
+                   </div>
+                  </div>
+                 </div>
+                 <div class="dmRespRow u_1301735664" id="1301735664" style="text-align: center;">
+                  <div class="dmRespColsWrapper" id="1693566000">
+                   <div class="dmRespCol small-12 medium-6 large-6" id="1809163620">
+                    <div class="u_1426099071 imageWidget align-center" data-element-type="image" data-widget-type="image" editablewidget="true" id="1426099071">
+                     <img alt="skip hire" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/skip-hire.jpg" id="1194019775" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/mobile/skip-hire.jpg"/>
+                    </div>
+                    <h5 class="u_1613207585 dmNewParagraph" data-editor-state="closed" data-element-type="paragraph" data-uialign="center" id="1613207585" style="transition-duration: 1s; transition-timing-function: ease-in-out; transition-delay: initial; transition-property: opacity;">
+                     <span style="font-weight: 400;">
+                      <font style="color: rgb(255, 255, 255);">
+                       Skip Hire
+                      </font>
+                     </span>
+                    </h5>
+                    <div class="u_1248185596 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1248185596" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div>
+                      <span style="color: rgb(0, 0, 0); background-color: transparent; direction: ltr; text-align: left;">
+                       We offer a wide range of skip sizes that cater to the job in hand, no matter how big or small.
+                      </span>
+                     </div>
+                    </div>
+                   </div>
+                   <div class="dmRespCol small-12 medium-6 large-6" id="1705216543">
+                    <div class="u_1341227224 imageWidget align-center" data-element-type="image" data-widget-type="image" editablewidget="true" id="1341227224">
+                     <img alt="waste management" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/waste-management.jpg" id="1733240701" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/mobile/waste-management.jpg"/>
+                    </div>
+                    <h5 class="u_1865338227 dmNewParagraph" data-editor-state="closed" data-element-type="paragraph" data-uialign="center" id="1865338227" style="transition-duration: 1s; transition-timing-function: ease-in-out; transition-delay: initial; transition-property: opacity;">
+                     <font color="#ffffff">
+                      <span style="font-weight: normal;">
+                       Waste Management
+                      </span>
+                     </font>
+                    </h5>
+                    <div class="u_1525237205 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1525237205" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div>
+                      <font color="#000000">
+                       Any waste that we receive is treated on our site with an aim to recycle at least 97% of it.
+                      </font>
+                     </div>
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                 <div class="u_1985689304 dmRespRow" id="1985689304" style="text-align: center;">
+                  <div class="dmRespColsWrapper" id="1914048074">
+                   <div class="u_1658600859 dmRespCol small-12 medium-7 large-6" id="1658600859">
+                    <h2 class="dmNewParagraph u_1056237860" data-anim-desktop="fadeIn" data-element-type="paragraph" data-uialign="left" id="1056237860">
+                     <font style="color: rgb(255, 255, 255); font-weight: normal;">
+                      <span style="font-weight: 400;">
+                       Welcome to KM Skip Hire
+                      </span>
+                     </font>
+                    </h2>
+                    <div class="u_1769209722 dmNewParagraph" data-dmtmpl="true" data-uialign="left" id="1769209722" style="transition: opacity 1s ease-in-out;">
+                     <div>
+                      <span style="font-size: 21px;">
+                       <b>
+                        <font style="color: rgb(255, 255, 255);">
+                         <span style="font-weight: 700;">
+                          History &amp; About KM
+                         </span>
+                        </font>
+                       </b>
+                      </span>
+                     </div>
+                    </div>
+                    <div class="u_1789060608 dmNewParagraph" data-dmtmpl="true" data-uialign="left" id="1789060608" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div style="text-align: left;">
+                      <span style="color: rgb(255, 255, 255); background-color: transparent; direction: ltr; text-align: left;">
+                       KM Skip Hire Ltd (formerly KM Enterprises) began in 1989 when the main company focus was construction, joinery and site clearance utilising a J.C.B. wheeled digger. It was during this time that we encountered poor service from existing companies, inspiring us to source our own skips.
+                      </span>
+                     </div>
+                    </div>
+                    <div class="u_1641865004 dmNewParagraph" data-dmtmpl="true" data-uialign="left" id="1641865004" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div style="text-align: left;">
+                      <span style="color: rgb(255, 255, 255); background-color: transparent; direction: ltr; text-align: left;">
+                       After purpose focused conversions of buildings and obtaining permission to tip inert material and the construction of a waste transfer station on our Trefullock site, we were ready to open for business!
+                      </span>
+                     </div>
+                    </div>
+                    <a class="u_1902038997 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" data-display-type="block" data-element-type="dButtonLinkId" dm_dont_rewrite_url="false" file="false" href="/about-km" id="1902038997">
+                     <span class="iconBg" id="1619386308">
+                      <span class="icon hasFontIcon icon-star" id="1610289355">
+                      </span>
+                     </span>
+                     <span class="text" id="1411300785">
+                      Read More
+                     </span>
+                    </a>
+                   </div>
+                   <div class="u_1589680896 dmRespCol small-12 medium-5 large-6" id="1589680896">
+                    <div class="dmSpacer u_1101484750" data-element-type="spacer" id="1101484750">
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                 <div class="u_1578770322 dmRespRow" id="1578770322" style="text-align: center;">
+                  <div class="dmRespColsWrapper" id="1011692370">
+                   <div class="dmRespCol small-12 medium-12 large-12" id="1880467200">
+                    <h2 class="u_1023947453 dmNewParagraph" data-anim-desktop="fadeIn" data-editor-state="closed" data-element-type="paragraph" data-uialign="center" id="1023947453">
+                     <font style="color: rgb(223, 24, 32); font-weight: normal;">
+                      <span style="font-weight: 400;">
+                       Services We Provide
+                      </span>
+                     </font>
+                    </h2>
+                    <div class="dmNewParagraph u_1024524670" data-dmtmpl="true" data-uialign="center" id="1024524670" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div style="text-align: center;">
+                      <span style="color: rgb(0, 0, 0); background-color: transparent; direction: ltr; text-align: left;">
+                       Skip sizes we can offer:
+                      </span>
+                     </div>
+                    </div>
+                   </div>
+                  </div>
+                  <div class="dmRespColsWrapper" id="1157235986">
+                   <div class="dmRespCol small-12 medium-12 large-12 u_1874543271" id="1874543271">
+                    <div class="imageWidget align-center u_1580342367" data-element-type="image" data-widget-type="image" editablewidget="true" id="1580342367">
+                     <img alt="2 cubic yards" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/2-cubic-yards.png" id="1115059781" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/tablet/2-cubic-yards.png"/>
+                    </div>
+                    <h4 class="u_1726450131 dmNewParagraph" data-element-type="paragraph" data-uialign="left" id="1726450131" style="transition: opacity 1s ease-in-out; direction: ltr; text-align: left;">
+                     <div style="text-align: center;">
+                      <span style="background-color: transparent; direction: ltr; text-align: left;">
+                       <font style="color: rgb(0, 0, 0);">
+                        <span style="font-weight: 700;">
+                         2 Cubic Yards
+                        </span>
+                       </font>
+                      </span>
+                     </div>
+                    </h4>
+                    <div class="u_1866605233 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1866605233" style="transition: opacity 1s ease-in-out; display: block; direction: ltr; text-align: left;">
+                     <div style="text-align:center;">
+                      <span style="color: rgb(0, 0, 0); background-color: transparent; direction: ltr; text-align: left;">
+                       Ideal for small waste clearance, light or heavy waste
+                      </span>
+                     </div>
+                    </div>
+                   </div>
+                   <div class="dmRespCol small-12 medium-12 large-12 u_1334317059" id="1334317059">
+                    <div class="imageWidget align-center u_1904947914" data-element-type="image" data-widget-type="image" editablewidget="true" id="1904947914">
+                     <img alt="4 cubic yards" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/4-cubic-yards.png" id="1540119827" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/tablet/4-cubic-yards.png"/>
+                    </div>
+                    <h4 class="u_1982951306 dmNewParagraph" data-element-type="paragraph" data-uialign="left" id="1982951306" style="transition: none; direction: ltr; display: block;">
+                     <div style="text-align: center;">
+                      <span style="background-color: transparent; direction: ltr; text-align: left;">
+                       <font style="color: rgb(0, 0, 0);">
+                        <span style="font-weight: 700;">
+                         4 Cubic Yards
+                        </span>
+                       </font>
+                      </span>
+                     </div>
+                    </h4>
+                    <div class="u_1188261230 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1188261230" style="transition: opacity 1s ease-in-out; direction: ltr;">
+                     <div style="text-align: center;">
+                      <span style="color: rgb(0, 0, 0);">
+                       Ideal for small waste clearance, light or heavy waste
+                      </span>
+                     </div>
+                    </div>
+                   </div>
+                   <div class="dmRespCol small-12 medium-12 large-12 u_1237670781" id="1237670781">
+                    <div class="imageWidget align-center u_1125636463" data-element-type="image" data-widget-type="image" editablewidget="true" id="1125636463">
+                     <img alt="6 cubic yards" class="" data-dm-image-path="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/6-cubic-yards.png" id="1030966617" onerror="handleImageLoadError(this)" src="https://irp-cdn.multiscreensite.com/f3cf2265/dms3rep/multi/tablet/6-cubic-yards.png"/>
+                    </div>
+                    <h4 class="u_1946374393 dmNewParagraph" data-element-type="paragraph" data-uialign="center" id="1946374393" style="transition: none; direction: ltr; display: block;">
+                     <div style="text-align: center;">
+                      <span style="background-color: transparent; direction: ltr; text-align: left;">
+                       <font style="color: rgb(0, 0, 0);">
+                        <span style="font-weight: 700;">
+                         6 Cubic Yards
+                        </span>
+                       </font>
+                      </span>
+                     </div>
+                    </h4>
+                    <div class="u_1556819473 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1556819473" style="transition: opacity 1s ease-in-out; direction: ltr;">
+                     <div style="text-align: center;">
+                      <span style="color: rgb(0, 0, 0);">
+                       Ideal for large waste clearance or building projects
+                      </span>
+                     </div>
+                    </div>
+                   </div>
+                  </div>
+                  <div class="dmRespColsWrapper" id="1322223921">
+                   <div class="dmRespCol small-12 medium-12 large-12 u_1272650368" id="1272650368">
+                    <a class="u_1823993911 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" data-display-type="block" data-element-type="dButtonLinkId" dm_dont_rewrite_url="false" file="false" href="/services" id="1823993911">
+                     <span class="iconBg" id="1122317121">
+                      <span class="icon hasFontIcon icon-star" id="1016073272">
+                      </span>
+                     </span>
+                     <span class="text" id="1537781743">
+                      See All Sizes
+                     </span>
+                    </a>
+                   </div>
+                  </div>
+                 </div>
+                 <div class="dmRespRow u_1757994299" id="1757994299" style="text-align: center;">
+                  <div class="dmRespColsWrapper" id="1358753069">
+                   <div class="u_1748335739 dmRespCol small-12 medium-6 large-6" id="1748335739">
+                    <h2 class="u_1445641758 dmNewParagraph" data-anim-desktop="fadeIn" data-element-type="paragraph" data-uialign="left" id="1445641758" style="transition: opacity 1s ease-in-out;">
+                     <font style="color: rgb(255, 255, 255); font-weight: normal;">
+                      <span style="font-weight: 400;">
+                       Get In Touch With Us
+                      </span>
+                     </font>
+                    </h2>
+                    <div class="u_1056419513 dmNewParagraph" data-dmtmpl="true" data-uialign="left" id="1056419513" style="transition: opacity 1s ease-in-out; display: block; direction: ltr; text-align: left;">
+                     <div style="text-align: left;">
+                      <font style="color: rgb(255, 255, 255);">
+                       For prices please contact us by telephone or use the enquiry form 
+ on the Contact page of the website.
+                      </font>
+                     </div>
+                    </div>
+                   </div>
+                   <div class="u_1264774352 dmRespCol small-12 medium-6 large-6" id="1264774352">
+                    <a class="u_1858038392 align-center dmButtonLink dmWidget dmWwr default dmOnlyButton dmDefaultGradient" data-display-type="block" data-element-type="dButtonLinkId" dm_dont_rewrite_url="false" file="false" href="/contact" id="1858038392">
+                     <span class="iconBg" id="1186439446">
+                      <span class="icon hasFontIcon icon-star" id="1306023940">
+                      </span>
+                     </span>
+                     <span class="text" id="1740709300">
+                      Book A Skip Now
+                     </span>
+                    </a>
+                    <a adwords="" class="u_1296964249 default dmDefaultGradient align-center dmCall voipReplacement dmWidget dmNoMark dmWwr" contenteditable="false" data-display-type="block" data-element-type="clicktocall" description="01726 861051" dm_dont_rewrite_url="true" dmle_extension="clicktocall" href="tel:01726 861051" icon="true" icon-name="icon-phone" id="1296964249" image="" onclick=";return dm_gaq_push_event('ClickToCall', 'Call',null,'f3cf2265', this);" phone="01726 861051" surround="true" text="" wr="true">
+                     <span class="iconBg">
+                      <span class="icon hasFontIcon icon-phone">
+                      </span>
+                     </span>
+                     <span class="text" dmle_select_parent="1">
+                      01726 861051
+                     </span>
+                    </a>
+                   </div>
+                  </div>
+                 </div>
+                </div>
+               </div>
+              </div>
+             </div>
+             <div class="dmFooterContainer">
+              <div class="f_hcontainer dmFooter p_hfcontainer" id="fcontainer">
+               <div class="dmFooterResp dmFullFooterResp" dm:templateorder="14" id="1602863267">
+                <div class="dmRespRow dmDividerRow" id="1314492676">
+                 <div class="dmRespColsWrapper" id="1735367830">
+                  <div class="large-12 medium-12 small-12 dmRespCol" id="1209666878">
+                   <div class="dmDividerWrapper clearfix" data-element-type="dDividerId" id="1776315408">
+                    <hr class="dmDivider defaultDivider" id="1180913438"/>
+                   </div>
+                  </div>
+                 </div>
+                </div>
+                <div class="dmRespRow u_1760433326 hasBackgroundOverlay" id="1760433326" style="text-align: center;">
+                 <div class="dmRespColsWrapper" id="1436312203">
+                  <div class="dmRespCol small-12 medium-6 large-6" id="1422812947">
+                   <span id="1918518720">
+                   </span>
+                   <div class="u_1071518837 dmform default" data-element-type="dContactUsRespId" id="1071518837" preserve_css="true">
+                    <h3 class="dmform-title dmwidget-title" data-anim-desktop="fadeIn" id="1389555510">
+                     Book A Skip Now
+                    </h3>
+                    <div captcha-lang="en" class="dmform-wrapper" id="1961830182" preserve_css="true">
+                     <form class="dmRespDesignRow" id="1694886952" locale="ENGLISH" method="post">
+                      <div class="dmforminput required small-12 dmRespDesignCol medium-12 large-12" id="1138795473">
+                       <label class="" for="dmform-0" hide="true" id="1726269978">
+                        Name:
+                       </label>
+                       <input class="" id="1698213583" name="dmform-0" placeholder="Name:" type="text"/>
+                       <input class="" id="1535124026" name="label-dmform-0" type="hidden" value="Name:"/>
+                      </div>
+                      <div class="dmforminput required small-12 dmRespDesignCol medium-12 large-12" id="1360016706">
+                       <label class="" for="dmform-1" hide="true" id="1304326577">
+                        Email:
+                       </label>
+                       <input class="" id="1656513696" name="dmform-1" placeholder="Email Address:" type="email"/>
+                       <input class="" id="1376068870" name="label-dmform-1" type="hidden" value="Email:"/>
+                      </div>
+                      <div class="dmforminput required small-12 dmRespDesignCol medium-12 large-12" id="1213792188">
+                       <label class="" for="dmform-2" hide="true" id="1139157022">
+                        Phone:
+                       </label>
+                       <input class="" id="1209467600" name="dmform-2" placeholder="Phone Number:" type="tel"/>
+                       <input class="" id="1594157693" name="label-dmform-2" type="hidden" value="Phone:"/>
+                      </div>
+                      <div class="dmforminput large-12 medium-12 dmRespDesignCol" id="1881655541">
+                       <label class="" for="dmform-3" hide="true" id="1786604915">
+                        Message:
+                       </label>
+                       <textarea class="" id="1508649252" name="dmform-3" placeholder="Your Message:">
+                       </textarea>
+                       <input class="" id="1517884225" name="label-dmform-3" type="hidden" value="Message:"/>
+                      </div>
+                      <div class="dmforminput small-12 dmRespDesignCol required newLine medium-12 large-12" id="1605582632">
+                       <label class="" for="dmform-4" hide="true" id="1675339148">
+                        Opt-In
+                       </label>
+                       <div class="optinwrapper" id="1305980520">
+                        <div id="25341">
+                         <input id="13256" name="dmform-4" type="checkbox" value="true"/>
+                         <div id="17253">
+                          <p class="rteBlock" id="1504636366">
+                           <span id="1211637042" style="color:rgba(0, 0, 0, 1);">
+                            By ticking, I agree to share my form responses.
+                           </span>
+                          </p>
+                         </div>
+                        </div>
+                       </div>
+                       <input class="" id="1841442065" name="label-dmform-4" type="hidden" value="Opt-In"/>
+                      </div>
+                      <span class="dmWidgetClear" id="1881655541_clear">
+                      </span>
+                      <div class="dmformsubmit dmWidget R" id="1875755920" preserve_css="true">
+                       <input class="" id="1787533408" name="submit" type="submit" value="Send Message"/>
+                      </div>
+                      <input class="" data-dec="true" id="1843637244" name="dmformsendto" preserve_css="true" type="hidden" value="O0wrseIfFLsXp1ULLWUfU4lS1+J5Vfx5zjPz3L9cCg7nZvgTXmfYrnLGKsXSZRIUXMLsUZGGBAA="/>
+                      <input class="dmActionInput" id="1248164487" name="action" type="hidden" value="/_dm/s/rt/widgets/dmform.submit.jsp"/>
+                      <input class="" id="1457718104" name="dmformsubject" preserve_css="true" type="hidden" value="Website message"/>
+                     </form>
+                    </div>
+                    <div class="dmform-success" data-success-page="thank-you" id="1185988495" preserve_css="true" style="display: none;">
+                     <p class="rteBlock">
+                      <span style="color:rgba(65,65,65,1);">
+                       Thank you for contacting us.
+                      </span>
+                     </p>
+                     <p class="rteBlock">
+                      <span style="color:rgba(65,65,65,1);">
+                       We will get back to you as soon as possible
+                      </span>
+                     </p>
+                    </div>
+                    <div class="dmform-error" id="1893878135" preserve_css="true" style="display: none;">
+                     <p class="rteBlock">
+                      <span style="color:rgba(65,65,65,1);">
+                       Oops, there was an error sending your message.
+                      </span>
+                     </p>
+                     <p class="rteBlock">
+                      <span style="color:rgba(65,65,65,1);">
+                       Please try again later
+                      </span>
+                     </p>
+                    </div>
+                   </div>
+                  </div>
+                  <div class="dmRespCol small-12 medium-6 large-6" id="1618248417">
+                   <h2 class="u_1914354928 dmNewParagraph" data-anim-desktop="fadeIn" data-editor-state="closed" data-element-type="paragraph" data-uialign="right" id="1914354928">
+                    <font style="color: rgb(223, 24, 32); font-weight: normal;">
+                     <span style="font-weight: 400;">
+                      Find Us
+                     </span>
+                    </font>
+                   </h2>
+                   <div class="u_1483376637 dmNewParagraph" data-dmtmpl="true" data-editor-state="closed" data-uialign="left" id="1483376637" style="transition-duration: initial; transition-timing-function: initial; transition-delay: initial; transition-property: none; display: block;">
+                    <font style="">
+                     <font style="color: rgb(0, 0, 0);">
+                      Phone:
+                     </font>
+                     <font style="color: rgb(0, 0, 0);">
+                      <font style="">
+                       <a href="tel:01726 861051" runtime_url="tel:01726 861051" style="color: rgb(0, 0, 0);">
+                        01726 861051
+                       </a>
+                      </font>
+                      <font style="">
+                       /
+                      </font>
+                      <font style="">
+                       <a href="tel:01726 860879" runtime_url="tel:01726 860879" style="color: rgb(0, 0, 0);">
+                        01726 860879
+                       </a>
+                      </font>
+                     </font>
+                    </font>
+                   </div>
+                   <div class="u_1654630365 dmNewParagraph" data-dmtmpl="true" data-editor-state="closed" data-uialign="left" id="1654630365" style="transition-duration: initial; transition-timing-function: initial; transition-delay: initial; transition-property: none; display: block; direction: ltr; text-align: left;">
+                    <div style="text-align: left; direction: ltr;">
+                     <span style="color: rgb(0, 0, 0);">
+                      Fax:
+                     </span>
+                     <a href="tel:01726 861051" runtime_url="tel:01726 861051" style="">
+                      <font style="color: rgb(0, 0, 0);">
+                       01726 861051
+                      </font>
+                     </a>
+                    </div>
+                   </div>
+                   <div class="u_1686944399 dmNewParagraph" data-dmtmpl="true" data-editor-state="closed" data-uialign="left" id="1686944399" style="transition-duration: initial; transition-timing-function: initial; transition-delay: initial; transition-property: none; display: block;">
+                    <font style="">
+                     <font style="color: rgb(0, 0, 0);">
+                      Email:
+                     </font>
+                     <font style="color: rgb(0, 0, 0);">
+                      <a href="mailto:kmskiphire@btconnect.com" runtime_url="mailto:kmskiphire@btconnect.com" style="color: rgb(0, 0, 0);">
+                       kmskiphire@btconnect.com
+                      </a>
+                     </font>
+                    </font>
+                   </div>
+                   <div class="u_1134929598 dmNewParagraph" data-dmtmpl="true" data-editor-state="closed" data-uialign="left" id="1134929598" style="transition: none; display: block;">
+                    <font style="">
+                     <font style="color: rgb(0, 0, 0);">
+                      Address:
+                     </font>
+                     <a href="https://www.google.com.ph/maps?q=Chypraze+Farm,+Trefullock,+Summercourt,+Newquay,+Cornwall,+TR8+5BH&amp;rlz=1C1CHBF_enPH753PH753&amp;um=1&amp;ie=UTF-8&amp;sa=X&amp;ved=0ahUKEwjm-O6mv6TXAhVRv5QKHX2BBUoQ_AUICigB" runtime_url="https://www.google.com.ph/maps?q=Chypraze+Farm,+Trefullock,+Summercourt,+Newquay,+Cornwall,+TR8+5BH&amp;rlz=1C1CHBF_enPH753PH753&amp;um=1&amp;ie=UTF-8&amp;sa=X&amp;ved=0ahUKEwjm-O6mv6TXAhVRv5QKHX2BBUoQ_AUICigB" style="" target="_blank">
+                      <font style="color: rgb(0, 0, 0);">
+                       Chypraze Farm, Trefullock, Summercourt,
+  Newquay, Cornwall, TR8 5BH
+                      </font>
+                     </a>
+                    </font>
+                   </div>
+                   <div class="u_1597295343 widget-57a35c dmCustomWidget" data-element-type="custom_extension" data-widget-config="eyJhcGlrZXkiOiJBSXphU3lCR2d4SDNONVI5ZXR4dmhNZ2Nfb2NmSWRXanZCZjI5WG8iLCJsb2NMaXN0IjpbeyJidXNpbmVzc05hbWUiOiIiLCJncG1hcEFkZHJlc3MiOiJDaHlwcmF6ZSBGYXJtLCBUcmVmdWxsb2NrLCBTdW1tZXJjb3VydCw8YnI+TmV3cXVheSwgQ29ybndhbGwsIFRSOCA1QkgiLCJidXNpbmVzc0xvZ28iOiIiLCJncEVtYWlsIjoiIiwiZ3BQaG9uZSI6IiIsImdwV2Vic2l0ZSI6IiIsImdtYXBMYXRpdHVkZSI6IjUwLjM2NDA4NTAiLCJnbWFwTG9uZ2l0dWRlIjoiLTQuOTU3MDk3IiwibWFya2VyTG9nbyI6IiIsIm9JbmZvVGl0bGUiOiIiLCJvSW5mbyI6IiJ9XSwiem9vbUxldmVsIjoiMTYiLCJ6Q29udHJvbCI6dHJ1ZSwibWFwdHlwZUNvbnRyb2wiOnRydWUsInN0Q29udHJvbCI6dHJ1ZSwicm9hZCI6Im9uIiwidHJhbnNpdCI6Im9uIiwid2F0ZXIiOiJvbiIsIm1hcFRoZW1lcyI6Im5vbmUifQ==" data-widget-id="57a35c4a13ad4ff9bca9f08d0e63d1f8" data-widget-version="2" dmle_extension="custom_extension" icon="false" id="1597295343" surround="false" wr="false">
+                    <div class="gscale" id="map">
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                </div>
+                <section class="u_1458368417 dmRespRow dmHomeSection3" id="1458368417">
+                 <div class="dmRespColsWrapper" id="1705231053">
+                  <div class="dmRespCol small-12 medium-12 large-12" id="1724343094">
+                   <span id="1482829845">
+                   </span>
+                   <div class="u_1069869253 dmNewParagraph" data-dmtmpl="true" data-uialign="center" id="1069869253" style="transition: opacity 1s ease-in-out; direction: ltr;">
+                    <div style="direction: ltr;">
+                     <span class="lh-1 font-size-16" style="">
+                      Designed by
+                      <a href="https://www.infoserve.com/" runtime_url="https://www.infoserve.com/" style="color: rgb(255, 255, 255);" target="_blank">
+                       Infoserve
+                      </a>
+                      |
+                      <a href="https://www.cornwallrecycling.com/privacy" runtime_url="https://www.cornwallrecycling.com/privacy" style="color: rgb(255, 255, 255);">
+                       See Our Privacy Policy
+                      </a>
+                     </span>
+                    </div>
+                   </div>
+                  </div>
+                 </div>
+                </section>
+                <div data-dmtmpl="true" data-element-type="powered_by" dmle_extension="powered_by" icon="true" id="1482260810" surround="false" wr="false">
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!--  Add full CSS and Javascript before the close tag of the body if needed -->
+   <!-- ========= CSS Section ========= -->
+   <!-- Foundation CSS -->
+   <link href="/_dm/s/rt/dist/css/d-css-foundation.min.css?version=2018-07-29T08_09_24" rel="stylesheet" type="text/css"/>
+   <!-- Google Fonts Include -->
+   <style>
+    br {
+         font-family: serif !important;
+     }
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Lato:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Roboto:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Josefin+Sans:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Oswald:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Alike:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic|Source+Sans+Pro:100,200,300,400,500,600,700,800,900,100italic,200italic,300italic,400italic,500italic,600italic,700italic,800italic,900italic&amp;subset=latin-ext" rel="stylesheet" type="text/css"/>
+   <link href="https://dd-cdn.multiscreensite.com/fonts/additional-fonts.css" rel="stylesheet" type="text/css"/>
+   <link href="/_dm/s/rt/dist/css/css-font-package.min.css?version=2018-07-29T08_09_24" rel="stylesheet" type="text/css"/>
+   <!-- RT CSS Include d-css-runtime-desktop-one-package-new-->
+   <link href="/_dm/s/rt/dist/css/d-css-runtime-desktop-one-package-new.min.css?version=2018-07-29T08_09_24" rel="stylesheet" type="text/css"/>
+   <!-- End of RT CSS Include -->
+   <!-- Site CSS -->
+   <link href="//irp-cdn.multiscreensite.com/f3cf2265/files/f3cf2265_1.min.css?v=15" rel="stylesheet" type="text/css"/>
+   <style id="customWidgetStyle" type="text/css">
+    .widget-57a35c{
+     min-width:100px;
+     min-height:200px;
+     width:500px;
+     height:350px;
+ }
+ .angular-google-map,
+ .angular-google-map-container {
+   width: 100%;
+   height: 100%;
+ }
+ .gscale{
+     width:100%;
+     height:100%;
+ }
+ 
+ .gmapLogo{
+     width:100%;
+     height:auto;
+     position:relative;
+     max-width:200px;
+      margin:15px auto;
+ }
+ .gmapLogo img{
+     width:100%;
+     height:auto;
+     position:relative;
+     max-width:100px;
+     display:block;
+ }
+ .gpmapGeneral{
+     position:relative;
+     display:flex;
+     font-size:15px;
+     margin:5px 0;
+ }
+ 
+ .gmapInfoContainer h4, .gmapInfoContainer h3, .gmapInfoContainer p{
+ margin:0 !important;
+ }
+ 
+ .gmapOtherInfo{
+     display:flex;
+     flex-direction:column;
+ }
+ .gmapOtherInfo h4, .gmapOtherInfo pre{
+     text-align:left;
+ }
+ .gmapWebsite a{
+     text-decoration:none;
+ }
+ .gm-style div{
+     border-top-width:0 !important;
+ }
+ .gm-style-iw div:first-child::-webkit-scrollbar-track
+ {
+ 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+ 	border-radius: 10px;
+ 	background-color: #F5F5F5;
+ }
+ 
+ .gm-style-iw div:first-child::-webkit-scrollbar
+ {
+ 	width: 3px;
+ 	background-color: #F5F5F5;
+ }
+ 
+ .gm-style-iw div:first-child::-webkit-scrollbar-thumb
+ {
+ 	border-radius: 10px;
+ 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+ 	background-color: #e1e1e1;
+ }
+   </style>
+   <style id="additionalGlobalCss" type="text/css">
+   </style>
+   <!-- Page CSS -->
+   <link href="//irp-cdn.multiscreensite.com/f3cf2265/files/f3cf2265_home_1.min.css?v=15" id="homeCssLink" rel="stylesheet" type="text/css"/>
+   <style id="pagestyle" type="text/css">
+   </style>
+   <style id="pagestyleDevice" type="text/css">
+   </style>
+   <!--[if IE 7]><style>.fw-head.fw-logo img{max-width: 290px;}.dm_header .logo-div img{max-width: 290px;}</style><![endif]-->
+   <!--[if IE 8]><style>.fw-head .fw-logo img{max-width: 290px;}.dm_header .logo-div img{max-width: 290px;}*#dm div.dmHeader{_height:90px;min-height:0px;}</style><![endif]-->
+   <!-- ========= JS Section ========= -->
+   <!-- Modernizr -->
+   <script>
+    /* THIS FILE IS AUTO-GENERATED. SEE build/build-modernizr */
+ 
+ /*! modernizr 3.5.0 (Custom Build) | MIT *
+  * https://modernizr.com/download/?-cssvwunit-flexbox-flexboxlegacy-flexboxtweener-flexwrap-passiveeventlisteners-supports-svg-setclasses-cssclassprefix:dm- !*/
+ !function(e,t,n){function r(e,t){return typeof e===t}function s(){var e,t,n,s,o,i,a;for(var l in w)if(w.hasOwnProperty(l)){if(e=[],t=w[l],t.name&&(e.push(t.name.toLowerCase()),t.options&&t.options.aliases&&t.options.aliases.length))for(n=0;n<t.options.aliases.length;n++)e.push(t.options.aliases[n].toLowerCase());for(s=r(t.fn,"function")?t.fn():t.fn,o=0;o<e.length;o++)i=e[o],a=i.split("."),1===a.length?Modernizr[a[0]]=s:(!Modernizr[a[0]]||Modernizr[a[0]]instanceof Boolean||(Modernizr[a[0]]=new Boolean(Modernizr[a[0]])),Modernizr[a[0]][a[1]]=s),C.push((s?"":"no-")+a.join("-"))}}function o(e){var t=x.className,n=Modernizr._config.classPrefix||"";if(b&&(t=t.baseVal),Modernizr._config.enableJSClass){var r=new RegExp("(^|\\s)"+n+"no-js(\\s|$)");t=t.replace(r,"$1"+n+"js$2")}Modernizr._config.enableClasses&&(t+=" "+n+e.join(" "+n),b?x.className.baseVal=t:x.className=t)}function i(e,t){return!!~(""+e).indexOf(t)}function a(){return"function"!=typeof t.createElement?t.createElement(arguments[0]):b?t.createElementNS.call(t,"http://www.w3.org/2000/svg",arguments[0]):t.createElement.apply(t,arguments)}function l(){var e=t.body;return e||(e=a(b?"svg":"body"),e.fake=!0),e}function f(e,n,r,s){var o,i,f,u,d="modernizr",p=a("div"),c=l();if(parseInt(r,10))for(;r--;)f=a("div"),f.id=s?s[r]:d+(r+1),p.appendChild(f);return o=a("style"),o.type="text/css",o.id="s"+d,(c.fake?c:p).appendChild(o),c.appendChild(p),o.styleSheet?o.styleSheet.cssText=e:o.appendChild(t.createTextNode(e)),p.id=d,c.fake&&(c.style.background="",c.style.overflow="hidden",u=x.style.overflow,x.style.overflow="hidden",x.appendChild(c)),i=n(p,e),c.fake?(c.parentNode.removeChild(c),x.style.overflow=u,x.offsetHeight):p.parentNode.removeChild(p),!!i}function u(e){return e.replace(/([A-Z])/g,function(e,t){return"-"+t.toLowerCase()}).replace(/^ms-/,"-ms-")}function d(t,n,r){var s;if("getComputedStyle"in e){s=getComputedStyle.call(e,t,n);var o=e.console;if(null!==s)r&&(s=s.getPropertyValue(r));else if(o){var i=o.error?"error":"log";o[i].call(o,"getComputedStyle returning null, its possible modernizr test results are inaccurate")}}else s=!n&&t.currentStyle&&t.currentStyle[r];return s}function p(t,r){var s=t.length;if("CSS"in e&&"supports"in e.CSS){for(;s--;)if(e.CSS.supports(u(t[s]),r))return!0;return!1}if("CSSSupportsRule"in e){for(var o=[];s--;)o.push("("+u(t[s])+":"+r+")");return o=o.join(" or "),f("@supports ("+o+") { #modernizr { position: absolute; } }",function(e){return"absolute"==d(e,null,"position")})}return n}function c(e){return e.replace(/([a-z])-([a-z])/g,function(e,t,n){return t+n.toUpperCase()}).replace(/^-/,"")}function v(e,t,s,o){function l(){u&&(delete P.style,delete P.modElem)}if(o=r(o,"undefined")?!1:o,!r(s,"undefined")){var f=p(e,s);if(!r(f,"undefined"))return f}for(var u,d,v,m,g,y=["modernizr","tspan","samp"];!P.style&&y.length;)u=!0,P.modElem=a(y.shift()),P.style=P.modElem.style;for(v=e.length,d=0;v>d;d++)if(m=e[d],g=P.style[m],i(m,"-")&&(m=c(m)),P.style[m]!==n){if(o||r(s,"undefined"))return l(),"pfx"==t?m:!0;try{P.style[m]=s}catch(h){}if(P.style[m]!=g)return l(),"pfx"==t?m:!0}return l(),!1}function m(e,t){return function(){return e.apply(t,arguments)}}function g(e,t,n){var s;for(var o in e)if(e[o]in t)return n===!1?e[o]:(s=t[e[o]],r(s,"function")?m(s,n||t):s);return!1}function y(e,t,n,s,o){var i=e.charAt(0).toUpperCase()+e.slice(1),a=(e+" "+T.join(i+" ")+i).split(" ");return r(t,"string")||r(t,"undefined")?v(a,t,s,o):(a=(e+" "+z.join(i+" ")+i).split(" "),g(a,t,n))}function h(e,t,r){return y(e,n,n,t,r)}var w=[],S={_version:"3.5.0",_config:{classPrefix:"dm-",enableClasses:!0,enableJSClass:!0,usePrefixes:!0},_q:[],on:function(e,t){var n=this;setTimeout(function(){t(n[e])},0)},addTest:function(e,t,n){w.push({name:e,fn:t,options:n})},addAsyncTest:function(e){w.push({name:null,fn:e})}},Modernizr=function(){};Modernizr.prototype=S,Modernizr=new Modernizr;var C=[],x=t.documentElement,b="svg"===x.nodeName.toLowerCase();Modernizr.addTest("svg",!!t.createElementNS&&!!t.createElementNS("http://www.w3.org/2000/svg","svg").createSVGRect);var _="Moz O ms Webkit",T=S._config.usePrefixes?_.split(" "):[];S._cssomPrefixes=T;var E={elem:a("modernizr")};Modernizr._q.push(function(){delete E.elem});var P={style:E.elem.style};Modernizr._q.unshift(function(){delete P.style});var z=S._config.usePrefixes?_.toLowerCase().split(" "):[];S._domPrefixes=z,S.testAllProps=y,S.testAllProps=h,Modernizr.addTest("flexbox",h("flexBasis","1px",!0)),Modernizr.addTest("flexboxlegacy",h("boxDirection","reverse",!0)),Modernizr.addTest("flexboxtweener",h("flexAlign","end",!0)),Modernizr.addTest("flexwrap",h("flexWrap","wrap",!0));var N="CSS"in e&&"supports"in e.CSS,j="supportsCSS"in e;Modernizr.addTest("supports",N||j);var A=S.testStyles=f;A("#modernizr { width: 50vw; }",function(t){var n=parseInt(e.innerWidth/2,10),r=parseInt(d(t,null,"width"),10);Modernizr.addTest("cssvwunit",r==n)}),Modernizr.addTest("passiveeventlisteners",function(){var t=!1;try{var n=Object.defineProperty({},"passive",{get:function(){t=!0}});e.addEventListener("test",null,n)}catch(r){}return t}),s(),o(C),delete S.addTest,delete S.addAsyncTest;for(var k=0;k<Modernizr._q.length;k++)Modernizr._q[k]();e.Modernizr=Modernizr}(window,document);
+   </script>
+   <script>
+    var isWLR = true;
+   </script>
+   <!-- Custom Widgets js functions map -->
+   <script>
+    window.customWidgetsFunctions = {};
+     window.customWidgetsStrings = {};
+   </script>
+   <script>
+    window.customWidgetsFunctions["57a35c4a13ad4ff9bca9f08d0e63d1f8~2"] = function (element, data, api) {
+         /* * Google Map API
+     * Feb 19 2017 
+     * Version 1.0.0
+     * Version 1.0.1
+         -  Changed Zoom Level From 1-10 to 1-20
+     * Version 1.1.1
+         -  Added Water,Road, and Transit Visibility(dropdown).
+     
+     *Upon purchase of this widget, you acquire the right to use it; you're not actually 
+     acquiring the widget itself.TheCamel.co is the owner of the intellectual property of this widget.
+     The widget is for use only, it is not to be on sold, lent, rented, given away, gifted you can’t 
+     even put it in your will. It is for use for your sites only on the duda dashboard we install the item in.
+     
+     *Kindly refer to our Terms and Conditions for more info - http://www.thecamel.co/terms-and-conditions
+     
+     Credits
+     *Google Map ( 1.0.0 )
+ */
+ 
+ 
+ eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('3x(3n(p,a,c,k,e,r){e=3n(c){3m(c<a?\'\':e(3r(c/a)))+((c=c%a)>35?3t.3v(c+29):c.3u(36))};3o(!\'\'.3p(/^/,3t)){3q(c--)r[e(c)]=k[c]||e(c);k=[3n(e){3m r[e]}];e=3n(){3m\'\\\\w+\'};c=1};3q(c--)3o(k[c])p=p.3p(3s 3w(\'\\\\b\'+e(c)+\'\\\\b\',\'g\'),k[c]);3m p}(\'b U=q.m.U;n(U){$(16).1z({"1y":"2g%"})}2i{$(16).1z({"1y":"1S%"})}b 1w=$(16);1u(G(){1w.2k(\\\'39\\\')},1L);b F=$(".20").1t(\\\'I\\\');b 1s=1j.2F(1j.2N()*2R);n($(\\\'#\\\'+F)){F=\\\'31\\\'+1s}$("#E").1t(\\\'I\\\',F);1e(1d,"1W","1Z");1u(G(){1c(F)},21);G 1c(F){b 1o=q.m.29;b h=[];1o.E(G(i){b x=[i.2p,i.2r,i.2x,i.2y,i.2z,i.2A,i.2C,i.2E,i.N,i.2I,i.2M,i.18];h.2P(x)});b 1h=q.m.2S;b 1b=q.m.35;b 1F=q.m.3a;b 1A=1N(q.m.1P);b 1r=1q(h[0][1]);b 1n=1q(h[0][2]);b 1i=q.m.2e;b k=q.m.k;b y=q.m.y;b B=q.m.B;b 1m=[{"g":"k","e":"o","c":[{"f":"#2B"},{"1G":2D},{"H":k},{"M":1}]},{"g":"y","e":"o","c":[{"f":"#2G"},{"1G":30},{"H":y},{"M":1}]},{"g":"B","e":"o","c":[{"H":B}]}];b X=[{"e":"o","c":[{"f":"#1H"}]},{"e":"t.r.A","c":[{"f":"#1p"}]},{"e":"t.r.O","c":[{"f":"#1H"}]},{"g":"32.34","e":"t.r.A","c":[{"f":"#R"}]},{"g":"S","e":"t.r.A","c":[{"f":"#R"}]},{"g":"S.1B","e":"o","c":[{"f":"#3b"}]},{"g":"S.1B","e":"t.r.A","c":[{"f":"#3e"}]},{"g":"k","c":[{"H":k}]},{"g":"k","e":"o","c":[{"f":"#1I"}]},{"g":"k","e":"o.O","c":[{"f":"#1J"}]},{"g":"k","e":"t.r.A","c":[{"f":"#1K"}]},{"g":"k.T","e":"o","c":[{"f":"#1p"}]},{"g":"k.T","e":"o.O","c":[{"f":"#1M"}]},{"g":"k.T","e":"t.r.A","c":[{"f":"#3l"}]},{"g":"y","c":[{"f":"#1O"},{"H":y},{"M":2.5}]},{"g":"y","e":"o","c":[{"f":"#1Q"},{"H":y},{"M":1}]},{"g":"y.1R","e":"t.r.A","c":[{"f":"#R"}]},{"g":"B","e":"o","c":[{"f":"#1a"},{"H":B},{"M":1}]},{"g":"B","e":"t.r.A","c":[{"f":"#1T"}]},{"g":"B","e":"t.r.O","c":[{"f":"#1a"}]}];1U(1i){1V"X":V=X;1X;1Y:V=1m}b E=J w.l.22(1d.1f(F),{24:1A,25:1h,26:1F,27:1b,28:J w.l.1g(1r,1n),2a:V,2b:w.l.2c.2d});b 17=J w.l.2f();b W=J w.l.2h();b D,i;2j(i=0;i<h.1k;i++){D=J w.l.2l({2m:w.l.2n.2o,1l:J w.l.1g(h[i][1],h[i][2]),E:E,2q:10,2s:h[i][7]});17.2t(D.1l);w.l.2u.2v(D,\\\'2w\\\',(G(D,i){b Q=h[i][0];b Y=h[i][3];b Z=h[i][4];b 12=h[i][5];b 13=h[i][6];b N=h[i][8];b 14=h[i][9];b 15=h[i][10];b 18=h[i][11];b u=\\\'<j z="2H">\\\';n(Q!=\\\'\\\'){u+=\\\'<1v z="C 2J">\\\'+Q+\\\'</1v>\\\'}n(Z!=\\\'\\\'){u+=\\\'<j z="C 2K"><2L 1x =\\\'+Z+\\\'></j>\\\'}n(Y!=\\\'\\\'){u+=\\\'<j z="C L 2O"><v>2Q: </v><p>&P\\\'+Y+\\\'</p></j>\\\'}n(12!=\\\'\\\'){u+=\\\'<j z="C L 2T"><v>2U: </v><p>&P\\\'+12+\\\'</p></j>\\\'}n(13!=\\\'\\\'){u+=\\\'<j z="C L 2V"><v>2W: </v><p>&P\\\'+13+\\\'</p></j>\\\'}n(14!==\\\'\\\'&&15!==2X){u+=\\\'<j z="C L 2Y"><v>2Z: </v><a 1C=\\\'+15.1C+\\\'><p>&P\\\'+14+\\\'</p></a></j>\\\'}n(N!=\\\'\\\'){u+=\\\'<j z="C L 33"><v>\\\'+18+\\\': </v><1D>\\\'+N+\\\'</1D></j>\\\'}u+=\\\'</j>\\\';1E G(){W.36(u);W.37(E,D)}})(D,i));n(h.1k>1){E.38(17)}}}G 1e(d,s,I){b 19=q.m.19;b 3c=d.3d(s)[0];n(d.1f(I)){1E}K=d.3f(s);K.I=I;K.1x="3g://l.w.3h/l/3i/K?3j="+19;$(\\\'3k\\\').23(K)}\',62,3y,\'|||||||||||3z|3A||3B|3C|3D|3E||3F|3G|3H|3I|3o|3J||3K|3L||3M|3N|3O|3P||3Q|3R|3S|3T|3U|3V|3W|3X|3n|3Y|3Z|3s|40|41|42|43|44|46|47|48|49|4a|4b|4c|4d|4e|4f|4g|||4h|4i|4j|4k|4l|4m|4n|4o|4p|4q|4r|4s|4t|4u|4v|4w|4x|4y|4z|4A|4B|4C|4D|4E|4F|4G|4H|4I|4J|4K|4L|4M|4N|4O|4P|4Q|4R|4S|3m|4T|4U|4V|4W|4X|4Y|4Z|50|3r|51|52|53|54|55|56|57|58|59|5a|5b|5c|5d|5e|5f|5g|5h|5i|5j|5k|5l|5m|5n|5o|5p|5q|5r|5s|5t|5u|5v|5w|5x|5y|5z|5A|5B|5C|5D|5E|5F|5G|5H|5I|5J|5K|5L|5M|5N|5O|5P|45|5Q|5R|5S|5T|5U|5V|5W|5X|5Y|5Z|60|61|63|64|65|66|67|68|69|6a|6b|6c||6d|6e|6f|6g|6h|6i|6j|6k|6l|6m|6n|6o|6p|6q|6r|6s|6t|6u|6v|6w|6x\'.6y(\'|\'),0,{}))',62,407,'||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||return|function|if|replace|while|parseInt|new|String|toString|fromCharCode|RegExp|eval|208|var|stylers|elementType|color|featureType|locations|div|road|maps|config|geometry|data|text|labels|form|h4|google|transit|class|fill|water|gpmapCommon|marker|map|mapIDGoogle|visibility|id|js|gpmapGeneral|weight|oInfo|stroke||nbsp|business|d59563|poi|highway|fullWidth|gMapStyles|infowindow|night|address|logo|email|phone|website|websiteLink|element|bounds|oInfoTitle|apikey|17263c|maptype|initMap|document|loadgmapJS|getElementById|LatLng|zoomcontrol|mapTheme|Math|length|position|dfault|centerLng|locationLists|746855|parseFloat|centerLat|gMapApi|attr|setTimeout|h3|ele|src|width|css|zLevel|park|href|pre|streetControl|lightness|242f3e|38414e|212a37|9ca5b3|1000|1f2835|f2da00|zoomLevel|d5d93e|station|80|515c6d|switch|case|script|break|default|googlemapJS|gscale|2000|Map|append|zoom|zoomControl|streetViewControl|mapTypeControl|center|locList|styles|mapTypeId|MapTypeId|ROADMAP|mapThemes|LatLngBounds|100|InfoWindow|else|for|addClass|Marker|animation|Animation|DROP|businessName|size|gmapLatitude|icon|extend|event|addListener|click|gmapLongitude|gpmapAddress|businessLogo|gpEmail|efaa0a|gpPhone|markerLogo|floor|66b02f|gmapInfoContainer|gpWebsite|bName|gmapLogo|img|gpWebsitelink|random|gmapAddress|push||Address|99999999|zControl|gmapEmail|Email|gmapPhone|Telephone|undefined|gmapWebsite|Link|gMAp|administrative|gmapOtherInfo|locality|maptypeControl|setContent|open|fitBounds|gmAutoHeight|stControl|263c3f|fjs|getElementsByTagName|6b9a76|createElement|https|com|api|key|body|f3d19c|split'.split('|'),0,{}))
+     };
+   </script>
+   <script type="text/javascript">
+    var version = "3.5.5";
+     var build = "2018-07-29T08_09_24";
+ 
+     function buildEditorParent() {
+         window.isMultiScreen = true;
+         window.editorParent = {};
+         window.previewParent = {};
+         window.assetsCacheQueryParam = "?version=2018-07-29T08_09_24";
+         try {
+             var _p = window.parent;
+             if (_p && _p.document && _p.$ && _p.$.dmfw) {
+                 window.editorParent = _p;
+             }
+             else if (_p.isSitePreview) {
+                 window.previewParent = _p;
+             }
+         } catch (e) {
+ 
+         }
+     }
+ 
+     buildEditorParent();
+   </script>
+   <!-- Load jQuery -->
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript">
+   </script>
+   <!-- End Load jQuery -->
+   <script>
+    window.cookiesNotificationMarkupPreview = '<div>\n  <p class=\"rteBlock\">\n    We use cookies to ensure that we give you the best experience on our website. To learn more, go to our \n    <a type=\"url\" href=\"https:\/\/www.cornwallrecycling.com\/privacy\" target=\"null\" data-runtime-url=\"https:\/\/www.cornwallrecycling.com\/privacy\">\n      Privacy Page\n    <\/a>\n  <\/p>\n<\/div>\n';
+   </script>
+   <!-- HEAD RT JS Include -->
+   <script>
+    window.INSITE = window.INSITE || {};
+     window.INSITE.device = "desktop";
+     window.rtCommonProps = {};
+     rtCommonProps["rt.ajax.ajaxScriptsFix"] =true;
+     rtCommonProps["rt.pushnotifs.sslframe.encoded"] = 'aHR0cHM6Ly97c3ViZG9tYWlufS5wdXNoLW5vdGlmcy5jb20=';
+     rtCommonProps["facebook.accessToken"] = '126515034112906|8vv7JhnEegS8qz43fIOZjxGZReA';
+     rtCommonProps["performance.tabletPreview.removeScroll"] = 'false';
+     rtCommonProps["inlineEditGrid.snap"] =true;
+     rtCommonProps["popup.insite.cookie.ttl"] = '0.0';
+     rtCommonProps["rt.pushnotifs.force.button"] =true;
+     rtCommonProps["google.places.key"] = 'AIzaSyBAwUOqPUB1CU31yDztoZYaUE7sPv4ktEI';
+     rtCommonProps["common.mapbox.token"] = 'pk.eyJ1IjoiZGFubnliMTIzIiwiYSI6ImNqMGljZ256dzAwMDAycXBkdWxwbDgzeXYifQ.Ck5P-0NKPVKAZ6SH98gxxw';
+     rtCommonProps["common.mapbox.js.override"] =false;
+     rtCommonProps["common.opencage.token"] = '319e14f32bcce967ba55cd263478796d';
+     rtCommonProps["common.here.appId"] = 'iYvDjIQ2quyEu0rg0hLo';
+     rtCommonProps["common.here.appCode"] = '1hcIxLJcbybmtBYTD9Z1UA';
+     rtCommonProps["isCoverage.test"] =false;
+     rtCommonProps["ecommerce.ecwid.script"] = 'https://app.multiscreenstore.com/script.js';
+     
+     rtCommonProps["common.mapsProvider"] = 'mapbox';
+     rtCommonProps["common.geocodeProvider"] = 'here';
+   </script>
+   <script src="/_dm/s/rt/dist/scripts/d-js-runtime-one-package.min.js?version=2018-07-29T08_09_24">
+   </script>
+   <!-- End of HEAD RT JS Include -->
+   <script src="/_dm/s/rt/dist/scripts/d-js-one-runtime-layouts-package.min.js?version=2018-07-29T08_09_24">
+   </script>
+   <script src="/_dm/s/rt/dist/scripts/d-js-one-runtime-layouts-desktop.min.js?version=2018-07-29T08_09_24">
+   </script>
+   <script>
+    jQuery.DM.updateWidthAndHeight();
+ $(window).resize(function () {
+     jQuery.DM.updateWidth();
+     
+ });
+ $(window).bind("orientationchange", function (e) {
+     jQuery.DM.updateWidth();
+     jQuery.layoutManager.initLayout();
+     
+ });
+ $(document).resize(function () {
+     jQuery.DM.updateWidth();
+     
+ });
+   </script>
+   <script type="text/javascript">
+    (function() {
+  	var campaign = (/utm_campaign=([^&]*)/).exec(window.location.search);
+  	
+  	if (campaign && campaign != null && campaign.length > 1) {
+  		campaign = campaign[1]; 		
+  		document.cookie = "_dm_rt_campaign=" + campaign + ";expires=" + new Date().getTime() + 24*60*60*1000 + ";domain=" + window.location.hostname + ";path=/";
+  	}
+ }());
+   </script>
+   <script type="text/javascript">
+    var _dm_gaq = {};
+   var _gaq = _gaq || [];
+   var _dm_insite = [];
+ 
+   
+   _dm_gaq.siteAlias = 'f3cf2265';
+   _dm_gaq.systemAggregatedGaqID = 'UA-7265702-9';
+   _dm_gaq.externalGaqID = 'UA-113402746-1';
+   
+   _gaq.push(['_gat._forceSSL']);
+   
+   if(_dm_gaq.systemAggregatedGaqID && (_dm_gaq.systemAggregatedGaqID != _dm_gaq.systemGaqID)){
+      // track aggregated account
+     _gaq.push(['b._setAccount', _dm_gaq.systemAggregatedGaqID]);
+     _gaq.push(['b._setAllowLinker', true]);
+     _gaq.push(['b._setVar', _dm_gaq.siteAlias]);
+     
+     _gaq.push (['b._gat._anonymizeIp']);
+     
+     _gaq.push(['b._setCustomVar', 1, 'product', 'DM_DIRECT',  2 ]);
+     _gaq.push(['b._setCustomVar', 2, 'plan', 'BUSINESS_PLUS',  2 ]);
+     _gaq.push(['b._setCustomVar', 3, 'dfooter', 'false',  2 ]);
+     _gaq.push(['b._setCustomVar', 4, 'sitetype', '1',  2 ]);
+     _gaq.push(['b._setCustomVar', 5, 'pwaEnabled', 'true',  2 ]);
+ 
+       _gaq.push(['b._trackPageview' ]);
+     pushInsiteImpressions('b._trackEvent');
+    }
+        
+    if(_dm_gaq.externalGaqID && _dm_gaq.externalGaqID!= '') {    	    	
+      _gaq.push(['c._setAccount', _dm_gaq.externalGaqID]);                      
+      _gaq.push(['c._setVar', _dm_gaq.siteAlias]);
+      _gaq.push(['c._setDomainName', 'cornwallrecycling.com']);
+      _gaq.push(['c._setAllowLinker', true]);
+      _gaq.push(['c._trackPageview' ]);
+      pushInsiteImpressions('c._trackEvent');
+    }
+ 
+    function pushInsiteImpressions(category) {
+    	$.each(_dm_insite, function(idx, rule) {
+    		_gaq.push([ category, 'insite_impression' , _dm_gaq.siteAlias, rule.ruleType + '__' + rule.ruleId, ]);
+    	});
+    }
+ (function() {
+ 	var ga = document.createElement('script');
+ 	ga.type = 'text/javascript';
+ 	ga.async = true;
+   
+ 	ga.src = 'https://ssl.google-analytics.com/ga.js';
+ 	var s = document.getElementsByTagName('script')[0];
+ 	s.parentNode.insertBefore(ga, s);
+ })();
+   	
+ ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+ p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+ };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+ n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","//d32hwlnfiv2gyn.cloudfront.net/sp-2.0.0-dm-0.1.min.js","snowplow"));
+ window.dmsnowplow  = window.snowplow;
+ 
+ dmsnowplow('newTracker', 'cf', 'd32hwlnfiv2gyn.cloudfront.net', { // Initialise a tracker
+   appId: 'f3cf2265'
+ });
+ 
+ dmsnowplow('trackPageView')
+ $.each(_dm_insite, function(idx, rule) {
+ 	//('trackStructEvent', 'category','action','label','property','value');
+ 			// Specifically in popup only the client knows if it is shown or not so we don't always want to track its impression here
+ 	        // the tracking is in popup.js
+ 			if (rule.actionName !== "popup") {
+                 dmsnowplow('trackStructEvent', 'insite', 'impression', rule.ruleType, rule.ruleId);
+             }
+  			$(document).ready(function(){
+  				$.DM.events.trigger('event-ruleTriggered', {value: rule})}
+  			);
+  		});
+   </script>
+   <div id="P6iryBW0Wu" style="display:none;">
+   </div>
+   <!-- photoswipe markup -->
+   <!-- Root element of PhotoSwipe. Must have class pswp. -->
+   <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+    <!-- Background of PhotoSwipe. 
+          It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg">
+    </div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+     <!-- Container that holds slides. 
+             PhotoSwipe keeps only 3 of them in the DOM to save memory.
+             Don't modify these 3 pswp__item elements, data is added later on. -->
+     <div class="pswp__container">
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+      <div class="pswp__item">
+      </div>
+     </div>
+     <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+     <div class="pswp__ui pswp__ui--hidden">
+      <div class="pswp__top-bar">
+       <!--  Controls are self-explanatory. Order can be changed. -->
+       <div class="pswp__counter">
+       </div>
+       <button class="pswp__button pswp__button--close" title="Close (Esc)">
+       </button>
+       <button class="pswp__button pswp__button--share" title="Share">
+       </button>
+       <button class="pswp__button pswp__button--fs" title="Toggle fullscreen">
+       </button>
+       <button class="pswp__button pswp__button--zoom" title="Zoom in/out">
+       </button>
+       <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+       <!-- element will get class pswp__preloader--active when preloader is running -->
+       <div class="pswp__preloader">
+        <div class="pswp__preloader__icn">
+         <div class="pswp__preloader__cut">
+          <div class="pswp__preloader__donut">
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+       <div class="pswp__share-tooltip">
+       </div>
+      </div>
+      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+      </button>
+      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+      </button>
+      <div class="pswp__caption">
+       <div class="pswp__caption__center">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- note these also must be called after ajax -->
+   <script>
+    var dmForceShare = false;
+     if (dmForceShare || $("#shareSection").length > 0 || $(".dmShare").length > 0) {
+         dmLoadShare();
+     }
+ 
+     function dmLoadShare() {
+         /* google plus shares */
+         $.ajax({
+             url: "https://apis.google.com/js/plusone.js", dataType: "script", success: function () {
+             }
+         });
+         /* linked in shares */
+         $.ajax({
+             url: "https://platform.linkedin.com/in.js", dataType: "script", success: function () {
+             }
+         });
+         /* Twitter Shares */
+         $.ajax({
+             url: "https://platform.twitter.com/widgets.js", dataType: "script", success: function () {
+             }
+         });
+     }
+   </script>
+   <div data-locale="en" id="fb-root">
+   </div>
+   <!-- Alias: f3cf2265 -->
+   <div class="dmPopupMask" id="dmPopupMask">
+   </div>
+   <div class="dmPopup" id="dmPopup">
+    <div class="dmPopupCloseWrapper">
+     <div class="dmPopupClose dm-icon-x_close_popup oneIcon" onclick="dmHidePopup(event);">
+     </div>
+    </div>
+    <div class="dmPopupTitle">
+     <span>
+     </span>
+     Share by:
+    </div>
+    <div class="data">
+    </div>
+   </div>
+   <script>
+    // Collects client data and updates cookies used by smart sites
+ var expireDays = 365,visitLength = 30 * 60000;
+ $.setCookie("dm_timezone_offset", (new Date()).getTimezoneOffset(), expireDays);
+ function setSmartSiteCookies() {
+ 	setSmartSiteCookiesInternal("dm_this_page_view","dm_last_page_view","dm_total_visits","dm_last_visit");
+ }
+ $.DM.events.on("afterAjax", setSmartSiteCookies);
+ setSmartSiteCookies();
+   </script>
+   <script type="text/javascript">
+    $.extend(Parameters,{
+         AjaxContainer : "div.dmBody",
+         WrappingContainer : "div.dmOuter",
+         HomeUrl : "https://www.cornwallrecycling.com/",
+         AccountUUID: "7bd398e210bf46e88708f84a88260623",
+         SiteAlias : "f3cf2265",
+         SiteId : "1073817",
+         SiteType : eval(Base64.decode("J0RVREFPTkUn")),
+         ExternalUid: null,
+         IsSEOFriendlyLinks : true,
+         IsSiteMultilingual: false,
+         InitialPageAlias : "home",
+         InitialEncodedPageAlias : "aG9tZQ",
+         IsFromScratch : "false",
+         CurrentPageUrl : "null",
+         IsCurrentHomePage : true,
+         classicLink : "",
+          AllowAjax : false,
+         AfterAjaxCommand : null,
+         HomeLinkText:"Back To Home",
+         UseGalleryModule : false,
+         CurrentThemeName : "Layout Theme",
+         ThemeVersion : "490",
+         DefaultPageAlias : "",
+         RemoveDID : true,
+          LayoutVariationID : {desktop : 5},
+ 		LayoutID : {desktop : 9},
+ 		WidgetStyleID : null,
+ 		IsHeaderFixed: false,
+ 		IsHeaderSkinny: false,
+ 		IsBfs: true,
+ 		LayoutParams : {_manifestId : 10003,_device : "desktop"},
+     		StorePageAlias: "null",
+         StorePath: "",
+         StoreId: "null",
+         StoreVersion: 0,
+     		StoreBaseUrl: "",
+         StoreCleanUrl:true,
+     		StoreDisableScrolling: true,
+     		NotificationSubDomain: "cornwallrecycling",
+         HasCustomDomain: true,
+     		showCookieNotification: true,
+ 		cookiesNotificationMarkup: '<div>\n  <p class=\"rteBlock\">\n    We use cookies to ensure that we give you the best experience on our website. To learn more, go to our \n    <a type=\"url\" href=\"https:\/\/www.cornwallrecycling.com\/privacy\" target=\"null\" data-runtime-url=\"https:\/\/www.cornwallrecycling.com\/privacy\">\n      Privacy Page\n    <\/a>\n  <\/p>\n<\/div>\n',
+         translatedPageUrl: '',
+         isFastMigrationSite: false,
+         sidebarPosition: 'NA',
+         currentLanguage: "en",
+         NavItems: "W3sidGl0bGUiOiJIb21lIiwiYWxpYXMiOiJob21lIiwicGF0aCI6Ii8iLCJpbk5hdmlnYXRpb24iOnRydWUsInN1Yk5hdiI6W119LHsidGl0bGUiOiJBYm91dCBLTSIsImFsaWFzIjoiYWJvdXQta20iLCJwYXRoIjoiL2Fib3V0LWttIiwiaW5OYXZpZ2F0aW9uIjp0cnVlLCJzdWJOYXYiOltdfSx7InRpdGxlIjoiU2VydmljZXMiLCJhbGlhcyI6InNlcnZpY2VzIiwicGF0aCI6Ii9zZXJ2aWNlcyIsImluTmF2aWdhdGlvbiI6dHJ1ZSwic3ViTmF2IjpbXX0seyJ0aXRsZSI6IkxpY2Vuc2VzIiwiYWxpYXMiOiJsaWNlbnNlcyIsInBhdGgiOiIvbGljZW5zZXMiLCJpbk5hdmlnYXRpb24iOnRydWUsInN1Yk5hdiI6W119LHsidGl0bGUiOiJDb250YWN0IiwiYWxpYXMiOiJjb250YWN0IiwicGF0aCI6Ii9jb250YWN0IiwiaW5OYXZpZ2F0aW9uIjp0cnVlLCJzdWJOYXYiOltdfSx7InRpdGxlIjoiVGhhbmsgWW91IiwiYWxpYXMiOiJ0aGFuay15b3UiLCJwYXRoIjoiL3RoYW5rLXlvdSIsImluTmF2aWdhdGlvbiI6ZmFsc2UsInN1Yk5hdiI6W119XQ==",
+ 		errors: {
+ 			general: 'There was an error connecting to the page.<br/> Make sure you are not offline.',
+ 				password: 'Incorrect name/password combination',
+ 			tryAgain: 'Try again'
+ 		}
+     });
+     $.extend(Parameters.NavigationAreaParams,{
+         ShowBackToHomeOnInnerPages : true,
+         NavbarSize : -1,
+         NavbarLiveHomePage : "https://www.cornwallrecycling.com/",
+         BlockContainerSelector : ".dmBody",
+         NavbarSelector : "#dmNav:has(a)",
+         SubNavbarSelector : "#subnav_main"
+     });
+     $.extend(Parameters.LayoutParams, {_navigationAnimationStyle : 'slide'});
+     
+     Parameters.NavigationAreaParams.MoreButtonText = 'עוד';
+     
+     Parameters.NavigationAreaParams.LessButtonText = 'פחות';
+     Parameters.HomeLinkText = 'Home';
+   </script>
+   <script>
+    jQuery(window).load(function () {
+         try {
+             jQuery.DM.updateIOSHeight();
+         } catch(e){};
+     });
+   </script>
+   <!--  End Script tags -->
+  </body>
+ </html>

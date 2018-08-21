@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+ <!--[if IE 7]>
+ <html class="ie ie7" lang="en-US">
+ <![endif]-->
+ <!--[if IE 8]>
+ <html class="ie ie8" lang="en-US">
+ <![endif]-->
+ <!--[if !(IE 7) & !(IE 8)]><!-->
+ <html lang="en-US">
+  <!--<![endif]-->
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width" name="viewport"/>
+   <title>
+    LEVEL Architecture + Design | Advanced Architectural Design Services
+   </title>
+   <link href="http://gmpg.org/xfn/11" rel="profile"/>
+   <link href="http://levelwp.levelarchitecture.com/xmlrpc.php" rel="pingback"/>
+   <!--[if lt IE 9]>
+ <script src="http://levelwp.levelarchitecture.com/wp-content/themes/twentytwelve/js/html5.js" type="text/javascript"></script>
+ <![endif]-->
+   <link href="//levelwp.levelarchitecture.com" rel="dns-prefetch"/>
+   <link href="//fonts.googleapis.com" rel="dns-prefetch"/>
+   <link href="//s.w.org" rel="dns-prefetch"/>
+   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+   <link href="http://levelwp.levelarchitecture.com/?feed=rss2" rel="alternate" title="LEVEL Architecture + Design » Feed" type="application/rss+xml"/>
+   <link href="http://levelwp.levelarchitecture.com/?feed=comments-rss2" rel="alternate" title="LEVEL Architecture + Design » Comments Feed" type="application/rss+xml"/>
+   <link href="http://levelwp.levelarchitecture.com/?feed=rss2&amp;page_id=86" rel="alternate" title="LEVEL Architecture + Design » LEVEL Architecture PLLC Comments Feed" type="application/rss+xml"/>
+   <script type="text/javascript">
+    window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/levelwp.levelarchitecture.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.3"}};
+ 			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56692,8205,9792,65039],[55357,56692,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+   </script>
+   <style type="text/css">
+    img.wp-smiley,
+ img.emoji {
+ 	display: inline !important;
+ 	border: none !important;
+ 	box-shadow: none !important;
+ 	height: 1em !important;
+ 	width: 1em !important;
+ 	margin: 0 .07em !important;
+ 	vertical-align: -0.1em !important;
+ 	background: none !important;
+ 	padding: 0 !important;
+ }
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700&amp;subset=latin,latin-ext" id="twentytwelve-fonts-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://levelwp.levelarchitecture.com/wp-content/themes/twentytwelve/style.css?ver=4.9.3" id="twentytwelve-style-css" media="all" rel="stylesheet" type="text/css"/>
+   <!--[if lt IE 9]>
+ <link rel='stylesheet' id='twentytwelve-ie-css'  href='http://levelwp.levelarchitecture.com/wp-content/themes/twentytwelve/css/ie.css?ver=20121010' type='text/css' media='all' />
+ <![endif]-->
+   <script src="http://levelwp.levelarchitecture.com/wp-includes/js/jquery/jquery.js?ver=1.12.4" type="text/javascript">
+   </script>
+   <script src="http://levelwp.levelarchitecture.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1" type="text/javascript">
+   </script>
+   <link href="http://levelwp.levelarchitecture.com/index.php?rest_route=/" rel="https://api.w.org/"/>
+   <link href="http://levelwp.levelarchitecture.com/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml"/>
+   <link href="http://levelwp.levelarchitecture.com/wp-includes/wlwmanifest.xml" rel="wlwmanifest" type="application/wlwmanifest+xml"/>
+   <meta content="WordPress 4.9.3" name="generator"/>
+   <link href="http://levelwp.levelarchitecture.com/" rel="canonical"/>
+   <link href="http://levelwp.levelarchitecture.com/" rel="shortlink"/>
+   <link href="http://levelwp.levelarchitecture.com/index.php?rest_route=%2Foembed%2F1.0%2Fembed&amp;url=http%3A%2F%2Flevelwp.levelarchitecture.com%2F" rel="alternate" type="application/json+oembed"/>
+   <link href="http://levelwp.levelarchitecture.com/index.php?rest_route=%2Foembed%2F1.0%2Fembed&amp;url=http%3A%2F%2Flevelwp.levelarchitecture.com%2F&amp;format=xml" rel="alternate" type="text/xml+oembed"/>
+   <style type="text/css">
+    .recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}
+   </style>
+   <style id="twentytwelve-header-css" type="text/css">
+    .site-header h1 a,
+ 		.site-header h2 {
+ 			color: #919191;
+ 		}
+   </style>
+   <style id="custom-background-css" type="text/css">
+    body.custom-background { background-color: #efefef; }
+   </style>
+  </head>
+  <body class="home page-template-default page page-id-86 custom-background custom-font-enabled single-author">
+   <div class="hfeed site" id="page">
+    <header class="site-header" id="masthead" role="banner">
+     <hgroup>
+      <h1 class="site-title">
+       <a href="http://levelwp.levelarchitecture.com/" rel="home" title="LEVEL Architecture + Design">
+        LEVEL Architecture + Design
+       </a>
+      </h1>
+      <h2 class="site-description">
+       Advanced Architectural Design Services
+      </h2>
+     </hgroup>
+     <nav class="main-navigation" id="site-navigation" role="navigation">
+      <button class="menu-toggle">
+       Menu
+      </button>
+      <a class="assistive-text" href="#content" title="Skip to content">
+       Skip to content
+      </a>
+      <div class="nav-menu">
+       <ul>
+        <li class="current_page_item">
+         <a href="http://levelwp.levelarchitecture.com/">
+          Home
+         </a>
+        </li>
+        <li class="page_item page-item-88 page_item_has_children">
+         <a href="http://levelwp.levelarchitecture.com/?page_id=88">
+          Architecture Portfolio
+         </a>
+         <ul class="children">
+          <li class="page_item page-item-92">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=92">
+            Residential
+           </a>
+          </li>
+          <li class="page_item page-item-95">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=95">
+            Commercial
+           </a>
+          </li>
+          <li class="page_item page-item-97">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=97">
+            Planning
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="page_item page-item-90 page_item_has_children">
+         <a href="http://levelwp.levelarchitecture.com/?page_id=90">
+          Design Portfolio
+         </a>
+         <ul class="children">
+          <li class="page_item page-item-103">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=103">
+            Interior Design
+           </a>
+          </li>
+          <li class="page_item page-item-105">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=105">
+            Furniture
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="page_item page-item-100 page_item_has_children">
+         <a href="http://levelwp.levelarchitecture.com/?page_id=100">
+          Architectural Modelmaking Services
+         </a>
+         <ul class="children">
+          <li class="page_item page-item-683">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=683">
+            Presentation and Marketing Models
+           </a>
+          </li>
+          <li class="page_item page-item-686">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=686">
+            Paper Models/White Models/Study Models
+           </a>
+          </li>
+          <li class="page_item page-item-690">
+           <a href="http://levelwp.levelarchitecture.com/?page_id=690">
+            Planning/Topographic Models
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="page_item page-item-697">
+         <a href="http://levelwp.levelarchitecture.com/?page_id=697">
+          Contact
+         </a>
+        </li>
+       </ul>
+      </div>
+     </nav>
+     <!-- #site-navigation -->
+     <a href="http://levelwp.levelarchitecture.com/">
+      <img alt="LEVEL Architecture + Design" class="header-image" height="117" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/cropped-Strip_night1.jpg" width="1067"/>
+     </a>
+    </header>
+    <!-- #masthead -->
+    <div class="wrapper" id="main">
+     <div class="site-content" id="primary">
+      <div id="content" role="main">
+       <article class="post-86 page type-page status-publish hentry" id="post-86">
+        <header class="entry-header">
+         <h1 class="entry-title">
+          LEVEL Architecture PLLC
+         </h1>
+        </header>
+        <div class="entry-content">
+         <p>
+          <span style="color: #999999; font-family: Tahoma; font-size: medium;">
+           LEVEL Architecture PLLC, dba LEVEL
+          </span>
+          <span style="color: #999999; font-family: Tahoma; font-size: medium;">
+           A+D, was originally created in 1998 to provide architecture and design services dedicated to the creation of unique lifestyles. The independent experience of our founding members and staff combine to create a design sensibility that is both visionary and insightful. LEVEL A+D is a leading
+           <i>
+            integrated design
+           </i>
+           architecture firm. The firm specializes in technical design detailing and advanced data flow management consulting. Our passion for quality built environments and advanced technical solutions are integrated throughout the
+           <i>
+            construction process.
+           </i>
+           Our numerous built projects have given us the expertise to provide efficient and knowledgeable services to our clients and strategic partners.
+          </span>
+         </p>
+         <div class="slideshow_container slideshow_container_style-dark" data-slideshow-id="875" data-style-name="style-dark" data-style-version="2.3.1" style=" max-width: 1000px;">
+          <div class="slideshow_loading_icon">
+          </div>
+          <div class="slideshow_content" style="display: none;">
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="100 Eleventh Ave" height="3300" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2015/02/2010_calatrava_worksamples_final-5.jpg" width="2550"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               100 Eleventh Ave
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="MoMA Tower" height="3300" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2015/02/2010_calatrava_worksamples_final-3.jpg" width="2550"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               MoMA Tower
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="NY Times" height="3300" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2015/02/2010_calatrava_worksamples_final-1.jpg" width="2550"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               NY Times
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="interior_struct" height="1226" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/interior_struct.jpg" width="2039"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               interior_struct
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="ext_struct2 - Copy" height="1170" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/ext_struct2-Copy.jpg" width="910"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               ext_struct2 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="interior02 - Copy" height="1114" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/interior02-Copy.jpg" width="2062"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               interior02 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="interior04 - Copy" height="720" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/interior04-Copy.jpg" width="720"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               interior04 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="interior04" height="720" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/interior04.jpg" width="720"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               interior04
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="facade03 - Copy" height="1200" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/facade03-Copy.jpg" width="1600"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               facade03 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="facade02 - Copy" height="2048" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/facade02-Copy.jpg" width="1536"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               facade02 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="ocean_bottom" height="2400" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/ocean_bottom.jpg" width="2400"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               ocean_bottom
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="deepness" height="1197" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/deepness.jpg" width="854"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               deepness
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Aquarium_theater" height="1200" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Aquarium_theater.jpg" width="1800"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Aquarium_theater
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="10000 Santa Monica" height="3300" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2015/02/2010_calatrava_worksamples_final-9-2.jpg" width="2550"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               10000 Santa Monica
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="chelsea_street01 - Copy - Copy" height="1155" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/chelsea_street01-Copy-Copy1.jpg" width="882"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               chelsea_street01 - Copy - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Elev01 - Copy - Copy" height="1103" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Elev01-Copy-Copy.jpg" width="1875"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Elev01 - Copy - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="ithaca" height="1108" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/ithaca.jpg" width="1110"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               ithaca
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="838 rear yard reno complete - Copy" height="1222" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/838-rear-yard-reno-complete-Copy.jpg" width="1800"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               838 rear yard reno complete - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Street view" height="900" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Street-view.jpg" width="900"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Street view
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Yard - Copy" height="900" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Yard-Copy.jpg" width="900"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Yard - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="facade01 - Copy" height="1200" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/facade01-Copy.jpg" width="1600"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               facade01 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="facade04 - Copy" height="1600" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/facade04-Copy.jpg" width="1200"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               facade04 - Copy
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="rear02" height="1539" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/rear02.jpg" width="1468"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               rear02
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="View01" height="1840" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/View01.jpg" width="2383"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               View01
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Section_view" height="2064" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Section_view1.jpg" width="4511"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Section_view
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+           <div class="slideshow_view">
+            <div class="slideshow_slide slideshow_slide_image">
+             <img alt="Strip_night" height="1280" src="http://levelwp.levelarchitecture.com/wp-content/uploads/2014/10/Strip_night1.jpg" width="1067"/>
+             <div class="slideshow_description_box slideshow_transparent">
+              <div class="slideshow_title">
+               Strip_night
+              </div>
+             </div>
+            </div>
+            <div style="clear: both;">
+            </div>
+           </div>
+          </div>
+          <div class="slideshow_controlPanel slideshow_transparent" style="display: none;">
+           <ul>
+            <li class="slideshow_togglePlay" data-pause-text="Pause" data-play-text="Play">
+            </li>
+           </ul>
+          </div>
+          <div class="slideshow_button slideshow_previous slideshow_transparent" data-previous-text="Previous" role="button" style="display: none;">
+          </div>
+          <div class="slideshow_button slideshow_next slideshow_transparent" data-next-text="Next" role="button" style="display: none;">
+          </div>
+          <div class="slideshow_pagination" data-go-to-text="Go to slide" style="display: none;">
+           <div class="slideshow_pagination_center">
+           </div>
+          </div>
+          <!-- WordPress Slideshow Version 2.3.1 -->
+         </div>
+        </div>
+        <!-- .entry-content -->
+        <footer class="entry-meta">
+        </footer>
+        <!-- .entry-meta -->
+       </article>
+       <!-- #post -->
+       <div class="comments-area" id="comments">
+        <div class="comment-respond" id="respond">
+         <h3 class="comment-reply-title" id="reply-title">
+          Leave a Reply
+          <small>
+           <a href="/#respond" id="cancel-comment-reply-link" rel="nofollow" style="display:none;">
+            Cancel reply
+           </a>
+          </small>
+         </h3>
+         <form action="http://levelwp.levelarchitecture.com/wp-comments-post.php" class="comment-form" id="commentform" method="post">
+          <p class="comment-notes">
+           <span id="email-notes">
+            Your email address will not be published.
+           </span>
+           Required fields are marked
+           <span class="required">
+            *
+           </span>
+          </p>
+          <p class="comment-form-comment">
+           <label for="comment">
+            Comment
+           </label>
+           <textarea aria-required="true" cols="45" id="comment" maxlength="65525" name="comment" required="required" rows="8">
+           </textarea>
+          </p>
+          <p class="comment-form-author">
+           <label for="author">
+            Name
+            <span class="required">
+             *
+            </span>
+           </label>
+           <input aria-required="true" id="author" maxlength="245" name="author" required="required" size="30" type="text" value=""/>
+          </p>
+          <p class="comment-form-email">
+           <label for="email">
+            Email
+            <span class="required">
+             *
+            </span>
+           </label>
+           <input aria-describedby="email-notes" aria-required="true" id="email" maxlength="100" name="email" required="required" size="30" type="text" value=""/>
+          </p>
+          <p class="comment-form-url">
+           <label for="url">
+            Website
+           </label>
+           <input id="url" maxlength="200" name="url" size="30" type="text" value=""/>
+          </p>
+          <p class="form-submit">
+           <input class="submit" id="submit" name="submit" type="submit" value="Post Comment"/>
+           <input id="comment_post_ID" name="comment_post_ID" type="hidden" value="86"/>
+           <input id="comment_parent" name="comment_parent" type="hidden" value="0"/>
+          </p>
+          <p style="display: none;">
+           <input id="akismet_comment_nonce" name="akismet_comment_nonce" type="hidden" value="508de541ee"/>
+          </p>
+          <p style="display: none;">
+           <input id="ak_js" name="ak_js" type="hidden" value="23"/>
+          </p>
+         </form>
+        </div>
+        <!-- #respond -->
+       </div>
+       <!-- #comments .comments-area -->
+      </div>
+      <!-- #content -->
+     </div>
+     <!-- #primary -->
+     <div class="widget-area" id="secondary" role="complementary">
+      <aside class="widget widget_search" id="search-2">
+       <form action="http://levelwp.levelarchitecture.com/" class="searchform" id="searchform" method="get" role="search">
+        <div>
+         <label class="screen-reader-text" for="s">
+          Search for:
+         </label>
+         <input id="s" name="s" type="text" value=""/>
+         <input id="searchsubmit" type="submit" value="Search"/>
+        </div>
+       </form>
+      </aside>
+      <aside class="widget widget_recent_entries" id="recent-posts-2">
+       <h3 class="widget-title">
+        Recent Posts
+       </h3>
+       <ul>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=861">
+          10,000 Santa Monica Blvd.
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=858">
+          MoMA Tower – BIM Parametric Model
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=853">
+          100 Eleventh Avenue
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=847">
+          MoMA Tower – Tour Verre
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=835">
+          New York Times Headquarters
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=1">
+          Hello world!
+         </a>
+        </li>
+       </ul>
+      </aside>
+      <aside class="widget widget_recent_comments" id="recent-comments-2">
+       <h3 class="widget-title">
+        Recent Comments
+       </h3>
+       <ul id="recentcomments">
+       </ul>
+      </aside>
+      <aside class="widget widget_archive" id="archives-2">
+       <h3 class="widget-title">
+        Archives
+       </h3>
+       <ul>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?m=201502">
+          February 2015
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?m=201405">
+          May 2014
+         </a>
+        </li>
+       </ul>
+      </aside>
+      <aside class="widget widget_categories" id="categories-2">
+       <h3 class="widget-title">
+        Categories
+       </h3>
+       <ul>
+        <li class="cat-item cat-item-1">
+         <a href="http://levelwp.levelarchitecture.com/?cat=1">
+          Uncategorized
+         </a>
+        </li>
+       </ul>
+      </aside>
+      <aside class="widget widget_meta" id="meta-2">
+       <h3 class="widget-title">
+        Meta
+       </h3>
+       <ul>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/wp-login.php">
+          Log in
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?feed=rss2">
+          Entries
+          <abbr title="Really Simple Syndication">
+           RSS
+          </abbr>
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?feed=comments-rss2">
+          Comments
+          <abbr title="Really Simple Syndication">
+           RSS
+          </abbr>
+         </a>
+        </li>
+        <li>
+         <a href="https://wordpress.org/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">
+          WordPress.org
+         </a>
+        </li>
+       </ul>
+      </aside>
+      <aside class="widget widget_recent_entries" id="recent-posts-4">
+       <h3 class="widget-title">
+        Recent Posts
+       </h3>
+       <ul>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=861">
+          10,000 Santa Monica Blvd.
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=858">
+          MoMA Tower – BIM Parametric Model
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=853">
+          100 Eleventh Avenue
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=847">
+          MoMA Tower – Tour Verre
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=835">
+          New York Times Headquarters
+         </a>
+        </li>
+        <li>
+         <a href="http://levelwp.levelarchitecture.com/?p=1">
+          Hello world!
+         </a>
+        </li>
+       </ul>
+      </aside>
+     </div>
+     <!-- #secondary -->
+    </div>
+    <!-- #main .wrapper -->
+    <footer id="colophon" role="contentinfo">
+     <div class="site-info">
+      <a href="https://wordpress.org/" title="Semantic Personal Publishing Platform">
+       Proudly powered by WordPress
+      </a>
+     </div>
+     <!-- .site-info -->
+    </footer>
+    <!-- #colophon -->
+   </div>
+   <!-- #page -->
+   <link href="http://levelwp.levelarchitecture.com/wp-content/plugins/slideshow-jquery-image-gallery/style/SlideshowPlugin/functional.css?ver=2.3.1" id="slideshow-jquery-image-gallery-stylesheet_functional-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://levelwp.levelarchitecture.com/wp-content/plugins/slideshow-jquery-image-gallery/css/style-dark.css?ver=2.3.1" id="slideshow-jquery-image-gallery-stylesheet_style-dark-css" media="all" rel="stylesheet" type="text/css"/>
+   <script src="http://levelwp.levelarchitecture.com/wp-includes/js/comment-reply.min.js?ver=4.9.3" type="text/javascript">
+   </script>
+   <script src="http://levelwp.levelarchitecture.com/wp-content/themes/twentytwelve/js/navigation.js?ver=20140711" type="text/javascript">
+   </script>
+   <script src="http://levelwp.levelarchitecture.com/wp-includes/js/wp-embed.min.js?ver=4.9.3" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var SlideshowPluginSettings_875 = {"animation":"directFade","slideSpeed":"1","descriptionSpeed":"0.4","intervalSpeed":"2","slidesPerView":"1","maxWidth":"1000","aspectRatio":"3:1","height":"500","imageBehaviour":"natural","showDescription":"false","hideDescription":"false","preserveSlideshowDimensions":"true","enableResponsiveness":"false","play":"true","loop":"true","pauseOnHover":"true","controllable":"true","hideNavigationButtons":"false","showPagination":"true","hidePagination":"true","controlPanel":"false","hideControlPanel":"true","waitUntilLoaded":"true","showLoadingIcon":"true","random":"false","avoidFilter":"true","dimensionWidth":"3","dimensionHeight":"1"};
+ var slideshow_jquery_image_gallery_script_adminURL = "http:\/\/levelwp.levelarchitecture.com\/wp-admin\/";
+ /* ]]> */
+   </script>
+   <script src="http://levelwp.levelarchitecture.com/wp-content/plugins/slideshow-jquery-image-gallery/js/min/all.frontend.min.js?ver=2.3.1" type="text/javascript">
+   </script>
+   <script async="async" src="http://levelwp.levelarchitecture.com/wp-content/plugins/akismet/_inc/form.js?ver=4.0.2" type="text/javascript">
+   </script>
+  </body>
+ </html>
+ <!--
+ Performance optimized by W3 Total Cache. Learn more: https://www.w3-edge.com/products/
+ 
+ 
+ Served from: www.archit-x.net @ 2018-07-28 10:56:54 by W3 Total Cache
+ -->

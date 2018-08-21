@@ -1,0 +1,844 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+ <html>
+  <head>
+   <link href="http://fonts.googleapis.com/css?family=Gafata" rel="stylesheet" type="text/css"/>
+   <title>
+    HOTELANIA GRUPO HOTELERO (LA MANGA DEL MAR MENOR)
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="Hotelania" name="description"/>
+   <meta content="Hotelania" name="keywords"/>
+   <meta content="Hoteles" name="CLASSIFICATION"/>
+   <script src="calendario/scw.js" type="text/JavaScript">
+   </script>
+   <script src="calendario/fechas.js" type="text/JavaScript">
+   </script>
+   <script src="calendario/strings.js" type="text/JavaScript">
+   </script>
+   <link href="estilos/estilos.css" rel="stylesheet" type="text/css"/>
+   <link href="estilos/menu.css" rel="stylesheet" type="text/css"/>
+   <link href="http://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" type="text/css"/>
+   <link href="http://fonts.googleapis.com/css?family=Julius+Sans+One" rel="stylesheet" type="text/css"/>
+   <script language="javascript" src="reservas/ajax.js" type="text/javascript">
+   </script>
+   <script language="javascript" src="scripts/dsaplica.js">
+   </script>
+   <!--
+ <script src="thickbox/jquery-1.6.min.js"></script>
+ 
+ <script type="text/javascript" src="thickbox/thickbox1.js"></script>
+ <link rel="stylesheet" href="thickbox/thickbox1.css" type="text/css" />
+ -->
+   <link href="thickbox/colorbox.css" rel="stylesheet"/>
+   <script src="thickbox/jquery.min.js">
+   </script>
+   <script src="thickbox/jquery.colorbox.js">
+   </script>
+   <link href="thickbox/album.css" rel="stylesheet" type="text/css"/>
+   <script src="thickbox/lemmon-slider-0.2.js">
+   </script>
+   <script>
+    window.onload = function(){
+ 
+ 	// slider 1
+ 	$( '#slider1' ).lemmonSlider({ infinite: false });
+ 
+         $(".group1").colorbox({opacity:1,rel:'group1', slideshow:true});
+ 
+  /*
+         $( '#imap' ).hide(function() {
+            $('#imap').show(1000);
+         });
+ */
+ 
+         
+         Inicio();
+ 
+ }
+   </script>
+   <script language="javascript">
+    function selecciona_oferta(hotel,ent,sal,regimen,precio,num_habitaciones,id_busqueda){
+ 
+   //alert(ent+" "+sal+" "+hotel+" "+regimen+" "+precio+" "+num_habitaciones," "+id_busqueda);
+   document.form2.ent.value=ent;
+   document.form2.sal.value=sal;
+   document.form2.hotel.value=hotel;
+   document.form2.regimen.value=regimen;
+   document.form2.precio.value=precio;
+   document.form2.num_habitaciones.value=num_habitaciones;
+   document.form2.id_busqueda.value=id_busqueda;
+ 
+  // alert(document.form2.ent.value);
+ 
+   document.form2.submit();
+ 
+ 
+  }
+   </script>
+   <script language="javascript">
+    var NoPasar = 0;
+        
+ 	function Comprueba_Fechas(ori)
+ 	{
+ 
+ 
+                 var bRes = false;
+ 		var nCalc = 0;
+ 		var mesmenosuno = 07 - 1;
+ 		var hoy = new Date(2018, mesmenosuno,30);
+ 		var dia = hoy.getDate();
+                 var mes = hoy.getMonth() + 1;
+ 		var anyo = hoy.getFullYear();
+ 		var aFechaHoy = "";
+ 
+ 		if(ori == 0)
+ 		{
+ 			document.form1.dif_noches.value = 1;
+ 			document.form1.date18.value=FormateaFechas(document.form1.date18.value, 0);
+ 			document.form1.date19.value=FormateaFechas(document.form1.date18.value, 1);
+ 			aFechaHoy = FormateaFechas(dia + "/" + mes + "/" + anyo,0);
+ 
+ 			if (DiferenciaFechas(document.form1.date18.value, aFechaHoy) < 0)
+ 			{
+ 				alert("Fecha entrada no v\u00e1lida.");
+ 				bRes = false;
+ 				document.form1.date18.value = dia + "/" + mes + "/" + anyo;
+ 				document.form1.date18.value=FormateaFechas(document.form1.date18.value, 0);
+ 				document.form1.dif_noches.value = 1;
+ 				document.form1.date19.value=FormateaFechas(document.form1.date18.value, 1);
+ 			}
+ 			else
+ 			{
+ 				if(ValidaFecha(document.form1.date18))
+ 				{
+ 					if(ValidaFecha(document.form1.date19))
+ 					{
+ 						document.form1.dif_noches.value = DiferenciaFechas(document.form1.date19.value, document.form1.date18.value);
+ 						if(document.form1.dif_noches.value > 0)
+ 						{
+ 							bRes = true;
+ 						}
+ 						else
+ 						{
+ 							alert("La fecha de salida debe ser posterior a la fecha de entrada");
+ 							bRes = false;
+ 							document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 							document.form1.dif_noches.value = 1;
+ 							document.form1.date18.select();
+ 						}
+ 					}
+ 				}
+ 				else
+ 				{
+ 					alert("Fecha entrada no v\u00e1lida.");
+ 					bRes = false;
+ 					if(ValidaFecha(document.form1.date19))
+ 					{
+ 						document.form1.date18.value=FormateaFechas(document.form1.date19.value, -1);
+ 						document.form1.dif_noches.value = 1;
+ 					}
+ 					else
+ 					{
+ 						document.form1.date18.value = dia + "/" + mes + "/" + anyo;
+ 						document.form1.date18.value=FormateaFechas(document.form1.date18.value, 0);
+ 						document.form1.dif_noches.value = 1;
+ 						document.form1.date19.value=FormateaFechas(document.form1.date18.value, 1);
+ 					}
+ 				}
+ 			}
+ 		}
+ 		if(ori == 1)
+ 		{
+ 			document.form1.date18.value=FormateaFechas(document.form1.date18.value, 0);
+ 			document.form1.date19.value=FormateaFechas(document.form1.date19.value, 0);
+ 			if(ValidaFecha(document.form1.date18))
+ 			{
+ 				if(ValidaFecha(document.form1.date19))
+ 				{
+ 					document.form1.dif_noches.value = DiferenciaFechas(document.form1.date19.value, document.form1.date18.value);
+ 					if(document.form1.dif_noches.value > 0)
+ 					{
+ 						bRes = true;
+ 					}
+ 					else
+ 					{
+ 						alert("La fecha de salida debe ser posterior a la fecha de entrada");
+ 						bRes = false;
+ 						document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 						document.form1.dif_noches.value = 1;
+ 						document.form1.date19.select();
+ 					}
+ 				}
+ 				else
+ 				{
+ 					alert("Fecha salida no v\u00e1lida.");
+ 					bRes = false;
+ 					document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 					document.form1.dif_noches.value = 1;
+ 					document.form1.date19.select();
+ 				}
+ 			}
+ 			else
+ 			{
+ 				alert("Fecha entrada no v\u00e1lida.");
+ 				document.form1.date19.select();
+ 			}
+ 		}
+ 		if(ori == 2)
+ 		{
+ 			if (document.form1.dif_noches.value <= 0)
+ 				{
+ 					document.form1.dif_noches.value = 1;
+ 				}
+ 			document.form1.date18.value=FormateaFechas(document.form1.date18.value, 0);
+ 			document.form1.date19.value=FormateaFechas(document.form1.date19.value, 0);
+ 			if(ValidaFecha(document.form1.date18))
+ 			{
+ 				if(ValidaFecha(document.form1.date19))
+ 				{
+ 					document.form1.dif_noches.value = DiferenciaFechas(document.form1.date19.value, document.form1.date18.value);
+ 					if(document.form1.dif_noches.value > 0)
+ 					{
+ 						bRes = true;
+ 					}
+ 					else
+ 					{
+ 						alert("La fecha de salida debe ser posterior a la fecha de entrada");
+ 						bRes = false;
+ 						document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 						document.form1.dif_noches.value = 1;
+ 						document.form1.date19.select();
+ 					}
+ 				}
+ 				else
+ 				{
+ 					alert("Fecha salida no v\u00e1lida.");
+ 					bRes = false;
+ 					document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 					document.form1.dif_noches.value = 1;
+ 					document.form1.date19.select();
+ 				}
+ 			}
+ 			else
+ 			{
+ 				alert("Fecha entrada no v\u00e1lida.");
+ 				bRes = false;
+ 				document.form1.date19.value = FormateaFechas(document.form1.date18.value,1);
+ 				document.form1.dif_noches.value = 1;
+ 				document.form1.date19.select();
+ 			}
+ 		}
+ 		if(ori == 3)
+ 		{
+ 			if(ValidaFecha(document.form1.date18))
+ 			{
+ 				cad18 = document.form1.date18.value;
+ 				dias = document.form1.dif_noches.value;
+ 				document.form1.date19.value=FormateaFechas(document.form1.date18.value,dias);
+ 			}
+ 			else
+ 			{
+ 				alert("Fecha entrada no v\u00e1lida.");
+ 				bRes = false;
+ 				document.form1.date19.value = FormateaFechas(document.form1.date19.value,-1);
+ 				document.form1.dif_noches.value = 1;
+ 				document.form1.date19.select();
+ 			}
+ 		}
+ 		return bRes;
+ 
+ 	}
+ 
+ 	function Mira_Habitaciones()
+ 	{
+             if (Comprueba_Fechas(2))
+                 {
+ 			var hab;
+ 			var cadena;
+ 			hab = document.form1.num_habitaciones.options[document.form1.num_habitaciones.selectedIndex].value;
+ 			contenedor = document.getElementById("form_habitaciones");
+ 
+ 			if (hab != 999)
+ 			{
+ 
+                                 ajax404=nuevoAjax();
+ 
+ 
+ 				var randomnumber=Math.floor(Math.random()*11);
+ 				ajax404.open("GET", "reservas/procesos1.php?fes=sel&nhab="+hab+ "&rdm=" + randomnumber,true);
+ 				ajax404.onreadystatechange=function() {
+ 
+ 					if (ajax404.readyState==4) {
+ 						contenedor.innerHTML = ajax404.responseText;
+ 						cadena = contenedor.innerHTML;
+ 
+ 						if (cadena.search('No hay habitaciones disponibles') > 0)
+ 						   {
+ 							   NoPasar = 1;
+ 							}
+ 						else
+ 						   {
+ 							   NoPasar = 0;
+ 							}
+ 					}
+ 				}
+ 				ajax404.send(null);
+ 			}
+ 			else
+ 			{
+ 				alert("Para ofertas de grupo pongase en contacto con nosotros.");
+ 				contenedor = document.getElementById("num_habitaciones");
+ 				contenedor.value="1";
+ 			}
+ 		}
+ 	}
+ 
+ 
+ 	function Buscar()
+ 	{
+ 	   if (NoPasar == 1)
+ 		   {
+ 			   alert('Sin habitaciones disponibles');
+ 				exit();
+ 			}
+ 		if (Comprueba_Fechas(2))
+ 		{
+ 			document.form1.submit();
+ 		}
+ 	}
+ 
+ 	function Inicio()
+ 	{
+ 		var mesmenosuno = 07 - 1;
+ 		var hoy = new Date(2018, mesmenosuno,30);
+ 		var dia = hoy.getDate();
+                 var mes = hoy.getMonth() + 1;
+ 		var anyo = hoy.getFullYear();
+ 		document.form1.date18.value = dia + "/" + mes + "/" + anyo;
+ 		document.form1.date18.value = FormateaFechas(document.form1.date18.value, 0);
+ 		document.form1.date19.value = FormateaFechas(document.form1.date18.value, 1);
+ 
+ 		Mira_Habitaciones();
+ 	}
+   </script>
+  </head>
+  <body class="bodino">
+   <div align="center">
+    <link href="nuevosestilos.css" rel="stylesheet" type="text/css"/>
+    <link href="http://fonts.googleapis.com/css?family=Gafata" rel="stylesheet" type="text/css"/>
+    <form id="idioma" method="post" name="idioma" style="display: inline">
+     <input name="idioma" type="hidden" value=""/>
+    </form>
+    <table cellpadding="0" cellspacing="0" class="tablamain nueva_tabla">
+     <tr>
+      <td align="center" class="tdlogo" height="26px" valign="middle" width="300px">
+       <span class="intro1">
+        <br/>
+       </span>
+       <a class="enlaceblan" href="index.php">
+        INICIO
+       </a>
+      </td>
+      <td align="center" valign="middle" width="700px">
+       <div style="height:26px">
+        <div class="divitemactivo">
+         <span class="intro">
+          <br/>
+         </span>
+         <a class="enlaceblan" href="index.php">
+          Las Gaviotas
+         </a>
+        </div>
+        <div class="divitem">
+         <span class="intro">
+          <br/>
+         </span>
+         <a class="enlaceblan" href="delfines.php">
+          Los Delfines
+         </a>
+        </div>
+        <div class="divitem">
+         <span class="intro">
+          <br/>
+         </span>
+         <a class="enlaceblan" href="eventos.php">
+          Eventos
+         </a>
+        </div>
+        <div class="divitem">
+         <span class="intro">
+          <br/>
+         </span>
+         <a class="enlaceblan" href="lamanga.php">
+          La Manga
+         </a>
+        </div>
+        <div class="divitem">
+         <span class="intro">
+          <br/>
+         </span>
+         <ul class="menu_color2">
+          <li>
+           <a class="enlaceblan" href="#">
+            Con&amp;oacutecenos
+           </a>
+           <ul>
+            <li>
+             <a class="enlaceblan" href="grupohotelania.php">
+              Grupo Hotelania
+             </a>
+            </li>
+            <li>
+             <a class="enlaceblan" href="sugerencias.php">
+              Sugerencias
+             </a>
+            </li>
+            <li>
+             <a class="enlaceblan" href="rrhh.php">
+              R.R.H.H
+             </a>
+            </li>
+           </ul>
+          </li>
+         </ul>
+        </div>
+        <div class="divitem">
+         <span class="intro">
+          <br/>
+         </span>
+         <a class="enlaceblan" href="areainterna.php">
+          Área interna
+         </a>
+        </div>
+       </div>
+      </td>
+      <td>
+       <div class="tablalogo1">
+        <table border="0" width="100%">
+         <tr>
+          <td align="right" width="300px">
+           <a class="enlace" href="#" onclick="JavaScript:Traducir('es');">
+            ESP
+           </a>
+           <a class="enlace" href="#" onclick="JavaScript:Traducir('en');">
+            ENG
+           </a>
+           <a class="enlace" href="#" onclick="JavaScript:Traducir('al');">
+            DEU
+           </a>
+           <a class="enlace" href="#" onclick="JavaScript:Traducir('fr');">
+            FRA
+           </a>
+          </td>
+         </tr>
+        </table>
+       </div>
+      </td>
+     </tr>
+    </table>
+    <table cellpadding="0" cellspacing="0" class="tablamain">
+     <tr valign="top">
+      <td width="280px">
+       <span class="intro">
+        <br/>
+       </span>
+       <div style="background-color:#18596f;width:280px;padding:5px">
+        <form action="http://www.hotelania-reservas.com/hotelania/confirmar_reserva.php" enctype="multipart/form-data" id="form2" method="post" name="form2" style="display: inline">
+         <input name="ent" type="hidden"/>
+         <input name="sal" type="hidden"/>
+         <input name="hotel" type="hidden"/>
+         <input name="regimen" type="hidden"/>
+         <input name="precio" type="hidden"/>
+         <input name="num_habitaciones" type="hidden"/>
+         <input name="id_busqueda" type="hidden"/>
+         <table align="center" bgcolor="FFFFFF" border="0" cellpadding="0" cellspacing="0" width="280px">
+          <tr>
+           <td>
+            <table bgcolor="FFFFFF" border="0" cellpadding="0" cellspacing="0" width="100%">
+             <tr>
+              <td align="center" class="oferta">
+               Oferta
+              </td>
+              <td align="center">
+               <b>
+                H.Las Gaviotas
+               </b>
+              </td>
+             </tr>
+             <tr>
+              <td align="center" class="texto" colspan="2">
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </form>
+       </div>
+       <span class="intro">
+        <br/>
+       </span>
+       <link href="nuevosestilos.css" rel="stylesheet" type="text/css"/>
+       <link href="http://fonts.googleapis.com/css?family=Julius+Sans+One" rel="stylesheet" type="text/css"/>
+       <div style="background-color:#18596f;width:280px;padding:5px">
+        <form action="http://www.hotelania-reservas.com/hotelania/resultados.php?fes=nou" enctype="multipart/form-data" id="form1" method="post" name="form1" style="display: inline">
+         <table align="center" bgcolor="FFFFFF" border="0" cellpadding="0" cellspacing="0" width="280px">
+          <tr>
+           <td>
+            <table width="100%">
+             <tr>
+              <td align="center" class="tabla_reserva" colspan="4" height="30">
+               <span class="tabla_reserva">
+                Disponibilidad y Tarifas
+               </span>
+              </td>
+             </tr>
+             <tr>
+              <td align="left" class="texto1" colspan="4">
+              </td>
+             </tr>
+             <tr>
+              <td align="left" class="texto1" colspan="4">
+               1 - Seleccionar fechas
+              </td>
+             </tr>
+             <tr>
+              <td align="left" class="texto1" colspan="4">
+              </td>
+             </tr>
+             <tr>
+              <td width="15px">
+              </td>
+              <td align="left" class="texto">
+               Fecha entrada
+              </td>
+              <td width="35">
+              </td>
+              <td class="texto">
+               Fecha de salida
+              </td>
+             </tr>
+             <tr>
+              <td width="15px">
+              </td>
+              <td>
+               <input class="inputtexto" id="date18" maxlength="10" name="date18" onblur="JavaScript:Comprueba_Fechas(0);" size="10" type="text" value=""/>
+               <img border="0" onclick="scwNextAction=Comprueba_Fechas.runsAfterSCW(this,0);scwShow(scwID('date18'),this);" src="calendario/img_calendar.png" style="cursor:pointer;"/>
+              </td>
+              <td width="35">
+              </td>
+              <td>
+               <input class="inputtexto" id="date19" maxlength="10" name="date19" onblur="JavaScript:Comprueba_Fechas(1);" size="10" type="text" value=""/>
+               <img border="0" onclick='scwNextAction=Comprueba_Fechas.runsAfterSCW(this,1);scwShow(scwID("date19"),this);' src="calendario/img_calendar.png" style="cursor:pointer;"/>
+              </td>
+             </tr>
+             <tr>
+              <td width="15px">
+              </td>
+              <td align="left" class="texto" colspan="3">
+               Total noches
+              </td>
+             </tr>
+             <tr>
+              <td width="15px">
+              </td>
+              <td align="left" class="texto" colspan="3">
+               <input class="inputtexto" id="dif_noches" maxlength="3" name="dif_noches" onblur="JavaScript:Comprueba_Fechas(3);" onkeypress="return justNumbers(event)" size="10" type="text"/>
+              </td>
+             </tr>
+             <tr>
+              <td class="texto" colspan="4">
+              </td>
+             </tr>
+             <tr>
+              <td align="left" class="texto1" colspan="4">
+               2 - Seleccionar ocupación
+              </td>
+             </tr>
+             <tr>
+              <td width="15px">
+              </td>
+              <td align="left" class="texto">
+               Habitaciones
+              </td>
+              <td class="texto">
+              </td>
+              <td>
+               <select class="inputtexto" id="num_habitaciones" name="num_habitaciones" onchange="JavaScript:Mira_Habitaciones();">
+                <option value="1">
+                 1 Habitación
+                </option>
+                <option value="2">
+                 2 Habitaciones
+                </option>
+                <option value="3">
+                 3 Habitaciones
+                </option>
+                <option value="999">
+                 4 o más habitaciones
+                </option>
+               </select>
+              </td>
+             </tr>
+            </table>
+            <table width="100%">
+             <span class="intro">
+              <br/>
+             </span>
+             <tr>
+              <td class="texto" valign="top">
+               <div id="form_habitaciones">
+                <br/>
+               </div>
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+          <tr>
+           <td>
+           </td>
+          </tr>
+          <tr>
+           <td nowrap="">
+            <table width="100%">
+             <tr>
+              <td width="181px">
+              </td>
+              <td align="center" class="consultar" height="26px" onclick="JavaScript:Buscar();" style="background-image:url('images/buscar1.png');background-repeat:no-repeat;cursor:pointer" width="76px">
+               Consultar
+              </td>
+             </tr>
+             <tr>
+              <td align="center" colspan="2" height="5px">
+              </td>
+             </tr>
+             <tr>
+              <td align="center" class="texto2" colspan="2">
+               Mejor precion online GARANTIZADO
+              </td>
+             </tr>
+            </table>
+           </td>
+          </tr>
+         </table>
+        </form>
+       </div>
+       <span class="intro">
+        <br/>
+       </span>
+       <div style="z-index:0;">
+        <table border="0" width="100%">
+         <tr>
+          <td align="center">
+           <div class="video">
+            <!-- <iframe src="http://www.facebook.com/video/embed?video_id=" width="280" height="224" frameborder="0"></iframe> -->
+            <iframe allowfullscreen="" frameborder="0" height="224" src="//www.youtube.com/embed/hXVzpFhJlUE" width="280">
+            </iframe>
+           </div>
+          </td>
+         </tr>
+        </table>
+       </div>
+      </td>
+      <td class="bordetd" width="699px">
+       <table border="0" width="699">
+        <tr>
+         <td align="center" height="296" style="background-image:url('images/gaviotas/cabecera gaviotas 2014 copia.jpg');
+ background-repeat:no-repeat;
+ background-position:center; " valign="bottom">
+         </td>
+        </tr>
+       </table>
+       <table border="0" cellpadding="0" cellspacing="0" width="697">
+        <tr>
+         <td align="center" height="207" valign="top">
+          <table border="0" width="156">
+           <tr>
+            <td width="240">
+             <img border="0" height="187" src="images/gaviotas/principal gaviotas.jpg" width="150"/>
+            </td>
+           </tr>
+           <tr>
+            <td align="left" height="20">
+             <a class="label" href="pdf/gaviotas09.pdf" target="_blank">
+              <span class="label">
+               Tarifas de precios
+              </span>
+             </a>
+            </td>
+           </tr>
+          </table>
+         </td>
+         <td align="center" valign="middle">
+          <div class="divtexto">
+           <span class="textoprincipal">
+            Moderno y cómodo hotel de cuatro estrellas situado en la mejor zona de La Manga del Mar Menor con impresionantes vistas al mar. A menos de 50 m. del Mar Menor y 100 m. del Mar Mediterráneo. Dispone de 96 habitaciones dobles, 2 junior suit y 7 habitaciones dobles con salón, equipadas con aire acondicionado frío/calor, TV antena parabólica, teléfono, conexión Wifi, frigorífico, baño completo, secador de pelo, caja de seguridad (opcional) y terraza.
+            <br/>
+            Además el entorno del Mar Menor es un marco inmejorable para deportes marítimos como  el Kite Surf, Wind Surf, Submarinismo, paseos en barco, etc., así como actividades al aire libre (senderismo, paseos por playas vírgenes, ciclismo, ) y para finalizar cuenta con una oferta de ocio (infinidad de bares, restaurantes y tiendas) y cultura, ya que a sólo 25 minutos se encuentra la ciudad de Cartagena que cuenta con importantes museos por los que poder sumergirse en su milenaria historia.
+            <br/>
+            <br/>
+            <a href="https://www.facebook.com/HotelaniaLasGaviotas">
+             Facebook Hotel Las Gaviotas
+            </a>
+           </span>
+          </div>
+         </td>
+        </tr>
+        <tr>
+         <td align="center">
+          <div class="mapabox">
+           <a href="http://maps.google.com/maps?q=37.647233,+-0.717512+(Hotel+Las+Gaviotas)&amp;iwloc=A&amp;hl=es" target="_blank">
+            <img border="0" src="images/gaviotas/mapa_gaviota.jpg"/>
+           </a>
+          </div>
+          <br/>
+         </td>
+         <td align="left">
+          <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+           <tr>
+            <td align="center">
+             <span class="label1">
+              Hotel Las Gaviotas. Gran Vía, s/n. 30380 La Manga. Cartagena. Murcia.
+             </span>
+             <br/>
+             <span class="label1">
+              37.647233, -0.717512
+             </span>
+             <br/>
+             <br/>
+             <span class="label1">
+              Tel:(+34) 968 337 289  Fax: 968 146 003
+             </span>
+             <br/>
+             <a class="enlaceblan" href="mailto:reservasgaviotas@hotelania.com">
+              <span class="label1">
+               mail:reservasgaviotas@hotelania.com
+              </span>
+             </a>
+             <br/>
+             <br/>
+            </td>
+           </tr>
+           <tr>
+            <td align="center">
+             <img border="0" height="29" src="images/gaviotas/pictograma servicios hotel10.jpg" width="500"/>
+             <br/>
+            </td>
+           </tr>
+          </table>
+         </td>
+        </tr>
+        <tr>
+         <td align="left" colspan="2">
+          <!-- <span class="label">Galer&iacute;a de fotos</span><span class="intro"><br /><br> 
+            </span> -->
+          <div id="container1" style="overflow: hidden;">
+           <div class="warp">
+            <div align="left" class="wrap" style="overflow: hidden;">
+             <div class="slider" id="slider1">
+              <ul>
+               <li>
+                <a class="group1" href="images/gaviotas/gaviotas 1 habitacion suite.jpg" title="Info">
+                 <img height="120" src="images/gaviotas/gaviotas 1 habitacion suite.jpg" width="160"/>
+                </a>
+               </li>
+               <li>
+                <a class="group1" href="images/gaviotas/1" title="Info">
+                 <img height="0" src="images/gaviotas/1" width="0"/>
+                </a>
+               </li>
+              </ul>
+             </div>
+             <div class="controls">
+             </div>
+            </div>
+           </div>
+          </div>
+         </td>
+        </tr>
+       </table>
+      </td>
+      <td>
+       <div>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+         <tr>
+          <td align="left">
+           <table border="0" cellpadding="0" cellspacing="0" class="tablabanner" width="100%">
+            <tr>
+             <td align="left">
+              <img height="168px" src="images/banners/llamanos_268x168_hd.jpg" width="268px"/>
+             </td>
+            </tr>
+            <tr>
+             <td align="left">
+              <img height="168px" onclick="Buscar();" src="images/banners/mejor precio garantizado 268x168 hd.jpg" style="cursor:pointer" width="268px"/>
+             </td>
+            </tr>
+            <tr>
+             <td align="left">
+              <a href="https://www.facebook.com/HotelaniaLasGaviotas" target="_blank">
+               <img height="168px" src="images/banners/facebook 268x168 hd.jpg" width="268px"/>
+              </a>
+             </td>
+            </tr>
+            <tr>
+             <td align="left">
+              <a href="http://www.hotelania.com/lamanga.php" target="_blank">
+               <img height="168px" src="images/banners/live webcams peq.jpg" width="268px"/>
+              </a>
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+        </table>
+       </div>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <table bgcolor="#18596F" border="0" width="100%">
+    <tr>
+     <td align="center">
+      <a class="enlacepie" href="index.php">
+       Las Gaviotas
+      </a>
+      |
+      <a class="enlacepie" href="delfines.php">
+       Los Delfines
+      </a>
+      |
+      <a class="enlacepie" href="eventos.php">
+       Eventos
+      </a>
+      |
+      <a class="enlacepie" href="lamanga.php">
+       La Manga
+      </a>
+      |
+      <a class="enlacepie" href="grupohotelania.php">
+       Grupo Hotelania
+      </a>
+      |
+      <a class="enlacepie" href="sugerencias.php">
+       Sugerencias
+      </a>
+      |
+      <a class="enlacepie" href="rrhh.php">
+       R.R.H.H
+      </a>
+      |
+      <a class="enlacepie" href="areainterna.php">
+       Área interna
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td align="center" class="enlacepie">
+      HOTELANIA ( Pedreño y Pedreño, S.A.) Registro Mercantil de Murcia. Tomo MU-521, Fólio 178, Hoja MU-9245 y CIF: A30655880.
+     </td>
+    </tr>
+   </table>
+  </body>
+ </html>

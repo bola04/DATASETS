@@ -1,0 +1,692 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Common Text Transformation Library
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="Sat, 22 Aug 2009 23:59:59 GMT" http-equiv="Expires"/>
+   <meta content="C++,substring,library" name="keywords"/>
+   <link href="ordinary.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+   <p>
+    CTTL Home
+    <a href="http://cttl.sourceforge.net/">
+     <tt>
+      http://cttl.sourceforge.net/
+     </tt>
+    </a>
+   </p>
+   <h3>
+    Common Text Transformation Library
+    <br/>
+    Version 3.01
+   </h3>
+   <hr/>
+   <ol>
+    <li>
+     <a href="#F10_0030_license">
+      License
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0040_effective_alternative">
+      Effective alternative to regular expressions
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0050_portability_and_threa">
+      Portability and thread safety
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0060_cttl_documentation">
+      CTTL Documentation
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0070_download_and_installa">
+      Download and installation
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0080_sample_programs">
+      Sample programs
+     </a>
+    </li>
+    <li>
+     <a href="#F10_0090_how_to_become_a_spons">
+      How to become a sponsor
+     </a>
+    </li>
+   </ol>
+   <a id="F10_0010_none">
+   </a>
+   <hr/>
+   <p style="text-align: right">
+    "There is no certain date of victory, only a final state to which we must strive."
+    <br/>
+    -
+    <em>
+     Dedicated Open Source developer
+    </em>
+   </p>
+   <a id="F10_0011_auto20">
+   </a>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <table cellpadding="10" cellspacing="5">
+      <tbody>
+       <tr style="background-color:#f0f8ff">
+        <td valign="top">
+         <i>
+          <a href="http://sourceforge.net">
+           <img alt="SourceForge.net Logo" border="0" src="http://sourceforge.net/sflogo.php?group_id=&lt;b&gt;98746&lt;/b&gt;&amp;amp;type=5"/>
+          </a>
+         </i>
+        </td>
+        <td valign="top">
+         cttl on
+         <br/>
+         <a href="http://sourceforge.net/projects/cttl/">
+          sourceforge
+         </a>
+        </td>
+        <td valign="top">
+         download
+         <br/>
+         <a href="https://sourceforge.net/projects/cttl/files/">
+          latest
+         </a>
+        </td>
+        <td valign="top">
+         cttl
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl">
+          docs
+         </a>
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl/main_idx.html">
+          index
+         </a>
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/doxy/cttl">
+          api
+         </a>
+        </td>
+        <td valign="top">
+         lambda
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/manual/lambda">
+          docs
+         </a>
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/manual/lambda/main_idx.html">
+          index
+         </a>
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/doxy/lambda">
+          api
+         </a>
+        </td>
+        <td valign="top">
+         utils
+         <br/>
+         <a href="http://cttl.sourceforge.net/cttl300docs/doxy/utils">
+          api
+         </a>
+        </td>
+        <td valign="top">
+         sponsor
+         <br/>
+         <a href="http://www.c-jump.com/">
+          c-jump.com
+         </a>
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0020_none">
+   </a>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+     </p>
+    </li>
+    <li>
+     <p>
+      CTTL is a library of C++ classes and functions to parse and modify STL strings.
+     The library is designed to manipulate
+      <tt>
+       std::basic_string
+      </tt>
+      template class,
+     or a user-defined class with similar interface.
+     </p>
+    </li>
+    <li>
+     <p>
+      The library provides components for creating lexical analyzers making
+     practical use of EBNF grammars.
+     Template meta-programming and operator overloading offer features
+     to write expressions that describe EBNF grammar rules directly in C++.
+     No additional steps of parsing, compiling, or source
+     code preprocessing are required. Compiled CTTL program implements LL(INF)-parser,
+     the recursive-descent parser with infinite lookahead.
+     </p>
+    </li>
+    <li>
+     <p>
+      CTTL lexer generates a stream of
+      <em>
+       substrings
+      </em>
+      that correspond to parsed tokens.
+     Substrings can be compared, inserted, deleted, or replaced without restrictions.
+     CTTL substrings remain stable when content of the underlying string changes.
+     Substring boundaries are adjusted according to the positional shifts
+     of inserted or deleted text.
+     </p>
+    </li>
+    <li>
+     <p>
+      The library formalizes concept of
+      <em>
+       text transformation
+      </em>
+      as
+     a series of mutating operations on substrings,
+     executed in
+      <i>
+       any order
+      </i>
+      . More specifically,
+     text transformation becomes first-hand operation during
+     grammar evaluation. Since EBNF grammar productions are recursive
+     by definition, text-manipulating programs can also be written as
+     recursive algorithms.
+     </p>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0030_license">
+   </a>
+   <h3>
+    License
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      Copyright © 1997-2009 by Igor Kholodov
+      <a href="mailto:cttl@users.sourceforge.net" target="_blank">
+       <tt>
+        mailto:cttl@users.sourceforge.net
+       </tt>
+      </a>
+     </p>
+     <p>
+      <img alt="LGPL License Logo" src="lgplv3-147x51.png"/>
+     </p>
+    </li>
+    <li>
+     <p>
+      Common Text Transformation Library is free software: you can
+     redistribute it and/or modify it under the terms of the
+      <a href="http://www.gnu.org/licenses/" target="_blank">
+       GNU Lesser General Public License
+      </a>
+      as published by the Free Software Foundation, either version 3 of the
+     License, or (at your option) any later version.
+     </p>
+    </li>
+    <li>
+     <p>
+      Common Text Transformation Library is distributed in the hope
+     that it will be useful, but WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE. See the
+      <a href="http://www.gnu.org/licenses/" target="_blank">
+       GNU Lesser General Public License
+      </a>
+      for more details.
+     </p>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0040_effective_alternative">
+   </a>
+   <h3>
+    Effective alternative to regular expressions
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      CTTL was not conceived as a regex replacement; CTTL was primarily designed as an extension
+     of STL string. Since input pattern matching is essential for a text-processing library,
+     adoption of an existing regular expression engine (or a proprietary regex
+     implementation) was considered to be a viable option. At the same time, since hosting a regex
+     interpreter poses a runtime performance setback, the decision was made in favor of a different solution.
+     </p>
+    </li>
+    <li>
+     <p>
+      CTTL approaches pattern-matching at a procedural level, adopting
+      <a href="http://en.wikipedia.org/wiki/Extended_Backus?Naur_Form" target="_blank">
+       EBNF
+      </a>
+      metasyntax notation to describe formal grammar productions.
+     
+     
+     The following table compares regex and CTTL within a domain of problems
+     solvable with
+      <tt>
+       std::string
+      </tt>
+      :
+     </p>
+     <table border="1" cellpadding="10" cellspacing="0">
+      <tr>
+       <th valign="top">
+        Regex
+       </th>
+       <th valign="top">
+        CTTL
+       </th>
+      </tr>
+      <tr>
+       <td valign="top">
+        Cryptic, unintuitive, "easier to write than read" syntax.
+       </td>
+       <td valign="top">
+        Descriptive, human-readable format. Just another C++ program.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Interpreted at runtime. But how well is the expression optimized beyond rudimentary parsing?
+       </td>
+       <td valign="top">
+        Compile-time, native C++. Subject to optimization by the compiler.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Multiple dialects.
+       </td>
+       <td valign="top">
+        Portable C++.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Quickly grows in size. Becomes unreadable.
+       </td>
+       <td valign="top">
+        Easily divided into separate grammar rules.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Sub-expression (backreference) syntax is obscure:
+        <em>
+         "To figure out the number of a
+                         particular backreference, scan the regular expression from left to right and count
+                         the opening round brackets..."
+        </em>
+        (from
+        <a href="http://www.regular-expressions.info/brackets.html" target="_blank">
+         <tt>
+          www.regular-expressions.info
+         </tt>
+        </a>
+        tutorial.)
+       </td>
+       <td valign="top">
+        EBNF grammars allow dividing complex expressions into a set of C++
+                     functions that represent individual grammar productions.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Method of reporting results of matching sub-expressions
+                     is using an old style C-array. Array elements are constant objects.
+       </td>
+       <td valign="top">
+        Substrings represent parsed tokens. Substrings are first-hand C++ objects, created
+                     by the user. Substrings can be instantly replaced, deleted, or inserted, adding
+                     more power to
+        <tt>
+         std::string
+        </tt>
+        class.
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        Debugging methods are largely dependent on third-party tools.
+       </td>
+       <td valign="top">
+        Relatively easy to trace and debug with conventional C++ debugger.
+       </td>
+      </tr>
+     </table>
+    </li>
+    <li>
+     <p>
+      Mapping between regex metacharacters and CTTL lexer components is available
+      <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl/page6110_regex.html" target="_blank">
+       here.
+      </a>
+      However, the most significant difference between regex and CTTL is in the
+      <i>
+       way of thinking
+      </i>
+      :
+     regex is a terse cipher of special characters, substituted
+     according to a predetermined set of rules.
+     By contrast, CTTL grammars are wordier, more methodical, and recursive by nature.
+     CTTL improves the quality of pattern-matching code without sacrificing performance.
+     </p>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0050_portability_and_threa">
+   </a>
+   <h3>
+    Portability and thread safety
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      Every effort was made to keep CTTL architecture portable and thread safe.
+     </p>
+    </li>
+    <li>
+     <p>
+      CTTL has been fully tested with the following compilers:
+     </p>
+     <pre>    GNU GCC        Versions 3.2.x, 3.3.x, 3.4.x, 4.1.2 (Red Hat) 4.3.x (MinGW)
+     MSVC 8.0       Version 14.00.50727.762 (2005)
+     MSVC 7.1       Version 13.10.3077 (2003)
+     Comeau C/C++   Version 4.3.3
+ </pre>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0060_cttl_documentation">
+   </a>
+   <h3>
+    CTTL Documentation
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      The library documentation is organized into subordinate parts as follows:
+     </p>
+     <ul style="list-style-type:none;">
+      <li>
+       <p>
+        <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl/index.html" target="_blank">
+         CTTL manual
+        </a>
+        explains principals of grammar parsing and functionality of substrings.
+       </p>
+      </li>
+      <li>
+       <p>
+        <a href="http://cttl.sourceforge.net/cttl300docs/manual/lambda/index.html" target="_blank">
+         Lambda library documentation
+        </a>
+        covers data manipulation by in-line semantic actions.
+       </p>
+      </li>
+      <li>
+       <p>
+        The API documentation includes
+        <a href="http://www.doxygen.org/" target="_blank">
+         doxygen
+        </a>
+        −generated pages for
+       </p>
+       <ul>
+        <li>
+         <p>
+          <a href="http://cttl.sourceforge.net/cttl300docs/doxy/cttl/index.html" target="_blank">
+           CTTL source code documentation
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a href="http://cttl.sourceforge.net/cttl300docs/doxy/lambda/index.html" target="_blank">
+           Lambda library source code documentation
+          </a>
+         </p>
+        </li>
+        <li>
+         <p>
+          <a href="http://cttl.sourceforge.net/cttl300docs/doxy/utils/index.html" target="_blank">
+           Utility classes and functions.
+          </a>
+         </p>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </li>
+    <li>
+     <p>
+      For additional resources see
+      <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl/page6100_ref.html" target="_blank">
+       grammar reference
+      </a>
+      page.
+     </p>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0070_download_and_installa">
+   </a>
+   <h3>
+    Download and installation
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      CTTL distribution includes only C++ headers and sample source files.
+     The library is
+      <em>
+       header-only
+      </em>
+      : the header files contain
+     template classes and functions, which do not require separately-compiled binaries.
+     No installation or other special treatment is needed. Download and enjoy!
+     </p>
+    </li>
+    <li>
+     <p>
+      The sample programs in
+      <tt>
+       example/
+      </tt>
+      subdirectory expect
+     that library headers are available in relative subdirectories
+      <tt>
+       cttl/
+      </tt>
+      ,
+      <tt>
+       lambda/
+      </tt>
+      , and
+      <tt>
+       utils/
+      </tt>
+      :
+     </p>
+     <pre>
+ <tt>
+ <b><font color="#0000FF">#include</font></b> <font color="#9A1900">"cttl/cttl.h"</font>
+ <b><font color="#0000FF">#include</font></b> <font color="#9A1900">"lambda/lambda.h"</font>
+ <b><font color="#0000FF">#include</font></b> <font color="#9A1900">"utils/itos.h"</font>
+ <b><font color="#009900">// etc.
+ </font></b></tt>
+ </pre>
+     <p>
+      You may need to adjust the include paths in sample programs
+     according to your local directory structure.
+     </p>
+    </li>
+    <li>
+     <p>
+      The library does not require any specific compiler switches or settings;
+     with GNU compiler, your should be able to compile and link your CTTL
+     programs by commands like
+     </p>
+     <pre><span style="color: green">me@CTTL3 ~/cttl300</span>
+ $ g++ -g -Wall -c -o main.o main.cpp
+     ...
+ <span style="color: green">me@CTTL3 ~/cttl300</span>
+ $ g++ -o sample.exe main.o
+     ...
+ <span style="color: green">me@CTTL3 ~/cttl300</span>
+ $
+ </pre>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0080_sample_programs">
+   </a>
+   <h3>
+    Sample programs
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      CTTL manual provides rational for various sample programs
+     in
+      <tt>
+       example/
+      </tt>
+      subdirectory of CTTL distribution.
+     To find documentation for a particular program,
+     locate its source file name in the index and follow the link:
+     </p>
+     <ul>
+      <li>
+       <p>
+        <a href="http://cttl.sourceforge.net/cttl300docs/manual/cttl/main_idx.html" target="_blank">
+         CTTL alphabetical index
+        </a>
+       </p>
+      </li>
+      <li>
+       <p>
+        <a href="http://cttl.sourceforge.net/cttl300docs/manual/lambda/main_idx.html" target="_blank">
+         Lambda library alphabetical index
+        </a>
+       </p>
+      </li>
+     </ul>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0090_how_to_become_a_spons">
+   </a>
+   <h3>
+    How to become a sponsor
+   </h3>
+   <hr/>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+      <a href="http://www.c-jump.com/rules01start.JPG">
+       <img align="right" alt="c-jump. Click for larger image" border="0" src="http://www.c-jump.com/gameview300x300.JPG"/>
+      </a>
+      If you would like to financially support CTTL development team, buy a copy of
+      <span style="color: blue">
+       <strong>
+        c-jump computer programming board game
+       </strong>
+      </span>
+      at
+      <a href="http://www.c-jump.com/" target="_blank">
+       <tt>
+        http://www.c-jump.com/
+       </tt>
+       .
+      </a>
+      The game introduces programming concepts to children and adults
+     with no prior knowledge of the subject. Thank you for your support!
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+     <p>
+     </p>
+    </li>
+   </ul>
+   <hr/>
+   <a id="F10_0091_auto20">
+   </a>
+   <!-- copyright.txt -->
+   <p>
+    Copyright © 1997-2009 Igor Kholodov
+    <a href="mailto:cttl@users.sourceforge.net">
+     mailto:cttl@users.sourceforge.net
+    </a>
+    .
+   </p>
+   <p>
+    Permission to copy and distribute this document
+ 	is granted provided this copyright notice appears in all copies.
+ 	This document is provided "as is" without express or implied
+ 	warranty, and with no claim as to its suitability for any purpose.
+   </p>
+   <hr/>
+   <p>
+   </p>
+   <p>
+   </p>
+   <a id="F10_0100_none">
+   </a>
+   <ul style="list-style-type:none;">
+    <li>
+     <p>
+     </p>
+    </li>
+   </ul>
+  </body>
+ </html>

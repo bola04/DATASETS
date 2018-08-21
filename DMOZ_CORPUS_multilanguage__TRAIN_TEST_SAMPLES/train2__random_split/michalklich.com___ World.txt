@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+ <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta charset="utf-8"/>
+   <title>
+    Speedball's Theories
+   </title>
+   <link href="https://michalklich.com/" rel="canonical"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <link href="http://fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet" type="text/css"/>
+   <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet"/>
+   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+   <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css" rel="stylesheet"/>
+   <link href="css/screen.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+   <nav class="navbar navbar-default">
+    <div class="container">
+     <div class="navbar-header">
+      <button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button">
+       <span class="sr-only">
+        Toggle navigation
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+      </button>
+      <a class="navbar-brand" href="/">
+       Speedball's Theories
+      </a>
+     </div>
+     <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+       <li class="active">
+        <a href="/">
+         Home
+        </a>
+       </li>
+       <li>
+        <a href="/archives/">
+         Archives
+        </a>
+       </li>
+       <li>
+        <a href="/pages/about/">
+         About
+        </a>
+       </li>
+       <li>
+        <a href="/pages/open-invite/">
+         Open invite
+        </a>
+       </li>
+       <li>
+        <a href="/feed.xml">
+         RSS
+        </a>
+       </li>
+       <li class="dropdown">
+        <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+         More
+         <span class="caret">
+         </span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+         <li class="dropdown-header">
+          Links
+         </li>
+         <li>
+          <a href="http://cryogenweb.org/docs/home.html">
+           Cryogen Docs
+          </a>
+         </li>
+         <li class="divider">
+         </li>
+         <li class="dropdown-header">
+          Recent Posts
+         </li>
+         <li>
+          <a href="/posts/celery-task-backend/">
+           Celery tasks, states and results
+          </a>
+         </li>
+         <li>
+          <a href="/posts/logging-elk-2/">
+           Cleaning up messy distributed logs, part 2
+          </a>
+         </li>
+         <li>
+          <a href="/posts/logging-elk-1/">
+           Cleaning up messy distributed logs, part 1
+          </a>
+         </li>
+         <li class="divider">
+         </li>
+         <li class="dropdown-header">
+          Tags
+         </li>
+         <li>
+          <a href="/tags/logging/">
+           logging
+          </a>
+         </li>
+         <li>
+          <a href="/tags/kibana/">
+           kibana
+          </a>
+         </li>
+         <li>
+          <a href="/tags/elk/">
+           elk
+          </a>
+         </li>
+         <li>
+          <a href="/tags/setup.py/">
+           setup.py
+          </a>
+         </li>
+         <li>
+          <a href="/tags/iterator/">
+           iterator
+          </a>
+         </li>
+         <li>
+          <a href="/tags/packaging/">
+           packaging
+          </a>
+         </li>
+         <li>
+          <a href="/tags/logstash/">
+           logstash
+          </a>
+         </li>
+         <li>
+          <a href="/tags/nginx/">
+           nginx
+          </a>
+         </li>
+         <li>
+          <a href="/tags/lua/">
+           lua
+          </a>
+         </li>
+         <li>
+          <a href="/tags/python/">
+           python
+          </a>
+         </li>
+         <li>
+          <a href="/tags/microservices/">
+           microservices
+          </a>
+         </li>
+         <li>
+          <a href="/tags/celery/">
+           celery
+          </a>
+         </li>
+        </ul>
+       </li>
+      </ul>
+     </div>
+     <!--/.nav-collapse -->
+    </div>
+    <!--/.container-fluid -->
+   </nav>
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12">
+      <div id="content">
+       <div id="post">
+        <div class="post-header">
+         <div class="row" id="post-meta">
+          <div class="col-lg-6">
+           April 12, 2018
+          </div>
+         </div>
+         <h2>
+          Celery tasks, states and results
+         </h2>
+        </div>
+        <div>
+         <p>
+          The subject of Celery task results comes back every now and then. It would make a really good post, with nice examples. So here we go!
+         </p>
+         <p>
+          If you don't know what Celery is:
+         </p>
+         <blockquote>
+          <p>
+           Celery is a simple, flexible, and reliable distributed system to process vast amounts of messages, while providing operations with the tools required to maintain such a system.  It’s a task queue with focus on real-time processing, while also supporting task scheduling.
+          </p>
+         </blockquote>
+         <p>
+          You can read more by going to their
+          <a href="http://docs.celeryproject.org/en/latest/">
+           documentation
+          </a>
+          .
+         </p>
+         <h1>
+          <a name="states">
+          </a>
+          States
+         </h1>
+         <p>
+          Celery comes with a few states to
+          <a href="http://docs.celeryproject.org/en/latest/userguide/tasks.html#built-in-states">
+           start with
+          </a>
+          . These states tell you what is happening to a task and are selected from this list most of the time (unless you have custom states, but I'll cover this later):
+         </p>
+         <ul>
+          <li>
+           PENDING
+          </li>
+          <li>
+           STARTED
+          </li>
+          <li>
+           SUCCESS
+          </li>
+          <li>
+           FAILURE
+          </li>
+          <li>
+           RETRY
+          </li>
+          <li>
+           REVOKED
+          </li>
+         </ul>
+         <p>
+          Such defaults allow you to go pretty far with tracking your tasks. You can even deduct transitions based on current state of the tasks: a FAILURE state means that a task went through PENDING and STARTED states. Here's an example of how that works. Let's take
+          <a href="http://docs.celeryproject.org/en/latest/getting-started/first-steps-with-celery.html#application">
+           a basic task
+          </a>
+          from Celery's own tutorial. I'm using
+          <a href="http://www.rabbitmq.com/">
+           RabbitMQ
+          </a>
+          of this
+          <a href="https://hub.docker.com/_/rabbitmq/">
+           docker image
+          </a>
+          as my broker.
+         </p>
+         <pre><code>from celery import Celery
+ 
+ app = Celery('task', broker='amqp://guest:guest@localhost:5672//')
+ 
+ # STARTED state is not enabled by default so we flip it on
+ app.conf.update(task_track_started=True)
+ 
+ 
+ @app.task(bind=True)
+ def add(self, x, y):
+     # we need to sleep to show STARTED state
+     import time
+     time.sleep(10)
+     return x + y
+ </code></pre>
+         <p>
+          With that we can go through some of the states.
+         </p>
+         <pre><code>majki@snakepit ~/projects/blog/pow/celery-states
+ % pipenv run python
+ Python 3.4.8 (default, Mar 19 2018, 21:12:05)
+ [GCC 5.4.0 20160609] on linux
+ Type "help", "copyright", "credits" or "license" for more information.
+ &gt;&gt;&gt; from task import add
+ &gt;&gt;&gt; r = add.delay(2, 3)  # worker is disabled so we can have PENDING state
+ &gt;&gt;&gt; r.status
+ 'PENDING'  # worker is enabled after this
+ &gt;&gt;&gt; r.status
+ 'STARTED'
+ &gt;&gt;&gt; r.status
+ 'SUCCESS'
+ &gt;&gt;&gt; r = add.delay(2, 'a')
+ &gt;&gt;&gt; r.status
+ 'STARTED'
+ &gt;&gt;&gt; r.state
+ 'FAILURE'
+ </code></pre>
+         <p>
+          It is pretty useful and probably covers a lot of use cases, but there's even more to discover about Celery's states.
+         </p>
+         <h2>
+          <a name="custom_states">
+          </a>
+          Custom states
+         </h2>
+         <p>
+          You can also define your own states if you need to. Let's modify our example a bit to include a new state called 'GOING_TO_SLEEP'.
+         </p>
+         <pre><code>from celery import Celery
+ 
+ app = Celery('task', broker='amqp://guest:guest@localhost:5672//')
+ 
+ # STARTED state is not enabled by default so we flip it on
+ app.conf.update(task_track_started=True)
+ 
+ 
+ @app.task(bind=True)
+ def add(self, x, y):
+     self.update_state(state='GOING_TO_SLEEP')
+     import time
+     time.sleep(10)
+     return x + y
+ </code></pre>
+         <p>
+          Now let's see how this works.
+         </p>
+         <pre><code>majki@snakepit ~/projects/blog/pow/celery-states
+ % pipenv run python
+ Python 3.4.8 (default, Mar 19 2018, 21:12:05)
+ [GCC 5.4.0 20160609] on linux
+ Type "help", "copyright", "credits" or "license" for more information.
+ &gt;&gt;&gt; from task import add
+ &gt;&gt;&gt; r = add.delay(2, 3)
+ &gt;&gt;&gt; r.status
+ GOING_TO_SLEEP'
+ &gt;&gt;&gt; r.status
+ 'SUCCESS'
+ </code></pre>
+         <p>
+          You can go bananas with such a feature and be really pedantic on your tasks state flow. It may be beneficial for some really complex workflows - if you would like to monitor it, so do it.
+         </p>
+         <h1>
+          <a name="results_storage">
+          </a>
+          Results storage
+         </h1>
+         <p>
+          Now let's tackle the other concern. How do you save a task result? All my examples up to this point were in REPL, so all results are gone as soon as you close it. Thankfully authors of Celery thought about it and provided us with such functionality. Celery supports multiple
+          <a href="http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-result-backend-settings">
+           type of storages
+          </a>
+          , making almost everyone happy. I'm not done with my task example, just needs a little of tweaking. To be honest, not much is needed to have task results persisted.
+         </p>
+         <pre><code>from celery import Celery
+ 
+ app = Celery('task', broker='amqp://guest:guest@localhost:5672//')
+ app.conf.update(task_track_started=True,
+                 result_backend='file:///var/celery/results')
+ 
+ 
+ @app.task(bind=True)
+ def add(self, x, y):
+     import time
+     time.sleep(10)
+     return x + y
+ </code></pre>
+         According to my configuration, all the task results will be saved under
+         <code>
+          /var/celery/results
+         </code>
+         directory. I have picked file-system backend as it is easiest to show.
+         <pre><code>majki@snakepit ~/projects/blog/pow/celery-states
+ % pipenv run python
+ Python 3.4.8 (default, Mar 19 2018, 21:12:05)
+ [GCC 5.4.0 20160609] on linux
+ Type "help", "copyright", "credits" or "license" for more information.
+ &gt;&gt;&gt; from task import add
+ &gt;&gt;&gt; add.delay(1,1)
+ &lt;AsyncResult: be19e446-64a6-4fa9-b1a4-05feeb4fbec2&gt;
+ &gt;&gt;&gt; add.delay(1,1)
+ &lt;AsyncResult: 1dc82626-9731-43ea-b4ea-6f237143dd42&gt;
+ &gt;&gt;&gt; add.delay(1,1)
+ &lt;AsyncResult: badbe577-9314-4a92-91b8-80d071a5f8b5&gt;
+ &gt;&gt;&gt; add.delay(1,1)
+ &lt;AsyncResult: c2da2e98-7a05-411f-acd5-7ead99c12c4e&gt;
+ </code></pre>
+         Now we can have a look at our results backend and see if results are stored. I had been keeping results of all my tasks while writing this post so there is a lot of files. The last four are the ones that you can see in the output of REPL above.
+         <pre><code>majki@snakepit ~/projects/blog
+ % ls -thor  # thanks firemark!
+ total 236K
+ drwxr-xr-x 6 majki 4,0K kwi 10 20:46 cryogen
+ drwxr-xr-x 3 majki 4,0K kwi 11 20:28 pow
+ -rw-rw-r-- 1 majki  120 kwi 11 21:10 celery-task-meta-f730b12b-25ee-46d2-a7d5-eabda0ab14ef
+ -rw-rw-r-- 1 majki  120 kwi 11 21:11 celery-task-meta-6c7a3fc1-882b-4ddd-be9e-bd1431099eae
+ -rw-rw-r-- 1 majki  120 kwi 11 21:11 celery-task-meta-f5a73a65-6bda-47b8-a04e-34d1e5b7b81d
+ -rw-rw-r-- 1 majki  120 kwi 11 21:12 celery-task-meta-c012b4a7-362f-4d05-ac65-9dc398ac514e
+ -rw-rw-r-- 1 majki  120 kwi 11 21:14 celery-task-meta-c0654b79-65b0-4365-9a45-6b3d248d559d
+ -rw-rw-r-- 1 majki  120 kwi 11 21:14 celery-task-meta-f2d51878-86db-4d21-bc36-c651e63bdda3
+ -rw-rw-r-- 1 majki  120 kwi 11 21:14 celery-task-meta-ff9071d1-5ac1-4f81-9da2-29b4f706f5d8
+ -rw-rw-r-- 1 majki  120 kwi 11 21:15 celery-task-meta-8691b6f0-fa8f-401b-9133-0ce8308e34c9
+ -rw-rw-r-- 1 majki  120 kwi 11 21:18 celery-task-meta-9d312364-ed4c-49f2-a6eb-7e3b6a9eeaef
+ -rw-rw-r-- 1 majki  120 kwi 11 21:19 celery-task-meta-31ae7d06-c292-48c8-b526-eebeb021bb90
+ -rw-rw-r-- 1 majki  120 kwi 11 21:22 celery-task-meta-39d6126d-57f9-4a2b-a09b-68475076ec08
+ -rw-rw-r-- 1 majki  120 kwi 11 21:39 celery-task-meta-264975a3-b8d0-4855-a19a-fc64e1384bfe
+ -rw-rw-r-- 1 majki  760 kwi 11 21:46 celery-task-meta-b7d429d2-9aaa-4af5-914a-aba1321676cb
+ -rw-rw-r-- 1 majki  120 kwi 11 21:57 celery-task-meta-fa4f6d6a-aeb2-416b-9efc-9e7947ef9550
+ -rw-rw-r-- 1 majki  120 kwi 11 22:03 celery-task-meta-f5774f4f-0d51-4861-af95-a1a8ff94d1b1
+ -rw-rw-r-- 1 majki  120 kwi 11 22:18 celery-task-meta-be19e446-64a6-4fa9-b1a4-05feeb4fbec2
+ -rw-rw-r-- 1 majki  120 kwi 11 22:26 celery-task-meta-1dc82626-9731-43ea-b4ea-6f237143dd42
+ -rw-rw-r-- 1 majki  120 kwi 11 22:26 celery-task-meta-badbe577-9314-4a92-91b8-80d071a5f8b5
+ -rw-rw-r-- 1 majki  120 kwi 11 22:26 celery-task-meta-c2da2e98-7a05-411f-acd5-7ead99c12c4e
+ 
+ majki@snakepit ~/projects/blog
+ % cat celery-task-meta-c2da2e98-7a05-411f-acd5-7ead99c12c4e| python -m json.tool
+ {
+     "children": [],
+     "result": 2,
+     "status": "SUCCESS",
+     "task_id": "c2da2e98-7a05-411f-acd5-7ead99c12c4e",
+     "traceback": null
+ }
+ 
+ </code></pre>
+         <p>
+          There you have it, all is stored "safely" (it's my laptop :) ) and can be viewed if required.
+         </p>
+         <p>
+          Hopefully this puts all concerns aside regarding task states, task results, and sheds a bit of light on Celery's extensive API.
+         </p>
+        </div>
+        <div id="post-tags">
+         <b>
+          Tags:
+         </b>
+         <a href="/tags/python/">
+          python
+         </a>
+         <a href="/tags/celery/">
+          celery
+         </a>
+        </div>
+        <div id="prev-next">
+         <a class="right" href="/posts/logging-elk-2/">
+          Cleaning up messy distributed logs, part 2 »
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <footer>
+     Copyright ©  Michał Klich
+     <p style="text-align: center;">
+      Powered by
+      <a href="http://cryogenweb.org">
+       Cryogen
+      </a>
+     </p>
+    </footer>
+   </div>
+   <script src="//code.jquery.com/jquery-1.11.0.min.js">
+   </script>
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js">
+   </script>
+   <script src="js/highlight.pack.js" type="text/javascript">
+   </script>
+   <script>
+    hljs.initHighlightingOnLoad();
+   </script>
+  </body>
+ </html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+ <html lang="en" ng-app="app">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport"/>
+   <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+   <title>
+    Tafsir Al-Mizan - Allamah Muhammad Hussein Tabatabai
+   </title>
+   <link href="style.css" rel="stylesheet"/>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.1/jquery.min.js">
+   </script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js">
+   </script>
+   <script src="/node_modules/bootstrap/node_modules/tether/dist/js/tether.min.js">
+   </script>
+   <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js">
+   </script>
+  </head>
+  <body class="ng-cloak" ng-class="{ 'reading': ctrl.preface || (ctrl.selectedChapter &amp;&amp; ctrl.selectedVerses) || ctrl.selectedDiscourse, 'sidebar-on': ctrl.sidebar }" ng-controller="AppController as ctrl">
+   <header>
+    <div class="clearfix header-padder" id="header-padder">
+     <div class="float-lg-left text-center">
+      <a class="logo" href="/index.php">
+       Tafsir Al-Mizan
+      </a>
+     </div>
+     <div class="float-lg-right text-center text-lg-right toolbar">
+      <div class="row align-items-center justify-content-center m-0">
+       <div class="col-auto hidden-md-down size">
+        <i class="fa fa-minus" ng-click="ctrl.decreaseSize()">
+        </i>
+        <span class="label">
+         {{ ctrl.size.label }}
+        </span>
+        <i class="fa fa-plus" ng-click="ctrl.increaseSize()">
+        </i>
+       </div>
+       <div class="col-auto info">
+        <div class="btn-group" role="group">
+         <button class="btn btn-primary" data-placement="bottom" data-toggle="tooltip" ng-class="{ 'active': ctrl.sidebar &amp;&amp; ctrl.sidebarSection == 'chapters' }" ng-click="ctrl.sidebarShow('chapters')" title="Start here" type="button">
+          <i class="fa fa-book">
+          </i>
+          Chapters
+         </button>
+         <button class="btn btn-primary" ng-class="{ 'active': ctrl.sidebar &amp;&amp; ctrl.sidebarSection == 'verses' }" ng-click="ctrl.sidebarShow('verses')" type="button">
+          <i class="fa fa-list">
+          </i>
+          Verses
+         </button>
+         <button class="btn btn-primary" ng-class="{ 'active': ctrl.sidebar &amp;&amp; ctrl.sidebarSection == 'discourses' }" ng-click="ctrl.sidebarShow('discourses')" type="button">
+          <i class="fa fa-lightbulb-o">
+          </i>
+          Discourses
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <section class="sidebar">
+     <div class="scrollable" id="sidebar-scrollable-area">
+      <div class="sidebar-padder">
+       <div class="chapters" ng-class="{ 'hidden-xs-up': ctrl.sidebarSection != 'chapters' }">
+        <h2>
+         Select a chapter
+        </h2>
+        <div class="opts">
+         <div class="opt" ng-class="{ 'selected': ctrl.preface }" ng-click="ctrl.selectPreface()">
+          Preface by the Author
+          <i class="fa fa-check-circle">
+          </i>
+         </div>
+         <div class="opt" ng-class="{ 'selected': ctrl.selectedChapter == chapter }" ng-click="ctrl.selectChapter(chapter)" ng-repeat="chapter in ctrl.chapters">
+          {{ chapter.title }}
+          <i class="fa fa-check-circle">
+          </i>
+         </div>
+        </div>
+       </div>
+       <div class="verses" ng-class="{ 'hidden-xs-up': ctrl.sidebarSection != 'verses' }">
+        <h2>
+         {{ ctrl.selectedChapter.title }}
+        </h2>
+        <div class="opts">
+         <div class="opt" ng-class="{ 'selected': ctrl.selectedVerses == verses }" ng-click="ctrl.selectVerses(verses)" ng-repeat="verses in ctrl.selectedChapter.verses">
+          Verse
+          <span ng-class="{ 'hidden-xs-up': verses.indexOf('-') != -1 }">
+           s
+          </span>
+          {{ verses.title }}
+          <i class="fa fa-check-circle">
+          </i>
+         </div>
+        </div>
+       </div>
+       <div class="discourses" ng-class="{ 'hidden-xs-up': ctrl.sidebarSection != 'discourses' }">
+        <div class="group" ng-repeat="discourse in ctrl.discourses | orderBy: 'group'">
+         <h2>
+          {{ discourse.group }}
+         </h2>
+         <div class="opts">
+          <div class="opt" ng-class="{ 'selected': ctrl.selectedDiscourse == item }" ng-click="ctrl.selectDiscourse(item)" ng-repeat="item in discourse.list | orderBy: 'title'">
+           {{ item.title }}
+           <i class="fa fa-check-circle">
+           </i>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </header>
+   <div class="reverter" ng-click="ctrl.sidebarHide()">
+   </div>
+   <div class="slideable">
+    <main>
+     <div class="for-home text-left">
+      <div class="alert alert-warning">
+       <i class="fa fa-info-circle">
+       </i>
+       This is a community funded project. Head over to the
+       <a class="alert-link" href="http://www.tawheed.com.au" target="_blank">
+        Tawheed Institute
+       </a>
+       to see how you could lend support.
+      </div>
+      <div class="alert alert-warning">
+       <i class="fa fa-apple">
+       </i>
+       Download eBooks for some of the volumes from the
+       <a class="alert-link" href="https://itunes.apple.com/us/author/allamah-tabatabai/id1090726574?mt=11" target="_blank">
+        iTunes store
+       </a>
+       .
+      </div>
+      <h1>
+       An Exegesis of the Holy Qur'an
+      </h1>
+      <div class="content clearfix">
+       <div class="row">
+        <div class="col-12 col-md mr-md-3 mr-lg-5">
+         <h2>
+          About the Author
+         </h2>
+         <div class="biography">
+          <p>
+           The late Islamic scholar, thinker, and philosopher, ʿAllāmah al-Sayyid Muḥammad Ḥusayn al-Ṭabāṭabāʾī came from the celebrated Ṭabāṭabāʾī family of Tabriz. For the last three centuries, this family has produced generation after generation of renowned religious scholars in Azerbaijan (Iran). They are descendants of the second Imam, al-Ḥasan b. ʿAlī (peace be on both of them). The clan is also referred to with the title, al-Qāḍī.
+          </p>
+          <p>
+           ʿAllāmah al-Ṭabāṭabāʾī was the son of al-Sayyid Muḥammad b. al- Sayyid Muḥammad Ḥusayn al-Ṭabāṭabāʾī. ʿAllāmah was born in Tabriz on 29 Dhū al-Ḥijjah 1321/17 March 1904. His father died in 1330 (1912). The orphaned child grew up in Tabriz, and after completing his religious educa- tion there, around 1341 (1923), he went to Najaf (Iraq), the most important center of Shia religious learning.
+          </p>
+          <button class="btn btn-primary read-more-trigger">
+           Read More
+          </button>
+          <div class="read-more hidden-xs-up">
+           <p>
+            In Najaf, he began his higher studies with such illustrious scholars as Shaykh Muḥammad Ḥusayn Nāʾīnī al-Gharawī (1277–1355/1860 or 1861– 1936), the son of Shaykh al-Islām ʿAbd al-Raḥīm, and Shaykh Muḥammad Ḥusayn al-Gharawī al-Iṣfahānī (1296–1361/1878–1942), the son of al-Ḥājj Muḥammad Ḥasan, Muʿīn al-Tujjār.
+           </p>
+           <p>
+            These two were among the most prominent scholars in the Shia world. They were among the most prominent scholars not only in the fields of Shia jurisprudence and principles of jurisprudence, but in all Islamic subjects. Their opinions and theories are still followed today. Each founded his own school of thought and trained thousands of Shia scholars and jurists; and all the
+            <em>
+             marājiʿ al-taqlīd
+            </em>
+            of the Shia world, to this day, are their students. Shaykh Muḥammad Ḥusayn al-Gharawī al-Iṣfahānī was a philosopher, unsurpassed in his time; a man of literature; and a poet in Arabic and Persian; he was a genius whose achievements made others look up to him as their ideal. Shaykh Nāʾīnī, with his bold opinions and decrees in the political and social life of the Muslim
+            <em>
+             umma
+            </em>
+            , has carved for himself a niche in history.
+           </p>
+           <p>
+            ʿAllāmah al-Ṭabāṭabāʾī was much influenced by these two teachers, particularly by al-Iṣfahānī, in the development of his thought and knowl- edge. A third influence was that of al-Sayyid Abū al-Qāsim Jaʿfar Khwānsārī (1313– 80/1895 or 1896–1961), the son of al-Sayyid Muḥammad al-Mūsāwī, known as “the mathematician.” ʿAllāmah al-Ṭabāṭabāʾī was proud to have studied mathematics with him, and also wrote a book on higher mathemat- ics, in which he applied some special theories of his teacher.
+           </p>
+           <p>
+            ʿAllāmah studied philosophy and metaphysics from al-Sayyid Ḥusayn al-Ḥusaynī Bādkūbahʾī; the latter was a student of al‑Sayyid Riḍā, who studied with al-Sayyid Mūsā, a well-known teacher of philosophy and related subjects. In the fields of ethics and spirituality, ʿAllāmah received his training from his relatives, al-Sayyid ʿAlī al-Qāḍī (1285–1366/1869–1947), a well-known scholar who established a school of spiritual and ethical train- ing which still flourishes today.
+           </p>
+           <p>
+            All these influences combined to create in ʿAllāmah al-Ṭabāṭabāʾī a well-balanced academic and spiritual personality. He was a well-respected authority on religious subjects of jurisprudence and its fundamentals; a philosopher of independent views and new theories; and an inspired model of ethical and spiritual perfection. He not only taught morality, but also lived it. Yet it is also correct to state that his scholarship was overshadowed by his fame and prestige as a philosopher and a spiritual man.
+           </p>
+           <p>
+            ʿAllāmah al-Ṭabāṭabāʾī returned to Tabriz in 1353/1934, where he was welcomed as a religious scholar. There he spent his time teaching higher philosophy to willing disciples—but it was a small place for his talents. In 1364/1945 he migrated to Qum, the most important center of religious edu- cation in Iran. In Qum, he remained engaged in imparting the knowledge of ethics, philosophy, and the exegesis of the Qurʾan to those students who had already attained a high level of erudition. There he remained until his death on Sunday, 18 Muḥarram 1402/15 November 1981. May God bestow His mercy on him. Amen.
+           </p>
+           <p>
+            Many religious leaders of the present generation were and are among his students and disciples, the most famous being the late Murtaḍā Muṭahharī (1338–99/1920–79).
+           </p>
+           <p>
+            ʿAllāmah al-Ṭabāṭabāʾī’s fame rests on his academic works—the most important being his great exegesis of the Qurʾan,
+            <em>
+             al-Mīzān fī tafsīr al-Qurʾān
+            </em>
+            . It is said to be the foundation stone of the academic prestige which ʿAllāmah al-Ṭabāṭabāʾī was accorded in the Muslim world.
+           </p>
+           <p>
+            Among his other works is
+            <em>
+             Uṣūl-i falsafah va ravish-i riʾalism
+            </em>
+            [Practical and Philosophical Principles of Realism]. This book is a comparative study of Islamic philosophy and various modern anti-Islamic schools of thoughts, especially Marxism. His disciple, the late Murtaḍā Muṭahharī, annotated this work, thus making it easily accessible to the average man.
+           </p>
+           <p>
+            A third book,
+            <em>
+             Shiʿa dār Islām
+            </em>
+            , was first published in Persian; later it was published in English with the title,
+            <em>
+             Shiʾite Islam
+            </em>
+            . The ʿAllāmah wrote this book on the request of Professor Kenneth Morgan of Colgate University, to introduce Shiism to the West.
+           </p>
+           <p>
+            However, it is his
+            <em>
+             tafsīr
+            </em>
+            ,
+            <em>
+             al-Mīzān
+            </em>
+            (published in 20 volumes in Arabic) which presents the true picture of the author’s academic style and his way of thinking. In the preface to volume 1, the author outlines his plan, to explain the Qurʾan with the help of the Qurʾan itself. This he faithfully does, all the way through to the end of the
+            <em>
+             tafsīr
+            </em>
+            .
+           </p>
+          </div>
+         </div>
+         <h2>
+          Publishers &amp; Translators
+         </h2>
+         <div class="publishers-translators">
+          <p>
+           In 1982, the World Organization for Islamic Studies (WOFIS) based in Qum, Iran were contemplating to publish a
+           <em>
+            tafsīr
+           </em>
+           of the Qur’an in English in order to bring the sublime meanings and divine themes of the Qur’an to the average human mind in the best possible manner and found Tafsīr al-Mīzān of ʿAllāmah Ṭabāṭabāʾī’ to meet all their requirements to a great extent. They entrusted this important responsibility to ʿAllāmah Sayyid Saʿīd Akhtār Rizvī who after completing the translation of Arabic volume 6 and part of volume 7, departed from this world in the year 2002. May God the Almighty rest his soul in peace.
+          </p>
+          <button class="btn btn-primary read-more-trigger">
+           Read More
+          </button>
+          <div class="read-more hidden-xs-up">
+           <p>
+            This left a big void in the original criteria of WOFIS for a long period of time after the English volume 12 was published. Fortunately, Sayyid Muḥammad Akhtār Rizvī, the son of the late ʿAllāmah Sayyid Saʿīd Akhtār Rizvī agreed to complete part of Arabic volume 7 which would correspond to English volume 13. The same was published most recently.
+           </p>
+           <p>
+            Approximately three years ago, after liaising with WOFIS regarding the state of the translation work, we were inspired to continue this enormous task and by the blessings of the Almighty, established the Tawheed Institute Australia with the principle aim to complete the translation of Tafsīr al-Mīzān. By the grace of God, we have successfully published English volumes 14 and 25 to 30.
+           </p>
+           <p>
+            We would like to express our sincere thanks to the translator,
+            <strong>
+             Tawus Raja
+            </strong>
+            , for his efforts and challenges he has met in rendering al-Mīzān into English. The original rendering in Arabic is replete with academic, philosophical and metaphysical terms and discussions and the translator has discharged his responsibility diligently while taking great care to ensure that the original idea is rendered into English according to his abilities and in the most faithful manner.
+           </p>
+           <p>
+            We would also like to thank
+            <strong>
+             Dr. Amina Inloes
+            </strong>
+            for undertaking the editing tasks of our new publications in an ideal and professional manner.
+           </p>
+           <p>
+            We pray to God the Almighty to reward all those who have worked and contributed in this endeavor and to help us complete the rest of the volumes in a short span of time.
+           </p>
+          </div>
+         </div>
+         <h2>
+          Publisher's Notes &amp; Clarifications
+         </h2>
+         <div class="publishers-notes-clarifications">
+          <p>
+           Tawheed Institute Australia, the publisher of
+           <em>
+            al-Mizan
+           </em>
+           English volume 14 and onwards, wishes to clarify and add to the explanation of certain verses as follows:
+          </p>
+          <button class="btn btn-primary read-more-trigger">
+           Read More
+          </button>
+          <div class="read-more hidden-xs-up">
+           <p>
+            <strong>
+             Regarding verse 4:34:
+            </strong>
+           </p>
+           <p>
+            <em>
+             And (as to) those [women] on whose part you fear desertion, admonish them, and [if that does not make any difference, then] leave them alone in the sleeping-places and [if that does not make any difference, then] strike them.
+            </em>
+           </p>
+           <p>
+            This is one of the verses that the opponents of Islam and proponents of women's rights have singled out in order to invalidate the ordinances of the Qur'an. The literal and apparent meaning of the word "
+            <em>
+             yadribuhunna
+            </em>
+            " used in the verse is "strike them" or "beat them" but the
+  word has other meanings and the correct and appropriate meaning should be applied to conform to the verse contextually and according to the broader Qur'anic teachings.
+           </p>
+           <p>
+            For a detail study of this verse and the specific clause "strike them" please refer to the following article on the internet:
+            <a href="https://www.al-islam.org/hidden-truths-gods-word-sayyid-mujtaba-musawi-lari/look-
+ meaning-daraba-quran">
+             https://www.al-islam.org/hidden-truths-gods-word-sayyid-mujtaba-musawi-lari/look-
+ meaning-daraba-quran
+            </a>
+           </p>
+           <p>
+            <strong>
+             Regarding verses 24:2 and 17:32:
+            </strong>
+           </p>
+           <p>
+            <em>
+             (As for) the adulteress and the adulterer, flog each of them, (giving) a hundred stripes, and let not pity for them detain you in the matter of Allah's religion, if you believe in Allah and the Last Day, and let a group of believers witness their chastisement.
+            </em>
+            (24:2)
+           </p>
+           <p>
+            <em>
+             And go not nigh to fornication; surely it is an indecency and an evil way.
+            </em>
+            (17:32)
+           </p>
+           <p>
+            Like all other Monotheistic religions and traditions, Islam condemns adultery. The above verses and other verses show how firmly the Qur'an forbids adultery and the punishment stipulated is a hundred lashes for each adulterer. It is even more important that the Qur'an requires solid evidence of the adultery to disprove false accusations.
+           </p>
+           <p>
+            However, some commentators of the Qur'an, when explaining the above verse (24:2), have added in their commentary that the punishment of married spouses guilty of adultery is "stoning to death". But the Qur'an does not stipulate stoning as punishment for any group of people – whether unmarried or married. Stoning was actually an inherent custom in the Mosaic law of Jewish communities living in Medina at that time. It is most likely that the ordinance of flogging was revealed as a deterring punishment to replace the practice of stoning. Unfortunately, stoning became part of the
+            <em>
+             shari'ah
+            </em>
+            (law) through the controversial interpretation of Sunni and Shi'ite traditions but not through the Qur'an.
+           </p>
+           <p>
+            Note: We shall endeavor to add the clarification of more verses to this page as deemed necessary.
+           </p>
+          </div>
+         </div>
+        </div>
+        <div class="col-12 col-md-auto ml-md-3 ml-lg-5 text-center">
+         <img alt="Allamah Muhammad Hussein Tabatabai" class="photo" src="/img/photo.gif"/>
+        </div>
+       </div>
+      </div>
+      <footer class="text-center">
+       <div class="copyright">
+        © 2018
+        <a href="http://www.tawheed.com.au">
+         Tawheed Institute Australia
+        </a>
+       </div>
+      </footer>
+     </div>
+     <div class="{{ ctrl.size.value }}" id="pages">
+      <h1>
+       {{ ctrl.pagesTitle }}
+      </h1>
+      <div class="row align-items-top justify-content-center">
+       <div class="col-12 col-md-auto page" id="vol-{{ page.vol }}-page-{{ page.num }}" ng-repeat="page in ctrl.loadedPages">
+        <pagedata page="{{ page.num  }}" vol="{{ page.vol }}">
+        </pagedata>
+       </div>
+      </div>
+      <div class="clearfix" ng-if="ctrl.pagesMore">
+       <button class="btn btn-primary" ng-click="ctrl.loadMorePages()">
+        Read More
+       </button>
+      </div>
+     </div>
+    </main>
+   </div>
+   <script src="/js/controller.min.js">
+   </script>
+   <script src="/js/events.min.js">
+   </script>
+  </body>
+ </html>

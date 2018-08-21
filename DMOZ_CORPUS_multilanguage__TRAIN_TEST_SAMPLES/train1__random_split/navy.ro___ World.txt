@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+   <title>
+    Forţele Navale Române
+   </title>
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700|PT+Serif:400,700;" rel="stylesheet" type="text/css"/>
+   <link href="css/reset.css" rel="stylesheet" type="text/css"/>
+   <!-- CSS reset -->
+   <link href="owl-carousel/owl.carousel.css" rel="stylesheet"/>
+   <link href="owl-carousel/owl.theme.css" rel="stylesheet"/>
+   <link href="css/style.css" rel="stylesheet" type="text/css"/>
+   <link href="css/sidebar.css" rel="stylesheet" type="text/css"/>
+   <!-- Sidebar style -->
+   <link href="css/psidebar.css" rel="stylesheet" type="text/css"/>
+   <!-- Sidebar style -->
+   <script src="js/modernizr.js" type="text/javascript">
+   </script>
+   <!-- Modernizr -->
+   <script src="js/jquery-2.1.4.js" type="text/javascript">
+   </script>
+   <!-- Resource jQuery -->
+   <script src="js/jquery.menu-aim.js" type="text/javascript">
+   </script>
+   <script src="owl-carousel/owl.carousel.min.js">
+   </script>
+   <script src="js/main.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var luna_abr = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+         $(document).ready(function () {
+ 			init_design();
+ 			fillNews();
+ 			fillEvents();
+             // play carousel
+ 			if ($('#owl-demo').length > 0) {
+ 				$('#owl-demo').owlCarousel({
+ 					autoPlay: true,
+ 					navigation: false,
+ 					pagination: true,
+ 					slideSpeed: 300,
+ 					paginationSpeed: 400,
+ 					singleItem: true,
+ 					rewindSpeed: 0
+ 				});
+ 			}
+         });
+ 		
+ 		function fillNews() {
+ 			$.ajax({url:"gettopnews.php", cache:false, dataType:"json", type:"get",
+ 				 success:function(data){               
+                     if(data.err!=='')
+                         alert(data.err);
+                     else{
+                         var str = '';
+ 						nrcrt = 0;
+                         $.each(data.items, function(key,value){
+ 							nrcrt++;
+ 							str += '<div class="order">';
+ 							str += '<div class="date-order">';
+ 							var d = new Date(value.data);
+ 							var day = d.getDate();
+ 							var month = d.getMonth();
+                             str += '<span style="font-size: 24px; font-weight: bold;">';
+ 							if (day<10) str += '0';
+ 							str += day+'</span><br/>';
+ 							str += luna_abr[month]+'</div>';
+ 							str += '<div class="detail"><a href="http://www.navy.ro/comunicat.php?id='+value.id+'">'+value.titlu+'</a></div>';
+ 							str += '</div>';
+                         });
+                         if (nrcrt===0) str += '<div>Nu există comunicate.</div>';
+                         $('#bodyNews').html(str);
+                         return;
+                     }
+                 }, error:function(a,b,c){
+                     alert(this.url+': '+c);
+                 }
+             });
+ 		}
+ 		
+ 		function fillEvents() {
+ 			$.ajax({url:"gettopevents.php", cache:false, dataType:"json", type:"get",
+ 				 success:function(data){               
+                     if(data.err!=='')
+                         alert(data.err);
+                     else{
+                         var str = '';
+ 						nrcrt = 0;
+                         $.each(data.items, function(key,value){
+ 							nrcrt++;
+ 							str += '<div class="row">';
+ 							str += '<div class="event-photo"><a style="display:block;line-height:1;font-size:0;outline:none;" href="http://www.navy.ro/eveniment.php?id='+value.id+'">';
+ 							str += '<img src="events/'+value.id+'/cover.jpg" /></a></div>';
+ 							str += '<div class="event-detail"><a href="http://www.navy.ro/eveniment.php?id='+value.id+'" class="transition">'+value.title+'</a>';
+ 							str += '<p><span class="tag">'+formatDate(value.data, true, false)+'</span> <a class="decoration-none" title="Vezi album foto" href="http://www.navy.ro/eveniment.php?id='+value.id+'"><span class="tag" style="background:#008c00;">'+value.cnt+' fotografii</span></a>';
+ 							if (value.idcomunicat>0)
+ 								str += '&nbsp;<a title="Vezi comunicat de presă" class="decoration-none" href="comunicat.php?id='+value.idcomunicat+'"><span class="tag" style="background:#e51400;">Comunicat</tag></a>';
+ 							str += '</p></div>';
+ 							str += '</div>';
+                         });
+                         if (nrcrt===0) str += '<div>Nu există evenimente.</div>';
+                         $('#bodyEvents').html(str);
+                         return;
+                     }
+                 }, error:function(a,b,c){
+                     alert(this.url+': '+c);
+                 }
+             });
+ 		}
+ 		function formatDate(date, showyear, showtime) {
+ 			var isodate = new Date(date);
+ 			var monthNames = ["ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
+ 			var res = '';
+ 			res += isodate.getDate() + ' ' + monthNames[isodate.getMonth()];
+ 			if (showyear) {
+                 res += ' ' + isodate.getFullYear();
+             }
+ 			if (showtime) {
+ 				if (isodate.getHours()<10)
+ 					res += ', 0' + isodate.getHours()+':';
+ 				else
+ 					res += ', ' + isodate.getHours()+':';
+ 				if (isodate.getMinutes()<10) res += '0';
+ 				res += isodate.getMinutes();
+ 				
+             }
+ 			return res;
+ 		}
+ 		
+ 		function noimage(obj){
+ 			$(obj).attr('src','carusel/nophoto.jpg');
+ 		}
+   </script>
+   <style type="text/css">
+    .order {
+ 			margin-bottom: 8px;
+ 		}
+ 		.order .date-order {
+ 			margin-right: 8px;
+ 		}
+ 		.order .detail a {
+ 			color: #333;
+ 		}
+ 		.order .detail a:hover {
+ 			color: #105cb6;
+ 			text-decoration: none !important;
+ 		}
+ 		a.decoration-none {
+ 			text-decoration: none !important;
+ 		}
+ 		a.transition {
+ 			font-family: 'PT Serif';
+ 			font-size: 20px;
+ 			font-weight: normal;
+ 			color: #333;
+ 			line-height: 1.35;
+ 			transition: all 0.2s linear 0s;
+ 		}
+ 		a.transition:hover {
+ 			color: #105cb6;
+ 			text-decoration: none !important;
+ 		}
+ 		
+ 		@media screen and (max-width: 640px) {
+ 			.cd-main-content .content-wrapper .Lside .events .row .event-detail {
+ 				padding: 10px 0 30px 0;
+ 			}
+ 			.cd-main-content .content-wrapper .Lside .events .row:last-child .event-detail {
+ 				padding-bottom: 0;
+ 			}
+ 		}
+   </style>
+  </head>
+  <body>
+   <header class="cd-main-header">
+    <a class="cd-logo" href="http://www.navy.ro">
+     <img alt="Logo" src="http://www.navy.ro/images/sigla.png"/>
+    </a>
+    <div class="cd-search">
+     <span style="font-size: 24px; color: #999;">
+      Onoare şi patrie!
+     </span>
+    </div>
+    <a class="cd-nav-trigger" href="http://www.navy.ro">
+     Menu
+     <span>
+     </span>
+    </a>
+    <nav class="cd-nav">
+     <ul class="cd-top-nav">
+      <li>
+       <a href="http://www.navy.ro/contact.php">
+        Contact
+       </a>
+      </li>
+      <li>
+       <a href="http://www.navy.ro/index_en.php">
+        English
+       </a>
+      </li>
+     </ul>
+    </nav>
+   </header>
+   <div class="cd-main-content">
+    <nav class="cd-side-nav">
+     <ul>
+      <li>
+       <a href="http://www.navy.ro/index.php" id="prima_pag">
+        Prima pagină
+       </a>
+      </li>
+      <li>
+       <a href="http://www.navy.ro/despre/conducere.php">
+        Conducere
+       </a>
+      </li>
+      <li>
+       <a href="http://www.navy.ro/despre/organizare/organizare.php">
+        Organizare
+       </a>
+      </li>
+      <li>
+       <a href="http://www.navy.ro/despre/nave.php">
+        Nave
+       </a>
+      </li>
+      <li class="has-children">
+       <a href="javascript:void(0)" id="media">
+        Media
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.navy.ro/evenimente.php">
+          Evenimente
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/comunicate.php">
+          Comunicate
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/informare/index_info.php">
+          Informare publică
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/mass_media/index_mass_media.php">
+          Centrul Media
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li class="has-children comments">
+       <a href="#0">
+        Despre noi
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.navy.ro/despre/istoric/istoric_index.php">
+          Istoric
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/despre/comandanti/comandanti_index.php">
+          Comandanţi ai Marinei
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/zmr/">
+          Ziua Marinei Române
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="http://www.navy.ro/eroi/eroi.php">
+        Eroi
+       </a>
+      </li>
+     </ul>
+     <ul>
+      <li class="cd-label">
+       Informaţii
+      </li>
+      <li class="has-children bookmarks">
+       <a href="javascript:void(0)">
+        Diverse
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.navy.ro/diverse/sigla.php">
+          Sigla Forţelor Navale
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/diverse/grade/index_grade.php">
+          Însemne de grad
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/diverse/avere/index_averi.php">
+          Declaraţii de avere
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li class="has-children bookmarks">
+       <a href="javascript:void(0)">
+        Cultură
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.navy.ro/cultura/muzee/mmr/index_mmr.php">
+          Muzeul Marinei Române
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/audio/mzfnr.php">
+          Muzica Militară a FN
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/edituri.php">
+          Edituri de marină
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/publicatii/publicatii_3Dcarousel.php">
+          Publicaţii
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/media/editoriale/noutati/index_edit_nou.php">
+          Noutăţi editoriale
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li class="has-children comments">
+       <a href="javascript:void(0)">
+        Carieră
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.navy.ro/cariera/cariera_clip.php">
+          Clip promovare
+         </a>
+        </li>
+        <li>
+         <a href="http://www.navy.ro/cariera/invatamant/inv_index.php">
+          Învăţământ marină militară
+         </a>
+        </li>
+        <li>
+         <a href="http://recrutare.mapn.ro/index.php " target="_blank">
+          Recrutare profesie militară
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li class="bookmarks">
+       <a href="http://www.navy.ro/anunturi.php">
+        Anunţuri
+       </a>
+      </li>
+      <li class="bookmarks">
+       <a href="http://www.navy.ro/linkuri.php">
+        Link-uri utile
+       </a>
+      </li>
+      <li class="bookmarks">
+       <a href="https://www.certmil.ro/" target="_blank">
+        Certmil
+       </a>
+      </li>
+     </ul>
+    </nav>
+    <div class="content-wrapper">
+     <div class="Lside">
+      <div class="owl-carousel" id="owl-demo">
+       <div class="item">
+        <a href="comunicat.php?id=78">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/61.jpg"/>
+        </a>
+        <p>
+         Peste 300 de marinari militari participă la exercițiul BREEZE 18 în Marea Neagră
+         <br/>
+         11 - 15 iulie
+        </p>
+       </div>
+       <div class="item">
+        <a href="http://www.navy.ro/comunicat.php?id=68">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/60.jpg"/>
+        </a>
+        <p>
+         Ziua Drapelului Naţional
+         <br/>
+         26 iunie
+        </p>
+       </div>
+       <div class="item">
+        <a href="http://www.navy.ro/eveniment.php?id=158">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/59.jpg"/>
+        </a>
+        <p>
+         Infanteriștii marini, la exercițiul multinațional întrunit BALTOPS 18
+         <br/>
+         31 mai-17 iunie
+        </p>
+       </div>
+       <div class="item">
+        <a href="http://www.navy.ro/comunicat.php?id=62">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/58.jpg"/>
+        </a>
+        <p>
+         Plecarea Navei Şcoală "Mircea" în marşul de instrucţie
+         <br/>
+         04 iunie-05 iulie
+        </p>
+       </div>
+       <div class="item">
+        <a href="http://www.navy.ro/comunicat.php?id=49">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/56.jpg"/>
+        </a>
+        <p>
+         Exercițiul multinațional SEA SHIELD 18
+         <br/>
+         04 - 11 mai 2018
+        </p>
+       </div>
+       <div class="item">
+        <a href="http://www.navy.ro/eveniment.php?id=141">
+         <img alt="navy.ro" onerror="noimage(this)" src="carusel/55.jpg"/>
+        </a>
+        <p>
+         Exercițiul multinațional Sea Shield 18, în plină desfășurare în Marea Neagră
+         <br/>
+         04 - 11 mai 2018
+        </p>
+       </div>
+      </div>
+      <h1 style="margin: 30px 0 15px 0; text-align: left;">
+       Evenimente
+      </h1>
+      <div class="events" id="bodyEvents" style="width:100%;clear:both;float:left;">
+      </div>
+      <div style="text-align: right; margin: 0 0 40px 0;clear: both;float: left;width: 100%;">
+       <a class="bootstrap-button" href="evenimente.php" style="margin-top:0;">
+        Mai mult
+       </a>
+      </div>
+     </div>
+     <div class="Rside">
+      <h1 style="margin-bottom: 15px; text-align: left;">
+       Comunicate de presă
+      </h1>
+      <div id="bodyNews" style="width:100%; margin: 30px 0;">
+      </div>
+      <div style="text-align: right; margin: 15px 0;">
+       <a class="bootstrap-button" href="comunicate.php">
+        Mai mult
+       </a>
+      </div>
+      <h1 style="margin-bottom: 15px; text-align: left;">
+       Noutăţi
+      </h1>
+      <ul class="widget-list">
+       <li>
+        <a href="colegiu.php">
+         <img height="64" src="images/8913.gif" width="64"/>
+         <span>
+          <strong>
+           Colegiul Naţional Militar ”Alexandru Ioan Cuza” Constanţa
+          </strong>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="media/video/index_video.php">
+         <img src="images/tv_64x64.jpg"/>
+         <span>
+          <strong>
+           Emisiunea TV "Scutul Dobrogei"
+          </strong>
+          <br/>
+          <em>
+           Urmăreşte emisiunea din data de 29 iulie
+          </em>
+         </span>
+        </a>
+       </li>
+       <!--//clip promovare emisiune TVR-->
+       <li>
+        <a href="media/audio/index_audio.php" target="_blank">
+         <img src="images/radio.jpg"/>
+         <span>
+          <strong>
+           Emisiunea radio "Scutul Dobrogei"
+          </strong>
+          <br/>
+          <em>
+           Urmăreşte emisiunea din data de 21 iulie
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="media/revista_mr/numere/rmr189-190.pdf" target="_blank">
+         <img src="images/mr_64x64.jpg"/>
+         <span>
+          <strong>
+           Revista "Marina Română"
+          </strong>
+          <br/>
+          <em>
+           A apărut numărul 1-2 (189 -190) din 2018
+          </em>
+         </span>
+        </a>
+       </li>
+      </ul>
+      <h1 style="margin: 30px 0 15px 0; text-align: left;">
+       Recomandări
+      </h1>
+      <ul class="widget-list">
+       <li>
+        <a href="http://centenar.mapn.ro/">
+         <img src="images/logo_centenar_mapn.jpg"/>
+         <span>
+          <strong>
+           Centenarul Primului Război Mondial
+          </strong>
+          <br/>
+          <em>
+           Ministerul Apărării Naționale
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="http://www.navy.ro/zmr/">
+         <img src="images/zmr_64x64.jpg"/>
+         <span>
+          <strong>
+           Ziua Marinei Române
+          </strong>
+          <br/>
+          <em>
+           2017
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="despre/nave.php">
+         <img src="images/111_64x64.jpg"/>
+         <span>
+          <strong>
+           Nave maritime
+          </strong>
+          <br/>
+          <em>
+           Caracteristici tehnico-tactice
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="eroi/eroi.php">
+         <img src="images/eroi_64x64.jpg"/>
+         <span>
+          <strong>
+           Eroii Marinei
+          </strong>
+          <br/>
+          <em>
+           Cinste şi onoare memoriei lor
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="misiuni/index_misiuni.php">
+         <img src="images/soldier_64x64.jpg"/>
+         <span>
+          <strong>
+           Misiuni şi exerciţii
+          </strong>
+          <br/>
+          <em>
+           Planificare şi execuţie
+          </em>
+         </span>
+        </a>
+       </li>
+      </ul>
+      <h1 style="margin: 30px 0 15px 0; text-align: left;">
+       Social
+      </h1>
+      <ul class="widget-list">
+       <li>
+        <a href="https://www.facebook.com/ForteleNavaleRomane" target="_blank">
+         <img src="img/facebook-icon.png"/>
+         <span>
+          <strong>
+           Facebook
+          </strong>
+          <br/>
+          <em>
+           Pagina Forţelor Navale Române
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="https://www.instagram.com/fortele.navale.romane/" target="_blank">
+         <img src="img/instagram-icon.png"/>
+         <span>
+          <strong>
+           Instagram
+          </strong>
+          <br/>
+          <em>
+           Pagina Forţelor Navale Române
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="https://youtu.be/K_uOjhgpgi0?list=PL9hqT9pOIB3sLH0Z2QRdKI-fRjTQPTi-G" target="_blank">
+         <img src="img/youtube-icon.png"/>
+         <span>
+          <strong>
+           Youtube
+          </strong>
+          <br/>
+          <em>
+           Emisiuni TV şi videoclipuri
+          </em>
+         </span>
+        </a>
+       </li>
+       <li>
+        <a href="http://www.navy.ro/rss" target="_blank">
+         <img src="img/rss-icon.png"/>
+         <span>
+          <strong>
+           RSS
+          </strong>
+          <br/>
+          <em>
+           Fluxul de știri
+          </em>
+         </span>
+        </a>
+       </li>
+      </ul>
+      <div class="widget-about">
+       © 2017 Forţele Navale Române
+       <br/>
+       Email:
+       <a href="mailto:contact@navy.ro">
+        contact@navy.ro
+       </a>
+       <br/>
+       Telefon:
+       <a href="tel:0213196052">
+        021 319 6052
+       </a>
+      </div>
+     </div>
+    </div>
+    <!-- .content-wrapper -->
+   </div>
+   <!-- .cd-main-content -->
+  </body>
+ </html>

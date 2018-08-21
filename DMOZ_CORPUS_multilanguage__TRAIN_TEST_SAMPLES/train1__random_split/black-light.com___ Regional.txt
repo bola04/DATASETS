@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+ <html class="" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# og: http://ogp.me/ns#">
+  <head>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <title>
+    HOME - Black Light
+   </title>
+   <style>
+    .wpcf7-submit{
+ 			display:none;
+ 		}
+ 		.recaptcha-btn{
+ 			display:block;
+ 		}
+ 		.grecaptcha-badge {display: none;}
+   </style>
+   <script type="text/javascript">
+    var contactform = {};
+ 		
+ 		var renderGoogleInvisibleRecaptcha = function() {
+ 			//jQuery(document).ready(function(){
+ 				
+ 				// prevent form submit from enter key
+ 				jQuery("input[name=_wpcf7]").attr("class","formid");
+ 					jQuery('.wpcf7-form').on('keyup keypress', "input", function(e) {
+ 					  var keyCode = e.keyCode || e.which;
+ 					  if (keyCode === 13) { 
+ 						e.preventDefault();
+ 						return false;
+ 					  }
+ 					});
+ 			
+ 				jQuery('.wpcf7-submit').each(function(index){
+ 					
+ 					var checkexclude = 0;
+ 					var form = jQuery(this).closest('.wpcf7-form');
+ 					var value = jQuery(form).find(".formid").val();
+ 					// check form exclude from invisible recaptcha
+ 										if(checkexclude == 0){
+ 						var ajax_nonce = "27104320c7";
+ 						var ajaxurl = "http://black-light.com/wp-admin/admin-ajax.php";
+ 						// Call ajax for get contact form messages
+ 						jQuery.ajax({
+ 							url: ajaxurl, 
+ 							type: 'POST',
+ 							data: {'postId':value,'action':"vsz_cf7_contact_message","ajax_nonce":ajax_nonce},
+ 							success: function(data){
+ 								var contacid = value;
+ 								contactform[contacid] = JSON.parse(data);	
+ 							}
+ 						});
+ 						// Hide the form orig submit button
+ 						form.find('.wpcf7-submit').hide();
+ 
+ 						// Fetch class and value of orig submit button
+ 						btnClasses = form.find('.wpcf7-submit').attr('class');
+ 						btnValue = form.find('.wpcf7-submit').attr('value');
+ 
+ 						// Add custom button and recaptcha holder
+ 						
+ 						form.find('.wpcf7-submit').after('<input type="button" id="wpcf-custom-btn-'+index+'" class="'+btnClasses+'  recaptcha-btn recaptcha-btn-type-css" value="'+btnValue+'" title="'+btnValue+'" >');
+ 						form.append('<div class="recaptcha-holder" id="recaptcha-holder-'+index+'"></div>');
+ 						// Recaptcha rendenr from here
+ 						var holderId = grecaptcha.render('recaptcha-holder-'+index,{
+ 									'sitekey':'6Lf-r08UAAAAALjzQ2kdKdkigUsr2h2XcRDe9_m7',
+ 									'size': 'invisible',
+ 									'badge' : 'bottomright', // possible values: bottomright, bottomleft, inline
+ 									'callback' : function (recaptchaToken) {
+ 										//console.log(recaptchaToken);
+ 										var response=jQuery('#recaptcha-holder-'+index).find('.g-recaptcha-response').val();
+ 										//console.log(response);
+ 										//Remove old response and store new respone 
+ 										jQuery('#recaptcha-holder-'+index).parent().find(".respose_post").remove();
+ 										jQuery('#recaptcha-holder-'+index).after('<input type="hidden" name="g-recaptcha-response"  value="'+response+'" class="respose_post">')
+ 										grecaptcha.reset(holderId);
+ 										
+ 										if(typeof customCF7Validator !== 'undefined'){
+ 											if(!customCF7Validator(form)){
+ 												return;
+ 											}
+ 										}
+ 										// Call default Validator function
+ 										else if(contactFormDefaultValidator(form)){
+ 											return;
+ 										}
+ 										else{
+ 											// hide the custom button and show orig submit button again and submit the form
+ 											jQuery('#wpcf-custom-btn-'+index).hide();
+ 											form.find('input[type=submit]').show();
+ 											form.find("input[type=submit]").click();
+ 											form.find('input[type=submit]').hide();
+ 											jQuery('#wpcf-custom-btn-'+index).attr('style','');
+ 										}
+ 									}
+ 							},false);
+ 							
+ 						// action call when click on custom button
+ 						jQuery('#wpcf-custom-btn-'+index).click(function(event){
+ 							event.preventDefault();
+ 							// Call custom validator function
+ 							if(typeof customCF7Validator == 'function'){
+ 								if(!customCF7Validator(form)){
+ 									return false;
+ 								}
+ 							}
+ 							// Call default Validator function
+ 							else if(contactFormDefaultValidator(form)){
+ 								return false;
+ 							}
+ 							else if(grecaptcha.getResponse(holderId) != ''){
+ 								grecaptcha.reset(holderId);
+ 							}
+ 							else{
+ 								// execute the recaptcha challenge
+ 								grecaptcha.execute(holderId);
+ 							}
+ 						});
+ 					}
+ 					
+ 				});
+ 			//});		
+ 				
+ 		};
+ 		// Default validator function
+ 		function contactFormDefaultValidator(objForm){
+ 			var formid=jQuery(objForm).find(".formid").val();
+ 			var havingError = false;
+ 			// Fetch each validation field one by one
+ 			objForm.find('.wpcf7-validates-as-required').each(function(){
+ 				jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 				// Check if empty or checkbox checked or not
+ 				if(!jQuery(this).hasClass('wpcf7-checkbox')){
+ 					if(!jQuery(this).val()){
+ 						jQuery(this).val('');
+ 						jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(this).after('<span class="wpcf7-not-valid-tip" role="alert">'+contactform[formid]['invalid_required']+'</span>');
+ 						havingError = true;
+ 					}
+ 					// Check if not valid email address entered
+ 					else{			
+ 						if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-email") >= 0){
+ 							var emailField = jQuery(this).val();
+ 							if(!validateCustomFormEmail(emailField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_email']+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid url entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-url") >= 0){
+ 							var urlField = jQuery(this).val();
+ 							if(!validateCustomFormurl(urlField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_url']+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid telephone entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-tel") >= 0){
+ 							var telField = jQuery(this).val();
+ 							if(!validateCustomFormtel(telField)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_tel']+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid number entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-number") >= 0){
+ 							var numField = jQuery(this).val();
+ 							var min = jQuery(this).attr('min');
+ 							var max = jQuery(this).attr('max');
+ 							var testnum = validateCustomFormnum(numField,min,max);
+ 							if(testnum != 0){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								if(testnum ==1){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_number']+'</span>');
+ 								}
+ 								if(testnum ==2){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_too_long']+'</span>');
+ 								}
+ 								if(testnum ==3){
+ 									jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_too_short']+'</span>');
+ 								}
+ 								havingError = true;
+ 							}
+ 						}
+ 						// Check if not valid date entered
+ 						else if(jQuery(this).attr('class').indexOf("wpcf7-validates-as-date") >= 0){
+ 							var date = jQuery(this).val();
+ 							if(!validateCustomFordate(date)){
+ 								jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 								jQuery(this).after('<span role="alert" class="wpcf7-not-valid-tip">'+contactform[formid]['invalid_date']+'</span>');
+ 								havingError = true;
+ 							}
+ 						}
+ 					}
+ 				}
+ 				else{
+ 					var checkselected = 0; 
+ 					jQuery(this).find('input').each(function(){
+ 						if(jQuery(this).prop('checked') == true){
+ 							checkselected++;
+ 						}
+ 					});
+ 					if(checkselected == 0){
+ 						jQuery(this).parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(this).after('<span class="wpcf7-not-valid-tip" role="alert">'+contactform[formid]['invalid_required']+'</span>');
+ 						havingError = true;
+ 					}
+ 				}
+ 			});
+ 			//for acceptance validation 
+ 			if(jQuery(objForm).find('.wpcf7-acceptance').length > 0){
+ 				if(jQuery(objForm).find('.wpcf7-acceptance').hasClass('wpcf7-invert')){
+ 					if(jQuery(objForm).find('.wpcf7-acceptance').prop('checked') == true){
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(objForm).find('.wpcf7-acceptance').after('<span class="wpcf7-not-valid-tip" role="alert">'+contactform[formid]['accept_terms']+'</span>');
+ 						havingError = true;
+ 					}
+ 					else{
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 					}
+ 				}
+ 				else{
+ 					if(jQuery(objForm).find('.wpcf7-acceptance').prop('checked') == false){
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 						jQuery(objForm).find('.wpcf7-acceptance').after('<span class="wpcf7-not-valid-tip" role="alert">'+contactform[formid]['accept_terms']+'</span>');
+ 						havingError = true;
+ 					}
+ 					else{
+ 						jQuery(objForm).find('.wpcf7-acceptance').parent().find('.wpcf7-not-valid-tip').remove();
+ 					}
+ 				}
+ 			}		
+ 		
+ 			return havingError;
+ 		}
+ 		//email validation function
+ 		function validateCustomFormEmail(email) {
+ 			var expr = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,10}|[0-9]{1,3})(\]?)$/;
+ 			return expr.test(email);
+ 		}
+ 		//url validation function
+ 		function validateCustomFormurl(url) {
+ 			if(url){
+ 				return true;		
+ 			}
+ 			else{
+ 				return false;
+ 			}
+ 		}
+ 		//telephone validation function
+ 		function validateCustomFormtel(number){
+ 			var phoneno = /[a-zA-Z]/;  
+ 			if(number.match(phoneno)) {  
+ 				return false;  
+ 			}  
+ 			else {  
+ 				return true;  
+ 			}  
+ 		}
+ 		//number filed validation function
+ 		function validateCustomFormnum(number,min,max){
+ 			if (isNaN(number) ) {
+ 				return 1;
+ 			}
+ 			else {
+ 				if(min){
+ 					if(number < min){
+ 						return 3;
+ 					}				
+ 				}
+ 				if(max){
+ 					if(number > max){
+ 						return 2;
+ 					}				
+ 				}
+ 				return 0;
+ 			}
+ 		}
+ 		//date filed validation function
+ 		function validateCustomFordate(input) {
+ 			var status = false;
+ 			if (!input || input.length <= 0) {
+ 			  status = false;
+ 			} 
+ 			else {
+ 			  var result = new Date(input);
+ 			  if (result == 'Invalid Date') {
+ 				status = false;
+ 			  } 
+ 			  else {
+ 				status = true;
+ 			  }
+ 			}
+ 			return status;		
+ 		}
+   </script>
+   <script async="" defer="" src="https://www.google.com/recaptcha/api.js?onload=renderGoogleInvisibleRecaptcha&amp;render=explicit">
+   </script>
+   <!-- This site is optimized with the Yoast SEO plugin v7.1 - https://yoast.com/wordpress/plugins/seo/ -->
+   <link href="http://black-light.com/" rel="canonical"/>
+   <meta content="en_US" property="og:locale"/>
+   <meta content="website" property="og:type"/>
+   <meta content="HOME - Black Light" property="og:title"/>
+   <meta content="http://black-light.com/" property="og:url"/>
+   <meta content="Black Light" property="og:site_name"/>
+   <meta content="summary_large_image" name="twitter:card"/>
+   <meta content="HOME - Black Light" name="twitter:title"/>
+   <script type="application/ld+json">
+    {"@context":"https:\/\/schema.org","@type":"WebSite","@id":"#website","url":"http:\/\/black-light.com\/","name":"Black Light","potentialAction":{"@type":"SearchAction","target":"http:\/\/black-light.com\/?s={search_term_string}","query-input":"required name=search_term_string"}}
+   </script>
+   <!-- / Yoast SEO plugin. -->
+   <link href="//s.w.org" rel="dns-prefetch"/>
+   <link href="http://black-light.com/feed/" rel="alternate" title="Black Light » Feed" type="application/rss+xml"/>
+   <link href="http://black-light.com/comments/feed/" rel="alternate" title="Black Light » Comments Feed" type="application/rss+xml"/>
+   <link href="http://black-light.com/wp-content/uploads/2018/03/Favicon.jpg" rel="shortcut icon" type="image/x-icon"/>
+   <!-- For iPhone -->
+   <link href="http://black-light.com/wp-content/uploads/2018/03/Favicon.jpg" rel="apple-touch-icon"/>
+   <!-- For iPhone Retina display -->
+   <link href="http://black-light.com/wp-content/uploads/2018/03/Favicon.jpg" rel="apple-touch-icon" sizes="114x114"/>
+   <!-- For iPad -->
+   <link href="http://black-light.com/wp-content/uploads/2018/03/Favicon.jpg" rel="apple-touch-icon" sizes="72x72"/>
+   <!-- For iPad Retina display -->
+   <link href="http://black-light.com/wp-content/uploads/2018/03/Favicon.jpg" rel="apple-touch-icon" sizes="144x144"/>
+   <link href="http://black-light.com/home/feed/" rel="alternate" title="Black Light » HOME Comments Feed" type="application/rss+xml"/>
+   <meta content="HOME" property="og:title"/>
+   <meta content="article" property="og:type"/>
+   <meta content="http://black-light.com/" property="og:url"/>
+   <meta content="Black Light" property="og:site_name"/>
+   <meta content="Scroll down      
+ On your wavelength
+ ...they'll never forget
+ Black Light has been providing lighting, stage, sound and AV solutions across Scotland and the UK for over 30 years. In that time becoming Scotland’s leading sales, hires, events and installation company.
+ With an enviable track-record working for a" property="og:description"/>
+   <meta content="http://black-light.com/wp-content/uploads/2017/10/logo120.png" property="og:image"/>
+   <script type="text/javascript">
+    window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.4\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/black-light.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.7"}};
+ 			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56692,8205,9792,65039],[55357,56692,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+   </script>
+   <style type="text/css">
+    img.wp-smiley,
+ img.emoji {
+ 	display: inline !important;
+ 	border: none !important;
+ 	box-shadow: none !important;
+ 	height: 1em !important;
+ 	width: 1em !important;
+ 	margin: 0 .07em !important;
+ 	vertical-align: -0.1em !important;
+ 	background: none !important;
+ 	padding: 0 !important;
+ }
+   </style>
+   <link href="http://black-light.com/wp-content/plugins/social-fixed-giotis/css/grid_styles.css?ver=4.9.7" id="grid_style-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://black-light.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.0.1" id="contact-form-7-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://black-light.com/wp-content/plugins/search-filter-pro/public/assets/css/search-filter.min.css?ver=2.3.4" id="search-filter-plugin-styles-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://black-light.com/wp-content/themes/blacklight/assets/css/style.min.css?ver=5.4.2" id="avada-stylesheet-css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://black-light.com/wp-content/themes/blacklight-child/style.css?ver=4.9.7" id="child-style-css" media="all" rel="stylesheet" type="text/css"/>
+   <!--[if lte IE 9]>
+ <link rel='stylesheet' id='avada-IE-fontawesome-css'  href='http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/fonts/fontawesome/font-awesome.css?ver=5.4.2' type='text/css' media='all' />
+ <![endif]-->
+   <!--[if IE]>
+ <link rel='stylesheet' id='avada-IE-css'  href='http://black-light.com/wp-content/themes/blacklight/assets/css/ie.css?ver=5.4.2' type='text/css' media='all' />
+ <![endif]-->
+   <link href="http://black-light.com/wp-content/uploads/fusion-styles/fusion-2.css?timestamp=1532529088&amp;ver=4.9.7" id="fusion-dynamic-css-css" media="all" rel="stylesheet" type="text/css"/>
+   <script src="http://black-light.com/wp-includes/js/jquery/jquery.js?ver=1.12.4" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/duracelltomi-google-tag-manager/js/gtm4wp-form-move-tracker.js?ver=1.7.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var SF_LDATA = {"ajax_url":"http:\/\/black-light.com\/wp-admin\/admin-ajax.php","home_url":"http:\/\/black-light.com\/"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/search-filter-pro/public/assets/js/search-filter-build.min.js?ver=2.3.4" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/search-filter-pro/public/assets/js/chosen.jquery.min.js?ver=2.3.4" type="text/javascript">
+   </script>
+   <link href="http://black-light.com/wp-json/" rel="https://api.w.org/"/>
+   <link href="http://black-light.com/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml"/>
+   <link href="http://black-light.com/wp-includes/wlwmanifest.xml" rel="wlwmanifest" type="application/wlwmanifest+xml"/>
+   <meta content="WordPress 4.9.7" name="generator"/>
+   <link href="http://black-light.com/" rel="shortlink"/>
+   <link href="http://black-light.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fblack-light.com%2F" rel="alternate" type="application/json+oembed"/>
+   <link href="http://black-light.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fblack-light.com%2F&amp;format=xml" rel="alternate" type="text/xml+oembed"/>
+   <!-- Google Tag Manager for WordPress by DuracellTomi - http://duracelltomi.com -->
+   <script data-cfasync="false" type="text/javascript">
+    var gtm4wp_datalayer_name = "dataLayer";
+ 	var dataLayer = dataLayer || [];
+ 	dataLayer.push({"pagePostType":"frontpage","pagePostType2":"single-page","pagePostAuthor":"Chief"});
+   </script>
+   <script data-cfasync="false">
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+ '//www.googletagmanager.com/gtm.'+'js?id='+i+dl;f.parentNode.insertBefore(j,f);
+ })(window,document,'script','dataLayer','GTM-NQQ2LKS');
+   </script>
+   <!-- End Google Tag Manager -->
+   <!-- End Google Tag Manager for WordPress by DuracellTomi -->
+   <script type="text/javascript">
+    var doc = document.documentElement;
+ 		doc.setAttribute('data-useragent', navigator.userAgent);
+   </script>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-5800272-17">
+   </script>
+   <script>
+    window.dataLayer = window.dataLayer || [];
+   function gtag(){dataLayer.push(arguments);}
+   gtag('js', new Date());
+ 
+   gtag('config', 'UA-5800272-17');
+   </script>
+   <script src="http://code.jquery.com/jquery-1.10.2.js">
+   </script>
+   <script>
+    $(document).ready(function(){
+ $('.sales>div>ul>li:nth-child(2)>a').click(function() {
+     location.reload();
+ })
+ });
+ 
+  
+   $(document).ready(function(){
+ $('.hires>div>ul>li:nth-child(3)>a').click(function() {
+     location.reload();
+ })
+ });
+ 
+   $(document).ready(function(){
+ $('.projects>div>ul>li:nth-child(4)>a').click(function() {
+     location.reload();
+ })
+ });
+   </script>
+   <script>
+    $(document).ready(function(){
+ $('.sales>div>div:nth-child(3)>ul>li>a').click(function() {
+     location.reload();
+ })
+ });
+ 
+   $(document).ready(function(){
+ $('.hires>div>div:nth-child(5)>ul>li>a').click(function() {
+     location.reload();
+ })
+ });
+   $(document).ready(function(){
+ $('.projects>div>div:nth-child(7)>ul>li>a').click(function() {
+     location.reload();
+ })
+ });
+   </script>
+   <!--FOR IE VERSION-->
+   <script>
+    jQuery(window).scroll(function() {
+ if (jQuery(this).scrollTop() > 1) {
+ $(".fusion-header-wrapper").addClass("fusion-header-wrapper2");
+ $(".ie").addClass("ie2");
+ $(" .avada_portfolio-template-default>div>.fusion-page-title-bar>.fusion-page-title-row").addClass("ie2portfolio");
+ $(".portfolio-full>.single-navigation").addClass("ie2portfolio2");
+     
+ } else {
+ $(".fusion-header-wrapper").removeClass("fusion-header-wrapper2");
+ $(".ie").removeClass("ie2");
+ $(" .avada_portfolio-template-default>div>.fusion-page-title-bar>.fusion-page-title-row").removeClass("ie2portfolio");
+ $(".portfolio-full>.single-navigation").removeClass("ie2portfolio2");
+     
+ }
+ });
+   </script>
+   <!-- <script>$(document).ready(function(){
+    
+         $("#ofportfolio_skills>option:nth-child(1)").html("Categories2");
+   
+ });</script>-->
+  </head>
+  <body class="home page-template page-template-100-width page-template-100-width-php page page-id-2 fusion-image-hovers fusion-body ltr fusion-sticky-header no-tablet-sticky-header no-mobile-sticky-header no-mobile-slidingbar no-mobile-totop mobile-logo-pos-left layout-wide-mode fusion-top-header menu-text-align-center mobile-menu-design-modern fusion-show-pagination-text fusion-header-layout-v6 avada-responsive avada-footer-fx-none">
+   <div class="" id="wrapper">
+    <div id="home" style="position:relative;top:-1px;">
+    </div>
+    <header class="fusion-header-wrapper">
+     <div class="fusion-header-v6 fusion-logo-left fusion-sticky-menu- fusion-sticky-logo- fusion-mobile-logo-1 fusion-header-has-flyout-menu">
+      <div class="fusion-header-sticky-height">
+      </div>
+      <div class="fusion-header">
+       <div class="fusion-row">
+        <div class="fusion-header-v6-content fusion-header-has-flyout-menu-content">
+         <div class="fusion-logo" data-margin-bottom="10px" data-margin-left="0px" data-margin-right="0px" data-margin-top="10px">
+          <a class="fusion-logo-link" href="http://black-light.com/">
+           <!-- standard logo -->
+           <img alt="Black Light Logo" class="fusion-standard-logo" height="83" retina_logo_url="" src="http://black-light.com/wp-content/uploads/2017/10/logo120.png" srcset="http://black-light.com/wp-content/uploads/2017/10/logo120.png 1x" width="120"/>
+           <!-- mobile logo -->
+           <img alt="Black Light Logo" class="fusion-mobile-logo" height="69" retina_logo_url="http://black-light.com/wp-content/uploads/2017/05/logom.png" src="http://black-light.com/wp-content/uploads/2017/05/logom.png" srcset="http://black-light.com/wp-content/uploads/2017/05/logom.png 1x, http://black-light.com/wp-content/uploads/2017/05/logom.png 2x" style="max-height:69px;height:auto;" width="100"/>
+          </a>
+         </div>
+         <div class="fusion-flyout-menu-icons">
+          <a aria-hidden="true" aria-label="Toggle Menu" class="fusion-flyout-menu-toggle" href="#">
+           <div class="fusion-toggle-icon-line">
+           </div>
+           <div class="fusion-toggle-icon-line">
+           </div>
+           <div class="fusion-toggle-icon-line">
+           </div>
+          </a>
+         </div>
+        </div>
+        <div aria-label="Main Menu" class="fusion-main-menu fusion-flyout-menu" role="navigation">
+         <ul class="fusion-menu" id="menu-main-navigation" role="menubar">
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-2 current_page_item menu-item-44" id="menu-item-44" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/">
+            <span class="menu-text">
+             HOME
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-364" id="menu-item-364" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/sales-support/">
+            <span class="menu-text">
+             SALES &amp; SUPPORT
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-661" id="menu-item-661" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/hire-production/">
+            <span class="menu-text">
+             HIRE  &amp; PRODUCTION
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-362" id="menu-item-362" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/projects-solutions/">
+            <span class="menu-text">
+             PROJECTS &amp; SOLUTIONS
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-348" id="menu-item-348" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/case-studies/">
+            <span class="menu-text">
+             CASE STUDIES
+            </span>
+           </a>
+          </li>
+          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-224" id="menu-item-224" role="menuitem">
+           <a class="fusion-bar-highlight" href="http://black-light.com/contact/">
+            <span class="menu-text">
+             CONTACT
+            </span>
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="fusion-flyout-menu-bg">
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="fusion-clearfix">
+     </div>
+    </header>
+    <div id="sliders-container">
+    </div>
+    <main class="clearfix width-100" id="main" role="main" style="padding-left:30px;padding-right:30px">
+     <div class="fusion-row" style="max-width:100%;">
+      <section class="full-width" id="content">
+       <div class="post-2 page type-page status-publish hentry" id="post-2">
+        <span class="entry-title rich-snippet-hidden">
+         HOME
+        </span>
+        <span class="vcard rich-snippet-hidden">
+         <span class="fn">
+          <a href="http://black-light.com/author/uniqmarketing/" rel="author" title="Posts by Chief">
+           Chief
+          </a>
+         </span>
+        </span>
+        <span class="updated rich-snippet-hidden">
+         2018-03-28T08:58:52+00:00
+        </span>
+        <div class="post-content">
+         <div class="fusion-fullwidth fullwidth-box fusion-ie-mode fusion-parallax-fixed mobilepaddingrow ie nonhundred-percent-fullwidth non-hundred-percent-height-scrolling" style='background-color: rgba(255,255,255,0);background-image: url("http://black-light.com/wp-content/uploads/2017/05/Homepage-Header-1.jpg");background-position: center center;background-repeat: no-repeat;padding-top:10%;padding-right:30px;padding-bottom:3%;padding-left:30px;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;background-attachment:fixed;'>
+          <div class="fusion-builder-row fusion-row ">
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third fusion-column-first gridshover margingridsmobile 1_3" style="margin-top:100px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );margin-right: 4%;">
+            <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="padding: 110px 0px 0px 0px;">
+             <a href="/sales-support">
+              <div class="grids">
+               <span class="firsthead">
+                Sales
+               </span>
+               <span class="firstand">
+                &amp;
+               </span>
+               <br/>
+               <span class="firsthead">
+                Support
+               </span>
+               <br/>
+               <p class="linktext">
+                Discover &gt;
+               </p>
+              </div>
+             </a>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-image: url('http://black-light.com/wp-content/uploads/2017/05/circle.png');background-position:center center;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third secondgridshover margingridsmobile 1_3" style="margin-top:100px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );margin-right: 4%;">
+            <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="padding: 110px 0px 0px 0px;">
+             <a href="/hire-production">
+              <div class="secondgrids">
+               <span class="secondhead">
+                Hire
+               </span>
+               <span class="secondand">
+                &amp;
+               </span>
+               <br/>
+               <span class="secondhead">
+                Production
+               </span>
+               <br/>
+               <p class="secondlinktext">
+                Discover &gt;
+               </p>
+              </div>
+             </a>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-image: url('http://black-light.com/wp-content/uploads/2017/05/circle.png');background-position:center center;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third fusion-column-last thirdgridshover margingridsmobile 1_3" style="margin-top:100px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );">
+            <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="padding: 110px 0px 0px 0px;">
+             <a href="/projects-solutions">
+              <div class="thirdgrids">
+               <span class="thirdhead">
+                Projects
+               </span>
+               <span class="thirdand">
+                &amp;
+               </span>
+               <br/>
+               <span class="thirdhead">
+                Solutions
+               </span>
+               <br/>
+               <p class="thirdlinktext">
+                Discover &gt;
+               </p>
+              </div>
+             </a>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/circle.png" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-image: url('http://black-light.com/wp-content/uploads/2017/05/circle.png');background-position:center center;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third fusion-column-first 1_3" style="margin-top:0px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );margin-right: 4%;">
+            <div class="fusion-column-wrapper" data-bg-url="" style="padding: 0px 0px 0px 0px;">
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third 1_3" style="margin-top:0px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );margin-right: 4%;">
+            <div class="fusion-column-wrapper" data-bg-url="" style="padding: 70px 0px 0px 0px;">
+             <div class="fusion-button-wrapper fusion-aligncenter">
+              <style scoped="scoped" type="text/css">
+               .fusion-button.button-1 .fusion-button-text, .fusion-button.button-1 i {color:#ffffff;}.fusion-button.button-1 {border-width:0px;border-color:#ffffff;}.fusion-button.button-1 .fusion-button-icon-divider{border-color:#ffffff;}.fusion-button.button-1:hover .fusion-button-text, .fusion-button.button-1:hover i,.fusion-button.button-1:focus .fusion-button-text, .fusion-button.button-1:focus i,.fusion-button.button-1:active .fusion-button-text, .fusion-button.button-1:active{color:#ffffff;}.fusion-button.button-1:hover, .fusion-button.button-1:focus, .fusion-button.button-1:active{border-width:0px;border-color:#ffffff;}.fusion-button.button-1:hover .fusion-button-icon-divider, .fusion-button.button-1:hover .fusion-button-icon-divider, .fusion-button.button-1:active .fusion-button-icon-divider{border-color:#ffffff;}.fusion-button.button-1{background: #000000;}.fusion-button.button-1:hover,.button-1:focus,.fusion-button.button-1:active{background: #000000;}.fusion-button.button-1{width:auto;}
+              </style>
+              <a class="fusion-button button-flat fusion-button-round button-small button-custom button-1" href="#begin" target="_self">
+               <span class="fusion-button-text">
+                Scroll down
+               </span>
+              </a>
+             </div>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_3 fusion-one-third fusion-column-last 1_3" style="margin-top:0px;margin-bottom:20px;width:33.33%;width:calc(33.33% - ( ( 4% + 4% ) * 0.3333 ) );">
+            <div class="fusion-column-wrapper" data-bg-url="" style="padding: 0px 0px 0px 0px;">
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div id="begin">
+          <div class="fusion-fullwidth fullwidth-box fusion-ie-mode mobilepaddingrow nonhundred-percent-fullwidth non-hundred-percent-height-scrolling fusion-equal-height-columns" style="background-color: rgba(255,255,255,0);background-position: center center;background-repeat: no-repeat;padding-top:100px;padding-right:30px;padding-left:30px;">
+           <div class="fusion-builder-row fusion-row ">
+            <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_2 fusion-one-half fusion-column-first 1_2" style="margin-top:0px;margin-bottom:0px;width:50%;width:calc(50% - ( ( 4% ) * 0.5 ) );margin-right: 4%;">
+             <div class="fusion-column-wrapper" data-bg-url="" style="padding: 0px 0px 0px 0px;">
+              <span class="fusion-imageframe imageframe-none imageframe-1 hover-type-none">
+               <img alt="" class="img-responsive wp-image-171" height="105" src="http://black-light.com/wp-content/uploads/2017/05/circle-layers.png" title="circle-layers" width="105"/>
+              </span>
+              <div class="fusion-sep-clear">
+              </div>
+              <div class="fusion-separator fusion-full-width-sep sep-none" style="margin-left: auto;margin-right: auto;margin-top:5px;margin-bottom:5px;">
+              </div>
+              <div class="fusion-text">
+               <h2 class="on">
+                On your wavelength
+               </h2>
+               <h3>
+                …they’ll never forget
+               </h3>
+               <p class="hometext">
+                Black Light has been providing lighting, stage, sound and AV solutions across Scotland and the UK for over 30 years. In that time becoming Scotland’s leading sales, hires, events and installation company.
+                <br/>
+                With an enviable track-record working for a wide range of clients including theatres, amateur dramatic groups, schools, event companies, retail outlets, interior designers, construction companies and architects.
+               </p>
+              </div>
+              <div class="fusion-clearfix">
+              </div>
+              <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+              </div>
+             </div>
+            </div>
+            <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_2 fusion-one-half fusion-column-last 1_2" style="margin-top:0px;margin-bottom:0px;width:50%;width:calc(50% - ( ( 4% ) * 0.5 ) );">
+             <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/Homepage-Blurb-Image.jpg" style="padding: 0px 0px 0px 0px;">
+              <div class="fusion-clearfix">
+              </div>
+              <div class="fusion-column-wrapper" data-bg-url="http://black-light.com/wp-content/uploads/2017/05/Homepage-Blurb-Image.jpg" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-image: url('http://black-light.com/wp-content/uploads/2017/05/Homepage-Blurb-Image.jpg');background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="fusion-fullwidth fullwidth-box fusion-ie-mode mobilepaddingrow nonhundred-percent-fullwidth non-hundred-percent-height-scrolling" style="background-color: rgba(255,255,255,0);background-position: center center;background-repeat: no-repeat;padding-top:0px;padding-right:30px;padding-bottom:0px;padding-left:30px;">
+          <div class="fusion-builder-row fusion-row ">
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_1 fusion-one-full fusion-column-first fusion-column-last 1_1" style="margin-top:0px;margin-bottom:20px;">
+            <div class="fusion-column-wrapper" data-bg-url="" style="padding: 0px 0px 0px 0px;">
+             <div class="fusion-text">
+              <p class="hometext">
+               Black light are well respected in the industry and have an impressive portfolio of exciting, high profile projects including Trump Turnberry, Edinburgh’s Hogmanay Celebrations, the Edinburgh Festival Fringe and Arsenal and West Ham Football Club retail stores.
+               <br/>
+               Understanding the specific needs of each industry and being ‘on your wavelength’ with every client means you will get more than a product or service; you will receive proven advice and practical assistance to make sure you get the best product or service for your needs.
+              </p>
+              <p class="hometext">
+               Black Light is an employee owned company giving staff the opportunity to push the business to continue to grow and flourish. In choosing employee ownership, staff are even more enthusiastic and motivated to continue to deliver a brilliant service to the company’s clients and vendors.
+              </p>
+             </div>
+             <div class="fusion-sep-clear">
+             </div>
+             <div class="fusion-separator fusion-full-width-sep sep-none" style="margin-left: auto;margin-right: auto;margin-top:10px;margin-bottom:10px;">
+             </div>
+             <div class="fusion-button-wrapper fusion-alignleft">
+              <style scoped="scoped" type="text/css">
+               .fusion-button.button-2 .fusion-button-text, .fusion-button.button-2 i {color:#000000;}.fusion-button.button-2 {border-width:0px;border-color:#000000;}.fusion-button.button-2 .fusion-button-icon-divider{border-color:#000000;}.fusion-button.button-2:hover .fusion-button-text, .fusion-button.button-2:hover i,.fusion-button.button-2:focus .fusion-button-text, .fusion-button.button-2:focus i,.fusion-button.button-2:active .fusion-button-text, .fusion-button.button-2:active{color:#000000;}.fusion-button.button-2:hover, .fusion-button.button-2:focus, .fusion-button.button-2:active{border-width:0px;border-color:#000000;}.fusion-button.button-2:hover .fusion-button-icon-divider, .fusion-button.button-2:hover .fusion-button-icon-divider, .fusion-button.button-2:active .fusion-button-icon-divider{border-color:#000000;}.fusion-button.button-2{width:auto;}
+              </style>
+              <a class="fusion-button button-flat fusion-button-round button-small button-default button-2 custombutton" href="/case-studies/" target="_self">
+               <span class="fusion-button-text">
+                View our projects
+               </span>
+              </a>
+             </div>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="fusion-fullwidth fullwidth-box fusion-ie-mode nonhundred-percent-fullwidth non-hundred-percent-height-scrolling" style="background-color: rgba(255,255,255,0);background-position: center center;background-repeat: no-repeat;padding-top:0px;padding-right:30px;padding-bottom:0px;padding-left:30px;">
+          <div class="fusion-builder-row fusion-row ">
+           <div class="fusion-layout-column fusion_builder_column fusion_builder_column_1_1 fusion-one-full fusion-column-first fusion-column-last 1_1" style="margin-top:0px;margin-bottom:20px;">
+            <div class="fusion-column-wrapper" data-bg-url="" style="padding: 0px 0px 0px 0px;">
+             <div class="allsocial">
+              <ul class="listdetails">
+               <li class="Active">
+                <a href="tel:01315512337">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/phone.png"/>
+                 <span class="tip-content">
+                  Call us
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="mailto:enquiries@black-light.com">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/mail.png"/>
+                 <span class="tip-content">
+                  Email us
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="https://www.google.co.uk/maps/place/Black+Light+Ltd/@55.9873387,-3.2669847,12.75z/data=!4m5!3m4!1s0x4887c8820bfe5145:0xf609f766f53535a0!8m2!3d55.982628!4d-3.248265" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/location.png"/>
+                 <span class="tip-content">
+                  Our location
+                 </span>
+                </a>
+               </li>
+              </ul>
+              <ul class="listsocial">
+               <li class="Active">
+                <a href="https://www.facebook.com/BlackLightLtd/" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/facebook.png"/>
+                 <span class="tip-content">
+                  Facebook
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="https://twitter.com/Black_Light_Ltd" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/twitter.png"/>
+                 <span class="tip-content">
+                  Twitter
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="https://www.instagram.com/black_light_ltd/" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/instagram.png"/>
+                 <span class="tip-content">
+                  Instagram
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="https://www.linkedin.com/company/black-light" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/linkedin.png"/>
+                 <span class="tip-content">
+                  Linkedin
+                 </span>
+                </a>
+               </li>
+               <li class="Active">
+                <a href="https://plus.google.com/u/0/114280910422279136760" target="_blank">
+                 <img src="/wp-content/plugins/social-fixed-giotis/images/google+.png"/>
+                 <span class="tip-content">
+                  Google+
+                 </span>
+                </a>
+               </li>
+              </ul>
+             </div>
+             <div class="fusion-clearfix">
+             </div>
+             <div class="fusion-column-wrapper" data-bg-url="" style="content:'';z-index:-1;position:absolute;top:0;right:0;bottom:0;left:0;background-position:left top;background-repeat:no-repeat;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;">
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </section>
+     </div>
+     <!-- fusion-row -->
+    </main>
+    <!-- #main -->
+    <div class="fusion-footer">
+     <footer class="fusion-footer-copyright-area" id="footer">
+      <div class="fusion-row">
+       <div class="fusion-copyright-content">
+        <div class="fusion-copyright-notice">
+         <div>
+          <span class="copyright">
+           © 2017 Black Light      &amp;nbsp &amp;nbsp
+           <a href="/privacy/">
+            Privacy
+           </a>
+           &amp;nbsp &amp;nbsp &amp;nbsp
+           <a href="/terms-conditions/">
+            Terms &amp; conditions
+           </a>
+          </span>
+          <span class="uniq">
+           <a href="http://uniqmarketing.co.uk" target="_blank">
+            Website by UNIQ Marketing and Design
+           </a>
+          </span>
+         </div>
+        </div>
+        <div class="fusion-social-links-footer">
+        </div>
+       </div>
+       <!-- fusion-fusion-copyright-content -->
+      </div>
+      <!-- fusion-row -->
+     </footer>
+     <!-- #footer -->
+    </div>
+    <!-- fusion-footer -->
+   </div>
+   <!-- wrapper -->
+   <a class="fusion-one-page-text-link fusion-page-load-link">
+   </a>
+   <!-- Google Tag Manager (noscript) -->
+   <noscript>
+    <iframe height="0" src="//www.googletagmanager.com/ns.html?id=GTM-NQQ2LKS" style="display:none;visibility:hidden" width="0">
+    </iframe>
+   </noscript>
+   <!-- End Google Tag Manager (noscript) -->
+   <script type="text/javascript">
+    document.addEventListener( 'wpcf7mailsent', function( event ) {   
+ if ( '167' == event.detail.contactFormId ) {		
+ location = '/thank-you/';       
+ ga( 'send', 'event', 'Contact Form', 'submit' );   
+ }
+ }, false );
+   </script>
+   <script type="text/javascript">
+    document.addEventListener( 'wpcf7mailsent', function( event ) {   
+ if ( '226' == event.detail.contactFormId ) {		
+ location = '/thank-you-2/';       
+ ga( 'send', 'event', 'Contact Form', 'submit' );   
+ }
+ }, false );
+   </script>
+   <script type="text/javascript">
+    jQuery( document ).ready( function() {
+ 					var ajaxurl = 'http://black-light.com/wp-admin/admin-ajax.php';
+ 					if ( 0 < jQuery( '.fusion-login-nonce' ).length ) {
+ 						jQuery.get( ajaxurl, { 'action': 'fusion_login_nonce' }, function( response ) {
+ 							jQuery( '.fusion-login-nonce' ).html( response );
+ 						});
+ 					}
+ 				});
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var wpcf7 = {"apiSettings":{"root":"http:\/\/black-light.com\/wp-json\/contact-form-7\/v1","namespace":"contact-form-7\/v1"},"recaptcha":{"messages":{"empty":"Please verify that you are not a robot."}}};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/contact-form-7/includes/js/scripts.js?ver=5.0.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-includes/js/jquery/ui/core.min.js?ver=1.11.4" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-includes/js/jquery/ui/datepicker.min.js?ver=1.11.4" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    jQuery(document).ready(function(jQuery){jQuery.datepicker.setDefaults({"closeText":"Close","currentText":"Today","monthNames":["January","February","March","April","May","June","July","August","September","October","November","December"],"monthNamesShort":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"nextText":"Next","prevText":"Previous","dayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"dayNamesShort":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"dayNamesMin":["S","M","T","W","T","F","S"],"dateFormat":"MM d, yy","firstDay":1,"isRTL":false});});
+   </script>
+   <!--[if IE 9]>
+ <script type='text/javascript' src='http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-ie9.js?ver=1'></script>
+ <![endif]-->
+   <script src="http://black-light.com/wp-includes/js/comment-reply.min.js?ver=4.9.7" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.fitvids.js?ver=1.1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionVideoGeneralVars = {"status_vimeo":"1","status_yt":"1"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/fusion-video-general.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionLightboxVideoVars = {"lightbox_video_width":"1280","lightbox_video_height":"720"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.ilightbox.js?ver=2.2.3" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.mousewheel.js?ver=3.0.6" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionLightboxVars = {"status_lightbox":"1","lightbox_gallery":"1","lightbox_skin":"metro-white","lightbox_title":"1","lightbox_arrows":"1","lightbox_slideshow_speed":"5000","lightbox_autoplay":"","lightbox_opacity":"0.9","lightbox_desc":"1","lightbox_social":"1","lightbox_deeplinking":"1","lightbox_path":"vertical","lightbox_post_images":"1","lightbox_animation_speed":"Normal"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-lightbox.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/imagesLoaded.js?ver=3.1.8" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/isotope.js?ver=3.0.4" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/packery.js?ver=2.0.0" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaPortfolioVars = {"lightbox_behavior":"all","infinite_finished_msg":"<em>All items displayed.<\/em>","infinite_blog_text":"<em>Loading the next set of posts...<\/em>","content_break_point":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-core/js/min/avada-portfolio.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.infinitescroll.js?ver=2.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-core/js/min/avada-faqs.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/cssua.js?ver=2.1.28" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.waypoints.js?ver=2.0.3" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/modernizr.js?ver=3.3.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-waypoints.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionAnimationsVars = {"disable_mobile_animate_css":"0"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-animations.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/library/jquery.countTo.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.easyPieChart.js?ver=2.1.7" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.appear.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-counters-circle.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-progress.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.transition.js?ver=3.3.6" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.tab.js?ver=3.1.1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionTabVars = {"content_break_point":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-tabs.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionMapsVars = {"admin_ajax":"http:\/\/black-light.com\/wp-admin\/admin-ajax.php"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.fusion_maps.js?ver=2.2.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-google-map.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-gallery.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.modal.js?ver=3.1.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-modal.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-title.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-flip-boxes.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/library/jquery.countdown.js?ver=1.0" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-countdown.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.fade.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.requestAnimationFrame.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/fusion-parallax.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionVideoBgVars = {"status_vimeo":"1","status_yt":"1"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/fusion-video-bg.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionContainerVars = {"content_break_point":"1000","container_hundred_percent_height_mobile":"0","is_sticky_header_transparent":"0"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-container.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionEqualHeightVars = {"content_break_point":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-equal-heights.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-events.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionCountersBox = {"counter_box_speed":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-counters-box.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.cycle.js?ver=3.0.3" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionTestimonialVars = {"testimonials_speed":"4000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-testimonials.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.collapse.js?ver=3.1.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-toggles.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionBgImageVars = {"content_break_point":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-column-bg-image.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-column.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-content-boxes.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/Froogaloop.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionVideoVars = {"status_vimeo":"1"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-builder/assets/js/min/general/fusion-video.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.hoverintent.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-vertical-menu-widget.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.tooltip.js?ver=3.3.5" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/bootstrap.popover.js?ver=3.3.5" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.carouFredSel.js?ver=6.2.1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.easing.js?ver=1.3" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.flexslider.js?ver=2.2.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.hoverflow.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.placeholder.js?ver=2.0.7" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/library/jquery.touchSwipe.js?ver=1.6.6" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-alert.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionCarouselVars = {"related_posts_speed":"2500","carousel_speed":"2500"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-carousel.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionFlexSliderVars = {"status_vimeo":"1","page_smoothHeight":"false","slideshow_autoplay":"1","slideshow_speed":"7000","pagination_video_slide":"","status_yt":"1","flex_smoothHeight":"false"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-flexslider.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-popover.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-tooltip.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-sharing-box.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionBlogVars = {"infinite_blog_text":"<em>Loading the next set of posts...<\/em>","infinite_finished_msg":"<em>All items displayed.<\/em>","slideshow_autoplay":"1","slideshow_speed":"7000","pagination_video_slide":"","status_yt":"1","lightbox_behavior":"all","blog_pagination_type":"Pagination","flex_smoothHeight":"false"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-blog.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-button.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-general-global.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionIe1011Vars = {"form_bg_color":"#ffffff"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-ie1011.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaHeaderVars = {"header_position":"top","header_layout":"v6","header_sticky":"1","header_sticky_type2_layout":"menu_only","side_header_break_point":"1000","header_sticky_mobile":"0","header_sticky_tablet":"0","mobile_menu_design":"modern","sticky_header_shrinkage":"1","nav_height":"40","nav_highlight_border":"3","logo_margin_top":"10px","logo_margin_bottom":"10px","layout_mode":"wide","header_padding_top":"0px","header_padding_bottom":"0px","offset_scroll":"full"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-header.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaMenuVars = {"header_position":"Top","logo_alignment":"Left","header_sticky":"1","side_header_break_point":"1000","mobile_menu_design":"modern","dropdown_goto":"Go to...","mobile_nav_cart":"Shopping Cart","submenu_slideout":"1"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-menu.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionScrollToAnchorVars = {"content_break_point":"1000","container_hundred_percent_height_mobile":"0"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-scroll-to-anchor.js?ver=1" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var fusionTypographyVars = {"site_width":"1100px","typography_responsive":"","typography_sensitivity":"0.6","typography_factor":"1.5"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/includes/lib/assets/min/js/general/fusion-responsive-typography.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/library/bootstrap.scrollspy.js?ver=3.3.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaCommentVars = {"title_style_type":"double","title_margin_top":"0px","title_margin_bottom":"31px"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-comments.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-general-footer.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-quantity.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-scrollspy.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-select.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaSidebarsVars = {"header_position":"top","header_layout":"v6","header_sticky":"1","header_sticky_type2_layout":"menu_only","side_header_break_point":"1000","header_sticky_tablet":"0","sticky_header_shrinkage":"1","nav_height":"40","content_break_point":"1000"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-sidebars.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/library/jquery.sticky-kit.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-tabs-widget.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var toTopscreenReaderText = {"label":"Go to Top"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/library/jquery.toTop.js?ver=1.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaToTopVars = {"status_totop_mobile":"0"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-to-top.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-drop-down.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-contact-form-7.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/library/jquery.elasticslider.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaElasticSliderVars = {"tfes_autoplay":"1","tfes_animation":"sides","tfes_interval":"3000","tfes_speed":"800","tfes_width":"150"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/themes/blacklight/assets/min/js/general/avada-elastic-slider.js?ver=5.4.2" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    /* <![CDATA[ */
+ var avadaFusionSliderVars = {"side_header_break_point":"1000","slider_position":"below","header_transparency":"0","header_position":"Top","content_break_point":"1000","status_vimeo":"1"};
+ /* ]]> */
+   </script>
+   <script src="http://black-light.com/wp-content/plugins/fusion-core/js/min/avada-fusion-slider.js?ver=1" type="text/javascript">
+   </script>
+   <script src="http://black-light.com/wp-includes/js/wp-embed.min.js?ver=4.9.7" type="text/javascript">
+   </script>
+  </body>
+ </html>

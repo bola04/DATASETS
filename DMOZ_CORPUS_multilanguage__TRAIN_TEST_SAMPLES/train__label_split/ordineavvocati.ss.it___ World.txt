@@ -1,0 +1,995 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Consiglio dell'Ordine Forense di Sassari - Sito Ufficiale -
+   </title>
+   <meta content="IT" http-equiv="content-language"/>
+   <meta charset="utf-8"/>
+   <link href="css/stile.css" rel="STYLESHEET" type="text/css"/>
+   <link href="css/menuTendina.css" rel="STYLESHEET" type="text/css"/>
+   <link href="css/jquery-ui.min.css" rel="STYLESHEET" type="text/css"/>
+   <link href="css/fullcalendar.css" rel="stylesheet"/>
+   <link href="css/fullcalendar.print.css" media="print" rel="stylesheet"/>
+   <script src="js/jquery-1.11.3.min.js">
+   </script>
+   <script src="js/jquery-ui.min.js" type="text/javascript">
+   </script>
+   <script src="js/moment.min.js">
+   </script>
+   <script src="js/fullcalendar.min.js">
+   </script>
+   <script src="js/lang-all.js">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function () {
+ 				
+ 				$("#divModaleNotizie").dialog({
+ 					width: 750,
+ 					height: 400,
+ 					autoOpen: false,
+ 					modal: true,
+ 					show: "blind"
+ 				});
+ 			
+ 				$("#divModaleDettaglio").dialog({
+ 					width: 750,
+ 					height: 400,
+ 					autoOpen: false,
+ 					modal: true,
+ 					show: "blind"
+ 				});
+ 				
+ 				$("#divModaleFormazione").dialog({
+ 					width: 750,
+ 					height: 400,
+ 					autoOpen: false,
+ 					modal: true,
+ 					show: "blind"
+ 				});
+ 				
+ 				$("#divModaleEventi").dialog({
+ 					width: 925,
+ 					height: 514,
+ 					autoOpen: false,
+ 					modal: true,
+ 					show: "blind"
+ 				});
+ 				
+ 				 $('#divModaleNotizie').on('dialogclose', function(event) {
+ 					$('#navigation2').show();
+ 				});
+ 
+ 				 $('#divModaleDettaglio').on('dialogclose', function(event) {
+ 					$('#navigation2').show();
+ 				});
+ 				
+ 				$('#divModaleFormazione').on('dialogclose', function(event) {
+ 					$('#navigation2').show();
+ 				});
+ 				
+ 				$('#nav li').hover(
+ 				  function () {
+ 					  //mostra sottomenu
+ 					  $('ul', this).stop(true, true).delay(50).slideDown(100);
+ 
+ 				  }, 
+ 				  function () {
+ 					  //nascondi sottomenu
+ 					  $('ul', this).stop(true, true).slideUp(200);        
+ 				  }
+ 			  );
+ 		  });
+ 		  
+ 		 
+ 		  
+ 		  function apriCalendario(){
+ 			  //alert('aa');
+ 			
+ 			$('#divModaleEventi').dialog('open');
+ 			$('#navigation2').hide();
+ 			
+ 			$('#divModaleEventi').fullCalendar({
+ 					header: {
+ 						left: 'prev,next today',
+ 						center: 'title',
+ 						right: 'month,basicWeek,basicDay'
+ 					},
+ 					lang: 'it',
+ 					editable: true,
+ 					eventLimit: true, // allow "more" link when too many events
+ 					slotMinutes: 30,
+ 					minTime: 7,
+ 					maxTime: 21,
+ 					events: [
+ 						{
+ 							title: 'test',
+ 							datiAggiuntivi: '',
+ 							start: '20541231'
+ 						}
+ 						     
+ 					],
+ 					eventMouseover: function(calEvent, domEvent) {
+ 										var layer = "<div id='events-layer'  style='background-color:#E2EFF8; color:#000; position:relative; width:250px; height:100%; top:-1px; text-align:left; z-index:-1'>"+ calEvent.datiAggiuntivi +"</div>";
+ 
+ 						valZindex=$(this).css("z-index");
+ 						$(this).css("z-index",(valZindex + 1)*1);
+ 						//alert(valZindex);
+ 						$(this).append(layer);
+ 					},
+ 					 eventMouseout: function(calEvent, domEvent) {
+ 						//alert(valZindex);
+ 						$(this).css("z-index",valZindex);
+ 						$('#events-layer').remove();
+ 					},
+ 					eventClick: function(event) {
+ 						if (event.url) {
+ 							window.open(event.url);
+ 							return false;
+ 						}
+ 					}
+ 				});
+ 				
+ 				 $('#divModaleEventi').on('dialogclose', function(event) {
+ 					$('#navigation2').show();
+ 				});
+ 				 $('#divModaleFormazione').on('dialogclose', function(event) {
+ 					$('#navigation2').show();
+ 				});
+ 			
+ 		  }
+ 		  
+ 		  function apriEvidenza(id){
+ 
+ 			$('#divModaleNotizie').html('');
+ 			$('#navigation2').hide();
+ 				
+ 			$('#divModaleNotizie').dialog('open');
+ 		
+ 			$.get("http://www.ordineavvocati.ss.it//schedaNotizie.php?id=" + id ,
+ 				function(dati_inviati) {
+ 					$("#divModaleNotizie").html(dati_inviati);
+ 				}
+ 			);
+ 
+ 		  }
+ 
+ 		  function apriDettaglio(id,tabella){
+ 
+ 			$('#divModaleDettaglio').html('');
+ 			$('#navigation2').hide();
+ 				
+ 			$('#divModaleDettaglio').dialog('open');
+ 		
+ 			$.get("http://www.ordineavvocati.ss.it//schedaDettaglio.php?id=" + id +"&tabella=" + tabella,
+ 				function(dati_inviati) {
+ 					$("#divModaleDettaglio").html(dati_inviati);
+ 				}
+ 			);
+ 
+ 		  }
+ 
+ 		  function apriAttivitaConsiglio(){
+ 			  if($('#attConsiglio').is(":visible")){
+ 				  $('#attConsiglio').hide();
+ 			  }else{
+ 				  $('#attConsiglio').show();
+ 			  }
+ 				
+ 		  }
+ 		  
+ 		  function apriFormazione(id){
+ 			  $('#navigation2').hide();
+ 			$('#divModaleFormazione').html('');
+ 				$('#divModaleFormazione').dialog('open');
+ 		
+ 				$.get("http://www.ordineavvocati.ss.it//schedaForm.php?id=" + id ,
+ 					function(dati_inviati) {
+ 						$("#divModaleFormazione").html(dati_inviati);
+ 					}
+ 				);
+ 		}
+   </script>
+  </head>
+  <body>
+   <div id="divModaleEventi" style="max-width: 900px; margin: 0 auto;">
+   </div>
+   <div id="divModaleFormazione" style="max-width: 900px; margin: 0 auto;">
+   </div>
+   <div id="divModaleNotizie">
+   </div>
+   <div id="divModaleDettaglio">
+   </div>
+   <div id="container">
+    <div id="header" style="background:url('img/header.png') top center no-repeat;">
+    </div>
+    <!-- DIV header -->
+    <div id="navigation2">
+     <ul id="nav">
+      <li class="first">
+       <a href="http://www.ordineavvocati.ss.it/index.php">
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="#">
+        Cittadino
+       </a>
+       <ul>
+        <li>
+         <a href="http://pubblico.sferabit.com/servizi/alboonline/index.php?id=1128" target="_blank">
+          Ricerca Avvocato
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/patrociniomod.php">
+          Gratuito Patrocinio
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/docs/sportelloDomanda.pdf" onclick="window.open(this.href);return false">
+          Sportello del cittadino
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/segreteria.php">
+          Orari Segreteria
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/uffici.php">
+          Recapiti telefonici
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/link.php">
+          Link utili
+         </a>
+        </li>
+        <li class="last">
+         <a href="mailto:segreteria@ordineavvocati.ss.it">
+          Contatti
+         </a>
+        </li>
+       </ul>
+       <div class="clear">
+       </div>
+      </li>
+      <li>
+       <a href="#">
+        Avvocato
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/cassazionistimod.php">
+          Cassazionisti
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/avvocatimod.php">
+          Modulistica
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/note.php">
+          Note d'iscrizione a ruolo
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/lavoriGruppi.php">
+          Ordinanze di vendita
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/opinamentoParcelleMod.php">
+          Opinamento Parcelle
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/formazione.php">
+          Formazione Permanente
+         </a>
+        </li>
+        <li class="last">
+         <a href="http://www.ordineavvocati.ss.it/convenzioni.php">
+          Convenzioni
+         </a>
+        </li>
+        <li class="last">
+         <a href="http://www.ordineavvocati.ss.it/convenzioniAss.php">
+          Proposte Assicurative
+         </a>
+        </li>
+       </ul>
+       <div class="clear">
+       </div>
+      </li>
+      <li class="last">
+       <a href="#">
+        Praticante
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/modpraticanti.php">
+          Modulistica
+         </a>
+        </li>
+        <li class="last">
+         <a href="praticantimod.php">
+          Normativa e regolamenti
+         </a>
+        </li>
+        <li class="last">
+         <a href="praticanticonv.php">
+          Convenzioni
+         </a>
+        </li>
+        <li class="last">
+         <a href="http://www.ordineavvocati.ss.it/cercaPraticanti.php">
+          Avvocati che richiedono praticanti
+         </a>
+        </li>
+       </ul>
+       <div class="clear">
+       </div>
+      </li>
+      <li class="last">
+       <a href="#">
+        Eventi
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/congressi.php">
+          Congressi
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/allestimento.php">
+          Convegni e master giuridici
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/formazioneEventi.php">
+          Eventi Formativi
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/formazioneEventi.php?archivio=1">
+          Archivio Eventi
+         </a>
+        </li>
+        <li class="last">
+         <a href="allestimento.php">
+          Iniziative
+         </a>
+        </li>
+       </ul>
+       <div class="clear">
+       </div>
+      </li>
+      <li class="last">
+       <a href="#">
+        Area Stampa
+       </a>
+       <ul>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/comunicatiStampa.php">
+          Comunicati Stampa
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/rassegnaStampa.php">
+          Rassegna Stampa
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/gallery.php">
+          Fotografie
+         </a>
+        </li>
+        <li>
+         <a href="http://www.ordineavvocati.ss.it/newsletter.php">
+          Newsletter
+         </a>
+        </li>
+       </ul>
+       <div class="clear">
+       </div>
+      </li>
+     </ul>
+    </div>
+    <!-- navigation2 -->
+    <br/>
+    <br/>
+    <div style="border-bottom: 10px solid #d1ab3a;">
+    </div>
+    <div id="navigation">
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Consiglio
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/consiglio.php">
+       &gt; Composizione Attuale
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/consigliostorico.php">
+       &gt; Composizione Storica
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/commissioni.php">
+       &gt; Composizione Commissioni
+      </a>
+      <br/>
+      <a href="#" onclick="apriAttivitaConsiglio()">
+       &gt; Attivita del consiglio
+      </a>
+      <br/>
+      <div id="attConsiglio" style="margin-left: 15px;display: none;">
+       <a href="http://www.ordineavvocati.ss.it/convocazioni.php">
+        &gt; Oggetto convocazioni
+       </a>
+       <br/>
+       <a href="http://www.ordineavvocati.ss.it/proposte.php">
+        &gt; Proposte al consiglio
+       </a>
+       <br/>
+       <a href="http://www.ordineavvocati.ss.it/deliberazioni.php">
+        &gt; Deliberazioni
+       </a>
+      </div>
+     </div>
+     <!-- Consiglio-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Gruppi di lavoro e incarichi
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=3">
+       &gt; Coordinatore Organismo di Mediazione
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=1">
+       &gt; Gruppo di lavoro PCT
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=2">
+       &gt; Gruppo di lavoro Processo Esecutivo
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=5">
+       &gt; Consigliere con incarico di supervisione del sito
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=6">
+       &gt; Consigliere con incarico di supervisione biblioteca
+      </a>
+      <br/>
+     </div>
+     <!-- Consiglio-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Leggi e regolamenti
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/docs/leggeProfessionale247_2012.pdf" onclick="window.open(this.href);return false">
+       &gt;Legge 31 Dic. 2012 n.247 (nuova discriplina della professione forense)
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/deontologico.php">
+       &gt; Codice Deontologico
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/Regolamento_CNF_2-2014_ProcedimentoDisciplinare_modifiche_CNF_24-3-2017.pdf" target="_blank">
+       &gt; REGOLAMENTO 21 febbraio 2014, n. 2 -CNF con modifiche del 24/03/2017
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/8200CNF-R-2014-5REG.pdf" target="_blank">
+       &gt; REGOLAMENTO 16 luglio 2014, n. 5 - CNF
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/regolamento_pari opportunita.pdf" target="_blank">
+       &gt; Regolamento Pari Opportunità
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/normeInApprovazione.php">
+       &gt; Norme in corso di approvazione
+      </a>
+      <br/>
+     </div>
+     <!-- Leggi e regolamenti-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Albo
+      </div>
+      <a href="http://pubblico.sferabit.com/servizi/alboonline/index.php?id=1128" target="_blank">
+       &gt; Albo Avvocati
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/delibereAlbo.php">
+       &gt; Delibere/Massime
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/avvocatimod.php">
+       &gt; Modulistica e vademecum
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/praticantimod.php">
+       &gt; Normativa e regolamenti
+      </a>
+      <br/>
+     </div>
+     <!-- Albo-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Opinamento Parcelle
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/opinamentoParcelleMod.php">
+       &gt; Richiesta parere di congruita
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/parcelleDelibere.php">
+       &gt; Delibere
+      </a>
+      <br/>
+     </div>
+     <!-- Parcelle-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Formazione Permanente
+      </div>
+      <a href="http://albosfera.sferabit.com/coasassari" target="_blank">
+       &gt; Accesso a Sfera
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/delibereFormazione.php">
+       &gt; Delibere/Massime
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/formazione.php">
+       &gt; Regolamento e Circolari
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/modulisticaFormazione.php">
+       &gt; Modulistica e vademecum
+      </a>
+      <br/>
+      <a href="#" onclick="apriCalendario()">
+       &gt; Calendario Eventi
+      </a>
+      <br/>
+     </div>
+     <!-- Formazione-->
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Amministrazione Trasparente
+      </div>
+      <b>
+       Sezione in fase di aggiornamento
+      </b>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/anticorruzionePianoTriennale.pdf" target="_blank">
+       &gt; Piano Triennale Integrato
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneDelibera20161124.pdf" target="_blank">
+       &gt; Delibera C.d.O  del 24 Novembre 2016
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneNominaResponsabileAccessoCivico.pdf" target="_blank">
+       &gt; Nomina responsabile acesso civico
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneSeduta20161222.pdf" target="_blank">
+       &gt; Estratto delibera del 22 Dicembre 2016
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneAttestazione.pdf" target="_blank">
+       &gt; Attestazione Responsabile della prevenzione della corruzione
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneContoconsuntivo2017Preventivo2018.pdf" target="_blank">
+       &gt; Bilancio consuntivo 2017 - Bilancio preventivo 2018
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneRelazioneTesoriereBilancio17preventivo18.pdf" target="_blank">
+       &gt; Relazione tesoriere Rendiconto 2017 - Preventivo 2018
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/anticorruzioneRelazioneRevisoreBilancio17preventivo18.pdf" target="_blank">
+       &gt; Relazione revisore Rendiconto 2017 - Preventivo 2018
+      </a>
+      <br/>
+     </div>
+     <!-- amministrazione trasparente-->
+    </div>
+    <!-- div navigation -->
+    <div align="center" id="extra">
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Ricerca nel sito
+      </div>
+      <form action="http://www.ordineavvocati.ss.it/ricerca.php" id="formRicerca" method="get" name="formRicerca">
+       <input id="q" maxlength="30" name="q" size="20" type="text"/>
+       <input id="pulRicerca" name="ricerca" type="submit" value="Ricerca"/>
+      </form>
+     </div>
+     <!-- Mediazione-->
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Bacheca
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/cercaPraticanti.php">
+       &gt; Ricerca Praticanti
+      </a>
+      <br/>
+     </div>
+     <!-- Bacheca-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Mediazione
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/mediazioneSegreteria.php">
+       &gt; Orari segreteria
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/PDGOrganismo.pdf" onclick="window.open(this.href);return false">
+       &gt; P.D.G. di Iscrizione al
+ 						Registro O.d.M.
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/mediazioneRegolamento.php">
+       &gt; Regolamento e allegati
+      </a>
+      <b style="color: #c00;">
+       NEW
+      </b>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/elencoMediatoriOrganismo.pdf" onclick="window.open(this.href);return false">
+       &gt; Elenco Mediatori
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/mediazioneNormativa.php">
+       &gt; Normativa
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/mediazioneModulistica.php">
+       &gt; Modulistica e vademecum
+      </a>
+      <b style="color: #c00;">
+       NEW
+      </b>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/mediazioneDirettive.php">
+       &gt; Delibere e Direttive
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/mediatoreCome.php">
+       &gt; Diventare mediatore
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=3">
+       &gt; Coordinatore Organismo di Mediazione
+      </a>
+      <br/>
+     </div>
+     <!-- Mediazione-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Processo Civile Telematico
+      </div>
+      <a href="http://regionesardegna.accessogiustizia.it" onclick="window.open(this.href);return false">
+       &gt; Punti di accesso
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/pctDecreti.php">
+       &gt; Normativa
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/allestimento.php">
+       &gt; Modulistica e vademecum
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=1">
+       &gt; Gruppo di lavoro sul processo civile telematico
+      </a>
+      <br/>
+     </div>
+     <!-- PCT-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Processo Esecutivo
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/gruppiLavoro.php?id=2">
+       &gt; Gruppo di lavoro sul Processo Esecutivo
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/lavoriGruppi.php">
+       &gt; Ordinanze di vendita
+      </a>
+      <br/>
+     </div>
+     <!-- PCT-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Sportello al cittadino
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/docs/sportelloRegolamentoCOA.pdf" onclick="window.open(this.href);return false">
+       &gt; Regolamento COA
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/sportelloRegolamentoCNF.pdf" onclick="window.open(this.href);return false">
+       &gt; Regolamento CNF
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/sportelloModalitaDiAccesso.pdf" onclick="window.open(this.href);return false">
+       &gt; Modalità di accesso
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/docs/sportelloDomanda.pdf" onclick="window.open(this.href);return false">
+       &gt; Domanda
+      </a>
+      <br/>
+     </div>
+     <!-- Sportello al cittadino-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Patrocinio a spese dello Stato
+      </div>
+      <a href="http://www.ordineavvocati.ss.it/patrocinioSportello.php" target="_blank">
+       &gt; Sportello
+      </a>
+      <br/>
+      <a href="https://sfera.sferabit.com/servizi/alboonline/index.php?id=1128" target="_blank">
+       &gt; Ricerca avvocato abilitato
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/deliberePatrocinio.php">
+       &gt; Delibere/Massime
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/patrociniomod.php">
+       &gt; Modulistica e vademecum
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/patrocinionormativa.php">
+       &gt; Normativa
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it/regolamentopat.php">
+       &gt; Regolamento
+      </a>
+      <br/>
+     </div>
+     <!-- Parcelle-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Comitato Pari Opportunità
+      </div>
+      <a href="http://www.ordineavvocati.ss.it//docs/regolamento_pari opportunita.pdf" target="_blank">
+       &gt; Regolamento Pari Opportunità
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/regolamento_elezioni_componenti_pari opportunita_modificata_nella_seduta_del_28_gennaio_2016.pdf" target="_blank">
+       &gt; Regolamento elezioni Comitato
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/estratto_verbale_21_gennaio_2016.pdf" target="_blank">
+       &gt; Estratto verbale 21.01.2016
+      </a>
+      <br/>
+      <a href="http://www.ordineavvocati.ss.it//docs/pariOpp04_03_2016.pdf" target="_blank">
+       &gt; Verbale Commissione Elettorale 04.03.2016
+      </a>
+      <br/>
+     </div>
+     <!-- Parcelle-->
+     <br/>
+     <div class="menu">
+      <br/>
+      <div align="center" class="menutitle">
+       Enti e Associazioni Forensi
+      </div>
+      &gt; Unione delle Curie
+      <br/>
+      &gt; Unione delle Camere Penali
+      <br/>
+      &gt; Organismo Unitario dell'Avvocatura Italiana
+      <br/>
+     </div>
+     <!-- Associazioni Foresni-->
+    </div>
+    <!-- DIV extra -->
+    <div id="content">
+     <script>
+      function cambiaCombinazione(c1,c2){
+ 	$('.menutitle').css("background-color","#" + c1);
+ 	$('.menu, .titoliCentrali, .boxCentrali').css("background-color","#" + c2);
+ }
+     </script>
+     <div style="width: 100%;text-align: center;">
+      <img alt="" src="img/immagine3.jpg" title=""/>
+      <br/>
+      <div class="titoliCentrali">
+       <img src="evidenza.png" style="border: 0px; width: 590px"/>
+      </div>
+      <div class="boxCentrali" style="font-size: 11px;font-weight: bold;width: 590px;">
+       <table>
+        <tr>
+         <td style="background-color: #FCEAC2">
+          <a href="#" onclick="apriEvidenza('58');">
+           &gt;
+ 										Informativa Privacy
+          </a>
+          <br/>
+          <br/>
+         </td>
+        </tr>
+        <tr>
+         <td style="background-color: #F2F2F2">
+          <a href="#" onclick="apriEvidenza('57');">
+           &gt;
+ 										Esito Elezione Delegati XXXIV Congresso Nazionale Forense
+          </a>
+          <br/>
+          <br/>
+         </td>
+        </tr>
+        <tr>
+         <td style="background-color: #FCEAC2">
+          <a href="#" onclick="apriEvidenza('53');">
+           &gt;
+ 										Formazione - Modulo di richiesta per l'accreditamento di eventi formativi
+          </a>
+          <br/>
+          <br/>
+         </td>
+        </tr>
+        <tr>
+         <td style="background-color: #F2F2F2">
+          <a href="#" onclick="apriEvidenza('37');">
+           &gt;
+ 										Decreto 25/02/2016 n. 47 - Regolamento recante disposizioni per l'accertamento dell'esercizio della professione forense.
+          </a>
+          <br/>
+          <br/>
+         </td>
+        </tr>
+        <tr>
+         <td style="background-color: #FCEAC2">
+          <a href="#" onclick="apriEvidenza('27');">
+           &gt;
+ 										Tribunale Penale - Adozione del Protocollo per la liquidazione degli onorari a favore dei difensori delle parti ammesse al patrocinio a spese dello Stato
+          </a>
+          <br/>
+          <br/>
+         </td>
+        </tr>
+       </table>
+      </div>
+      <br/>
+      <div class="titoliCentrali" style="width: 590px;">
+       Formazione -
+       <a href="#" onclick="apriCalendario()">
+        Visualizza Calendario completo
+       </a>
+      </div>
+      <div class="boxCentrali" style="width: 590px;">
+      </div>
+      <br/>
+      <br/>
+      <table>
+       <tr>
+        <td>
+         <a href="http://www.consiglionazionaleforense.it" target="_blank">
+          <img src="img/cnf-logo.gif"/>
+         </a>
+        </td>
+        <td>
+         <a href="http://www.tribunale.sassari.it" target="_blank">
+          <img src="img/tribunaleLogo.gif"/>
+         </a>
+        </td>
+       </tr>
+       <tr>
+        <td colspan="2">
+         <br/>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <a href="https://www.giustizia.it" target="_blank">
+          <img src="img/logo_giustizia.jpg"/>
+         </a>
+        </td>
+        <td>
+         <a href="http://www.cassaforense.it/" target="_blank">
+          <img src="img/logo_cassaforense.png"/>
+         </a>
+        </td>
+       </tr>
+       <tr>
+        <td colspan="2">
+         <br/>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <a href="http://www.oua.it/" target="_blank">
+          <img src="img/logo_OUA.png"/>
+         </a>
+        </td>
+        <td>
+         <a href="https://www.giustizia-amministrativa.it" target="_blank">
+          <img src="img/tarLogo.jpg"/>
+         </a>
+        </td>
+       </tr>
+      </table>
+     </div>
+    </div>
+    <!-- content -->
+    <div id="footer">
+     <br/>
+     <br/>
+     <table style="width: 100%">
+      <tr>
+       <td style="text-align: left;vertical-align: top;padding-left: 20px;">
+        <p style="font-weight: bold; color: #0071BC;margin-bottom: 1px;">
+         CONSIGLIO DELL'ORDINE DEGLI AVVOCATI DI SASSARI
+        </p>
+        <p style="color: #29abe2;margin-top:0px;">
+         Via Roma 49 presso Palazzo di Giustizia - 07100 Sassari (SS)
+         <br/>
+         Tel. 079237713 - Fax. 0792010079
+         <br/>
+         Email: segreteria@ordineavvocati.ss.it - Pec: consiglioordinesassari@pecordineavvocati.ss.it
+         <br/>
+         Codice Fiscale: 80008960900 Codice Univoco Ufficio: UFEB04
+        </p>
+       </td>
+       <td style="text-align: left; border-left: 1px solid #00c;vertical-align: top; padding-left: 20px;">
+        <p style="font-weight: bold; color: #0071BC;margin-bottom: 1px;">
+         ORGANISMO DI MEDIAZIONE DEL CONSIGLIO DELL'ORDINE DEGLI AVVOCATI DI SASSARI
+        </p>
+        <p style="color: #29abe2;margin-top:0px;">
+         Via Roma 49 presso Palazzo di Giustizia - 07100 Sassari (SS)
+         <br/>
+         Tel. 079239132 - Fax. 079239132
+         <br/>
+         Email: organismodimediazione@ordineavvocati.ss.it - Pec: organismomediazione@pecordineavvocati.ss.it
+         <br/>
+         Codice Fiscale: 02473850903 - Codice Univoco Ufficio: FJYOTH
+        </p>
+       </td>
+      </tr>
+     </table>
+    </div>
+    <!-- footer -->
+   </div>
+   <!--  container -->
+  </body>
+ </html>

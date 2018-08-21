@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="建築設備についての技術者支援サイト。空調設備、衛生設備、電気設備、管工事・電気工業界の情報やニュース、求人・転職情報、新刊の紹介、会議室でのQ&amp;A、セミナー・ イベント・講習会など様々な情報を発信しています。" name="description"/>
+   <meta content="空調,自動制御,CAD,配管,ダクト,ESCO,上水,排水,温水,コミッショニング,蓄熱,空調機,エアハン,ファンコイル,積算,暖房,冷房,水処理,換気" name="keywords"/>
+   <meta content="no-cache" http-equiv="Pragma"/>
+   <meta content="no-cache" http-equiv="cache-control"/>
+   <meta content="0" http-equiv="expires"/>
+   <!-- ここから FB:Insight解析コード -->
+   <meta content="201086699991597" property="fb:page_id"/>
+   <!-- ここまで FB:Insight解析コード -->
+   <!-- ここから FB:Like Button  Open Graph Tags -->
+   <meta content="建築設備フォーラム − 空調・給排水衛生・電気設備の情報サイト" property="og:title"/>
+   <meta content="website" property="og:type"/>
+   <meta content="https://www.setsubi-forum.jp/" property="og:url"/>
+   <meta content="https://www.setsubi-forum.jp/image/icon/FB_Thumbnail_a.gif" property="og:image"/>
+   <meta content="建築設備フォーラム" property="og:site_name"/>
+   <meta content="100003505166343" property="fb:admins"/>
+   <meta content="空調・衛生設備の技術者支援　管工事の技術者「設備屋さん」の為の情報サイトです" property="og:description"/>
+   <!-- ここまで FB:Like Button  Open Graph Tags -->
+   <title>
+    建築設備フォーラム
+   </title>
+   <link href="css/base03.css" rel="stylesheet" type="text/css"/>
+   <!-- ここから Google Analytics ユニバーサル アナリティクス トラッキング コード -->
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ 
+   ga('create', 'UA-7086905-3', 'auto');
+   ga('send', 'pageview');
+   </script>
+   <!-- ここまで Google Analytics ユニバーサル アナリティクス トラッキング コード -->
+   <!-- ここから Google Analytics アウトバウンド リンク アナリティクス トラッキング コード -->
+   <script>
+    var trackOutboundLink = function(url) {
+    ga('send', 'event', 'outbound', 'click', url, {
+      'transport': 'beacon',
+      'hitCallback': function(){document.location = url;}
+    });
+ }
+   </script>
+   <!-- ここまで  Google Analytics アウトバウンド リンク アナリティクス トラッキング コード -->
+   <!-- ここから jquery取得 -->
+   <script src="./jquery-2.2.2.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    //会議室 feed
+ $(function() {
+     var setURL = './cgi-bin/c-board/c-board.cgi?id=design;cmd=r2s;mode=1'; //feedのURL
+     var setNUM = 7; //表示件数
+     var setID = 'feed1'; //表示させる箇所のID
+     xmlLoad(setURL,setID,setNUM);
+ });
+ //雑談 feed
+ $(function() {
+     var setURL = './cgi-bin/c-board/c-board.cgi?id=all;cmd=r2s;mode=1'; //feedのURL
+     var setNUM = 5; //表示件数
+     var setID = 'feed2'; //表示させる箇所のID
+     xmlLoad(setURL,setID,setNUM);
+ });
+ //仕事します feed
+ $(function() {
+     var setURL = './cgi-bin/job/c-board.cgi?;cmd=r2s;mode=0'; //feedのURL
+     var setNUM = 5; //表示件数
+     var setID = 'feed3'; //表示させる箇所のID
+     xmlLoad(setURL,setID,setNUM);
+ });
+ function xmlLoad(_xmlUrl,_id,_num){
+     DD = new Date();HH = DD.getHours();MM = DD.getMinutes();SS = DD.getSeconds();
+     var xmlUrl = _xmlUrl+"?"+HH+MM+SS;  //キャッシュ対策のクエリを付与
+     var main = this;
+     $.ajax({
+     url: xmlUrl,
+     type: 'GET',
+     dataType: 'xml',
+     timeout: 10000,
+     error: function(){
+         _msg = 'error';
+         xmlOpen(_msg,_id,_num);
+     },
+     success: function(_xml){
+         main.xml = _xml;
+         _msg = 'load';
+         xmlOpen(_msg,_id,_num);
+     }
+     });
+     return;
+ }
+ var xmlOpen = function(_msg,_id,_num){
+     var main = this;
+     var html = '';
+     var ID = _id;
+     var Num = _num;
+     if(_msg == 'load'){
+         xml = main.xml;
+         var channelData = $(xml).find('channel')[0];
+         $(channelData).find('item').each(function(i){
+             if(i < Num){
+             postTitle = $(this).find('title').text();//記事タイトル取得
+             postLink = $(this).find('link').text();//記事リンク取得
+              
+             //日付を取得し年月日を整形
+             publishedDate = $(this).find('pubDate').text();
+             var pubDD = new Date(publishedDate);
+             yy = pubDD.getYear();if (yy < 2000) { yy += 1900; }
+             mm = pubDD.getMonth() + 1;dd = pubDD.getDate();
+ 			if (mm < 10) {mm = "0" + mm;}//（この行）月を２ケタ表示
+ 			if (dd < 10) {dd = "0" + dd;}//（この行）日にちを２ケタ表示
+             var postDate = mm +'/'+ dd ;
+              
+             //表示する部分を整形
+             html += '<li>' + postDate + '　<a href="' + postLink + '">' + postTitle +'</a></li>';
+             }
+         });     
+     }else{
+         html += '<li>通信エラー</li>';
+     }
+     $("#"+ID).html(html);
+ }
+   </script>
+   <!-- ここまで jquery取得 -->
+   <!-- ここから alternate属性 -->
+   <link href="https://www.setsubi-forum.jp/sp/" rel="alternate"/>
+   <!-- ここまで alternate属性 -->
+  </head>
+  <body>
+   <div id="wrapper">
+    <div id="google_text">
+     サイト内を検索する →
+    </div>
+    <div id="google_cse_w">
+     <br/>
+     <!-- ここから Googleカスタム検索 -->
+     <script>
+      (function() {
+     var cx = '015483584503629092196:spov-4oqh9y';
+     var gcse = document.createElement('script');
+     gcse.type = 'text/javascript';
+     gcse.async = true;
+     gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+     var s = document.getElementsByTagName('script')[0];
+     s.parentNode.insertBefore(gcse, s);
+   })();
+     </script>
+     <gcse:searchbox-only>
+     </gcse:searchbox-only>
+     <!-- ここまで Googleカスタム検索 -->
+    </div>
+    <div id="melmaga_text">
+     当サイトは、メールマガジン読者を対象に情報を提供
+     <br/>
+     しています。未登録の方はまず登録をお願いします→
+    </div>
+    <div id="melmaga_b">
+     <a href="melmaga.html">
+      <img alt="メルマガ登録" height="40" src="image/mail3_4.gif" title="メルマガ登録" width="160"/>
+     </a>
+    </div>
+    <div id="obi_narrow">
+    </div>
+    <div id="header">
+     <div id="header_title">
+      <br/>
+      <br/>
+      <a href="index.html">
+       <img alt="建築設備フォーラム" height="96" src="image/toplogo2.gif" title="建築設備フォーラム" width="183"/>
+      </a>
+      <br/>
+     </div>
+     <div id="header_pr_l">
+      <!--▼ 広告 ▼-->
+      <ul class="pr">
+       <li class="title">
+        <a class="sponsor" href="https://goo.gl/isM7as" onclick="trackOutboundLink('https://goo.gl/isM7as'); return false;">
+         レントゲン・内視鏡・レーダー探査
+        </a>
+       </li>
+       <li>
+        <a class="sponsorcomment" href="https://goo.gl/isM7as" onclick="trackOutboundLink('https://goo.gl/isM7as'); return false;">
+         非破壊検査で工事前に安心とトラブル回避！
+         <br/>
+         最新機器所有のアクアトリップへご依頼を！
+        </a>
+       </li>
+       <li class="title">
+        <a class="sponsor" href="https://goo.gl/pxIkm" onclick="trackOutboundLink('https://goo.gl/pxIkm'); return false;">
+         省エネルギー計算なら三誠！
+        </a>
+       </li>
+       <li>
+        <a class="sponsorcomment" href="https://goo.gl/pxIkm" onclick="trackOutboundLink('https://goo.gl/pxIkm'); return false;">
+         低価格・短納期をお約束します！
+         <br/>
+         経験豊富なスタッフが、確実な仕事をします
+        </a>
+       </li>
+      </ul>
+      <!--▲ 広告 ▲-->
+     </div>
+     <div id="header_pr_r">
+      <!--▼ 広告 ▼-->
+      <ul class="pr">
+       <li class="title">
+        <a class="sponsor" href="https://plant.ten-navi.com/job_0404/" onclick="trackOutboundLink('https://plant.ten-navi.com/job_0404/'); return false;">
+         管工事【施工管理技士】の求人一覧
+        </a>
+       </li>
+       <li>
+        <a class="sponsorcomment" href="https://plant.ten-navi.com/job_0404/" onclick="trackOutboundLink('https://plant.ten-navi.com/job_0404/'); return false;">
+         安定企業・勤務地・年収…
+         <br/>
+         全国の設備関連求人を網羅。
+        </a>
+       </li>
+       <li class="title">
+        <a class="sponsor" href="https://goo.gl/ewyl0" onclick="trackOutboundLink('https://goo.gl/ewyl0'); return false;">
+         【配管凍結Ｗ施工】で低コストを実現！
+        </a>
+       </li>
+       <li>
+        <a class="sponsorcomment" href="https://goo.gl/ewyl0" onclick="trackOutboundLink('https://goo.gl/ewyl0'); return false;">
+         凍結ＩＳＳ工法はあらゆる問題を解決します
+         <br/>
+         凍結から配管工事までイズミにおまかせ！
+        </a>
+       </li>
+      </ul>
+      <!--▲ 広告 ▲-->
+     </div>
+     <div id="header_newbooks">
+      <p class="newbooks_link">
+       <a href="books_shinkan.html">
+        今週の新刊
+       </a>
+      </p>
+      <p class="newbooks_img">
+       <a href="books_shinkan.html">
+        <img alt="環境共生世代の建築設備の自動制御入門 (新改訂版)" class="books" height="97" src="image/books/4819030167.jpg" title="環境共生世代の建築設備の自動制御入門 (新改訂版)" width="68"/>
+       </a>
+       <a href="books_shinkan.html">
+        <img alt="拾って覚える! 実践 電気工事積算入門" class="books" height="97" src="image/books/4274506975.jpg" title="拾って覚える! 実践 電気工事積算入門" width="68"/>
+       </a>
+      </p>
+     </div>
+    </div>
+    <div class="container">
+     <div class="main">
+      <!--▼ トピックス ▼-->
+      <ul class="topicsindex">
+       <li class="index">
+        <img alt="トピックス" height="35" src="image/base/btn_topics_title406D99.gif" title="トピックス" width="140"/>
+       </li>
+       <li id="btn_ichiran">
+        <a href="nx/topics/topics1807.html">
+         <img alt="トピックス一覧" height="35" src="image/base/btn_topics_ichiran.gif" title="トピックス一覧" width="100"/>
+        </a>
+       </li>
+      </ul>
+      <ul class="topics">
+       <li>
+        <span>
+         7/27
+        </span>
+        安藤ハザマ：
+        <a href="topics/1807/180727_1.html">
+         弊社の工事現場での火災発生について
+        </a>
+       </li>
+       <li>
+        <span>
+         (PR)
+        </span>
+        三菱電機：
+        <a href="topics/mrslim/index.html">
+         業務用パッケージエアコン「Mr.Slim(ミスタースリム)」40年のあゆみ
+        </a>
+       </li>
+       <li>
+        <span>
+         7/25
+        </span>
+        ダイキン工業：
+        <a href="topics/1807/180725_1.html">
+         執務空間の知的生産性向上に効果的な温度刺激の与え方を実証
+        </a>
+       </li>
+       <li>
+        <span>
+         7/23
+        </span>
+        竹中工務店：
+        <a href="topics/1807/180723_1.html">
+         快適性と汎用性をそなえた「普及型ZEBオフィス」が完成
+        </a>
+       </li>
+       <li>
+        <span>
+         7/20
+        </span>
+        日建設計：
+        <a href="topics/1807/180720_2.html">
+         都市エネルギー消費ゼロのクールスポット「COOL TREE」を初設置
+        </a>
+       </li>
+       <li>
+        <span>
+         7/20
+        </span>
+        国交省：
+        <a href="topics/1807/180720_1.html">
+         １級電気工事施工管理技術検定「学科」合格発表、女性比率が過去最高
+        </a>
+       </li>
+       <li>
+        <span>
+         7/19
+        </span>
+        イズミシステム設計：
+        <a href="topics/1807/180719_1.html">
+         シームレス個別空調設計ソフト[SeACD]体験版をリリース
+        </a>
+       </li>
+       <li>
+        <span>
+         7/18
+        </span>
+        ラックランド：
+        <a href="topics/1807/180718_1.html">
+         業務用設備レンタルサービスを拡大、キュービクルとGHPを追加
+        </a>
+       </li>
+       <li>
+        <span>
+         7/13
+        </span>
+        北海道ガス：
+        <a href="topics/1807/180713_1.html">
+         寒冷地の省エネシステムを北海道初導入
+        </a>
+       </li>
+       <li>
+        <span>
+         7/9
+        </span>
+        NTTファシリティ：
+        <a href="topics/1807/180709_3.html">
+         ビルシステム向けサイバーセキュリティソリューションを販売
+        </a>
+       </li>
+       <li>
+        <span>
+         7/9
+        </span>
+        NEDO：
+        <a href="topics/1807/180709_2.html">
+         冷凍空調機器用次世代冷媒の安全性・リスク評価手法の確立に着手
+        </a>
+       </li>
+       <li>
+        <span>
+         7/9
+        </span>
+        国土交通省：
+        <a href="topics/1807/180709_1.html">
+         ２級管工事施工管理技術検定「学科(前期)」合格発表、受検者は過去最多
+        </a>
+       </li>
+       <li>
+        <span>
+         7/6
+        </span>
+        東京都水道局：
+        <a href="topics/1807/180706_1.html">
+         「水道工事事故防止アクションプラン２０１８」を策定しました
+        </a>
+       </li>
+       <li>
+        <span>
+         7/4
+        </span>
+        高砂熱学工業：
+        <a href="topics/1807/180704_2.html">
+         国連グローバル・コンパクトへの参加について
+        </a>
+       </li>
+       <li>
+        <span>
+         7/4
+        </span>
+        富士通：
+        <a href="topics/1807/180704_1.html">
+         IoTスマートメーター「特定データ収集サービス」を提供開始
+        </a>
+       </li>
+       <li>
+        <span>
+         7/2
+        </span>
+        国交省：
+        <a href="topics/1807/180702_2.html">
+         建設工事における適正な工期設定等のためのガイドラインについて(改訂)
+        </a>
+       </li>
+       <li>
+        <span>
+         7/2
+        </span>
+        三菱重工サーマルシステムズ：
+        <a href="topics/1807/180702_1.html">
+         パッケージエアコン室内機をモデルチェンジ
+        </a>
+       </li>
+       <li>
+        <span>
+         6/29
+        </span>
+        クール・ネット東京：
+        <a href="topics/1806/180629_3.html">
+         中小規模事業所の省エネルギー対策テキスト-30年度版を公開
+        </a>
+       </li>
+       <li>
+        <span>
+         6/29
+        </span>
+        イズミシステム設計：
+        <a href="topics/1806/180629_2.html">
+         シームレス個別空調設計ソフトウェア[SeACD]をリリース
+        </a>
+       </li>
+       <li>
+        <span>
+         6/29
+        </span>
+        国交省：
+        <a href="topics/1806/180629_1.html">
+         設備工事、4月の受注総額は前年比12.2％増で3ヶ月ぶりの増加
+        </a>
+       </li>
+       <li>
+        <span>
+         6/28
+        </span>
+        ダイキン工業：
+        <a href="topics/1806/180628_1.html">
+         ポルトガルで空調自動デマンドレスポンス実証システムを完成
+        </a>
+       </li>
+       <li>
+        <span>
+         6/26
+        </span>
+        因幡電工：
+        <a href="topics/1806/180626_1.html">
+         パテレス仕様の耐火ボックスS「IRBS」を発売
+        </a>
+       </li>
+       <li>
+        <span>
+         6/25
+        </span>
+        大林組：
+        <a href="topics/1806/180625_2.html">
+         建物のあらゆる情報を集約できるプラットフォーム「BIMWill」を開発
+        </a>
+       </li>
+       <li>
+        <span>
+         6/25
+        </span>
+        大林組：
+        <a href="topics/1806/180625_1.html">
+         IoT・AIを活用したスマートビルマネジメントシステムを開発
+        </a>
+       </li>
+       <li>
+        <span>
+         6/22
+        </span>
+        三菱地所設計：
+        <a href="topics/1806/180622_3.html">
+         NFシステム(閉鎖型水噴霧設備)で特許取得、水のみで駐車場火災を抑制
+        </a>
+       </li>
+       <li>
+        <span>
+         6/22
+        </span>
+        安藤ハザマ：
+        <a href="topics/1806/180622_2.html">
+         免震吊下式高天井照明装置を開発、耐震支持材が不要
+        </a>
+       </li>
+       <li>
+        <span>
+         6/22
+        </span>
+        国交省：
+        <a href="topics/1806/180622_1.html">
+         紙オムツと汚物を分離・処理する新技術を実証、高齢者施設で実験
+        </a>
+       </li>
+       <li>
+        <span>
+         6/21
+        </span>
+        三機工業：
+        <a href="topics/1806/180621_1.html">
+         現場向けIoTセンサネットワークを開発、熱中症見守りシステムに適用
+        </a>
+       </li>
+       <li>
+        <span>
+         6/18
+        </span>
+        安井建築設計事務所：
+        <a href="topics/1806/180618_1.html">
+         ICTによる施設マネジメント・ワンストップサービスを提供
+        </a>
+       </li>
+       <li>
+        <span>
+         6/15
+        </span>
+        ダイダン：
+        <a href="topics/1806/180615_1.html">
+         環境配慮ビルの認証システム『LEED』で最高位のPlatinum(プラチナ)を獲得
+        </a>
+       </li>
+       <li>
+        <span>
+         6/14
+        </span>
+        高砂熱学工業：
+        <a href="topics/1806/180614_1.html">
+         ダイバーシティ推進の環境づくり〜聴覚障害の理解促進と意見交換
+        </a>
+       </li>
+       <li>
+        <span>
+         6/12
+        </span>
+        ダイダン：
+        <a href="topics/1806/180612_1.html">
+         女性活躍推進法に基づく厚生労働大臣の認定「えるぼし（二つ星）」を取得
+        </a>
+       </li>
+       <li>
+        <span>
+         6/11
+        </span>
+        NEDO：
+        <a href="topics/1806/180611_1.html">
+         国内初、高効率帯水層蓄熱システムを開発、運用コスト31％削減
+        </a>
+       </li>
+       <li>
+        <span>
+         6/7
+        </span>
+        国民生活センター：
+        <a href="topics/1806/180607_1.html">
+         地震による転倒の防止策−電気給湯設備の貯湯タンクについて
+        </a>
+       </li>
+       <li>
+        <span>
+         6/6
+        </span>
+        建築設備技術者協会：
+        <a href="topics/1806/180606_1.html">
+         平成30年度『建築設備技術遺産』が決まりました
+        </a>
+       </li>
+       <li>
+        <span>
+         6/1
+        </span>
+        消防庁：
+        <a href="topics/1806/180601_2.html">
+         消防法施行規則改正、民泊利用マンションでスプリンクラーの設置免除が可能に
+        </a>
+       </li>
+       <li>
+        <span>
+         6/1
+        </span>
+        ダイキン工業：
+        <a href="topics/1806/180601_1.html">
+         空冷ヒートポンプ式モジュールチラーを新発売、R32冷媒を採用
+        </a>
+       </li>
+       <li>
+        <span>
+         5/29
+        </span>
+        新菱冷熱工業：
+        <a href="topics/1805/180529_1.html">
+         16年ぶりにユニフォームを一新
+        </a>
+       </li>
+       <li>
+        <span>
+         5/23
+        </span>
+        きんでん：
+        <a href="topics/1805/180523_1.html">
+         建物の維持管理〜AIを活用した省エネ制御システム普及への取り組み
+        </a>
+       </li>
+       <li>
+        <span>
+         5/22
+        </span>
+        建築設備技術者協会：
+        <a href="topics/1805/180522_4.html">
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+  </body>
+ </html>

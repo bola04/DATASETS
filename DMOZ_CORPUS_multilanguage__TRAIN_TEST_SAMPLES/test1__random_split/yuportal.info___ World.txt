@@ -1,0 +1,1881 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    YuPortal
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <link href="/templates/Orange_Flame/style/main.css" rel="stylesheet" type="text/css"/>
+   <meta content="PHP Link Directory 4.2.0" name="generator"/>
+   <script src="/javascripts/jquery-1.3.2.min.js">
+   </script>
+   <script src="/javascripts/ajaxupload.js" type="text/javascript">
+   </script>
+   <script src="/javascripts/jquery/jquery-ui-1.7.2.custom.min.js">
+   </script>
+   <script src="/javascripts/jquery.validate.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    jQuery.noConflict();
+   </script>
+   <script src="/javascripts/formtool/formtool.js" type="text/javascript">
+   </script>
+   <script src="/javascripts/prototype/prototype.js" type="text/javascript">
+   </script>
+   <script src="/javascripts/scriptaculous/scriptaculous.js" type="text/javascript">
+   </script>
+   <script src="/javascripts/thickbox/thickbox.js" type="text/javascript">
+   </script>
+   <link href="/javascripts/thickbox/ThickBox.css" media="screen" rel="stylesheet" type="text/css"/>
+   <script src="/javascripts/categ_selection/categ_selection.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var valid_obj = new Object();
+   </script>
+   <script src="https://apis.google.com/js/plusone.js" type="text/javascript">
+   </script>
+   <link href="http://www.yuportal.info/" rel="canonical"/>
+  </head>
+  <body>
+   <script type="text/javascript">
+    function increase_height() {
+    height = parseInt(document.getElementById('slide').style.marginTop);
+    if (height<110) {
+       document.getElementById('slide').style.marginTop = eval(height+2)+"px";
+       setTimeout("increase_height()",0.0001);
+    } else {
+       document.getElementById('panel').style.zIndex = 200;
+    }
+ }
+ 
+ function decrease_height() {
+    height = parseInt(document.getElementById('slide').style.marginTop);
+    document.getElementById('panel').style.zIndex = -1;
+    if (height>0) {
+       document.getElementById('slide').style.marginTop = eval(height-2)+"px";
+       setTimeout("decrease_height()",0.0001);
+    }
+ }
+ 
+ function show_panel() {
+   
+    height = parseInt(document.getElementById('slide').style.marginTop);
+    if (height>0) {
+       decrease_height();
+    } else {
+       increase_height();
+    }
+    return false;
+ }
+ 
+ function ajaxFunction()
+ {
+ 
+ var xmlHttp;
+ 
+ try
+   {
+   // Firefox, Opera 8.0+, Safari
+   xmlHttp=new XMLHttpRequest();
+   }
+ catch (e)
+   {
+   // Internet Explorer
+   try
+     {
+     xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+     }
+   catch (e)
+     {
+     try
+       {
+       xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+       }
+     catch (e)
+       {
+       alert("Your browser does not support AJAX!");
+       return false;
+       }
+     }
+   }
+   xmlHttp.onreadystatechange=function()
+     {
+     if(xmlHttp.readyState==4)
+       {
+       }
+     }
+    var url = "http://www.yuportal.info/update_session.php";
+ 
+    xmlHttp.open("POST", url, false);
+    xmlHttp.setRequestHeader( 
+     'Content-Type', 
+     'application/x-www-form-urlencoded; charset=UTF-8' 
+ ); 
+    xmlHttp.send('url='+window.location);
+   }
+   </script>
+   <script type="text/javascript">
+    jQuery(function($) {
+ 	$(document).ready(function(){
+ 		
+ 									jQuery.validator.messages.required = "This field is required.";
+ 												jQuery.validator.messages.remote = "Please fix this field.";
+ 												jQuery.validator.messages.email = "Invalid email address format.";
+ 												jQuery.validator.messages.url = "Invalid URL.";
+ 												jQuery.validator.messages.date = "Invalid date format.";
+ 												jQuery.validator.messages.dateISO = "Please enter a valid date (ISO).";
+ 												jQuery.validator.messages.dateDE = "Bitte geben Sie ein gültiges Datum ein.";
+ 												jQuery.validator.messages.number = "Required numeric field.";
+ 												jQuery.validator.messages.numberDE = "Bitte geben Sie eine Nummer ein.";
+ 												jQuery.validator.messages.digits = "Required integer field.";
+ 												jQuery.validator.messages.creditcard = "Please enter a valid credit card number.";
+ 												jQuery.validator.messages.equalTo = "Please enter the same value again.";
+ 												jQuery.validator.messages.accept = "Please enter a value with a valid extension.";
+ 												jQuery.validator.messages.maxlength = $.format("Please enter no more than {0} characters.");
+ 												jQuery.validator.messages.minlength = $.format("Please enter at least {0} characters.");
+ 												jQuery.validator.messages.rangelength = $.format("This field must have minimum {0} characters and maximum {1} characters..");
+ 												jQuery.validator.messages.range = $.format("Please enter a value between {0} and {1}.");
+ 												jQuery.validator.messages.max = $.format("Please enter a value less than or equal to {0}.");
+ 												jQuery.validator.messages.min = $.format("Please enter a value greater than or equal to {0}.");
+ 								
+ 
+ 		function fireEvent(obj, evt) {
+ 			var fireOnThis = obj;
+ 			if (document.createEvent) {
+ 				var evObj = document.createEvent('MouseEvents');
+ 				evObj.initEvent(evt, true, false);
+ 				fireOnThis.dispatchEvent(evObj);
+ 			} else if (document.createEventObject) {
+ 				fireOnThis.fireEvent('on'+evt);
+ 			}
+ 		}
+ 
+                 //valid obj isntantiated in header.tpl
+                 valid_obj.login_form = {
+ 				debug: false,
+ 				onKeyUp: true,
+ 				onfocusout: false,
+ 				errorElement: "span",
+ 				errorClass: "errForm",
+ 				submitHandler: function(form) {
+ 					// do other stuff for a valid form
+ 					if ($("#login_form").valid()) {
+ 						form.submit();
+ 					}
+ 				},
+ 
+ 				"rules": {user: {"required":true},pass: {"required":true}}, "messages": {}
+ 		};
+ 
+ 		$("#login_form").validate(valid_obj.login_form);
+ 
+                 var selects = $("#login_form").find("select");
+                 var crt;
+                 $.each(selects, function() {
+                     crt = this.id;
+                     if(typeof(valid_obj.login_form.rules[crt]) !== 'undefined') {
+                         $("#"+crt).change(function() {
+                           $(this).valid();
+                         });
+                     }
+                 });
+ 	});
+ });
+   </script>
+   <script type="text/javascript">
+    jQuery(function($) {
+ 	$(document).ready(function(){
+ 		
+ 									jQuery.validator.messages.required = "This field is required.";
+ 												jQuery.validator.messages.remote = "Please fix this field.";
+ 												jQuery.validator.messages.email = "Invalid email address format.";
+ 												jQuery.validator.messages.url = "Invalid URL.";
+ 												jQuery.validator.messages.date = "Invalid date format.";
+ 												jQuery.validator.messages.dateISO = "Please enter a valid date (ISO).";
+ 												jQuery.validator.messages.dateDE = "Bitte geben Sie ein gültiges Datum ein.";
+ 												jQuery.validator.messages.number = "Required numeric field.";
+ 												jQuery.validator.messages.numberDE = "Bitte geben Sie eine Nummer ein.";
+ 												jQuery.validator.messages.digits = "Required integer field.";
+ 												jQuery.validator.messages.creditcard = "Please enter a valid credit card number.";
+ 												jQuery.validator.messages.equalTo = "Please enter the same value again.";
+ 												jQuery.validator.messages.accept = "Please enter a value with a valid extension.";
+ 												jQuery.validator.messages.maxlength = $.format("Please enter no more than {0} characters.");
+ 												jQuery.validator.messages.minlength = $.format("Please enter at least {0} characters.");
+ 												jQuery.validator.messages.rangelength = $.format("This field must have minimum {0} characters and maximum {1} characters..");
+ 												jQuery.validator.messages.range = $.format("Please enter a value between {0} and {1}.");
+ 												jQuery.validator.messages.max = $.format("Please enter a value less than or equal to {0}.");
+ 												jQuery.validator.messages.min = $.format("Please enter a value greater than or equal to {0}.");
+ 								
+ 
+ 		function fireEvent(obj, evt) {
+ 			var fireOnThis = obj;
+ 			if (document.createEvent) {
+ 				var evObj = document.createEvent('MouseEvents');
+ 				evObj.initEvent(evt, true, false);
+ 				fireOnThis.dispatchEvent(evObj);
+ 			} else if (document.createEventObject) {
+ 				fireOnThis.fireEvent('on'+evt);
+ 			}
+ 		}
+ 
+                 //valid obj isntantiated in header.tpl
+                 valid_obj.search_form = {
+ 				debug: false,
+ 				onKeyUp: true,
+ 				onfocusout: false,
+ 				errorElement: "span",
+ 				errorClass: "errForm",
+ 				submitHandler: function(form) {
+ 					// do other stuff for a valid form
+ 					if ($("#search_form").valid()) {
+ 						form.submit();
+ 					}
+ 				},
+ 
+ 				"rules": {search: {"required":true}}, "messages": {}
+ 		};
+ 
+ 		$("#search_form").validate(valid_obj.search_form);
+ 
+                 var selects = $("#search_form").find("select");
+                 var crt;
+                 $.each(selects, function() {
+                     crt = this.id;
+                     if(typeof(valid_obj.search_form.rules[crt]) !== 'undefined') {
+                         $("#"+crt).change(function() {
+                           $(this).valid();
+                         });
+                     }
+                 });
+ 	});
+ });
+   </script>
+   <div class="header" style="height: auto; background: transparent;">
+    <div class="center" style="background: transparent;">
+     <div align="center" id="panel" style="z-index: -1;">
+      <form action="/login.php" class="cmxform" id="login_form" method="post" onsubmit="ajaxFunction();">
+       <table align="center" border="0" id="panel_table" style="padding-top: 10px; padding-bottom: 10px; z-index: -1; height: 0px" width="40%">
+        <tr>
+        </tr>
+        <tr>
+         <td>
+          User:
+         </td>
+         <td>
+          <input class="text" maxlength="25" name="user" size="20" type="text" value=""/>
+         </td>
+         <td>
+          Password:
+         </td>
+         <td>
+          <input class="text" maxlength="25" name="pass" size="20" type="password" value=""/>
+         </td>
+         <td>
+          <input class="btn" name="login" type="submit" value="Login"/>
+         </td>
+        </tr>
+        <tr>
+         <td colspan="5" style="text-align: left;">
+          <input name="rememberMe" type="checkbox"/>
+          Keep me logged in.
+         </td>
+        </tr>
+        <tr>
+         <td colspan="5" style="text-align: right;">
+          <a href="/profile.php?mode=register" title="Register">
+           Register
+          </a>
+          |
+          <a href="/profile.php?mode=sendpassword" title="Recover your password">
+           I forgot my password
+          </a>
+         </td>
+        </tr>
+       </table>
+       <input name="formSubmitted" type="hidden" value="1"/>
+      </form>
+     </div>
+    </div>
+   </div>
+   <div style="clear: both;">
+   </div>
+   <div class="header">
+    <div class="center">
+     <div class="headerLogo">
+      <a href="/">
+       <img alt="logo" border="0" src="/templates/Orange_Flame/images/logo.gif"/>
+      </a>
+     </div>
+     <form action="/index.php" class="headerSearch" id="search_form" method="get">
+      <table>
+       <tr>
+        <td>
+         <style type="text/css">
+          @import url(http://www.google.com/cse/api/branding.css);
+         </style>
+         <div class="cse-branding-right" style="background-color:#000000;color:#FFFFFF">
+          <div class="cse-branding-form">
+           <form action="http://www.google.com" id="cse-search-box">
+            <div>
+             <input name="cx" type="hidden" value="partner-pub-2695966426120266:2667808545"/>
+             <input name="ie" type="hidden" value="UTF-8"/>
+             <input name="q" size="35" type="text"/>
+             <input name="sa" type="submit" value="Search"/>
+            </div>
+           </form>
+           <script src="http://www.google.com/jsapi" type="text/javascript">
+           </script>
+           <script type="text/javascript">
+            google.load("elements", "1", {packages: "transliteration"});
+           </script>
+           <script src="http://www.google.com/cse/t13n?form=cse-search-box&amp;t13n_langs=en%2Csr" type="text/javascript">
+           </script>
+          </div>
+          <div class="cse-branding-logo">
+           <img alt="Google" src="http://www.google.com/images/poweredby_transparent/poweredby_000000.gif"/>
+          </div>
+          <div class="cse-branding-text">
+           Custom Search
+          </div>
+         </div>
+        </td>
+       </tr>
+      </table>
+     </form>
+    </div>
+   </div>
+   <div class="hMenuContainer">
+    <div class="center">
+     <div class="hMenu">
+      <a href="/submit.php" title="Submit your link to the directory">
+       Dodaj link
+      </a>
+      <a href="/submit_article.php" title="Submit your article to the directory">
+       Dodaj clanak
+      </a>
+      <a href="/index.php?list=latest" title="Browse latest submitted links">
+       Novi linkovi
+      </a>
+      <a href="/index.php?list=latestarticles" title="Browse latest articles">
+       Novi clanci
+      </a>
+      <a href="/index.php?list=top" title="Browse most popular links">
+       Najposecenije
+      </a>
+      <a href="/contact.php" title="Contact directory owner">
+       Kontakt
+      </a>
+      <a accesskey="4" href="/search.php?type=advanced" rel="nofollow" title="Go to advanced search page">
+       Napredna pretraga
+      </a>
+     </div>
+    </div>
+   </div>
+   <div class="path">
+   </div>
+   <div class="center1">
+    <div class="leftContainer" style="width: 215px;">
+     <ul id="sortable_left" style="list-style-type: none; float: left; padding: 0px; margin: 0;">
+      <li id="8">
+       <div class="box">
+        <div class="boxTopLeft">
+        </div>
+        <div class="boxTopCenter">
+         Popularne kategorije
+        </div>
+        <div class="boxTopRight">
+        </div>
+        <div class="boxMiddle">
+         <ul class="boxPopCats">
+          <li>
+           <a href="/film/download/" title="Download">
+            Download
+           </a>
+          </li>
+          <li>
+           <a href="/Mediji/Dnevne_novine/" title="Dnevne novine">
+            Dnevne novine
+           </a>
+          </li>
+          <li>
+           <a href="/Forum/" title="Forum">
+            Forum
+           </a>
+          </li>
+          <li>
+           <a href="/Igre/Ostalo/" title="Ostalo">
+            Ostalo
+           </a>
+          </li>
+          <li>
+           <a href="/Oglasi/Li__ni_oglasi/" title="Lični oglasi">
+            Lični oglasi
+           </a>
+          </li>
+          <li>
+           <a href="/Forum/Studentski___nau__ni_forumi/" title="Studentski / naučni forumi">
+            Studentski / naučni forumi
+           </a>
+          </li>
+          <li>
+           <a href="/Muzika/MP3/" title="MP3">
+            MP3
+           </a>
+          </li>
+          <li>
+           <a href="/Mediji/" title="Mediji">
+            Mediji
+           </a>
+          </li>
+          <li>
+           <a href="/Auto_Moto/" title="Auto/Moto">
+            Auto/Moto
+           </a>
+          </li>
+          <li>
+           <a href="/Igre/" title="Igre">
+            Igre
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="boxBottom">
+        </div>
+       </div>
+      </li>
+      <li id="21">
+       <div class="box">
+        <div class="boxTopLeft">
+        </div>
+        <div class="boxTopCenter">
+         Nasi partneri
+        </div>
+        <div class="boxTopRight">
+        </div>
+        <div class="boxMiddle">
+         <ul class="boxPopCats">
+          <li>
+           <a href="http://www.kataloglinkova.com" target="_blank">
+            Direktorijum sajtova
+           </a>
+          </li>
+          <li>
+           <a href="http://www.direktorijum.net" target="_blank">
+            Direktorijum linkova
+           </a>
+          </li>
+          <li>
+           <a href="http://www.yulinkovi.com" target="_blank">
+            Domaci linkovi
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="boxBottom">
+        </div>
+       </div>
+      </li>
+      <li id="24">
+       <div class="box">
+        <div class="boxTopLeft">
+        </div>
+        <div class="boxTopCenter">
+         Tag Oblak
+        </div>
+        <div class="boxTopRight">
+        </div>
+        <div class="boxMiddle">
+         <div style="width: 170px; margin: 0px auto; padding: 10px 0px; overflow: hidden;">
+          <a class="boxSponsoredA" href="/index.php?search=Dnevne" style="font-size: 16px" title="Dnevne">
+           Dnevne
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Izdavanje" style="font-size: 11px" title="Izdavanje">
+           Izdavanje
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Auto/Moto" style="font-size: 11px" title="Auto/Moto">
+           Auto/Moto
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Midi" style="font-size: 10px" title="Midi">
+           Midi
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Karaoke" style="font-size: 10px" title="Karaoke">
+           Karaoke
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=nekretnine" style="font-size: 10px" title="nekretnine">
+           nekretnine
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=MP3" style="font-size: 12px" title="MP3">
+           MP3
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Online" style="font-size: 20px" title="Online">
+           Online
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Grejanje" style="font-size: 10px" title="Grejanje">
+           Grejanje
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=i" style="font-size: 10px" title="i">
+           i
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=opšte" style="font-size: 10px" title="opšte">
+           opšte
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Forumi" style="font-size: 10px" title="Forumi">
+           Forumi
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=teme" style="font-size: 10px" title="teme">
+           teme
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=klima" style="font-size: 10px" title="klima">
+           klima
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Mediji" style="font-size: 12px" title="Mediji">
+           Mediji
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Studentski" style="font-size: 13px" title="Studentski">
+           Studentski
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=naučni" style="font-size: 13px" title="naučni">
+           naučni
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Muzika" style="font-size: 10px" title="Muzika">
+           Muzika
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Zabava" style="font-size: 10px" title="Zabava">
+           Zabava
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Lični" style="font-size: 13px" title="Lični">
+           Lični
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=oglasi" style="font-size: 13px" title="oglasi">
+           oglasi
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=novine" style="font-size: 16px" title="novine">
+           novine
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Oglasi" style="font-size: 10px" title="Oglasi">
+           Oglasi
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=nekretnina" style="font-size: 11px" title="nekretnina">
+           nekretnina
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Forum" style="font-size: 14px" title="Forum">
+           Forum
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=uređaji" style="font-size: 10px" title="uređaji">
+           uređaji
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=Igre" style="font-size: 11px" title="Igre">
+           Igre
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=forumi" style="font-size: 13px" title="forumi">
+           forumi
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=/" style="font-size: 18px" title="/">
+           /
+          </a>
+          <a class="boxSponsoredA" href="/index.php?search=knjige" style="font-size: 20px" title="knjige">
+           knjige
+          </a>
+         </div>
+        </div>
+        <div class="boxBottom">
+        </div>
+       </div>
+      </li>
+      <li id="27">
+       <div class="box">
+        <div class="boxTopLeft">
+        </div>
+        <div class="boxTopCenter">
+         Upisani tekstovi
+        </div>
+        <div class="boxTopRight">
+        </div>
+        <div class="boxMiddle">
+         <div class="boxSponsored">
+          <a class="boxSponsoredA" href="/articles/article-312800.htm" title="HOROSKOPSKI ZNAK OVAN">
+           HOROSKOPSKI ZNAK OVAN
+          </a>
+          <br/>
+          Glavna stvar u ponašanju ovog horoskopskog znaka je impulsivnost.Ovan ne toleriše suprotstavljanje bilo kojoj od njegovih fantazija.
+          <br/>
+          <br/>
+         </div>
+         <div class="boxSponsored">
+          <a class="boxSponsoredA" href="/articles/article-308049.htm" title="PRIRODNI PREPARATI ZA NEGU  ">
+           PRIRODNI PREPARATI ZA NEGU
+          </a>
+          <br/>
+          Efikasni i jeftini prirodni peraparati za negu tela.
+          <br/>
+          <br/>
+         </div>
+         <div class="boxSponsored">
+          <a class="boxSponsoredA" href="/articles/article-19803.htm" title="Zdravlje je bogatstvo-sačuvajmo ga!">
+           Zdravlje je bogatstvo-sačuvajmo ga!
+          </a>
+          <br/>
+          “Zdravlje nadmašuje sva moguća dobra tako znatno da je zdrav prosjak sretniji od bolesnog kralja.”
+ Arthur Schopenhauer
+          <br/>
+          <br/>
+         </div>
+         <div class="boxSponsored">
+          <a class="boxSponsoredA" href="/articles/article-9950.htm" title="Obnovljivi izvori energije">
+           Obnovljivi izvori energije
+          </a>
+          <br/>
+          ARTEL Novi Sad je kompanija koja se bavi iskorišćenjem obnovljivih izvora energije
+          <br/>
+          <br/>
+         </div>
+         <div class="boxSponsoredLast">
+          <a class="boxSponsoredA" href="/articles/article-9914.htm" title="Miran godisnji odmor">
+           Miran godisnji odmor
+          </a>
+          <br/>
+          Idealni uslovi za letovanje na Jadranu. Blizina mora, domaci specijaliteti i predivna priroda vas očekuju odaberete li Turanj.
+          <br/>
+          <br/>
+         </div>
+        </div>
+        <div class="boxBottom">
+        </div>
+       </div>
+      </li>
+      <br/>
+     </ul>
+    </div>
+    <div class="centerContainer">
+     <div class="centerContainerT">
+     </div>
+     <div class="centerContainerM">
+      <ul id="main_container" style="list-style-type: none; padding: 0px; margin: 0;">
+       <li>
+       </li>
+      </ul>
+      <div style="padding: 0 0 0 90px;">
+       <script type="text/javascript">
+        <!--
+ google_ad_client = "ca-pub-2695966426120266";
+ /* veliki yu-portal */
+ google_ad_slot = "6641922831";
+ google_ad_width = 336;
+ google_ad_height = 280;
+ //-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </div>
+      <br/>
+      <br/>
+      <script type="text/javascript">
+       <!--
+ google_ad_client = "ca-pub-2695966426120266";
+ /* mali yuportal */
+ google_ad_slot = "7909104820";
+ google_ad_width = 468;
+ google_ad_height = 15;
+ //-->
+      </script>
+      <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+      </script>
+      <br/>
+      <br/>
+      <div class="maincontent">
+       <p>
+        <strong>
+         <em>
+          Dobrodosli na nasu bazu kvalitetnih domacih sajtova. Idealno  mesto za promociju svih Ex-Yu stranica, mogucnost upisa linkova ali i  tekstova koji ce vam doneti dvostruku korist-direktnu posetu ali i bolje  pozicije na pretrazivacima.
+         </em>
+        </strong>
+       </p>
+      </div>
+      <table border="0" cellpadding="0" cellspacing="2">
+       <tr>
+        <td>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Auto_Moto/" title="Auto/Moto">
+            Auto/Moto
+           </a>
+           <span class="catHomeCount">
+            (34)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Auto_Moto/Ugradnja_auto_gasa/">
+            Ugradnja auto gasa
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Auto_Moto/Forumi/">
+            Forumi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Auto_Moto/Osiguranje___leasing/">
+            Osiguranje / leasing
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/avijacija/" title="Avijacija">
+            Avijacija
+           </a>
+           <span class="catHomeCount">
+            (11)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/avijacija/vojnovazduhoplovstvo/">
+            Vojno vazduhoplovstvo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/avijacija/maketarstvo/">
+            Maketarstvo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/avijacija/modelarstvo/">
+            Modelarstvo
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Biznis/" title="Biznis">
+            Biznis
+           </a>
+           <span class="catHomeCount">
+            (37)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Biznis/Brokerske_ku__e/">
+            Brokerske kuće
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Biznis/Brodarstvo/">
+            Brodarstvo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Biznis/Fotokopir_aparati/">
+            Fotokopir aparati
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Bosna_i_hercegovina/" title="Bosna i hercegovina">
+            Bosna i hercegovina
+           </a>
+           <span class="catHomeCount">
+            (25)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Bosna_i_hercegovina/Obrazovanje/">
+            Obrazovanje
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Bosna_i_hercegovina/Nekretnine/">
+            Nekretnine
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Bosna_i_hercegovina/Prevoz/">
+            Prevoz
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Deca_/" title="Deca">
+            Deca
+           </a>
+           <span class="catHomeCount">
+            (13)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Deca_/Dru__enje/">
+            Druženje
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Deca_/Pomo___deci/">
+            Pomoć deci
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Deca_/Vrti__i/">
+            Vrtići
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Direktorijumi/" title="Direktorijumi">
+            Direktorijumi
+           </a>
+           <span class="catHomeCount">
+            (11)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Direktorijumi/Reciprocitet/">
+            Reciprocitet
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Direktorijumi/Direktorijuma/">
+            Direktorijuma
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Direktorijumi/Placeni/">
+            Placeni
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Drzavne_institucije/" title="Drzavne institucije">
+            Drzavne institucije
+           </a>
+           <span class="catHomeCount">
+            (12)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Drzavne_institucije/Republika_Srpska/">
+            Republika Srpska
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Drzavne_institucije/Dijaspora/">
+            Dijaspora
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Drzavne_institucije/Humanitarne_organizacije/">
+            Humanitarne organizacije
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Enterijer/" title="Enterijer">
+            Enterijer
+           </a>
+           <span class="catHomeCount">
+            (13)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Enterijer/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Enterijer/Podovi/">
+            Podovi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Enterijer/Lampe_-_lusteri/">
+            Lampe - lusteri
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/film/" title="Film">
+            Film
+           </a>
+           <span class="catHomeCount">
+            (14)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/film/onlineprodaja/">
+            Online prodaja
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/film/filmskifestivalstrani/">
+            Filmski festival - strani
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/film/filmskevesti/">
+            Filmske vesti
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Forum/" title="Forum">
+            Forum
+           </a>
+           <span class="catHomeCount">
+            (9)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Forum/__enski_forumi/">
+            Ženski forumi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Forum/Ra__unarski___tehni__ki_forumi/">
+            Računarski / tehnički forumi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Forum/Automobilski_forumi/">
+            Automobilski forumi
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Fotografija/" title="Fotografija">
+            Fotografija
+           </a>
+           <span class="catHomeCount">
+            (7)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Fotografija/Magazini/">
+            Magazini
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Fotografija/Udru__enja_-_organizacije/">
+            Udruženja - organizacije
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Fotografija/Fotografi/">
+            Fotografi
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Gradjevinarstvo_i_arhitektura/" title="Gradjevinarstvo i arhitektura">
+            Gradjevinarstvo i arhitektura
+           </a>
+           <span class="catHomeCount">
+            (12)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Gradjevinarstvo_i_arhitektura/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Gradjevinarstvo_i_arhitektura/Ograde___vrata/">
+            Ograde / vrata
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Gradjevinarstvo_i_arhitektura/Elektroinstalacija/">
+            Elektroinstalacija
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Gradovi_i_sela/" title="Gradovi i sela">
+            Gradovi i sela
+           </a>
+           <span class="catHomeCount">
+            (10)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Gradovi_i_sela/Sela_u_Republici_Srpskoj/">
+            Sela u Republici Srpskoj
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Gradovi_i_sela/Mesne_zajednice/">
+            Mesne zajednice
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Gradovi_i_sela/Regije/">
+            Regije
+           </a>
+           <br/>
+          </p>
+         </div>
+        </td>
+        <td>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Hobi/" title="Hobi">
+            Hobi
+           </a>
+           <span class="catHomeCount">
+            (6)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Hobi/Lov/">
+            Lov
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hobi/__ivotinje/">
+            Životinje
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hobi/Ribolov/">
+            Ribolov
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Hrana_i_pice/" title="Hrana i pice">
+            Hrana i pice
+           </a>
+           <span class="catHomeCount">
+            (15)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Hrana_i_pice/Vino/">
+            Vino
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hrana_i_pice/Voda/">
+            Voda
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hrana_i_pice/Mlekare/">
+            Mlekare
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Hrvatska/" title="Hrvatska">
+            Hrvatska
+           </a>
+           <span class="catHomeCount">
+            (28)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Hrvatska/Fotografija/">
+            Fotografija
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hrvatska/Magazin/">
+            Magazin
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Hrvatska/Mobilni/">
+            Mobilni
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Igre/" title="Igre">
+            Igre
+           </a>
+           <span class="catHomeCount">
+            (12)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Igre/Proizvodjaciigara/">
+            Proizvođači igara
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Igre/Za_najmla__e/">
+            Za najmlađe
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Igre/Sajtovi_sa_igricama/">
+            Sajtovi sa igricama
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Izlazak_i_provod/" title="Izlazak i provod">
+            Izlazak i provod
+           </a>
+           <span class="catHomeCount">
+            (7)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Izlazak_i_provod/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Izlazak_i_provod/Bioskop/">
+            Bioskop
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Izlazak_i_provod/Kasino/">
+            Kasino
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Knjizevnost/" title="Knjizevnost">
+            Knjizevnost
+           </a>
+           <span class="catHomeCount">
+            (12)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Knjizevnost/__irilica/">
+            Ćirilica
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Knjizevnost/Online___asopisi/">
+            Online časopisi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Knjizevnost/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Kultura_i_umetnost/" title="Kultura i umetnost">
+            Kultura i umetnost
+           </a>
+           <span class="catHomeCount">
+            (19)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Kultura_i_umetnost/Istorija/">
+            Istorija
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Kultura_i_umetnost/tango/">
+            Tango
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Kultura_i_umetnost/Galerije/">
+            Galerije
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Mediji/" title="Mediji">
+            Mediji
+           </a>
+           <span class="catHomeCount">
+            (14)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Mediji/magaziniizdanjaSveta/">
+            Magazini - izdanja Svet-a
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Mediji/Novinarska_udru__enja/">
+            Novinarska udruženja
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Mediji/Nedeljnici/">
+            Nedeljnici
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Moda/" title="Moda">
+            Moda
+           </a>
+           <span class="catHomeCount">
+            (15)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Moda/Ko__na_ode__a___galanterija/">
+            Kožna odeća / galanterija
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Moda/Modne_agencije___modeli/">
+            Modne agencije / modeli
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Moda/Obu__a/">
+            Obuća
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Muzika/" title="Muzika">
+            Muzika
+           </a>
+           <span class="catHomeCount">
+            (22)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Muzika/Tekstovi___note/">
+            Tekstovi / note
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Muzika/Oprema/">
+            Oprema
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Muzika/Ozbiljna_muzika___etno/">
+            Ozbiljna muzika / etno
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Nekretnine/" title="Nekretnine">
+            Nekretnine
+           </a>
+           <span class="catHomeCount">
+            (12)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Nekretnine/Op__ti_sajtovi/">
+            Opšti sajtovi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Nekretnine/Agencije_u_Srbiji/">
+            Agencije u Srbiji
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Nekretnine/Agencije_u_Crnoj_Gori/">
+            Agencije u Crnoj Gori
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Obrazovanje___kolstvo/" title="Obrazovanje/Školstvo">
+            Obrazovanje/Školstvo
+           </a>
+           <span class="catHomeCount">
+            (10)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Obrazovanje___kolstvo/Vi__e___kole/">
+            Više škole
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Obrazovanje___kolstvo/Univerziteti/">
+            Univerziteti
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Obrazovanje___kolstvo/Srednje___kole/">
+            Srednje škole
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Oglasi/" title="Oglasi">
+            Oglasi
+           </a>
+           <span class="catHomeCount">
+            (11)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Oglasi/Pixel___word_link_oglasi/">
+            Pixel / word link oglasi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Oglasi/Ostali_oglasi/">
+            Ostali oglasi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Oglasi/Oglasi_O-Z/">
+            Oglasi O-Z
+           </a>
+           <br/>
+          </p>
+         </div>
+        </td>
+        <td>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Ostalo/" title="Ostalo">
+            Ostalo
+           </a>
+           <span class="catHomeCount">
+            (6)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Ostalo/Ne_pripada_nigde/">
+            Ne pripada nigde
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Ostalo/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Pravoslavlje/" title="Pravoslavlje">
+            Pravoslavlje
+           </a>
+           <span class="catHomeCount">
+            (13)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Pravoslavlje/Ikone/">
+            Ikone
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Pravoslavlje/__asopisi/">
+            Časopisi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Pravoslavlje/Ostalo/">
+            Ostalo
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Ra__unari/" title="Računari">
+            Računari
+           </a>
+           <span class="catHomeCount">
+            (28)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Ra__unari/Knjige/">
+            Knjige
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Ra__unari/Obuka___kursevi/">
+            Obuka / kursevi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Ra__unari/Razno/">
+            Razno
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Sport/" title="Sport">
+            Sport
+           </a>
+           <span class="catHomeCount">
+            (41)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Sport/Tenis/">
+            Tenis
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Sport/trcanje/">
+            Trčanje
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Sport/Planinarenje/">
+            Planinarenje
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Telekomunikacije/" title="Telekomunikacije">
+            Telekomunikacije
+           </a>
+           <span class="catHomeCount">
+            (13)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Telekomunikacije/Telefonski_imenici/">
+            Telefonski imenici
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Telekomunikacije/Prodaja/">
+            Prodaja
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Telekomunikacije/Servisi/">
+            Servisi
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Turizam-Hoteli/" title="Turizam-Hoteli">
+            Turizam-Hoteli
+           </a>
+           <span class="catHomeCount">
+            (32)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Turizam-Hoteli/Pe__ine/">
+            Pećine
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Turizam-Hoteli/Inostranstvo/">
+            Inostranstvo
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Turizam-Hoteli/Skijanje/">
+            Skijanje
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Vencanje/" title="Vencanje">
+            Vencanje
+           </a>
+           <span class="catHomeCount">
+            (11)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Vencanje/torteikolaci/">
+            Torte i kolači
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Vencanje/zlatare/">
+            Zlatare
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Vencanje/Muzika/">
+            Muzika
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/World/" title="World">
+            World
+           </a>
+           <span class="catHomeCount">
+            (9)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/World/Caribbean/">
+            Caribbean
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/World/World_directorys/">
+            World directorys
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/World/Middle_East/">
+            Middle East
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Zabava/" title="Zabava">
+            Zabava
+           </a>
+           <span class="catHomeCount">
+            (31)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Zabava/Lutrije___Igre_na_sre__u/">
+            Lutrije / Igre na sreću
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Zabava/Hobi/">
+            Hobi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Zabava/Slike/">
+            Slike
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/Zdravlje_i_medicina/" title="Zdravlje i medicina">
+            Zdravlje i medicina
+           </a>
+           <span class="catHomeCount">
+            (19)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/Zdravlje_i_medicina/Crveni_krst/">
+            Crveni krst
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Zdravlje_i_medicina/Forumi/">
+            Forumi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/Zdravlje_i_medicina/Fizioterapija/">
+            Fizioterapija
+           </a>
+           <br/>
+          </p>
+         </div>
+         <div style="padding:0px 10px 18px 10px;">
+          <h2>
+           <img src="/templates/Orange_Flame/images/catHomeIcon.gif"/>
+           <a class="catHomeMain" href="/__ena/" title="Žena">
+            Žena
+           </a>
+           <span class="catHomeCount">
+            (13)
+           </span>
+          </h2>
+          <p class="catHomeSubcats">
+           »
+           <a class="catHomeSub" href="/__ena/__enske_organizacije/">
+            Ženske organizacije
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/__ena/Magazini_-___asopisi/">
+            Magazini - Časopisi
+           </a>
+           <br/>
+           »
+           <a class="catHomeSub" href="/__ena/Nakit/">
+            Nakit
+           </a>
+           <br/>
+          </p>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <br/>
+      <div id="links">
+      </div>
+      <br/>
+      <script type="text/javascript">
+       /* <![CDATA[ */var root = '';
+       var a = document.getElementsByTagName("a");
+       for(i = 0; i< a.length; i++)
+          if(a[i].id != '')
+             a[i].onclick = count_link;
+       function count_link() {
+          i = new Image();
+          i.src= root+'/cl.php?id='+this.id;
+          return true;
+       }
+       /* ]]> */
+      </script>
+      <div style="padding: 0 0 0 25px;">
+       <script type="text/javascript">
+        <!--
+ google_ad_client = "ca-pub-2695966426120266";
+ /* mali yuportal */
+ google_ad_slot = "7909104820";
+ google_ad_width = 468;
+ google_ad_height = 15;
+ //-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </div>
+      <br/>
+      <br/>
+      <div style="padding: 0 0 0 25px;">
+       <script type="text/javascript">
+        <!--
+ google_ad_client = "ca-pub-2695966426120266";
+ /* veliki yu-portal */
+ google_ad_slot = "6641922831";
+ google_ad_width = 336;
+ google_ad_height = 280;
+ //-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </div>
+      <div style="clear: both">
+      </div>
+      <ul id="sortable_central" style="list-style-type: none; padding: 0px; margin: 0;">
+      </ul>
+     </div>
+     <div class="centerContainerB">
+     </div>
+    </div>
+    <div class="rightContainer">
+     <a href="http://www.yuportal.info/articles/article-3791.htm">
+      <img alt="pozicija-na-pretrazivacima" border="0" src="http://www.yuportal.info/templates/Orange_Flame/images/pozicija-na-pretrazivacima.png" style="padding: 0 0 15px 0;"/>
+     </a>
+     <ul id="sortable_right" style="list-style-type: none; padding: 0px; margin: 0;">
+      <li id="5">
+       <div class="box">
+        <div class="boxTopLeft">
+        </div>
+        <div class="boxTopCenter">
+         Novi sajtovi
+        </div>
+        <div class="boxTopRight">
+        </div>
+        <div class="boxMiddle">
+         <ul class="boxPopCats">
+          <li>
+           <a href="                                            /detail/link-10566.htm" title="Read more about: Poslovni Adresar Srbije">
+            Poslovni Adresar Srbije
+           </a>
+          </li>
+          <li>
+           <a href="                                            /detail/link-10565.htm" title="Read more about: Ritam Vremena on-line magazin">
+            Ritam Vremena on-line magazin
+           </a>
+          </li>
+          <li>
+           <a href="                                            /detail/link-10556.htm" title="Read more about: HIT Igrice - besplatne online flash igrice">
+            HIT Igrice - besplatne onli...
+           </a>
+          </li>
+          <li>
+           <a href="                                            /detail/link-10554.htm" title='Read more about: TURISTIČKA AGENCIJA "LAGUNA"'>
+            TURISTIČKA AGENCIJA "...
+           </a>
+          </li>
+          <li>
+           <a href="                                            /detail/link-10553.htm" title="Read more about: Donji Milanovac">
+            Donji Milanovac
+           </a>
+          </li>
+         </ul>
+        </div>
+        <div class="boxBottom">
+        </div>
+       </div>
+      </li>
+      <div style="padding: 0 0 0 40px;">
+       <script type="text/javascript">
+        <!--
+ google_ad_client = "ca-pub-2695966426120266";
+ /* novi yuportal */
+ google_ad_slot = "3661726884";
+ google_ad_width = 120;
+ google_ad_height = 600;
+ //-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </div>
+     </ul>
+    </div>
+    <div style="clear: both; height: 30px;">
+    </div>
+   </div>
+   <!-- Please Do not Remove Sponsored by link -->
+   <div class="footer">
+    <a href="http://www.phplinkdirectory.com" title="Directory Script by PHP Link Directory">
+     Directory Script by PHP Link Directory
+    </a>
+    <br/>
+    <a href="http://phpldtemplates.bloginsphere.com" target="_blank" title="Bloginsphere Templates">
+     Templates for php Link Directory
+    </a>
+   </div>
+   <!-- Start of StatCounter Code for Default Guide -->
+   <script type="text/javascript">
+    var sc_project=4258353; 
+ var sc_invisible=1; 
+ var sc_security="83a3d325";
+   </script>
+   <script src="http://www.statcounter.com/counter/counter.js" type="text/javascript">
+   </script>
+   <noscript>
+    <div class="statcounter">
+     <a href="http://statcounter.com/godaddy_website_tonight/" target="_blank" title="website
+ tonight analytics">
+      <img alt="website tonight analytics" class="statcounter" src="http://c.statcounter.com/4258353/0/83a3d325/1/"/>
+     </a>
+    </div>
+   </noscript>
+   <!-- End of StatCounter Code for Default Guide -->
+  </body>
+ </html>

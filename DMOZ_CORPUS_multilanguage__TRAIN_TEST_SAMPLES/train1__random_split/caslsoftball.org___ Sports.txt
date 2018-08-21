@@ -1,0 +1,1306 @@
+<!-- tpl:insert page="/theme/B-03_blue.htpl" -->
+ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+ <html xmlns="http://www.w3.org/TR/REC-html40" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+  <head>
+   <script src="zzz-rotating-img.htm">
+   </script>
+   <script language="JavaScript">
+    //<!--
+  var img_1, box1, box2, eeee, ffff, gggg, tourneytext, tourneylink;
+  var req1, req2, req3, req4, req5, req6, req7, req8, req9;
+  var mess, mess2, mess_style, redrows, blackrows, imgcaslhyper, msgimgcasl, tourneyhyper, tourneymsg;
+  
+  //next values and zzz-rotating-img abobe is used for slideshow
+   var dateobj = new Date();
+   var dayforpic = dateobj.getDay();
+   var randforpic = dateobj.getMilliseconds();
+   ///////i=randforpic % daypicdata[dayforpic].length;
+   var freeze=0;
+   var generalpicobj=new Array(generalpicdata.length);
+   var daypicobj=new Array(7);
+ var skipahead=0;
+ var getcnt=0; //if >0 use that as flag that no more pics to get
+ var GETCNTINIT=6;
+ var GETCNTTHRES=3
+ 
+     var TA_COL=64;
+     var TA2_COL=58;
+     var PIC_W=363;
+     var PIC_H=363;
+ 
+ //do this early to get ball rolling. these are only 2 functions called synchronously. rest of steps come when last onload is called (finishup()).
+  fetchconfigdata();  //get config data from server
+  fetchsomepics(); //fetch first set of pics from server (called more times later on to get rest of batches)
+  //the remaining steps will be called from finishup() only when all async processes are ready (core server config stuff and page loaded)
+  //finishup() is called from each onload of the relevant xmlhttprequests and the body onload. these all are what is tested by each one. the last to finish actually starts rest of steps.
+  
+  
+ 
+  function fetchconfigdata() {
+      req1=new XMLHttpRequest();
+      req1.onload=function () {
+          mess=req1.responseText;
+          finishup();
+      }
+      req1.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req1.open("GET","rostermanagerphp/config-public/305-22black.txt"); //.htm .txt .php ..also below on img
+      req1.send();
+      req2=new XMLHttpRequest();
+      req2.onload=function () {
+          mess2=req2.responseText;
+          finishup();
+      }
+      req2.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req2.open("GET","rostermanagerphp/config-public/305-22red.txt"); //.htm .txt .php ..also below on img
+      req2.send();
+      req3=new XMLHttpRequest();
+      req3.onload=function () {
+          mess_style=req3.responseText;
+          finishup();
+      }
+      req3.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req3.open("GET","rostermanagerphp/config-public/305-mess-style.txt"); //.htm .txt .php ..also below on img
+      req3.send();
+      req4=new XMLHttpRequest();
+      req4.onload=function () {
+          redrows=req4.responseText;
+          finishup();
+      }
+      req4.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req4.open("GET","rostermanagerphp/config-public/305-redrows.txt"); //.htm .txt .php ..also below on img
+      req4.send();
+      req5=new XMLHttpRequest();
+      req5.onload=function () {
+          blackrows=req5.responseText;
+          finishup();
+      }
+      req5.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req5.open("GET","rostermanagerphp/config-public/305-blackrows.txt"); //.htm .txt .php ..also below on img
+      req5.send();
+      req6=new XMLHttpRequest();
+      req6.onload=function () {
+          imgcaslhyper=req6.responseText;
+          finishup();
+      }
+      req6.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req6.open("GET","rostermanagerphp/config-public/305-imgcaslhyper.txt"); //.htm .txt .php ..also below on img
+      req6.send();
+      req7=new XMLHttpRequest();
+      req7.onload=function () {
+          msgimgcasl=req7.responseText;
+          finishup();
+      }
+      req7.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req7.open("GET","rostermanagerphp/config-public/305-msgimgcasl.txt"); //.htm .txt .php ..also below on img
+      req7.send();
+      req8=new XMLHttpRequest();
+      req8.onload=function () {
+          tourneymsg=req8.responseText;
+          finishup2();
+      }
+      req8.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req8.open("GET","rostermanagerphp/config-public/305-tourneymsg.txt"); //.htm .txt .php ..also below on img
+      req8.send();
+      req9=new XMLHttpRequest();
+      req9.onload=function () {
+          tourneyhyper=req9.responseText;
+          finishup2();
+      }
+      req9.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted vowels even though php page sent correct header charset
+      req9.open("GET","rostermanagerphp/config-public/305-tourneyhyper.txt"); //.htm .txt .php ..also below on img
+      req9.send();
+      //oo.responseType="document";
+      //oo.responseType="";  //default is "" aka "text" (-> domstring)  .. but use "" to be legal
+    //alert(oo3.open);
+    //oo3.onreadystatechange=function(){alert(oo3.readyState+"   "+oo3.status);}
+ //     oo3.overrideMimeType("text/plain; charset=iso-8859-1");  //was necess to show accepted [accented??] vowels even though php page sent correct header charset
+ //     oo3.open("GET","rostermanagerphp/config-public/305-mess-style.txt"); //.htm .txt .php ..also below on img
+ //     oo3.send(); //alert("a");//ie/edge does not work if use http...org/ in open (firefox does)
+  }
+  
+  
+  
+   function finishup() {
+      if (mess!==undefined &&
+       mess2!==undefined &&
+       mess_style!==undefined &&
+       redrows!==undefined &&
+       blackrows!==undefined &&
+       imgcaslhyper!==undefined &&
+       msgimgcasl!==undefined &&
+       document.readyState==="complete") {  //"interactive"  "loading"
+          initit();
+          ajdustimgcasl();    //generalize sizing/locating alg for imgcasl and related.
+          setup_messages_and_slideshow();  //set up 2 textareas and start pic slideshow if displayable
+      }
+  } 
+  
+   function finishup2() {
+      if (tourneyhyper!==undefined &&
+       tourneymsg!==undefined &&
+       document.readyState==="complete") {  //"interactive"  "loading"
+          initit2();
+          dotourney();
+      }
+  }
+ 
+ 
+ 
+ 
+ function initit() {
+     //copy some elementsbyid used elsewhere.
+     img_1=document.getElementById("img-1");
+     ffff=document.getElementById("imgcasl");
+     eeee=document.getElementById('imgcasl').parentNode;
+     gggg=document.getElementById("msgimgcasl");
+     box1=document.getElementById("fb-ta");
+     box2=document.getElementById("fb-ta2");
+     tourneytext=document.getElementById("tourneytext");
+     tourneylink=document.getElementById("tourneylink");
+      //these hacks helped avoid stale cache files (useful for debugging). now clean up.
+      document.getElementById("dummyspan1").innerHTML=""; //to refresh page??
+      document.getElementById("dummyspan2").innerHTML="";
+      document.getElementById("dummyspan3").innerHTML="";
+      document.getElementById("dummyspan4").innerHTML="";
+      document.getElementById("dummyspan5").innerHTML="";
+      document.getElementById("dummyspan6").innerHTML="";
+      document.getElementById("dummyspan7").innerHTML="";
+      document.getElementById("dummyspan8").innerHTML="";
+      document.getElementById("dummyspan9").innerHTML="";
+ }
+ 
+ function initit2() {
+     //copy some elementsbyid used elsewhere.
+     tourneytext=document.getElementById("tourneytext");
+     tourneylink=document.getElementById("tourneylink");
+      //these hacks helped avoid stale cache files (useful for debugging). now clean up.
+      document.getElementById("dummyspan8").innerHTML="";
+      document.getElementById("dummyspan9").innerHTML="";
+ }
+ 
+ 
+ 
+ function ajdustimgcasl() {  //set up imgcasl and related
+     var aa00;
+     var bb=document.getElementById("imgcaslhyper");
+  //simple portable way to get naturalwidth/height of imgcasl. then process to get aaw,aah. then apply to ffff,gggg
+  aa00=new Image();
+  aa00.onload=
+  function () {//return; //**in other pages (statscenter, etc) this is done earlier like above xmlhttpreq
+  var aa=aa00;
+  var eeee1=eeee.style.width;
+  var eeee2=eeee.style.height;
+  var eeeew=new Number(eeee1.substr(0,eeee1.length-2));
+  var eeeeh=new Number(eeee2.substr(0,eeee2.length-2));
+ //alert(""+eeeew+"  "+eeeeh);
+  var eeeehw=eeeeh/eeeew;
+  //var eeee1=new Image();
+  //eeee1.src="1.11.JPG";
+  //aa.width aa.height can be used now.dfgsdfgsdfgsf
+  var aaw=aa.width;    //alert(aa.src)
+  var aah=aa.height;
+  var aahw=aah/aaw;
+  if (aahw>eeeehw) {
+      if (aah>eeeeh) {
+          aah=eeeeh;
+          aaw=aah/aahw;
+      } else if (aah<eeeeh*0.5) {
+          aah=eeeeh*0.5;
+          aaw=aah/aahw;
+      }
+  } else {
+      if (aaw>eeeew) {
+          aaw=eeeew;
+          aah=aaw*aahw;
+      } else if (aaw<eeeew*0.5) {
+          aaw=eeeew*0.5;
+          aah=aaw*aahw;
+      }
+  }
+  //slide to bottom and center l/r if 80% eeeew else to right.
+  var aaleft=eeeew-aaw;
+  if (aaw>eeeew*.9) {
+      aaleft/=2;
+  }   //alert(aah+"  "+aaw+"  "+(eeeeh-aah)+"  "+aaleft);
+  //now set up right size of imgcasl and yellow message.. using calculated h,w.
+  ffff.style.position="absolute";
+  ffff.style.border="0px solid black";
+  ffff.style.height=""+aah+"px";
+  ffff.style.width=""+aaw+"px";
+  ffff.style.top=""+(eeeeh-aah)+"px";
+  ffff.style.left=""+aaleft+"px";
+  //ffff.style="position:absolute; border:0px solid black; height:"+aah+"px; width:"+aaw+"px; top:"+(eeeeh-aah)+"px; left:"+aaleft+"px;";  //not ie friendly.. do long way.
+  //set up hyperlink
+  var therawlink=/[^\s]+.*[^\s]+/.exec(imgcaslhyper);  //alert(therawlink)
+  //var thelink=encodeURI(/[^\s]+.*[^\s]+/.exec(imgcaslhyper));  //alert(thelink)
+  //if (thelink!=="null") {   ////encodeuri seems to return string "null"  weird.
+  if (therawlink!==null) {
+      bb.href=encodeURI(therawlink); //alert(bb.src)//get first line w/o eoln and trimmed of spaces at ends
+  } else {
+      bb.href="http://www.caslsoftball.org/";
+  } //alert(bb.href)
+  gggg.style.position="absolute";
+  gggg.style.zIndex="10";
+  gggg.style.textAlign="center";
+  gggg.style.width=""+aaw+"px";
+  gggg.style.top=""+(eeeeh-aah-15)+"px";
+  gggg.style.left=""+aaleft+"px";
+  gggg.style.backgroundColor="yellow";
+  //gggg.style="position:absolute; z-index:10; text-align:center; width:"+aaw+"px; top:"+(eeeeh-aah-15)+"px; background:yellow;";
+     //set up message related to imgcasl
+     var thenote=/[^\s]+.*[^\s]+/.exec(msgimgcasl);
+     if (thenote===null) {
+         thenote="";
+     }
+     gggg.innerHTML='<font color="black" size="2"><b>'+(thenote)+'</b></font>';
+  };
+  aa00.src="1.11.jpg";// <<<<-----  paste el nombre de la foto aqui.
+ }
+  
+  
+  
+ function setup_messages_and_slideshow() { //tweak textare sizes (browsers), replace messages, and start up slideshow+button
+     var bbbb, dddd;
+     var cccc=document.getElementById('stopbut');
+      if (mess.length>10 && mess.length<90000) { //10000) { was here in case of mistake 404
+          box1.innerHTML=mess;  //alert(String.fromCharCode(243));
+      }
+      if (mess2.length>10 && mess2.length<90000) {
+          box2.innerHTML=mess2;
+      }
+      //in next section set up rows of textareas. later also set up cols instead of assume hardcoded. [fixed]
+      //col affect webpage visual appearance (so set in stone of sorts) more so than row variations since these cancel across 2 textareas above each other (one gains other loses)
+      //these means rows are config day to day if want (ie, get from server) but col hardly change and can be constants maybe at top.
+      if (mess_style.length<10 && redrows.length<10 && blackrows.length<10 &&
+              mess_style.length>0 && redrows.length>0 && blackrows.length>0) { //10000) { was here in case of mistake 404   later add config options like actual rows etc.
+              if (redrows==0) {  //note, rows=0 aborts javascript apparently. also does =none
+                  box2.style.display="none";
+                  box1.rows=blackrows;
+                  box1.cols=TA_COL;
+              } else if (blackrows==0) {
+                  box1.style.display="none";
+                  box2.rows=redrows;
+                  box2.cols=TA2_COL;
+              } else {
+                  box1.rows=blackrows;
+                  box1.cols=TA_COL;
+                  box2.rows=redrows;//alert("k")
+                  box2.cols=TA2_COL;
+              }
+              //adjust textareas width/col since col are ready.
+ ////this is done already and is useless here, but just in case the other inline script
+ ////  gets lost at some point, it is documented here also. it's not idempotent atm so don't run twice.
+ ////  wait. it should be run again because .cols got reset right above this.
+   adjusttextareacolumnsforbrowsers(box1, box2);
+              //
+              //if (/1/.exec(mess_style)=="1") {  //best if no regexp needed so make precise.
+              if (mess_style=="1") {
+                  //box1.rows=22;
+                  //box2.rows=22;
+                  img_1.style.display="none";
+                  document.getElementById('stopbut').style.display="none";
+              } else {
+ //Only do slideshow+button of pics if displayable.
+          //just set up parent where slideshow will be (prob can be hardcoded in html no prob)
+          img_1.parentNode.style.display="inline-block";
+          img_1.parentNode.style.position="relative";
+          img_1.parentNode.style.margin="0px";
+ //set up button
+  bbbb=img_1.getBoundingClientRect();   //alert(bbbb.left)
+  dddd=ffff.getBoundingClientRect();
+  cccc.style.border="2px solid red";
+  cccc.style.position="relative";
+  cccc.style.cssFloat="right";
+  cccc.style.marginRight=""+(bbbb.left-dddd.right-4)+"px";
+  cccc.onclick=function () {
+      freeze=1-freeze;
+      if (freeze==1) {
+          this.value='Continuar --- >>>';
+      } else {
+          this.value='Parar fotos --- >>>';
+      }
+  }
+  //start up slideshow.
+                  xxxx(randforpic,1);  //start slideshow timeout sequence
+              }
+      }
+ }
+ 
+ //daypicdata = [["su1","su2"],["m1"],["tt","ts","tue","tee"],[],[],["f1"],[]]; //sample.. but include this in script include below
+ //generalpicdata = ["g1","g2","g3"];  //sample
+ 
+ 
+ function fetchsomepics() { //called every time want another batch of pics... this is staggering procedure to create user responsiveness.
+                            //just needs to fetch each pic once, but avoid doing all in one shot or every second one since high latency and would otherwise miss high thruput opportunity (but without overdoing it and hurting user responsiveness at startup).
+                            //note, we aren't setting up tag style here. only fetch from server pics data.
+                            //done after get core data since pics subservient; however, start this process even without page loaded.
+                            //but setting up element style is only after loaded and is staggered during first pass of slideshow in xxxx() below for reasons just explained.
+   var ii,jj,img,skp;
+   for (ii=0, skp=skipahead, getcnt=GETCNTINIT; ii<generalpicdata.length; ii++) {
+     if (skp--<=0&&getcnt-->0) {  //alert(skp)//getcnt-- iff skp <=0
+       generalpicobj[ii]=new Image();
+       generalpicobj[ii].cached=-1;
+       generalpicobj[ii].onload=
+       (function(i,pN){
+           return function (){  //alert(i)
+               this.cached=0;
+           };
+       })(ii,null);  //ii not needed and img could be global to avoid this construct
+       generalpicobj[ii].width= 363;//img.width;
+       generalpicobj[ii].height= 363;//img.height;
+       generalpicobj[ii].src=generalpicdata[ii];
+     }
+   }
+   for (ii=0; ii<7; ii++) {  ///not tested since 0 pics for now
+     if (getcnt>0) {
+       if (daypicobj[ii]===undefined) { //?
+           daypicobj[ii]=[];
+       }
+       for (jj=0; jj<daypicdata[ii].length; jj++) {
+         if (skp--<=0&&getcnt-->0) {
+           daypicobj[ii][jj]=new Image();
+           daypicobj[ii][jj].cached=-1;
+           daypicobj[ii][jj].onload=
+           function(){
+               this.cached=0;
+           };
+           daypicobj[ii][jj].width=PIC_W;//img.width; 363
+           daypicobj[ii][jj].height=PIC_H;//img.height; 363
+           daypicobj[ii][jj].src=daypicdata[ii][jj];
+         }
+       }
+     }
+   }
+   skipahead+=GETCNTINIT;  //may be off a bit on last round
+   if (getcnt>0) {
+       getcnt=-1; //-1 means done
+   } else {
+       getcnt=0; //0 will mean cnt upward normally;
+   }
+ //alert(generalpicobj.length)
+ }
+ 
+ 
+ // ********* xxxx(randforpic,1);  *****
+   function xxxx(i,tof) {
+   ///////for (j=0; j<daypicdata[dayforpic].length; j++)
+     ////////alert(daypicdata[dayforpic][j]);
+     var ii;
+     var thedelay=1000;
+     if (freeze==1) {
+         setTimeout(xxxx,thedelay,i,tof); //could use tof instead of freeze or... redo later to use cache.
+         return;
+     }
+     if (tof) {
+       if (daypicdata[dayforpic].length!=0) {
+            for (ii=0; ii<daypicdata[dayforpic].length; ii++) {
+                j=(i+ii)%daypicdata[dayforpic].length;
+                if (generalpicobj[j]===undefined) {
+                    continue;
+                }
+                if (daypicobj[dayforpic][j].cached===0) {
+                    daypicobj[dayforpic][j].style.position="absolute";
+                    daypicobj[dayforpic][j].style.top="0px";
+                    daypicobj[dayforpic][j].style.left="0px";
+                    daypicobj[dayforpic][j].style.visibility="visible";
+                    img_1.parentNode.appendChild(daypicobj[dayforpic][j]);
+                    daypicobj[dayforpic][j].cached=1;
+                }
+                if (daypicobj[dayforpic][j].cached==1) {
+                    i=i+ii;
+                    daypicobj[dayforpic][j].style.zIndex=i;
+                    setTimeout(xxxx,thedelay,i,0);
+                    if (getcnt>=0) {
+                        getcnt++;
+                        if (getcnt>=GETCNTTHRES) { //rough.. no matter that cycle may break and/or have much more than 10 cached waiting next.
+                            setTimeout(fetchsomepics,100); //try to get 10 more since we may be near end of cached with more to go.. no need to be exact .. just to add some spacer and try to avoid running out but ok if do
+                        }
+                    }
+                    break;
+                }
+            }
+            if (ii==daypicdata[dayforpic].length) {
+                setTimeout(xxxx,thedelay,i,tof); //could use tof instead of freeze or... redo later to use cache.
+                return;
+            }
+  //          j=(i)%daypicdata[dayforpic].length
+  //          setTimeout(xxxx,          2000,i,0);  //for time being, days are shut off
+            //alert(daypicdata[dayforpic][j]);
+ //           hhtpp = new XMLHttpRequest();
+ //           hhtpp.open( "HEAD", daypicdata[dayforpic][j], false);
+ //           hhtpp.send();
+ //           if (hhtpp.status==200) {
+  //            aa=document.getElementById("img-1");
+  //            aa.src = daypicdata[dayforpic][j];     //alert(aa.src)
+              
+ //           } else {
+ //             ;
+ //           }
+       } else {
+            setTimeout(xxxx,1,i,0);
+       }
+     } else {
+       if (generalpicdata.length!=0) {
+ //this old approach using initxxxx works (shows pic fast if loaded even if we ask for a new pic?) ff yes and doesn't use network further.
+ /*
+            j=(i)%generalpicdata.length;
+            setTimeout(xxxx,2000,i+1,1);
+            //alert(generalpicdata[j]);
+ //           hhtpp = new XMLHttpRequest();
+ //           hhtpp.open( "HEAD", generalpicdata[j], false);
+ //           hhtpp.send();
+ //           if (hhtpp.status==200) {
+              aa=document.getElementById("img-1");
+              aa.src = generalpicdata[j];
+ //           } else {
+ //             ;
+ //           }
+ */
+ //but use new approach since it's correct way and works on more browsers without network/server cost, eg, of chrome
+            for (ii=0; ii<generalpicdata.length; ii++) {
+                j=(i+ii)%generalpicdata.length;  //alert("sdf  "+j)
+                if (generalpicobj[j]===undefined) {
+                    continue;
+                }
+                if (generalpicobj[j].cached===0) {  //alert(j)
+                    generalpicobj[j].style.position="absolute";
+                    generalpicobj[j].style.top="0px";
+                    generalpicobj[j].style.left="0px";
+                    generalpicobj[j].style.visibility="visible";
+                    img_1.parentNode.appendChild(generalpicobj[j]);
+                    generalpicobj[j].cached=1;
+                } 
+                if (generalpicobj[j].cached==1) {
+                    i=i+ii;
+                    generalpicobj[j].style.zIndex=i;
+                    setTimeout(xxxx,thedelay,i+1,1);
+                    if (getcnt>=0) {  //alert(getcnt)
+                        getcnt++;
+                        if (getcnt>=GETCNTTHRES) { //rough.. no matter that cycle may break and/or have much more than 10 cached waiting next.
+                            setTimeout(fetchsomepics,100); //try to get 10 more since we may be near end of cached with more to go.. no need to be exact .. just to add some spacer and try to avoid running out but ok if do
+                        }
+                    }
+                    break;
+                }
+            }
+            if (ii==generalpicdata.length) {
+                setTimeout(xxxx,thedelay,i,tof); //could use tof instead of freeze or... redo later to use cache.
+                return;
+            }
+       } else {
+            setTimeout(xxxx,1,i+1,1);
+       }
+     }
+   }
+ 
+ 
+ 
+ function adjusttextareacolumnsforbrowsers(box1, box2) {
+     //adjust textareas width/col since col are ready. the cols for each one may differ and is related to dim of slideshow. later put the main numbers at top together. 363,363,64col, etc. and init col above this step.
+      //later do a calculation based on font size and cols value.. now just set fixed
+  //alert (box1.cols);
+  //alert(navigator.userAgent.search(/firefox/i))
+  if (navigator.userAgent.search(/firefox/i)>=0) {
+      if (navigator.userAgent.search(/edge/i)>=0) {
+          ;
+      } else {
+          box1.cols=Math.round(box1.cols*.74*1.00);  // .74?xxxxcalibrated to work when turning 63 into 47 at size1 (8pt?).. decent results in most other cases i assume. otherwise include some font dependency (?) and factor out the right scrollbar also.
+          box2.cols=Math.round(box2.cols*.70*1.00);// .70?//*.9*.96);  //xxxxcalibrated to work when turning 63 into 47 at size1 (8pt?).. decent results in most other cases i assume. otherwise include some font dependency (?) and factor out the right scrollbar also.
+      }
+  } else if (navigator.userAgent.search(/ozilla/)>=0) {
+      if (navigator.userAgent.search(/edge/i)>=0) {
+          ;
+      } else {
+          box1.cols=Math.round(box1.cols*.89);
+          box2.cols=Math.round(box2.cols*.85);//*.9*.96);
+      }
+  }
+ }
+ 
+ 
+ 
+ function dotourney() {
+     tourneytext.innerHTML=tourneymsg;
+     tourneylink.href=tourneyhyper;
+     ///maybe here and elsewhere do <10 etc in case get 404 page.. for all req?
+ }
+ 
+ 
+ 
+ //from jscrollpane.kelvinluck.com/basic.html as linked from stackoverflow. see css below
+ //$(function()
+ //{
+ //    $('.scroll-pane').jScrollPane();
+ //});
+ 
+ function FP_swapImg() {//v1.0
+ 
+  var doc=document,args=arguments,elm,n; doc.$imgSwaps=new Array(); for(n=2; n<args.length;
+ 
+  n+=2) { elm=FP_getObjectByID(args[n]); if(elm) { doc.$imgSwaps[doc.$imgSwaps.length]=elm;
+ 
+  elm.$src=elm.src; elm.src=args[n+1]; } }
+ 
+ }
+ 
+ 
+ 
+ function FP_preloadImgs() {//v1.0
+ 
+  var d=document,a=arguments; if(!d.FP_imgs) d.FP_imgs=new Array();
+ 
+  for(var i=0; i<a.length; i++) { d.FP_imgs[i]=new Image; d.FP_imgs[i].src=a[i]; }
+ 
+ }
+ 
+ 
+ 
+ function FP_getObjectByID(id,o) {//v1.0
+ 
+  var c,el,els,f,m,n; if(!o)o=document; if(o.getElementById) el=o.getElementById(id);
+ 
+  else if(o.layers) c=o.layers; else if(o.all) el=o.all[id]; if(el) return el;
+ 
+  if(o.id==id || o.name==id) return o; if(o.childNodes) c=o.childNodes; if(c)
+ 
+  for(n=0; n<c.length; n++) { el=FP_getObjectByID(id,c[n]); if(el) return el; }
+ 
+  f=o.forms; if(f) for(n=0; n<f.length; n++) { els=f[n].elements;
+ 
+  for(m=0; m<els.length; m++){ el=FP_getObjectByID(id,els[n]); if(el) return el; } }
+ 
+  return null;
+ 
+ }
+ 
+ // -->
+   </script>
+   <style>
+    <!--
+ 
+ .scroll-pane {
+ width:100%;
+ overflow:auto;
+ }
+ 
+ #facebook-ta { font-size:10px;}
+ 
+ .patriotic-left {
+ 
+ font: normal 85%  Verdana, Arial, Helvetica, sans-serif;
+ 
+ color: #003366;
+ 
+ }
+ 
+ -->
+   </style>
+  </head>
+  <body>
+   <center>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8">-->
+    <meta content="text/css" http-equiv="Content-Style-Type"/>
+    <link href="/CASLWebPortal/theme/blue.css" rel="stylesheet" type="text/css"/>
+    <!-- tpl:put name="headarea" -->
+    <title>
+     CASL Portal
+    </title>
+    <!-- /tpl:put -->
+    <link href="index_files/filelist.xml" rel="File-List"/>
+    <!--mstheme-->
+    <link href="_themes/clearday/clea1011.css" rel="stylesheet" type="text/css"/>
+    <meta content="clearday 1011" name="Microsoft Theme"/>
+    <p>
+    </p>
+    <table border="0" cellpadding="0" cellspacing="0" width="933">
+     <tbody>
+      <tr>
+       <td valign="top">
+        <table border="0" cellpadding="0" cellspacing="0" class="header" width="943">
+         <tbody>
+          <tr>
+           <td align="center" width="6">
+           </td>
+           <td align="center" bgcolor="#003366" width="939">
+            <p>
+             <b>
+              <font color="#FFFFFF">
+               <img align="right" border="0" height="256" src="caslwebportal/CASL3.jpg" width="930"/>
+              </font>
+             </b>
+             <b>
+              <font color="#FFFFFF">
+              </font>
+              <font color="#FFFFFF">
+              </font>
+              <font color="#FFFFFF">
+              </font>
+              <font color="#FFFFFF">
+              </font>
+             </b>
+             <b>
+              <font color="#FFFFFF">
+              </font>
+             </b>
+             <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+              <span style="font-family: Tahoma">
+               <b>
+                <i>
+                 <font color="#FF0000">
+                 </font>
+                </i>
+               </b>
+              </span>
+             </p:colorscheme>
+            </p>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        <table border="0" cellpadding="0" cellspacing="0" class="nav_head" width="922">
+         <tbody>
+          <tr>
+           <td align="justify" width="4">
+           </td>
+           <td align="justify" width="916">
+            <table border="0" cellpadding="2" cellspacing="2" height="37" width="460">
+             <tbody>
+              <tr>
+               <td class="nav-h-normal" width="4">
+                <a href="http://www.local.com/results.aspx?keyword=News+Papers&amp;cid=661&amp;gid=US_-_Test_-_Aug_30&amp;gclid=CISS4IXpj5ICFQYYgQod9hXl7A">
+                 <img border="0" height="30" src="/images/vanderas/flag.gif" width="53"/>
+                </a>
+               </td>
+               <td class="nav-h-normal" width="4">
+                <img border="0" height="41" src="/images/vanderas/cuba.gif" width="44"/>
+               </td>
+               <td class="nav-h-normal" width="4">
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.onlinenewspapers.com/domrep.htm">
+                 <img border="0" height="24" src="/images/vanderas/dr-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.abyznewslinks.com/colom.htm">
+                 <img border="0" height="24" src="/images/vanderas/co-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.onlinenewspapers.com/nicaragu.htm">
+                 <img border="0" height="24" src="/images/vanderas/nu-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.abyznewslinks.com/panam.htm">
+                 <img border="0" height="24" src="/images/vanderas/pm-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.onlinenewspapers.com/honduras.htm">
+                 <img border="0" height="24" src="/images/vanderas/ho-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.abyznewslinks.com/venez.htm">
+                 <img border="0" height="24" src="/images/vanderas/ve-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.abyznewslinks.com/mexic.htm">
+                 <img border="0" height="24" src="/images/vanderas/mx-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.abyznewslinks.com/puert.htm">
+                 <img border="0" height="24" src="/images/vanderas/pr-flag.gif" width="40"/>
+                </a>
+               </td>
+               <td align="justify" width="42">
+                <a href="http://www.newscanada.com/">
+                 <img border="0" height="24" src="/images/vanderas/ca-flag.gif" width="40"/>
+                </a>
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+           <td width="5">
+            <img alt="" border="0" height="1" src="/CASLWebPortal/theme/c.gif" width="5"/>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <!-- /siteedit:navbar -->
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        <!-- siteedit:navbar spec="/CASLWebPortal/theme/nav_top3.html" topsibling="true" onlychildren="false" targetlevel="3-3" -->
+        <table border="0" cellpadding="0" cellspacing="0" class="nav_top3" width="97%">
+         <tbody>
+          <tr>
+           <td width="12">
+            <span style="background-color: #FFFFFF">
+            </span>
+           </td>
+           <td align="center">
+           </td>
+           <td width="898">
+            <font color="#FF0000" size="1">
+             <marquee behavior="alternate" height="18" scrollamount="3" style="color: #FF0000; font-size:10px" width="547">
+              Las Banderas representan los paises que juegan en la (CASL)  pulse y vera noticias de su país
+             </marquee>
+            </font>
+            <b>
+             <i>
+              <font color="#FF0000" size="2">
+               Programacion de Juegos &amp; 
+ 			Informacion
+              </font>
+             </i>
+            </b>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <!-- /siteedit:navbar -->
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        <table border="0" cellpadding="0" cellspacing="0" width="917">
+         <tbody>
+          <tr>
+           <td align="center" bgcolor="#FFFFFF" valign="top" width="19">
+            <!-- /siteedit:navbar -->
+            <font color="#FFFFFF">
+             <!-- <APPLET
+ 
+ 							code="org.caslsoftball.webapp.TeamSelector.class"
+ 
+ 							codebase="http://caslsoftball.org/CASLWebPortal/Applets/" width="150" height="23" style="border: 1px solid #00FFFF"></APPLET> -->
+            </font>
+           </td>
+           <td align="center" class="content-area" valign="top" width="890">
+            <!-- tpl:put name="bodyarea" -->
+            <table border="0" cellpadding="0" cellspacing="0" height="468" width="864">
+             <tbody>
+              <tr>
+               <td align="center" bgcolor="#999999" height="193" width="208">
+                <a href="StatsCenter/index.html">
+                 <img alt="Stats Center" border="0" fp-style="fp-btn: Border Left 1" fp-title="Stats Center" height="30" id="img4" onmousedown="FP_swapImg(1,0,/*id*/'img4',/*url*/'images/mainpage-img/buttonb.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img4',/*url*/'images/mainpage-img/button9.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img4',/*url*/'images/mainpage-img/buttona.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img4',/*url*/'images/mainpage-img/buttona.jpg')" src="images/mainpage-img/button9.jpg" width="150"/>
+                </a>
+                <br/>
+                <br/>
+                <a href="photos/photos.html">
+                 <img alt="Photos-Fotos" border="0" fp-style="fp-btn: Border Left 1" fp-title="Photos-Fotos" height="30" id="img5" onmousedown="FP_swapImg(1,0,/*id*/'img5',/*url*/'images/mainpage-img/button13.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img5',/*url*/'images/mainpage-img/button14.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img5',/*url*/'images/mainpage-img/button12.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img5',/*url*/'images/mainpage-img/button12.jpg')" src="images/mainpage-img/button14.jpg" width="150"/>
+                </a>
+                <p>
+                 <a href="aplicacion/aplicacion.htm">
+                  <img alt="Application-Solicitud" border="0" fp-style="fp-btn: Border Left 1" fp-title="Application-Solicitud" height="30" id="img8" onmousedown="FP_swapImg(1,0,/*id*/'img8',/*url*/'images/mainpage-img/button15.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img8',/*url*/'images/mainpage-img/buttone.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img8',/*url*/'images/mainpage-img/buttonf1.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img8',/*url*/'images/mainpage-img/buttonf1.jpg')" src="images/mainpage-img/buttone.jpg" width="150"/>
+                 </a>
+                </p>
+                <p>
+                 <a href="calendario-shedule/Default.htm">
+                  <img alt="Calendario 2018" border="0" fp-style="fp-btn: Border Left 1" fp-title="Calendario 2018" height="30" id="img14" onmousedown="FP_swapImg(1,0,/*id*/'img14',/*url*/'images/mainpage-img/button2D.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img14',/*url*/'images/mainpage-img/button2B.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img14',/*url*/'images/mainpage-img/button2C.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img14',/*url*/'images/mainpage-img/button2C.jpg')" src="images/mainpage-img/button2B.jpg" width="150"/>
+                 </a>
+                </p>
+                <p>
+                 <a href="PHOTOS/peloteros.muertos/Default.htm">
+                  <img alt="Jugadores Fallecidos" border="0" fp-style="fp-btn: Border Left 1" fp-title="Jugadores Fallecidos" height="30" id="img15" onmousedown="FP_swapImg(1,0,/*id*/'img15',/*url*/'images/mainpage-img/buttonF4.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img15',/*url*/'images/mainpage-img/buttonD1.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img15',/*url*/'images/mainpage-img/buttonE2.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img15',/*url*/'images/mainpage-img/buttonE2.jpg')" src="images/mainpage-img/buttonD1.jpg" width="150"/>
+                 </a>
+                </p>
+                <p>
+                 <a href="legal/waivers/waiver.BMP">
+                  <img alt="Player waiver Liability" border="0" fp-style="fp-btn: Border Left 1" fp-title="Player waiver Liability" height="30" id="img17" onmousedown="FP_swapImg(1,0,/*id*/'img17',/*url*/'images/mainpage-img/button71.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img17',/*url*/'images/mainpage-img/button72.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img17',/*url*/'images/mainpage-img/button70.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img17',/*url*/'images/mainpage-img/button70.jpg')" src="images/mainpage-img/button72.jpg" width="150"/>
+                 </a>
+                </p>
+                <p>
+                 <a href="contactus/Default.htm">
+                  <img alt="Contact Us/Donde.." border="0" fp-style="fp-btn: Border Left 1" fp-title="Contact Us/Donde.." height="30" id="img6" onmousedown="FP_swapImg(1,0,/*id*/'img6',/*url*/'images/mainpage-img/button1d.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img6',/*url*/'images/mainpage-img/button1b.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img6',/*url*/'images/mainpage-img/button1c.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img6',/*url*/'images/mainpage-img/button1c.jpg')" src="images/mainpage-img/button1b.jpg" width="150"/>
+                 </a>
+                </p>
+                <p>
+                 <a href="http://jjclarklaw.com">
+                  <img alt="Abogado/Our Attorney" border="0" fp-style="fp-btn: Border Left 1" fp-title="Abogado/Our Attorney" height="30" id="img12" onmousedown="FP_swapImg(1,0,/*id*/'img12',/*url*/'images/mainpage-img/buttonf2.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img12',/*url*/'images/mainpage-img/buttond.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img12',/*url*/'images/mainpage-img/buttone1.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img12',/*url*/'images/mainpage-img/buttone1.jpg')" src="images/mainpage-img/buttond.jpg" width="150"/>
+                 </a>
+                </p>
+               </td>
+               <td bgcolor="#999999" height="193" width="364">
+                <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                 <div class="O" v:shape="_x0000_s1026">
+                  <div style='text-align: center; mso-line-spacing: "100 20 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                   <font color="#FFFFFF">
+                    <span style="font-family: Tahoma">
+                     <b>
+                      <i>
+                       The Best Modified 
+ 													Softball League!
+                      </i>
+                     </b>
+                    </span>
+                   </font>
+                  </div>
+                  <div style='mso-line-spacing: "100 50 0";'>
+                   <font color="#FFFFFF">
+                   </font>
+                  </div>
+                 </div>
+                 <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                  <div class="O" v:shape="_x0000_s1026">
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <span style="font-family: Times New Roman">
+                     <b>
+                      <font color="#FFFFFF">
+                       Bienvenido a la
+                       <br/>
+                       Cuban-American Softball 
+ 													League
+                       <br/>
+                       (CASL)
+                      </font>
+                     </b>
+                    </span>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <span style="font-family: Tahoma">
+                     <b>
+                      <font color="#FFFFFF">
+                       Welcome to the
+                       <br/>
+                       Cuban-American Softball 
+ 													League (CASL)
+                      </font>
+                     </b>
+                    </span>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <span style="font-family: Tahoma">
+                     <b>
+                      <font color="#FFFFFF">
+                       Po.Box:453134 Miami Fl 33245
+                      </font>
+                     </b>
+                    </span>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <span style="font-family: Tahoma">
+                     <b>
+                      <font color="#FFFFFF">
+                       FaceBook: Lorenzo Softball
+                      </font>
+                     </b>
+                    </span>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <span style="font-family: Tahoma">
+                     <b>
+                      <font color="#FFFFFF">
+                       Twitter: Lorenzosoftball
+                      </font>
+                     </b>
+                    </span>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <font color="#FFFFFF">
+                     <span style="font-family: Tahoma;">
+                      <b>
+                       <span>
+                        Ph #
+                       </span>
+                      </b>
+                      <span>
+                       :
+                      </span>
+                     </span>
+                     <span style="font-family: Tahoma; mso-color-index: 6;">
+                      305-939-1331
+                     </span>
+                    </font>
+                   </div>
+                   <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    <font color="#FFFFFF">
+                     <span style="font-family: Tahoma;">
+                      <b>
+                       <span style="mso-spacerun: yes;">
+                       </span>
+                       President
+                      </b>
+                      :
+                     </span>
+                     <span style="font-family: Tahoma; mso-color-index: 6;">
+                      JM Lorenzo
+                     </span>
+                    </font>
+                   </div>
+                  </div>
+                  <p>
+                   <!--											&nbsp;<p>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ -->
+                   <span style="display:inline-block; width:340px; height:199px;">
+                    <!--<span style="position:relative; width:180px; height:179px;">-->
+                    <a href="https://groupmatics.events/s/other/Cubanamerican0" id="imgcaslhyper" style="position:relative; width:340px; height:199px;">
+                     <span style="display:none; position:absolute; z-index:20; background:transparent; text-align:center; border:2px solid green; top:80px; left:10px;">
+                      <font color="black" size="3">
+                       <b>
+                        66
+                       </b>
+                      </font>
+                     </span>
+                     <span style="display:none; position:absolute; z-index:20; background:transparent; text-align:center; border:1px solid red; top:85px; left:50px;">
+                      <font color="#222222" size="1">
+                       <b>
+                        44
+                       </b>
+                      </font>
+                     </span>
+                     <span id="msgimgcasl" style="position:absolute; z-index:10; text-align:center; width:320px; top:40px; background:yellow; text-align:center;">
+                      <font color="black" size="2">
+                       <b>
+                        Haga clic aquí para seleccionar su asiento
+                       </b>
+                      </font>
+                     </span>
+                     <img border="0" height="139" id="imgcasl" src="1.11.JPG" style="position:absolute; top:40px; left:0px;" width="340"/>
+                    </a>
+                    <!--</span>-->
+                   </span>
+                  </p>
+                  <p>
+                   <script src="http://s7.addthis.com/js/250/addthis_widget.js#username=barett" type="text/javascript">
+                   </script>
+                   <a class="addthis_button" href="http://translate.googleusercontent.com/translate_c?hl=en&amp;langpair=en%7Ces&amp;u=http://www.addthis.com/bookmark.php%3Fv%3D250%26username%3Dbarett&amp;rurl=translate.google.com&amp;client=tmpg&amp;usg=ALkJrhgxi0cF5ZXikTezQR4sutkSfDgCWg">
+                    <img alt="Seńal y parte" height="16" src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" style="BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px" width="125"/>
+                   </a>
+                   <input id="stopbut" onclick="" style="border:2px solid red; position:relative; float:right; margin-right:28px;" type="button" value="Parar fotos --- &gt;&gt;&gt;"/>
+                  </p>
+                 </p:colorscheme>
+                </p:colorscheme>
+               </td>
+               <td align="left" bgcolor="#999999" height="193" valign="top" width="326">
+                <!--zona manual ...-->
+                <div id="facebook_escrito" style="width: 302; height: 491">
+                 <table cellpadding="1" width="352">
+                  <tbody>
+                   <tr>
+                    <td>
+                     <!--1: 5 rows, 58 cols (bold);;; 22 rows for christmas tourny (also do black and "none" the pics below -->
+                     <!-- ROJO -->
+                     <textarea cols="58" id="fb-ta2" name="S1" readonly="" rows="5" style="FONT-SIZE:8PT; color:red; font-weight:700;">
+                      *************************************
+ *************************************
+ La liga tiene su primer programa del 2018 el viernes 12 de enero.
+                     </textarea>
+                     <!-- rojo -->
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                     <!--1: 12 rows, 64 cols;;; 22 rows for christmas tourny -->
+                     <!-- NEGRO -->
+                     <textarea cols="64" id="fb-ta" name="S1" readonly="" rows="12" style="FONT-SIZE:8PT; color:black;">
+                      *********************************************
+ *********************************************
+ 
+ 
+ [use Roster Manager before 3rd game]
+                     </textarea>
+                     <!-- negro -->
+                     <!--[pulsa las fotos abajo para ver grande]-->
+                    </td>
+                   </tr>
+                   <tr>
+                    <td width="366">
+                     <!--2:  363 x 363;;;  add style of display:none; for xmas tourny (auto kills button) also grow above textareas -->
+                     <!--<a href="photos/tournament-photos/default.tor.htm">-->
+                     <!--<div style="position:relative; height:320px">-->
+                     <a href="b.frontcasl.html">
+                      <img height="363" id="img-1" src="1.11.jpg" width="363"/>
+                      <!-- <script>foto363()</script> -->
+                     </a>
+                     <!--</div>-->
+                     <!--relative position wrapper ..sadfasdf can be absolute and resized-->
+                     <script>
+                      adjusttextareacolumnsforbrowsers(document.getElementById("fb-ta"), document.getElementById("fb-ta2"));
+                     </script>
+                    </td>
+                   </tr>
+                  </tbody>
+                 </table>
+                </div>
+                <!--...zona manual-->
+               </td>
+              </tr>
+              <tr>
+               <td align="center" bgcolor="#808080" height="163" valign="top" width="208">
+                <ul>
+                 <li>
+                  <font color="#0033CC" size="2">
+                   <!-- was #0033cc -->
+                   Next T
+                   <span lang="en-us">
+                    ournament
+                   </span>
+                   :
+                  </font>
+                 </li>
+                 <li>
+                  <font color="#FFffff" size="1">
+                   <a href="/eventos/caribe.18.htm" id="tourneylink">
+                    <span id="tourneytext" style="color:#0033cc; color:#0066ff-nope;">
+                     Serie Caribe Tournament May 25,26,27 2018
+                    </span>
+                   </a>
+                  </font>
+                 </li>
+                 <li>
+                  <font color="#0000FF" size="1">
+                   <a href="reglas/1.txt">
+                    <span style="color:#0033cc;">
+                     Reglas compactas (tournament)
+                    </span>
+                   </a>
+                  </font>
+                 </li>
+                 <li>
+                  <font color="#FFFFFF" size="1">
+                   <a href="photos/tournament-photos/x-mas/2016/all.html">
+                    <span style="color:#0033cc; color:white-nope;">
+                     Fotos X-MAS Tournament
+                    </span>
+                   </a>
+                  </font>
+                  <font size="1">
+                  </font>
+                 </li>
+                 <li>
+                 </li>
+                </ul>
+                <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                 <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                  <div class="O" v:shape="_x0000_s1026">
+                   <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                    <div style='text-align: center; mso-line-spacing: "100 50 0"; mso-char-wrap: 1; mso-kinsoku-overflow: 1;'>
+                    </div>
+                   </p:colorscheme>
+                  </div>
+                 </p:colorscheme>
+                </p:colorscheme>
+               </td>
+               <td bgcolor="#808080" height="163" width="364">
+                <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                 <p align="center">
+                  <u>
+                   <font color="#FFFFFF" size="1">
+                    <span style="background-color: #6699CC">
+                     Park Map &amp; Direction:
+                    </span>
+                   </font>
+                  </u>
+                  <b>
+                   <span lang="en-us">
+                    <font color="#66FF66" size="1">
+                     <span style="background-color: #6699CC">
+                     </span>
+                     T
+                    </font>
+                    <font size="1">
+                     <span style="background-color: #6699CC">
+                      <a href="https://www.google.com/maps/place/Tamiami+Park/@25.7504044,-80.3802912,16z/data=!4m8!1m2!2m1!1spark+dade+tamiami+tamiami!3m4!1s0x0:0x783402bd4a53e29c!8m2!3d25.7501736!4d-80.3760141?hl=en">
+                       <font color="#FFFFFF">
+                        amiami 
+ 		--
+                       </font>
+                      </a>
+                      <font color="#FFFFFF">
+                      </font>
+                      <a href="http://maps.google.com/maps?f=q&amp;source=_q&amp;hl=en&amp;geocode=&amp;q=park+dade+tropical&amp;vps=3&amp;jsv=235a&amp;sll=25.754445">
+                       <font color="#FFFFFF">
+                        Tropical
+                       </font>
+                      </a>
+                      <a href="https://www.google.com/maps/place/Kendall+Indian+Hammocks+Park/@25.6954456,-80.3818147,15z/data=!4m8!1m2!2m1!1spark+dade+tamiami+tamiami!3m4!1s0x0:0xc432516803dc7174!8m2!3d25.6940206!4d-80.3731281?hl=en">
+                       <font color="#FFFFFF">
+                        -- KIHP
+                       </font>
+                      </a>
+                     </span>
+                    </font>
+                   </span>
+                  </b>
+                 </p>
+                 <p align="center">
+                 </p>
+                 <p align="center">
+                  <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+                   <font color="#FF0000" size="2">
+                    <marquee bgcolor="#FFFFFF" height="18" scrollamount="4" scrolldelay="50" style="color: #000000; font-size:8pt" width="345">
+                     Recordatorio de reglas: Para todos los manager y jugadores después del tercer juego ningún jugador puede pasar a otro equipo. Si todos los equipos aceptan un cambio es responsabilidad de ellos pero jugador que no este jugando(una sola vez el cambio) .La otra forma es que la liga le autoriza a un equipo a completar si tiene menos de 11 jugadores pero con ningún jugador que este o jugo en esa liga.Todos estos cambios no se hacen en el terreno hay que notificar a la liga antes de hacerlo sino su juego será confiscado. No llevar botellas al terreno menos en los tanques..Jugador expulsado como minimo pierde el siguiente programa de todos los dias de la semana que el juega si la falta es mas grande sera de mas de 2 juegos hasta ser separado de la liga,eso aplica a los equipos tambien,para ir a un playoff los jugadores tirene que tener como minimo 4 juegos,los lanzadores para ser abridor minimo 30 inn,el lanzador relevo sera en el 5 inn o perdiendo por 5 carreras...Recuerden tosos los jugadores tienen que tener su seguro de accidente y salud la liga no lo cubre..
+                    </marquee>
+                   </font>
+                  </p:colorscheme>
+                 </p>
+                </p:colorscheme>
+                <p>
+                 <span lang="en-us">
+                  <a href="reglas/bates-prohibidos/Bates%20Prohibidos.2006.htm">
+                   <font size="4">
+                    <span style="background-color: #FFFF00">
+                     Bat List
+                    </span>
+                   </font>
+                  </a>
+                  <span style="background-color: #FFFF00">
+                   <font size="4">
+                    .
+                   </font>
+                  </span>
+                  <font size="4">
+                   <span style="background-color: #FFFF00">
+                    <a href="reglas/bates-prohibidos/Bates%20Prohibidos.2006.htm">
+                     Not 
+ 											Approved
+                    </a>
+                    2018
+                   </span>
+                   <a href="reglas/2018.htm">
+                    <span style="background-color: #0033cc; color: white">
+                     Rules
+                    </span>
+                   </a>
+                  </font>
+                 </span>
+                </p>
+               </td>
+               <td align="center" bgcolor="#808080" height="181" rowspan="1" valign="top" width="326">
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                Fotos tambien en facebook
+                <a href="https://www.facebook.com/pages/Lorenzo-casl-photos/874016442677875">
+                 <img border="0" height="33" src="images/Lorenzo%20casl%20photos.jpg" width="162"/>
+                </a>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" bgcolor="#ffffff" colspan="2" height="18" valign="top" width="569">
+               </td>
+              </tr>
+             </tbody>
+            </table>
+            <p>
+             <font color="#FF0000">
+              <p:colorscheme colors="#800000,#ffffff,#602000,#ffffcc,#ff3300,#000000,#ebf25a,#f2aa68">
+               <span style="font-family: Tahoma">
+                <b>
+                 <i>
+                 </i>
+                </b>
+               </span>
+              </p:colorscheme>
+             </font>
+            </p>
+            <!-- /tpl:put -->
+           </td>
+           <td align="center" class="content-area" valign="top" width="4">
+           </td>
+           <td align="center" class="content-area" valign="top" width="4">
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </td>
+      </tr>
+      <tr>
+       <td valign="top">
+        <!-- siteedit:navbar spec="/CASLWebPortal/theme/footer.html" target="sibling" uservalue="CopyRight 2006" -->
+        <table border="0" cellpadding="0" cellspacing="0" class="footer" width="98%">
+         <tbody>
+          <tr>
+           <td width="5">
+            <img alt="" border="0" height="1" src="/CASLWebPortal/theme/c.gif" width="5"/>
+           </td>
+           <td>
+            <table border="0" cellpadding="2" cellspacing="0">
+             <tbody>
+              <tr>
+               <td class="nav-f-highlighted">
+                CASL Home
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+           <td width="9">
+            <img alt="" border="0" height="1" src="/CASLWebPortal/theme/c.gif" width="5"/>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+       </td>
+      </tr>
+     </tbody>
+    </table>
+    <p>
+    </p>
+    <div class="yui-t6" id="doc">
+     <div id="bd">
+      <div id="yui-main">
+       <div class="yui-b">
+        <div class="mod full" id="oly-overall_medals">
+         <div class="hd">
+          <table id="table2">
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <p align="center">
+    </p>
+    <script>
+     //alert(body)
+    </script>
+    <span id="dummyspan1">
+     <img src="rostermanagerphp/config-public/305-22black.txt"/>
+    </span>
+    <span id="dummyspan2">
+     <img src="rostermanagerphp/config-public/305-22red.txt"/>
+    </span>
+    <span id="dummyspan3">
+     <img src="rostermanagerphp/config-public/305-mess-style.txt"/>
+    </span>
+    <span id="dummyspan4">
+     <img src="rostermanagerphp/config-public/305-redrows.txt"/>
+    </span>
+    <span id="dummyspan5">
+     <img src="rostermanagerphp/config-public/305-blackrows.txt"/>
+    </span>
+    <span id="dummyspan6">
+     <img src="rostermanagerphp/config-public/305-imgcaslhyper.txt"/>
+    </span>
+    <span id="dummyspan7">
+     <img src="rostermanagerphp/config-public/305-msgimgcasl.txt"/>
+    </span>
+    <span id="dummyspan8">
+     <img src="rostermanagerphp/config-public/305-tourneyhyper.txt"/>
+    </span>
+    <span id="dummyspan9">
+     <img src="rostermanagerphp/config-public/305-tourneymsg.txt"/>
+    </span>
+   </center>
+  </body>
+ </html>
+ <!-- /tpl:insert -->

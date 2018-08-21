@@ -1,0 +1,1749 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Меридиан-экспресс
+   </title>
+   <meta content="" name="keywords"/>
+   <meta content="" name="description"/>
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <script src="/js/jquery-1.8.2.min.js" type="text/javascript">
+   </script>
+   <script src="/js/jquery.hovertip.js" type="text/javascript">
+   </script>
+   <script src="/js/amicus/jquery.tabs.js" type="text/javascript">
+   </script>
+   <script src="/js/jquery-ui-1.9.2.datepicker.js" type="text/javascript">
+   </script>
+   <script src="/js/meridian.js?v=3" type="text/javascript">
+   </script>
+   <script src="/js/jquery.carouFredSel-6.1.0-packed.js" type="text/javascript">
+   </script>
+   <script src="/js/jquery.fancybox.js" type="text/javascript">
+   </script>
+   <!--    <link media="screen" rel="stylesheet" href="http://www.meridian-express.ru/ru/styles/new_year.css"/>-->
+   <link href="http://www.meridian-express.ru/ru/styles/style.css?v=1" rel="stylesheet"/>
+   <!-- Fancy Box includes -->
+   <link href="http://www.meridian-express.ru/ru/styles/colorbox.css" media="screen" rel="stylesheet"/>
+   <link href="http://www.meridian-express.ru/ru/styles/jquery.fancybox.css" media="screen" rel="stylesheet"/>
+   <link href="http://www.meridian-express.ru/ru/styles/jquery-ui-1.9.2.datepicker.css" media="screen" rel="stylesheet"/>
+   <link href="http://www.meridian-express.ru/ru/styles/jquery.vector-map.css" media="screen" rel="stylesheet"/>
+   <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>-->
+   <script src="/js/jquery.colorbox-min.js" type="text/javascript">
+   </script>
+   <script src="/js/jquery.form.js" type="text/javascript">
+   </script>
+   <!-- BoShurik code -->
+   <script type="text/javascript">
+    $(document).ready(function () {
+             $('a.participation_link').click(function () {
+ //        $('#participation').show();
+             });
+ 
+             $('a.participation_close').click(function () {
+ //        $('#participation').hide();
+             });
+ 
+             $('.popup-form form').submit(function () {
+                 var options = {
+                     dataType: 'json',
+                     beforeSubmit: function (formData, jqForm, options) {
+                         return true;
+                     },
+                     success: function (response, status, xhr, $form) {
+                         var $messages = $('.popup-form .messages');
+                         if (response['error'] == 1) {
+                             // їїїїїї
+                             $messages.html(response['messages']);
+                         } else {
+                             // їїї її
+                             $messages.parent().html('Успешно отправлено');
+                         }
+                     }
+                 };
+ 
+                 $(this).ajaxSubmit(options);
+ 
+                 return false;
+             });
+         });
+   </script>
+   <!-- End of BoShurik code-->
+   <!-- End of Fancy Box include -->
+   <script type="text/javascript">
+    $(document).ready(function () {
+             var loc = window.location.pathname;
+             if (loc.match(/^\/study/)) {
+                 $("#banners-for-all").css("display", "none");
+             }
+         });
+   </script>
+   <script language="JavaScript">
+    var ypos = 0;
+ 
+         var xpos = 0;
+ 
+ 
+         function iMouse() {
+             /*
+              ypos=event.y+document.documentElement.scrollTop;
+              xpos=event.x+document.documentElement.scrollLeft;
+              eval('document.all["planet"].style.top=ypos-10;');
+              eval('document.all["planet"].style.left=xpos+10;');
+              */
+             return true;
+         }
+   </script>
+   <script type="text/javascript">
+    var kurse = 74.8111;
+         var kursu = 64.2321;
+         var kurseu = 1.188;
+         //$(document).ready(function(){
+         //	$("table.convert_euro td").wrapInner("<div class='hoverdiv eur' title=''></div>
+         //")	;
+         //	$("table.convert_usd td").wrapInner("<div class='hoverdiv usd' title=''></div>")	;
+         //	$("div.eur").hover(function(){
+         //		var rub = Math.round($(this).text()*kurse);
+         //		if(!isNaN(rub)){
+         //			$(this).attr("title",rub + " руб.");
+         //		}
+         //	});
+         //	$("div.usd").hover(function(){
+         //		var rub = Math.round($(this).text()*kursu);
+         //		if(!isNaN(rub)){
+         //			$(this).attr("title",rub + " руб.");
+         //		}
+         //	});
+         //	$("div.hoverdiv").hoverbox();
+         //});
+ 
+         function swapEurRu(cur) {
+             if (cur == 1) {
+                 $("div.eur").hide();
+                 $("div.ru").show();
+                 $("a.ru_link").addClass("selected");
+                 $("a.eur_link").removeClass("selected");
+             } else {
+                 $("div.ru").hide();
+                 $("div.eur").show();
+                 $("a.eur_link").addClass("selected");
+                 $("a.ru_link").removeClass("selected");
+             }
+         }
+         function swapUsdRu(cur) {
+             if (cur == 1) {
+                 $("div.usd").hide();
+                 $("div.ru").show();
+                 $("a.ru_link").addClass("selected");
+                 $("a.usd_link").removeClass("selected");
+             } else {
+                 $("div.ru").hide();
+                 $("div.usd").show();
+                 $("a.usd_link").addClass("selected");
+                 $("a.ru_link").removeClass("selected");
+             }
+         }
+ 
+ 
+         $(document).ready(function () {
+ 
+             $("ul.gallery").carouFredSel({
+ 
+                 circular: false,
+                 infinite: false,
+                 auto: false,
+                 prev: {
+                     button: ".prev",
+                     key: "left"
+                 },
+                 next: {
+                     button: ".next",
+                     key: "right"
+                 }
+ 
+             });
+ 
+ 
+             $("table.convert_euro td").wrapInner("<div class='eur' title=''></div>");
+             $("table.convert_usd td").wrapInner("<div class='usd' title=''></div>");
+ 
+             $("table.convert_euro").before("<a rel=\"nofollow\" href='javascript:void(0);' onclick='swapEurRu(1)' class='ru_link'>В рублях</a> | <a rel=\"nofollow\" href='javascript:void(0)' onclick='swapEurRu(2)' class='eur_link'>В евро</a>")
+ 
+             $("table.convert_usd").before("<a rel=\"nofollow\" href='javascript:void(0);' onclick='swapUsdRu(1)' class='ru_link'>В рублях</a> | <a rel=\"nofollow\" href='javascript:void(0)' onclick='swapUsdRu(2)' class='usd_link'>В долларах</a>")
+ 
+             $("div.eur").each(function () {
+                 var rub = Math.round($(this).text() * kurse);
+                 if (!isNaN(rub) && rub != 0) {
+                     $(this).after("<div style='display:none' class='ru'>" + rub + "</div>");
+                 } else {
+                     $(this).removeClass("eur");
+                 }
+             });
+             $("div.usd").each(function () {
+                 var rub = Math.round($(this).text() * kursu);
+                 if (!isNaN(rub) && rub != 0) {
+                     $(this).after("<div style='display:none' class='ru'>" + rub + "</div>");
+                 } else {
+                     $(this).removeClass("usd");
+                 }
+             });
+             swapEurRu(1);
+             swapUsdRu(1);
+         });
+   </script>
+   <style type="text/css">
+    a.selected
+ 
+         {color:red}
+   </style>
+  </head>
+  <body>
+   <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+     <td>
+      <div class="new_year">
+       <img alt="christmas" class="tree_left" src="/images/new_year/christmas-tree-left.png"/>
+       <img alt="christmas" class="santa" src="/images/new_year/santa.png"/>
+       <div class="top">
+       </div>
+       <div class="snow">
+       </div>
+      </div>
+      <table cellpadding="0" cellspacing="0" class="bg" width="100%">
+       <tr>
+        <td height="130" style="padding-left:36px;" valign="top" width="250">
+         <a href="http://www.meridian-express.ru/" rel="nofollow">
+          <img alt="Туры во Францию, Бразилию, Амстердам, Голландию от турагенства Меридиан-Экспресс" border="0" class="logogm" height="89" src="/images/logo.png" width="204"/>
+         </a>
+        </td>
+        <td class="bgpic" width="100%">
+         <div class="top_menus">
+          <ul class="top_menus1">
+           <li>
+            <a href="http://www.education-meridian.ru/" rel="nofollow">
+             Обучение за рубежом
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/reviews//" rel="nofollow">
+             Отзывы
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/visa/" rel="nofollow">
+             Визы
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/catalogs/" rel="nofollow">
+             Каталоги
+            </a>
+           </li>
+          </ul>
+          <ul class="top_menus2">
+           <li>
+            <a href="http://www.meridian-express.ru/about_us/" rel="nofollow">
+             О компании
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/for_agencies/" rel="nofollow">
+             Агентствам
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/corporate/" rel="nofollow">
+             Корпоративным
+                                                                                                        клиентам
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/vacancies/" rel="nofollow">
+             Вакансии
+            </a>
+           </li>
+          </ul>
+         </div>
+         <a class="gde_kup_tur" href="http://www.meridian-express.ru/agencies/">
+          Где купить туры
+         </a>
+         <div class="social_icons">
+          <div class="clearfix">
+           <a class="fb" href="http://www.facebook.com/MeridianExpressHolidays" title="Мы на facebook">
+            <img src="/images/f.jpg"/>
+           </a>
+           <a class="vk" href="http://vk.com/meridianexpressholidays" title="Мы на ВКонтакте">
+            <img src="/images/vk_new.png"/>
+           </a>
+          </div>
+          <span>
+           Мы в соц. сетях
+          </span>
+         </div>
+         <div class="right_tel">
+          <div class="right_tel_b1">
+           <!-- div class="right_tel_a act" id="right_tel_a1"><span>Агентствам</span></div -->
+           <!--<div class="right_tel_a" id="right_tel_a2"><span>Частным лицам</span></div>-->
+          </div>
+          <div class="right_tel_b12">
+           <div class="right_tel_b" id="bright_tel_a1">
+            +7 (495) 933-50-68
+           </div>
+           <!--<div class="right_tel_b" id="bright_tel_a2" style="display:none;">+7 (495) 797-85-50</div>-->
+          </div>
+          <div class="mails3">
+           <a href="http://www.meridian-express.ru/contact/" style="color: #FFFFFF;">
+            Написать
+                                                                                                           письмо
+           </a>
+          </div>
+          <script type="text/javascript">
+           $('.right_tel_b1').find('.right_tel_a').click(function () {
+                                     if (!$(this).hasClass('act')) {
+                                         $('.right_tel_b1').find('.act').removeClass('act');
+                                         $(this).addClass('act');
+                                         $('.right_tel_b').hide();
+                                         $('#b' + $(this).attr('id')).show();
+                                     }
+                                 });
+          </script>
+         </div>
+        </td>
+       </tr>
+      </table>
+      <table cellpadding="0" cellspacing="0" width="100%">
+       <!--в этой табличке будут разные блоки-->
+       <tr valign="middle">
+        <td class="ots1" valign="top" width="190">
+         <div class="hot_tours">
+          <div class="title">
+           Онлайн сервисы
+          </div>
+          <script language="JavaScript">
+           function openWin3() {
+         myWin = open("", "displayWindow",
+                 "width=500,height=400,status=yes,toolbar=yes,menubar=yes,resizable=no,scrollbars=yes");
+         // открыть объект document для последующей печати
+         myWin.document.open();
+         //  генерировать новый документ
+         myWin.document.write("<html><head><title>СТАТУС ЗАЯВКИ");
+         myWin.document.write("</title></head><body marginheight=0 marginwidth=0>");
+         myWin.document.write("<iframe src=http://remote.meridian-express.ru:8585/MW/OrderStatus.aspx width=500 height=400 frameborder=0></iframe>");
+         myWin.document.write("</body></html>");
+         // закрыть документ - (но не окно!)
+         myWin.document.close();
+     }
+ 
+     function openWin4() {
+         myWin = open("", "displayWindow1",
+                 "width=500,height=400,status=yes,toolbar=yes,menubar=yes,resizable=no,scrollbars=yes");
+         // открыть объект document для последующей печати
+         myWin.document.open();
+         //  генерировать новый документ
+         myWin.document.write("<html><head><title>СТАТУС ВИЗЫ");
+         myWin.document.write("</title></head><body marginheight=0 marginwidth=0>");
+         myWin.document.write("<iframe src=http://remote.meridian-express.ru:8585/MW/VisaStatus.aspx width=500 height=400 frameborder=0></iframe>");
+         myWin.document.write("</body></html>");
+         // закрыть документ - (но не окно!)
+         myWin.document.close();
+     }
+          </script>
+          <ul>
+           <li>
+            <a href="http://remote.meridian-express.ru:8585/MW/Extra/QuotedDynamic.aspx" onclick="yaCounter107888.reachGoal('link0');_gaq.push(['_trackEvent', 'link0', 'click', 'click_link0']);" rel="nofollow" style="">
+             <img src="/images/icon_bag.png"/>
+             <span>
+              Поиск тура
+             </span>
+            </a>
+           </li>
+           <li>
+            <a href="http://remote.meridian-express.ru:8585/webclient/HotelsBooking/hotels.html" onclick="yaCounter107888.reachGoal('link2');_gaq.push(['_trackEvent', 'link2', 'click', 'click_link2']);">
+             <img src="/images/icon_hotel.png"/>
+             <span>
+              Отели
+             </span>
+            </a>
+           </li>
+           <li>
+            <a href="http://remote.meridian-express.ru:8585/webclient/FlightsBooking/flights.html" onclick="yaCounter107888.reachGoal('link1');_gaq.push(['_trackEvent', 'link1', 'click', 'click_link1']);" style="">
+             <img src="/images/icon_ticket.png"/>
+             <span>
+              Авиабилеты
+             </span>
+            </a>
+           </li>
+           <li>
+            <a href="#" onclick="yaCounter107888.reachGoal('link3');_gaq.push(['_trackEvent', 'link3', 'click', 'click_link3']);openWin3()" style="">
+             <img src="/images/icon_paper.png"/>
+             <span>
+              Статус заявки
+             </span>
+            </a>
+           </li>
+           <li>
+            <a href="#" onclick="yaCounter107888.reachGoal('link4');_gaq.push(['_trackEvent', 'link4', 'click', 'click_link4']);openWin4()" style="">
+             <img src="/images/icon_card.png"/>
+             <span>
+              Статус визы
+             </span>
+            </a>
+           </li>
+           <li>
+            <a href="http://remote.meridian-express.ru:8585/mw/login.aspx?ReturnUrl=%2fmw%2forderlist.aspx" onclick="yaCounter107888.reachGoal('link2');_gaq.push(['_trackEvent', 'link2', 'click', 'click_link2']);">
+             <!--  <img src="/images/icon_hotel.png"> -->
+             <center>
+              <span>
+               Личный кабинет
+              </span>
+             </center>
+            </a>
+           </li>
+          </ul>
+         </div>
+         <a class="dialog order_calculation" href="#custom_tour">
+          <img src="/images/icon-big_pencil.png"/>
+          Запрос на расчет нестандартного тура
+         </a>
+         <!-- div align="center" style="margin-bottom: 20px;"><a href="http://www.meridian-express.ru/for_agencies/webinars/" target="_blank"><img border="0" src="http://www.meridian-express.ru/ru/images/banners/webinar2.gif"></a></div>-->
+         <div class="center">
+          <a href="">
+           <img src="/ru/images/banners/20170314/it.gif"/>
+          </a>
+         </div>
+         <!--<br>
+ <div align="center"><a href="http://www.homecomingscotland.com/" target="_blank"><img border="0" src="http://www.meridian-express.ru/ru/images/public/uk/homecoming2014_204x108.jpg"></a></div>-->
+         <!-- -->
+         <h2 style="margin-top: 30px;">
+          Курсы валют
+         </h2>
+         <div class="news">
+          <table border="0" cellpadding="0" cellspacing="5">
+           <tr>
+            <td>
+             Доллар США........
+            </td>
+            <td>
+             64.2321
+            </td>
+           </tr>
+           <tr>
+            <td>
+             Евро...................
+            </td>
+            <td>
+             74.8111
+            </td>
+           </tr>
+          </table>
+         </div>
+         <!--<H2 style="margin-top:31px;">Курсы валют</H2>
+ 
+                         <div class="news">
+ 
+                         <b>1 EUR</b> = 74.8111 руб.<br>
+ 
+                         <b>1 USD</b> = 64.2321 руб.<br>
+ 
+                         </div>
+ 
+                         -->
+         <h2 style="margin-top:31px;">
+          Способы оплаты
+         </h2>
+         <div class="news">
+          <div id="merex_partner" style="position:absolute">
+           <!--не удалять, ссылка партнёра merex.ru по бронированию отелей-->
+           <a href="http://adresator.org/maps/oteli-i-otzyvy-sankt-peterburg" title="Недорогие Отели Санкт-Петербурга и Отзывы Посетителей">
+            Отели Санкт-Петербурга недорого
+           </a>
+          </div>
+          <script type="text/javascript">
+           document.getElementById("merex_partner").style.left="-9999px";
+          </script>
+          <ul class="how_ul">
+           <li>
+            <a href="http://www.meridian-express.ru/content/about_us/oplata#bycard">
+             <img alt="" src="/ru/images/public/ico-card2.png" style="bottom: -8px; position: relative;"/>
+             Банковской картой
+            </a>
+            <a>
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/content/about_us/oplata#nalik">
+             <img alt="" src="/ru/images/public/ico-cash.png" style="bottom: -11px; position: relative; margin: 0 6px;"/>
+             Наличный расчет
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/content/about_us/oplata#beznal">
+             <img alt="" src="/ru/images/public/ico-noncash.png" style="bottom: -11px; position: relative; margin: 0 6px;"/>
+             Безналичный расчет
+            </a>
+           </li>
+           <li>
+            <a href="http://www.meridian-express.ru/content/about_us/oplata#terminal">
+             <img alt="" src="/ru/images/public/terminal.jpg" style="bottom: -11px; position: relative; margin: 0 6px;"/>
+             Оплата через терминал
+            </a>
+           </li>
+          </ul>
+         </div>
+         <!-- [SUBSCRIBE] -->
+         <h2 style="margin-top:31px;">
+          Рассылка
+         </h2>
+         <div class="news">
+          <form action="/subscribe/" method="POST">
+           <label for="company">
+            Название компании
+           </label>
+           <input name="company" type="text"/>
+           <br/>
+           <label for="pochta">
+            Ваш e-mail
+           </label>
+           <input name="pochta" type="text"/>
+           <br/>
+           <br/>
+           <input type="submit" value="Подписаться"/>
+          </form>
+          <!-- [/SUBSCRIBE] -->
+         </div>
+        </td>
+        <td class="otsmain" valign="top">
+         <div style="margin: 10px 0; text-align: center;">
+          <a href="http://www.meridian-express.ru/about_us/shema_proezda/" style="color: #ff0000; display: inline-block; font-size: 18px; font-weight: bold; text-align: center">
+           &gt; ВНИМАНИЕ! &lt;
+           <br/>
+           МЕРИДИАН ЭКСПРЕСС ПЕРЕЕХАЛ В НОВЫЙ ОФИС!!!
+          </a>
+         </div>
+         <!--а тут контент странички -->
+         <script type="text/javascript">
+          function swapCurRu(cur) {
+         if (cur == 1) {
+             $("div.euro").hide();
+             $("div.usd").hide();
+             $("div.ru").show();
+             $("a.rub_link").addClass("selected");
+             $("a.euro_link").removeClass("selected");
+             $("a.usdl_link").removeClass("selected");
+         } else if (cur == 2) {
+             $("div.ru").hide();
+             $("div.usd").hide();
+             $("div.euro").show();
+             $("a.euro_link").addClass("selected");
+             $("a.rub_link").removeClass("selected");
+             $("a.usdl_link").removeClass("selected");
+         } else {
+             $("div.ru").hide();
+             $("div.euro").hide();
+             $("div.usd").show();
+             $("a.usdl_link").addClass("selected");
+             $("a.rub_link").removeClass("selected");
+             $("a.euro_link").removeClass("selected");
+         }
+     }
+ 
+     $(document).ready(function () {
+         $("td.date1 table td").wrapInner('<div class="euro"></div>');
+         $("div.euro").each(function () {
+             var td = $(this).text();
+             var ot = td.indexOf("от");
+             td = td.replace("от", "");
+             td = td.replace("€", "");
+             td = $.trim(td);
+             var rub = Math.round(td * kurse);
+             var usd = Math.round(td * kurseu);
+ 
+ 
+             if (!isNaN(rub) && rub != 0) {
+                 $(this).after("<div style='display:none' class='ru'>" + (ot > -1 ? "от " : "") + rub + "</div>");
+                 $(this).after("<div style='display:none' class='usd'>" + (ot > -1 ? "от " : "") + usd + "</div>");
+             } else {
+                 $(this).removeClass("euro");
+             }
+ 
+         });
+         swapCurRu(1);
+     });
+         </script>
+         <a class="rub_link" href="javascript:void(0);" onclick="swapCurRu(1)">
+          В рублях
+         </a>
+         |
+         <a class="euro_link" href="javascript:void(0);" onclick="swapCurRu(2)">
+          В евро
+         </a>
+         |
+         <a class="usdl_link" href="javascript:void(0);" onclick="swapCurRu(3)">
+          В долларах
+         </a>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/britain/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag83.gif);">
+            ВЕЛИКОБРИТАНИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <span style="color: rgb(255, 0, 0);">
+            </span>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" class="table-border-black" style="width: 100%;">
+             <tbody>
+              <tr>
+               <td align="center" height="40" width="12%">
+                <div>
+                 14.04.2018 - 27.10.2018
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <div>
+                 <a href="http://meridian-express.ru/content/britain/city_tours_winter15">
+                  Сити-туры в Лондон на 4-7 ночей
+                 </a>
+                </div>
+               </td>
+               <td align="center" valign="center" width="10%">
+                <div>
+                 Москва
+                </div>
+               </td>
+               <td align="center" width="10%">
+                <div>
+                 532
+                </div>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                <div>
+                 14.04.2018 - 27.10.2018
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <div>
+                 <a href="http://www.meridian-express.ru/content/britain/britain/led_zima2011">
+                  Лондон-Эдинбург
+                 </a>
+                 ,
+                 <a href="http://www.meridian-express.ru/content/britain/edinburgh_london">
+                  <span style="color: rgb(255, 0, 0);">
+                   Эдинбург-Лондон
+                  </span>
+                 </a>
+                 ,
+                 <a href="http://www.meridian-express.ru/content/britain/britain/london_paris12">
+                  Лондон-Париж
+                 </a>
+                 ,
+                 <a href="http://www.meridian-express.ru/content/britain/britain/britain_edinburg12">
+                  Эдинбург-Лондон-Париж
+                 </a>
+                </div>
+               </td>
+               <td align="center" valign="center" width="10%">
+                <div>
+                 Москва
+                </div>
+               </td>
+               <td align="center" width="10%">
+                <div>
+                 974
+                </div>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                <div>
+                 14.04.2018 - 27.10.2018
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <div>
+                 <a href="http://www.meridian-express.ru/content/britain/for_child_new">
+                  Лондон для детей
+                 </a>
+                </div>
+               </td>
+               <td align="center" valign="center" width="10%">
+                <div>
+                 Москва
+                </div>
+               </td>
+               <td align="center" width="10%">
+                <div>
+                 776
+                </div>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                <div>
+                 14.04.2018 - 27.10.2018
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <div>
+                 <a href="http://www.meridian-express.ru/britain/garantirovannyie-ekskursii/">
+                  Групповые экскурсии, экскурсионные пакеты
+                 </a>
+                </div>
+               </td>
+               <td align="center" valign="center" width="10%">
+                <div>
+                 Москва
+                </div>
+               </td>
+               <td align="center" width="10%">
+                <div>
+                 28
+                </div>
+               </td>
+              </tr>
+              <!--
+ 		<tr><td style="TEXT-ALIGN: center">летний сезон</td><td>Экскурсионные туры по Великобритании: <a href="http://www.meridian-express.ru/content/britain/britain/ashu1_2">Англия - Шотландия -Уэльс</a>, <a href="http://www.meridian-express.ru/content/britain/otkrytie">Открытие Шотландии</a>, <a href="http://www.meridian-express.ru/content/britain/britain/lonsouth">Лондон + Южная Англия</a>, <a href="http://www.meridian-express.ru/content/britain/allgb_14">The Britannia</a></td><td style="TEXT-ALIGN: center">Москва</td><td><br /></td></tr>
+ 		-->
+              <tr>
+               <td style="text-align: center;">
+                20.04.2018 -
+                <br/>
+                29.09.2018
+               </td>
+               <td>
+                <a href="http://www.meridian-express.ru/content/britain/britain/ashu1_2" target="_self">
+                 Англия - Шотландия - Уэльс
+                </a>
+               </td>
+               <td style="text-align: center;">
+                Москва
+               </td>
+               <td style="text-align: center;">
+                1160
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/Ireland/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag88.gif);">
+            ИРЛАНДИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" width="100%">
+             <tbody>
+              <tr>
+               <td align="center" height="30" width="12%">
+                11.08.2018
+               </td>
+               <td colspan="1" style="text-align: left;">
+                <a href="http://www.meridian-express.ru/content/Ireland/grup/udivitelnoeputeshestvie" target="_self">
+                 Удивительное путешествие по Изумрудному острову
+                </a>
+                ,
+                <br/>
+                <a href="http://www.meridian-express.ru/content/Ireland/grup/strana_keltov" target="_self">
+                 Ирландия -страна кельтов
+                </a>
+                и др. программы по Ирландии
+               </td>
+               <td colspan="1" style="text-align: center;">
+                Москва
+               </td>
+               <td colspan="1" style="text-align: center;">
+                1044
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="30" width="12%">
+                10.08.2018
+               </td>
+               <td colspan="1" style="text-align: left;">
+                <a href="http://www.meridian-express.ru/content/Ireland/gruppovyie-turyi/asui" target="_self">
+                 Англия - Шотландия - Уэльс + Ирландия
+                </a>
+               </td>
+               <td colspan="1" style="text-align: center;">
+                Москва
+               </td>
+               <td colspan="1" style="text-align: center;">
+                2024
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="30" width="12%">
+                04.08.2018
+               </td>
+               <td colspan="1" style="text-align: left;">
+                <a href="http://www.meridian-express.ru/content/Ireland/grup/london_dublin" target="_self">
+                 Лондон - Дублин
+                </a>
+               </td>
+               <td colspan="1" style="text-align: center;">
+                Москва
+               </td>
+               <td colspan="1" style="text-align: center;">
+                1747
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/france/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag59.gif);">
+            ФРАНЦИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" style="text-align: center;" width="100%">
+             <tbody>
+              <tr>
+               <td align="center" height="40" width="12%">
+                26.03.2018 - 17.11.2018
+                <br/>
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/france/">
+                 Французские Тайны: групповые туры по стране
+                </a>
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td align="center" width="10%">
+                <span style="text-align: center;">
+                 990
+                </span>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                02.11.2017- 01.07.2018
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/content/france/gruppovyie-turyi/hiver2012">
+                 Сити-туры Париж
+                </a>
+                еженедельно
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td align="center" width="10%">
+                <span style="text-align: center;">
+                 528
+                </span>
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                02.11.2017- 01.07.2018
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/content/france/gruppovyie-turyi/detyam_hiver2012">
+                 Детские туры: Париж + Диснейленд
+                </a>
+                еженедельно
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td align="center" width="10%">
+                730
+               </td>
+              </tr>
+              <tr>
+               <td colspan="1" style="text-align: center;">
+                еженедельно
+                <br/>
+                с 01.04.2018
+               </td>
+               <td colspan="1" style="text-align: left;">
+                <span style="color: rgb(255, 69, 0); font-weight: bold;">
+                 New!
+                </span>
+                <a href="http://www.meridian-express.ru/content/france/gruppovyie-turyi/citytours">
+                 Париж и Мон-Сен-Мишель
+                </a>
+               </td>
+               <td colspan="1" style="text-align: center;">
+                Москва
+               </td>
+               <td colspan="1" style="text-align: center;">
+                793
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/Italy/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag91.gif);">
+            ИТАЛИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" width="100%">
+             <tbody>
+              <tr>
+               <td align="center" height="40" width="12%">
+                ежедневно
+               </td>
+               <td align="left">
+                <span style="color: rgb(255, 0, 0);">
+                 <a href="http://www.meridian-express.ru/content/Italy/gruppovyie-turyi/italy_rome_mini">
+                  Weekend в Риме (4 дня/3 ночи)
+                 </a>
+                </span>
+               </td>
+               <td style="TEXT-ALIGN: center">
+                Москва
+               </td>
+               <td style="TEXT-ALIGN: center">
+                538
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                еженедельно
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/content/Italy/gruppovyie-turyi/italy_rome">
+                 Вечный город Рим (8 дней/7 ночей)
+                </a>
+                ,
+                <a href="http://www.meridian-express.ru/content/Italy/gruppovyie-turyi/italia_a_la_carte_rome_and_florence" target="_self">
+                 Рим-Флоренция
+                </a>
+                ,
+                <a href="http://www.meridian-express.ru/content/Italy/gruppovyie-turyi/italy_la_carte" target="_self">
+                 Рим-Неаполь
+                </a>
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td style="TEXT-ALIGN: center" width="10%">
+                615
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/belgium/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag58.gif);">
+            БЕЛЬГИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" width="100%">
+             <tbody>
+              <tr>
+               <td height="40" style="TEXT-ALIGN: center" width="12%">
+                ежедневно
+                <br/>
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/content/belgium/vuh_brus">
+                 <span style="font-weight: bold;">
+                  <span style="font-family: Tahoma; font-size: 10pt;">
+                   Знакомство с Брюсселем от 3 до 7 ночей
+                  </span>
+                  <br/>
+                 </span>
+                </a>
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td style="TEXT-ALIGN: center" width="10%">
+                497
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/Netherlands/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag92.gif);">
+            НИДЕРЛАНДЫ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" width="100%">
+             <tbody>
+              <tr>
+               <td align="left" height="40" width="12%">
+                <div align="center">
+                 <div>
+                  по
+                 </div>
+                 <div>
+                  графику
+                 </div>
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/content/Netherlands/ams_sunday">
+                 Амстердам с экскурсиями
+                </a>
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td align="center" style="TEXT-ALIGN: center" width="10%">
+                689
+               </td>
+              </tr>
+              <tr>
+               <td align="center" height="40" width="12%">
+                <div>
+                 по графику
+                </div>
+               </td>
+               <td align="left" width="70%">
+                <a href="http://www.meridian-express.ru/Netherlands/">
+                 Комбинированные туры Голландия - Бельгия
+                </a>
+               </td>
+               <td align="center" width="10%">
+                Москва
+               </td>
+               <td align="center" style="TEXT-ALIGN: center" width="10%">
+                927
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="bgtitle" height="31" onclick="document.location='/Portugal/'" style="cursor: pointer;" width="100%">
+          <tr>
+           <td height="31" width="13">
+            <img height="31" src="images/corn.gif" width="13"/>
+           </td>
+           <td class="flag" style="background-image:url(/ru/images/flags/flag1179.jpg);">
+            ПОРТУГАЛИЯ
+           </td>
+          </tr>
+         </table>
+         <table border="0" cellpadding="0" cellspacing="0" class="border_white" width="100%">
+          <tr align="center">
+           <div>
+           </div>
+           <td class="date1" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0" class="table-border-black" width="100%">
+             <tbody>
+              <tr>
+               <td height="35" style="TEXT-ALIGN: center; WIDTH: 12%; LETTER-SPACING: 0pt; VERTICAL-ALIGN: middle; WORD-SPACING: 0pt" width="12%">
+                по графику
+               </td>
+               <td align="left" height="35" style="TEXT-ALIGN: left; WIDTH: 70%; LETTER-SPACING: 0pt; VERTICAL-ALIGN: middle; WORD-SPACING: 0pt" width="70%">
+                <a href="http://www.meridian-express.ru/content/Portugal/lisboa_ex_avia" title="Знакомство с Лиссабоном">
+                 Знакомство с Лиссабоном
+                </a>
+               </td>
+               <td align="center" height="35" width="10%">
+                Москва
+               </td>
+               <td height="35" style="TEXT-ALIGN: center; WIDTH: 10%; LETTER-SPACING: 0pt; VERTICAL-ALIGN: middle; WORD-SPACING: 0pt" width="10%">
+                524
+               </td>
+              </tr>
+              <tr>
+               <td height="35" style="TEXT-ALIGN: center">
+                по графику
+               </td>
+               <td align="left" height="35">
+                <a href="http://www.meridian-express.ru/content/Portugal/lisbon_premium" title="Лиссабон-премиум">
+                 Лиссабон-премиум
+                </a>
+               </td>
+               <td align="center" height="35">
+                Москва
+               </td>
+               <td height="35" style="TEXT-ALIGN: center">
+                648
+               </td>
+              </tr>
+              <tr>
+               <td height="35" style="TEXT-ALIGN: center">
+                по графику
+               </td>
+               <td align="left" height="35">
+                <a href="http://www.meridian-express.ru/content/Portugal/riviera_lisbon" title="Отдых на Лиссабонской Ривьере">
+                 Отдых на Лиссабонской Ривьере
+                </a>
+               </td>
+               <td align="center" height="35">
+                Москва
+               </td>
+               <td height="35" style="TEXT-ALIGN: center">
+                510
+               </td>
+              </tr>
+             </tbody>
+            </table>
+           </td>
+          </tr>
+         </table>
+         <!-- там контент ^^ -->
+        </td>
+        <!--и тут разные блоки на разных страницах-->
+        <td class="ots1" valign="top" width="150">
+         <div style="margin-top: 10px;">
+          <div class="ya-site-form ya-site-form_inited_no" onclick="return {'action':'http://www.meridian-express.ru/content/about_us/search/','arrow':false,'bg':'transparent','fontsize':12,'fg':'#000000','language':'ru','logo':'rb','publicname':'Поиск по www.meridian-express.ru','suggest':true,'target':'_self','tld':'ru','type':3,'searchid':2122001,'webopt':false,'websearch':false,'input_fg':'#000000','input_bg':'#ffffff','input_fontStyle':'normal','input_fontWeight':'normal','input_placeholder':'Поиск по сайту','input_placeholderColor':'#000000','input_borderColor':'#7f9db9'}">
+           <form action="http://yandex.ru/sitesearch" method="get" target="_self">
+            <input name="searchid" type="hidden" value="2122001"/>
+            <input name="l10n" type="hidden" value="ru"/>
+            <input name="reqenc" type="hidden" value=""/>
+            <input name="text" type="text" value=""/>
+            <input type="submit" value="Найти"/>
+           </form>
+          </div>
+          <style type="text/css">
+           .ya-page_js_yes .ya-site-form_inited_no {
+                 display: none;
+             }
+          </style>
+          <script type="text/javascript">
+           (function (w, d, c){var s=d.createElement('script'),h=d.getElementsByTagName('script')[0],e=d.documentElement;if((' '+e.className+' ').indexOf(' ya-page_js_yes ')===-1){e.className+=' ya-page_js_yes';}s.type='text/javascript';s.async=true;s.charset='utf-8';s.src=(d.location.protocol==='https:'?'https:':'http:')+'//site.yandex.net/v2.0/js/all.js';h.parentNode.insertBefore(s,h);(w[c]||(w[c]=[])).push(function(){Ya.Site.Form.init()})})(window, document, 'yandex_site_callbacks');
+          </script>
+         </div>
+         <h2>
+          Страны
+         </h2>
+         <div id="countries">
+          <ul>
+           <li>
+            <span class="country ">
+             ЕВРОПА
+            </span>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/britain/">
+             ВЕЛИКОБРИТАНИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/Ireland/">
+             ИРЛАНДИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/france/">
+             ФРАНЦИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/Italy/">
+             ИТАЛИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/spain/">
+             ИСПАНИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/Portugal/">
+             ПОРТУГАЛИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/avstiya/">
+             АВСТРИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/Germany/">
+             ГЕРМАНИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/switzerland/">
+             ШВЕЙЦАРИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/belgium/">
+             БЕЛЬГИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/Netherlands/">
+             НИДЕРЛАНДЫ
+            </a>
+           </li>
+           <li>
+            <span class="country ">
+             АВСТРАЛИЯ И ОКЕАНИЯ
+            </span>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/australia/">
+             АВСТРАЛИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/new_zealand/">
+             НОВАЯ ЗЕЛАНДИЯ
+            </a>
+           </li>
+           <li>
+            <span class="country ">
+             АФРИКА
+            </span>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/uar/">
+             ЮАР
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/botsvana/">
+             БОТСВАНА
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/zambia/">
+             ЗАМБИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/zimbabve/">
+             ЗИМБАБВЕ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/namibia/">
+             НАМИБИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/kenia/">
+             КЕНИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/tanzania/">
+             ТАНЗАНИЯ
+            </a>
+           </li>
+           <li>
+            <span class="country ">
+             ЮЖНАЯ АМЕРИКА
+            </span>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/argentina/">
+             АРГЕНТИНА
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/brazil/">
+             БРАЗИЛИЯ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/mexico/">
+             МЕКСИКА
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/peru/">
+             ПЕРУ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/chile/">
+             ЧИЛИ
+            </a>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/ecuador/">
+             ЭКВАДОР
+            </a>
+           </li>
+           <li>
+            <span class="country ">
+             СЕВЕРНАЯ АМЕРИКА
+            </span>
+           </li>
+           <li>
+            <a class="country country2" href="http://www.meridian-express.ru/usa/">
+             США
+            </a>
+           </li>
+          </ul>
+         </div>
+         <!-- [NEWS] -->
+         <h2>
+          Новости
+         </h2>
+         <div class="news">
+          <div class="date">
+           17.07.2018
+          </div>
+          <a href="http://www.meridian-express.ru/about_us/shema_proezda/" rel="nofollow" style="color: #ff0000;">
+           ВНИМАНИЕ!
+           <br/>
+           МЕРИДИАН ЭКСПРЕСС ПЕРЕЕЗЖАЕТ В НОВЫЙ ОФИС!!!
+          </a>
+         </div>
+         <div class="news">
+          <div class="date">
+           25.06.2018
+          </div>
+          <a href="http://www.meridian-express.ru/news/588/" rel="nofollow">
+           Последние места в консолидируемых группах по выгодным ценам по обучению за рубежом
+          </a>
+         </div>
+         <div class="news">
+          <div class="date">
+           24.06.2018
+          </div>
+          <a href="http://www.meridian-express.ru/news/587/" rel="nofollow">
+           Лидеры сезона - туры по регионам Франции от Меридиан Экспресс
+          </a>
+         </div>
+         <div class="news">
+          <div class="date">
+           18.05.2018
+          </div>
+          <a href="http://www.meridian-express.ru/news/586/" rel="nofollow">
+           Продажи туров по Великобритании и Ирландии от компании Меридиан Экспресс в самом разгаре
+          </a>
+         </div>
+         <div class="news">
+          <div class="date">
+           18.04.2018
+          </div>
+          <a href="http://www.meridian-express.ru/news/585/" rel="nofollow">
+           Великобритания - яркие краски лета!
+          </a>
+         </div>
+         <div class="news">
+          <div class="date">
+           08.04.2018
+          </div>
+          <a href="http://www.meridian-express.ru/news/584/" rel="nofollow">
+           Франция - открываем летний сезон!
+          </a>
+         </div>
+         <!-- [/NEWS] -->
+         <p style="text-align: center">
+          <a href="http://www.meridian-express.ru/news/">
+           Посмотреть все
+          </a>
+         </p>
+        </td>
+        <noindex>
+         <table bgcolor="#f6f6f6" cellpadding="0" cellspacing="0" width="100%">
+          <tbody>
+           <tr valign="middle">
+            <td class="partn" width="200">
+             Наши партнеры:
+            </td>
+            <td>
+             <noindex>
+              <a href="https://www.iataonline.com/Store/default.htm?cookie%5Ftest=1&amp;NRMODE=Published&amp;NRORIGINALURL=%2fStore%2fdefault%2ehtm&amp;NRNODEGUID=%7bD1212892-1319-47D5-8C4C-87572B568624%7d&amp;NRCACHEHINT=NoModifyGuest" rel="nofollow" target="blank">
+               <img border="0" height="34" src="/images/p1.gif" width="117"/>
+              </a>
+             </noindex>
+            </td>
+            <td>
+             <a href="http://www.meridian-express.ru/content//britain/obsluzhivanie-i-dopolnitelnyie-uslugi/airport_express/" rel="nofollow">
+              <img border="0" height="23" src="/images/p2.gif" width="117"/>
+             </a>
+            </td>
+            <td>
+             <noindex>
+              <a href="http://ru.franceguide.com/" rel="nofollow" target="blank">
+               <img border="0" height="42" src="/images/p5.gif" width="117"/>
+              </a>
+             </noindex>
+            </td>
+            <td>
+             <noindex>
+              <a href="http://www.franceguide.com" rel="nofollow" target="blank">
+               <img border="0" height="42" src="/images/p6.gif" width="117"/>
+              </a>
+             </noindex>
+            </td>
+           </tr>
+           <tr valign="middle">
+            <td class="partn" width="200">
+            </td>
+            <td align="center">
+             <noindex>
+              <a href="http://www.visitscotland.com/" rel="nofollow" target="blank">
+               <img border="0" height="42" src="/images/visitscotland.jpg"/>
+              </a>
+             </noindex>
+            </td>
+            <td align="center">
+             <noindex>
+              <a href="http://www.homecomingscotland.com" rel="nofollow" target="_blank">
+               <img border="0" height="42" src="/images/homecomingscotland.jpg"/>
+              </a>
+             </noindex>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </noindex>
+        <table cellpadding="0" cellspacing="0" width="100%">
+         <tr valign="middle">
+          <td nowrap="">
+           <div class="clearfix" id="menu3">
+            <ul>
+             <li>
+              <a href="http://www.meridian-express.ru/about_us/" rel="nofollow">
+               О компании
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru/for_agencies/" rel="nofollow">
+               Агентствам
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru/corporate/" rel="nofollow">
+               Корпоративным клиентам
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru/agencies/" rel="nofollow">
+               Где купить
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru/vacancies/" rel="nofollow">
+               Вакансии
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru//about_us/market/" rel="nofollow">
+               Сотрудничество
+              </a>
+             </li>
+             <li>
+              <a href="http://www.meridian-express.ru/info-map.html">
+               Карта сайта
+              </a>
+             </li>
+            </ul>
+           </div>
+          </td>
+          <td nowrap="">
+           2002 - 2018 ©
+           <noindex>
+            <a href="http://www.amicus.ru/" rel="nofollow" target="_blank">
+             Создание сайта
+            </a>
+           </noindex>
+           : Amicus
+                    Studio
+           <!--LiveInternet counter-->
+           <script type="text/javascript">
+            <!--
+                 document.write("<a rel=\"nofollow\" rel=\"nofollow\" href='http://www.liveinternet.ru/click' " +
+                         "target=_blank><img src='http://counter.yadro.ru/hit?t16.7;r" +
+                         escape(document.referrer) + ((typeof(screen) == "undefined") ? "" :
+                         ";s" + screen.width + "*" + screen.height + "*" + (screen.colorDepth ?
+                                 screen.colorDepth : screen.pixelDepth)) + ";u" + escape(document.URL) +
+                         ";" + Math.random() +
+                         "' alt='' title='LiveInternet: показано число просмотров за 24" +
+                         " часа, посетителей за 24 часа и за сегодня' " +
+                         "border='0' width='88' height='31'><\/a>")
+ 
+                 //-->
+           </script>
+           <!--/LiveInternet-->
+          </td>
+         </tr>
+        </table>
+       </tr>
+      </table>
+      <script type="text/javascript">
+       var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-17565597-1']);
+     _gaq.push(['_trackPageview']);
+ 
+     (function () {
+         var ga = document.createElement('script');
+         ga.type = 'text/javascript';
+         ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0];
+         s.parentNode.insertBefore(ga, s);
+     })();
+      </script>
+      <!-- Yandex.Metrika counter -->
+      <div style="display: none;">
+       <script type="text/javascript">
+        (function (w, c) {
+             (w[c] = w[c] || []).push(function () {
+                 try {
+                     w.yaCounter107888 = new Ya.Metrika(107888);
+                     yaCounter107888.clickmap(true);
+                     yaCounter107888.trackLinks(true);
+ 
+                 } catch (e) {
+                 }
+             });
+         })(window, 'yandex_metrika_callbacks');
+       </script>
+      </div>
+      <script defer="defer" src="//mc.yandex.ru/metrika/watch.js" type="text/javascript">
+      </script>
+      <noscript>
+       <div style="position: absolute">
+        <img alt="" src="//mc.yandex.ru/watch/107888"/>
+       </div>
+      </noscript>
+      <!-- /Yandex.Metrika counter -->
+      <div class="popup-form" id="application">
+       <div class="messages" id="application_messages">
+       </div>
+       <form action="/ajax/application.php" id="application_form" method="post">
+        <input id="application_topic" name="application_topic" type="hidden" value=""/>
+        <input id="application_date" name="application_date" type="hidden" value=""/>
+        <div class="clearfix">
+         <label>
+          Название компании:
+         </label>
+         <input id="application_company" name="application_company" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          ФИО участника:
+         </label>
+         <input id="application_name" name="application_name" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Контактный телефон:
+         </label>
+         <input id="application_phone" name="application_phone" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Email:
+         </label>
+         <input id="application_email" name="application_email" type="text"/>
+        </div>
+        <input type="submit"/>
+       </form>
+      </div>
+      <div class="popup-form" id="participation">
+       <div class="messages" id="participation_messages">
+       </div>
+       <form action="/ajax/participation.php" id="participation_form" method="post">
+        <input id="participation_topic" name="participation_topic" type="hidden" value=""/>
+        <input id="participation_date" name="participation_date" type="hidden" value=""/>
+        <div class="clearfix">
+         <label>
+          Название агенства:
+         </label>
+         <input id="participation_agency" name="participation_agency" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Имя:
+         </label>
+         <input id="participation_name" name="participation_name" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Должность:
+         </label>
+         <input id="participation_post" name="participation_post" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Номер телефона:
+         </label>
+         <input id="participation_phone" name="participation_phone" type="text"/>
+        </div>
+        <div class="clearfix">
+         <label>
+          Email:
+         </label>
+         <input id="participation_email" name="participation_email" type="text"/>
+        </div>
+        <input type="submit"/>
+       </form>
+      </div>
+      <div style="display: none">
+       <div class="popup-form" id="custom_tour">
+        <form action="/ajax/customTour.php" method="post" xmlns="http://www.w3.org/1999/html">
+         <div class="messages" id="participation_messages">
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_name">
+           Имя:
+          </label>
+          <input id="custom_tour_name" name="custom_tour_name" type="text"/>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_phone">
+           Телефон:
+          </label>
+          <input id="custom_tour_phone" name="custom_tour_phone" type="text"/>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_email">
+           Email:
+          </label>
+          <input id="custom_tour_email" name="custom_tour_email" type="text"/>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_country">
+           Страна:
+          </label>
+          <input id="custom_tour_country" name="custom_tour_country" type="text"/>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_arrival_date">
+           Дата отправления:
+          </label>
+          <input class="datepicker" id="custom_tour_arrival_date" name="custom_tour_arrival_date" type="text"/>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_commentary">
+           Текст запроса на расчет:
+          </label>
+          <textarea id="custom_tour_commentary" name="custom_tour_commentary">
+          </textarea>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_manager">
+           Менеджер по направлению:
+          </label>
+          <select id="custom_tour_manager" name="custom_tour_manager">
+           <option value="">
+            Выберите менеджера
+           </option>
+           <optgroup label="Руководитель департамента туризма">
+            <option value="1">
+             Алла Касабиева
+            </option>
+           </optgroup>
+           <optgroup label="Великобритания и Ирландия">
+            <option value="2">
+             Элина Тарганчук
+            </option>
+            <option value="4">
+             Анастасия Королева
+            </option>
+           </optgroup>
+           <optgroup label="Италия, Испания, Португалия">
+            <option value="28">
+             Екатерина Исаева
+            </option>
+           </optgroup>
+           <optgroup label="Франция, страны Бенилюкса, Германия">
+            <option value="35">
+             Chernev Igor
+            </option>
+           </optgroup>
+          </select>
+         </div>
+         <div class="clearfix">
+          <label for="custom_tour_code">
+           Введите код:
+          </label>
+          <table>
+           <tr>
+            <td>
+             <img src="/code/code.php?f=custom_tour_code"/>
+            </td>
+            <td>
+             <input id="custom_tour_code" name="custom_tour_code" style="width: 150px;" type="text"/>
+            </td>
+           </tr>
+          </table>
+         </div>
+         <input type="submit"/>
+        </form>
+       </div>
+      </div>
+     </td>
+    </tr>
+   </table>
+  </body>
+ </html>

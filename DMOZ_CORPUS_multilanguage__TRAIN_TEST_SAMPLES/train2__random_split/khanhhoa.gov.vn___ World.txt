@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+ <html>
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <title>
+    Cổng thông tin điện tử tỉnh Khánh Hòa
+   </title>
+   <script src="/Scripts/jquery-2.1.4.min.js" type="text/javascript">
+   </script>
+   <script src="/Components/jquery-ui-1.11.1.custom/jquery-ui.min.js" type="text/javascript">
+   </script>
+   <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+   <link href="/Resources/ImagesPortal/HomePage/imgs/favicon.png" rel="shortcut icon" type="image/png"/>
+   <script src="/Scripts/knockout-2.3.0.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/Common.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/datepicker-vn.js">
+   </script>
+   <script src="/Scripts/PagingContent.js" type="text/javascript">
+   </script>
+   <script src="/Scripts/zebra_dialog.js" type="text/javascript">
+   </script>
+   <link href="/CSS/zebra_dialog.css" rel="stylesheet"/>
+   <script language="javascript" type="text/javascript">
+    var pscjq = jQuery.noConflict();
+ 
+         function SearchProcess(event, query) {
+             if (event.keyCode == 13) {
+                 OnSearch(query);
+                 return false;
+             }
+             return true;
+         }
+         function OnSearch(query) {
+             PageMethods.SearchAd(query, OnRedirectSuccess, OnRedirectFailed);
+ 
+             //PSCPortal.Services.CMS.SearchAndPaging(query, currentPage, OnSearchSuccess, OnSearchFailed);
+         }
+         function OnRedirectSuccess(results, context, methodName) {
+             Redirect("/module/search");
+         }
+         function OnRedirectFailed(results, context, methodName) {
+         }
+ 
+         function OnSearchSuccess(results, context, methodName) {
+             LoadContentAndPaging(results);
+         }
+         function OnSearchFailed(results, context, methodName) {
+         }
+ 
+         function retitleUrl(str) {
+             str = str.replace(/^\s+|\s+$/g, ''); // trim
+             str = str.toLowerCase();
+             // remove accents, swap ñ for n, etc
+             var from = "àáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ·/_,:;";
+             var to = "aaaaaaaaaaaaaaaaadeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyy------";
+             for (var i = 0, l = from.length ; i < l ; i++) {
+                 str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+             }
+             str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+                 .replace(/\s+/g, '-') // collapse whitespace and replace by -
+                 .replace(/-+/g, '-'); // collapse dashes
+             return str;
+         };
+ 
+         function popunder() {
+             pscjq('a').not('[href^="http"],[href^="https"],[href^="mailto:"],[href^="#"]').each(function () {
+                 pscjq(this).attr('href', function (index, value) {
+                     if (value != undefined) {
+                         var index = value.indexOf("Default.aspx");
+                         if (index >= 0)
+                             return value = "/" + value.substring(index, value.length);
+ 
+                     }
+                 });
+             });
+         }
+         //popup dialog
+         function showDialogInfomation(dialogId) {
+             PSCPortal.Services.CMS.GetArticleContent(dialogId, GetArticleContentCallback);
+         }
+         function GetArticleContentCallback(result) {
+ 
+             pscjq('#articleModal').find('.modal-body').html(result);
+             pscjq('#articleModal').modal();
+ 
+             pscjq('#articleModal').find('.modal-body').html(result);
+             pscjq('#articleModal').modal();
+ 
+         }
+   </script>
+   <script type="text/javascript">
+    pscjq(document).ready(function () {
+ 
+             //duration of the top scrolling animation (in ms)
+             scroll_top_duration = 700,
+             //grab the "back to top" link
+             pscjqback_to_top = pscjq('.backtotop');
+             pscjq('.backtotop').css("display", "none");
+ 
+             //smooth scroll to top
+             pscjqback_to_top.on('click', function (event) {
+                 event.preventDefault();
+                 pscjq('body,html').animate({
+                     scrollTop: 0,
+                 }, scroll_top_duration);
+             });
+             pscjq(window).scroll(function () {
+                 if (pscjq(this).scrollTop() > 100) {
+                     pscjq('.backtotop').fadeIn();
+                     pscjq('.backtotop').css("display", "block");
+                 } else {
+                     pscjq('.backtotop').fadeOut();
+                 }
+             });
+             //pscjq.scrollSpeed(100, 800);
+ 
+         });
+   </script>
+   <style>
+    .form-search {
+         width: 100%;
+         float: left;
+     }
+     .form-search label {
+         width: 105px;
+     }
+     .form-search select {
+         min-width:172px;
+     }
+     .form-search>div {
+         margin-bottom: 5px;
+     }
+     .form-search .btn-search {
+         color: #fff;
+         background: #0768d5;
+         margin-left: 105px;
+         display: block;
+         height: 36px;
+     }
+     .form-search .btn-search:hover {
+         color: #0768d5;
+         background: #fff;
+         border: 2px solid #0768d5;
+     }
+         .ui-datepicker-trigger {
+             position: relative;
+             background: none;
+             border: transparent;
+             left: -25px;
+             top: -1px;
+         }
+         .ui-datepicker-trigger:focus,.btn.btn-search{
+             outline: none;
+         }
+     .Highlight{
+         font-weight:bold;
+         color:#0b26b8;
+     }
+     @media(max-width:767px) {
+         .form-search label {
+             width: 100%;
+         }
+         .form-search select,
+         .form-search .btn-search {
+             margin-left: 0;
+         }
+     }
+   </style>
+   <script id="search-binding-template" type="text/html">
+    <div class="s-tintuc">
+             <div class='result_lucene'>
+                 <a data-bind="html: 'Kết quả tìm thấy: ' + Count" href='#'></a>
+             </div>
+ 
+             
+ 
+             <div class="form-search">
+                 <div class="col-md-offset-4 col-md-8 col-sm-8 col-sm-offset-4 col-xs-12">
+                     <label>Từ khóa</label><input type="text" class="txtSearchNangCao" data-bind="value: BindingModel.DataModel.txtSearch" />
+                 </div>
+                 <div class="col-md-offset-4 col-md-8 col-sm-8 col-sm-offset-4 col-xs-12">
+                     <label>Tìm kiếm trong</label>
+                     <select class="optSelect" data-bind="options: [{ text: 'Tiêu Đề và Nội Dung', value: '0' }, { text: 'Tiêu Đề', value: '1' }, { text: 'Nội Dung', value: '2' }], value: BindingModel.DataModel.selectOpt, optionsValue: 'value', optionsText: 'text'"></select>
+                 </div>
+                 <div class="col-md-offset-4 col-md-8 col-sm-8 col-sm-offset-4 col-xs-12">
+                     <label>
+                         Từ ngày: 
+                     </label>
+                     <input class="dateFrom" type="text" data-bind="datePicker: BindingModel.DataModel.DateFr" />
+                 </div>
+                 <div class="col-md-offset-4 col-md-8 col-sm-8 col-sm-offset-4 col-xs-12">
+                     <label>
+                         Đến ngày:
+                     </label>
+                     <input class="dateTo" type="text" data-bind="datePicker: BindingModel.DataModel.DateTo" />
+ 
+                 </div>
+                 <div class="col-md-offset-4 col-md-8 col-sm-8 col-sm-offset-4 col-xs-12">
+                     <button class="btn btn-search" data-bind="click: $parent.btnSearchAd">Tìm kiếm</button>
+                 </div>
+             </div>
+             
+             <div class='nd_news'>
+                 <!-- ko foreach: Data -->
+                 <div class="itemsearch">
+                     <h6><a class="title_topicdisplay" data-bind="attr: { href: Link }, html: Title"></a></h6>
+                     <p class="h3_content" data-bind="html: Highligth + '...'"></p>
+                 </div>
+                 <!-- /ko -->
+                 <div id='pagingContentHolder' class='ct_topic_r1'></div>
+             </div>
+         </div>
+   </script>
+   <style type="text/css">
+    .title_topicdisplay {
+             font-size: 17px !important;
+             font-weight: 600 !important;
+         }
+ 
+         .itemsearch h6 {
+             margin-top: 5px !important;
+             margin-left: 5px !important;
+         }
+ 
+         .itemsearch {
+             margin: 0px 0px 10px 0px;
+             float: left;
+             width: 100%;
+             border-radius: 5px;
+             background: rgba(204, 204, 204, 0.24);
+         }
+ 
+         .result_lucene {
+             font-family: Arial,Tahoma,sans-serif !important;
+         }
+ 
+         .h3_content {
+             font-size: 15px !important;
+             line-height: 1.3;
+             text-align: justify;
+             margin-top: 5px;
+             margin-left: 5px;
+             margin-right: 5px;
+         }
+ 
+         .result_lucene {
+             font: 600 16px arial;
+             padding: 0 10px;
+             background: rgba(204, 204, 204, 0.45);
+             color: #3e3e3e;
+             border-left: 5px solid #10a8e4;
+             float: left;
+             height: 30px;
+             padding-top: 6px;
+             width: 100%;
+             margin-bottom: 6px;
+         }
+ 
+         .ct_topic_r1 a {
+             font-size: 14px !important;
+             margin-right: 5px;
+             border: 1px dotted #e8e8e8;
+             border-radius: 17px;
+             background-color: rgba(204, 204, 204, 0.45);
+             padding: 4px 8px;
+             text-decoration: none !important;
+             font-weight: bold;
+         }
+ 
+         .ct_topic_r1 {
+             text-align: center;
+             padding-bottom: 8px;
+         }
+   </style>
+   <link class="Telerik_stylesheet" href="/WebResource.axd?d=eNmH2N74z26vIuX-BImea2vXOREm8DuQ4qDhLWiRHhERSS7tvMI82CLCheHHEQXbVYFQeGf1CJJxZ1ys0ffYC35_rYiBZNl7empWCg3I-l1ZK4i0NEiR0KgfGJ32tT1uj9pb7_25y_IlhvBQC23WGA2&amp;t=636270045699039176" rel="stylesheet" type="text/css"/>
+   <link class="Telerik_stylesheet" href="/WebResource.axd?d=XidXxOGRSSx4Fvdu_aoTZyfG9lcaRCFLgsD7HZO7QaW51MTaKA4NieNdylKSiR99fQvnzREFQX4PoteX5ldzdV5GpVBdLfGnmqRV8CMR4MtFBNPtUAcvTH-NPxH7nONE_P7ZgruTX1nXaPHRINiWfY3DPmaQ1p7esYdNFsxMuQk1&amp;t=636270045699039176" rel="stylesheet" type="text/css"/>
+  </head>
+  <body class="homepage home-layout1 res" id="bd" onload="popunder();">
+   <form action="./" id="form1" method="post" name="form1">
+    <input id="RadScriptManager1_TSM" name="RadScriptManager1_TSM" type="hidden" value=""/>
+    <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value="/wEPaA8FDzhkNWY0ZjZjNzgzYzEwOBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WAQURUmFkV2luZG93TWFuYWdlcjF27USNfKv2dcuv3dOSN+N8B9dbwKdpNYuZ+FUSS/VuBg=="/>
+    <script src="/Telerik.Web.UI.WebResource.axd?_TSM_HiddenField_=RadScriptManager1_TSM&amp;compress=1&amp;_TSM_CombinedScripts_=%3b%3bSystem.Web.Extensions%2c+Version%3d4.0.0.0%2c+Culture%3dneutral%2c+PublicKeyToken%3d31bf3856ad364e35%3avi-VN%3a59e0a739-153b-40bd-883f-4e212fc43305%3aea597d4b%3bTelerik.Web.UI%2c+Version%3d2014.2.618.40%2c+Culture%3dneutral%2c+PublicKeyToken%3d121fae78165ba3d4%3avi-VN%3a15590aec-52e9-4282-8ed4-e91eae292c7b%3a16e4e7cd%3af7645509%3a24ee1bba%3a92fe8ea0%3af46195d3%3afa31b949%3a874f8ea2%3ac128760b%3a19620875%3a490a9d4e%3abd8f85e4" type="text/javascript">
+    </script>
+    <script src="Services/PortletProxy.asmx/js" type="text/javascript">
+    </script>
+    <script src="Services/ModuleProxy.asmx/js" type="text/javascript">
+    </script>
+    <script src="Services/CMS.asmx/js" type="text/javascript">
+    </script>
+    <script src="Services/DMSSearch.asmx/js" type="text/javascript">
+    </script>
+    <script src="Services/OneGateService.asmx/js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+     //<![CDATA[
+ var PageMethods = function() {
+ PageMethods.initializeBase(this);
+ this._timeout = 0;
+ this._userContext = null;
+ this._succeeded = null;
+ this._failed = null;
+ }
+ PageMethods.prototype = {
+ _get_path:function() {
+  var p = this.get_path();
+  if (p) return p;
+  else return PageMethods._staticInstance.get_path();},
+ SearchAd:function(txtSearch,succeededCallback, failedCallback, userContext) {
+ return this._invoke(this._get_path(), 'SearchAd',false,{txtSearch:txtSearch},succeededCallback,failedCallback,userContext); }}
+ PageMethods.registerClass('PageMethods',Sys.Net.WebServiceProxy);
+ PageMethods._staticInstance = new PageMethods();
+ PageMethods.set_path = function(value) { PageMethods._staticInstance.set_path(value); }
+ PageMethods.get_path = function() { return PageMethods._staticInstance.get_path(); }
+ PageMethods.set_timeout = function(value) { PageMethods._staticInstance.set_timeout(value); }
+ PageMethods.get_timeout = function() { return PageMethods._staticInstance.get_timeout(); }
+ PageMethods.set_defaultUserContext = function(value) { PageMethods._staticInstance.set_defaultUserContext(value); }
+ PageMethods.get_defaultUserContext = function() { return PageMethods._staticInstance.get_defaultUserContext(); }
+ PageMethods.set_defaultSucceededCallback = function(value) { PageMethods._staticInstance.set_defaultSucceededCallback(value); }
+ PageMethods.get_defaultSucceededCallback = function() { return PageMethods._staticInstance.get_defaultSucceededCallback(); }
+ PageMethods.set_defaultFailedCallback = function(value) { PageMethods._staticInstance.set_defaultFailedCallback(value); }
+ PageMethods.get_defaultFailedCallback = function() { return PageMethods._staticInstance.get_defaultFailedCallback(); }
+ PageMethods.set_enableJsonp = function(value) { PageMethods._staticInstance.set_enableJsonp(value); }
+ PageMethods.get_enableJsonp = function() { return PageMethods._staticInstance.get_enableJsonp(); }
+ PageMethods.set_jsonpCallbackParameter = function(value) { PageMethods._staticInstance.set_jsonpCallbackParameter(value); }
+ PageMethods.get_jsonpCallbackParameter = function() { return PageMethods._staticInstance.get_jsonpCallbackParameter(); }
+ PageMethods.set_path("default.aspx");
+ PageMethods.SearchAd= function(txtSearch,onSuccess,onFailed,userContext) {PageMethods._staticInstance.SearchAd(txtSearch,onSuccess,onFailed,userContext); }
+ //]]>
+    </script>
+    <input id="__VIEWSTATEGENERATOR" name="__VIEWSTATEGENERATOR" type="hidden" value="CA0B0334"/>
+    <div id="RadWindowManager1" style="display:none;">
+     <!-- 2014.2.618.40 -->
+     <div id="RadWindowManager1_alerttemplate" style="display:none;">
+      <div class="rwDialogPopup radalert">
+       <div class="rwDialogText">
+        {1}
+       </div>
+       <div>
+        <a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(true);">
+         <span class="rwOuterSpan">
+          <span class="rwInnerSpan">
+           ##LOC[OK]##
+          </span>
+         </span>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div id="RadWindowManager1_prompttemplate" style="display:none;">
+      <div class="rwDialogPopup radprompt">
+       <div class="rwDialogText">
+        {1}
+       </div>
+       <div>
+        <script type="text/javascript">
+         function RadWindowprompt_detectenter(id, ev, input)
+ 				    {							
+ 					    if (!ev) ev = window.event;                
+ 					    if (ev.keyCode == 13)
+ 					    {															        
+ 					        var but = input.parentNode.parentNode.getElementsByTagName("A")[0];					        
+ 					        if (but)
+ 						    {							
+ 							    if (but.click) but.click();
+ 							    else if (but.onclick)
+ 							    {
+ 							        but.focus(); var click = but.onclick; but.onclick = null; if (click) click.call(but);							 
+ 							    }
+ 						    }
+ 					       return false;
+ 					    } 
+ 					    else return true;
+ 				    }
+        </script>
+        <input class="rwDialogInput" onkeydown="return RadWindowprompt_detectenter('{0}', event, this);" title="Enter Value" type="text" value="{2}"/>
+       </div>
+       <div>
+        <a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(this.parentNode.parentNode.getElementsByTagName('input')[0].value);">
+         <span class="rwOuterSpan">
+          <span class="rwInnerSpan">
+           ##LOC[OK]##
+          </span>
+         </span>
+        </a>
+        <a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(null);">
+         <span class="rwOuterSpan">
+          <span class="rwInnerSpan">
+           ##LOC[Cancel]##
+          </span>
+         </span>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div id="RadWindowManager1_confirmtemplate" style="display:none;">
+      <div class="rwDialogPopup radconfirm">
+       <div class="rwDialogText">
+        {1}
+       </div>
+       <div>
+        <a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(true);">
+         <span class="rwOuterSpan">
+          <span class="rwInnerSpan">
+           ##LOC[OK]##
+          </span>
+         </span>
+        </a>
+        <a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(false);">
+         <span class="rwOuterSpan">
+          <span class="rwInnerSpan">
+           ##LOC[Cancel]##
+          </span>
+         </span>
+        </a>
+       </div>
+      </div>
+     </div>
+     <input id="RadWindowManager1_ClientState" name="RadWindowManager1_ClientState" type="hidden"/>
+    </div>
+    <!-- normalize -->
+    <link href="/Components/vendors/css/normalize.css" rel="stylesheet"/>
+    <!-- Bootstrap -->
+    <link href="/Components/vendors/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/Components/vendors/css/font-awesome.min.css" rel="stylesheet"/>
+    <!-- owl.carousel -->
+    <!-- Addon Bootstrap -->
+    <!-- menu -->
+    <link href="/Components/vendors/css/jquery.smartmenus.bootstrap.css" rel="stylesheet"/>
+    <!-- slider pro -->
+    <link href="/Components/vendors/css/slider-pro.min.css" rel="stylesheet"/>
+    <!-- Nivo slider -->
+    <link href="/Resources/ImagesPortal/HomePage/css/khanhhoa.css" rel="stylesheet"/>
+    <link href="/Resources/ImagesPortal/HomePage/css/release.css" rel="stylesheet"/>
+    <div id="page">
+     <div id="psc-divPanelWrapper">
+      <div id="psc-divPanelTop" style="width:100%">
+       <div id="psc-divPanelTop-Content" style="min-height: 30px;">
+        <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-d346dd9d-7e06-48d8-b3be-49ca43ed169e" style="">
+         <div class="psc-divPortlet-Content">
+          <header class="header width-common">
+           <div class="top-bar">
+            <div class="container">
+             <ul>
+              <li>
+               <p class="text_date" id="ketqua" style="color: #ffffff; font-size: 13px;">
+               </p>
+              </li>
+              <li>
+               <a href="http://khanhhoa.gov.vn/module/sitemap?q=MenuPanelBar" style="color: #ffffff; font-size: 13px;">
+                <span class="litop">
+                 |
+                </span>
+                Sơ đồ website
+                <span>
+                 |
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="/english-portal" style="color: #ffffff; font-size: 13px;">
+                English
+                <span>
+                 |
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://ru.khanhhoa.gov.vn/" style="color: #ffffff; font-size: 13px;">
+                Русский
+                <span>
+                 |
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="/rss" style="color: #ffffff; font-size: 13px;">
+                RSS
+               </a>
+              </li>
+             </ul>
+             <script src="/Scripts/datetimehtml.js" type="text/javascript">
+             </script>
+             <script language="javascript" type="text/javascript">
+              onLoadTime();
+             </script>
+            </div>
+           </div>
+           <div class="banner">
+            <div class="container">
+             <div class="logo">
+              <a href="http://www.khanhhoa.gov.vn/">
+               <img alt="Cổng thông tin điện tử tỉnh Khánh Hòa" src="/Resources/ImagesPortal/HomePage/imgs/Logo.png"/>
+              </a>
+             </div>
+            </div>
+           </div>
+          </header>
+         </div>
+        </div>
+        <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-a66c40ec-9628-4590-8cc2-7928a114e92c" style="">
+         <div class="psc-divPortlet-Content">
+          <script type="text/javascript">
+           pscjq(document).ready(function () {
+ 
+         if (location.hostname != "en.khanhhoa.gov.vn")
+         {
+             pscjq("#homepage-url").attr("href", "http://www.khanhhoa.gov.vn");
+         }
+         else
+         {
+             pscjq("#homepage-url").attr("href", "http://en.khanhhoa.gov.vn");
+         }
+         
+        // pscjq("#homepage-url").attr("href", "http://" + location.hostname);
+     });
+          </script>
+          <div class="top-menu width-common">
+           <div class="container">
+            <div class="row">
+             <div class="main-menu col-xs-12 col-sm-10 col-md-9">
+              <!-- Navbar static top -->
+              <div class="navbar navbar-default navbar-static-top" role="navigation">
+               <div class="navbar-header">
+                <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+                 <span class="sr-only">
+                  Toggle navigation
+                 </span>
+                 <span class="icon-bar">
+                 </span>
+                 <span class="icon-bar">
+                 </span>
+                 <span class="icon-bar">
+                 </span>
+                </button>
+                <div id="icon-search">
+                 <a class="btn btn-default btn-sm">
+                  <i class="fa fa-search">
+                  </i>
+                 </a>
+                </div>
+                <div class="icon-bar-left">
+                 <a class="navbar-toggle" data-target=".sidebar-nav" data-toggle="offcanvas" href="#" id="menu-toggle">
+                  <span class="sr-only">
+                   Danh mục
+                  </span>
+                  <span class="icon-bar">
+                  </span>
+                  <span class="icon-bar">
+                  </span>
+                  <span class="icon-bar">
+                  </span>
+                 </a>
+                 <span class="text">
+                  Danh mục
+                 </span>
+                </div>
+               </div>
+               <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                 <li class="home">
+                  <a href="#" id="homepage-url">
+                   <span class="fa fa-home">
+                   </span>
+                  </a>
+                 </li>
+                 <li>
+                  <a>
+                   <span class="menu-head">
+                    Dành cho người dân
+                   </span>
+                   <span class="caret">
+                   </span>
+                  </a>
+                  <ul class="dropdown-menu">
+                   <li class="">
+                    <a class="wobble-horizontal" href="/module/thu-tuc-hanh-chinh" title="Thủ tục hành chính công">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Thủ tục hành chính công
+                    </a>
+                   </li>
+                   <li class="">
+                    <a class="wobble-horizontal" href="http://kstthc.khanhhoa.gov.vn/" title="Công bố kết quả thực hiện TTHC">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Công bố kết quả thực hiện TTHC
+                    </a>
+                   </li>
+                   <li class="">
+                    <a class="wobble-horizontal" href="/module/hoi-dap-v2" title="Hộp thư công dân">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Hộp thư công dân
+                    </a>
+                   </li>
+                   <li class="">
+                    <a class="wobble-horizontal" href="/vi/gioi-thieu-tong-quan-789/quy-dinh-su-dung-thong-tin-tren-cong-thong-tin-dien-tu-tinh-khanh-hoa" title="Điều khoản sử dụng">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Điều khoản sử dụng
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                 <li>
+                  <a href="/danh-cho-nha-dau-tu1" title="Dành cho nhà đầu tư">
+                   <span class="menu-head">
+                    Dành cho nhà đầu tư
+                   </span>
+                  </a>
+                 </li>
+                 <li>
+                  <a href="/danh-cho-du-khach1" title="Dành cho du khách">
+                   <span class="menu-head">
+                    Dành cho du khách
+                   </span>
+                  </a>
+                 </li>
+                 <li>
+                  <a>
+                   <span class="menu-head">
+                    Thư điện tử
+                   </span>
+                   <span class="caret">
+                   </span>
+                  </a>
+                  <ul class="dropdown-menu">
+                   <li class="">
+                    <a class="wobble-horizontal" href="http://mail.khanhhoa.gov.vn/" title="Hệ thống thư điện tử">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Hệ thống thư điện tử
+                    </a>
+                   </li>
+                   <li class="">
+                    <a class="wobble-horizontal" href="/vi/danh-ba-thu-dien-tu-cong-vu/cac-co-quan-chuyen-mon-thuoc-ubnd-tinh" title="Danh bạ thư điện tử">
+                     <span aria-hidden="true" class="fa fa-angle-double-right">
+                     </span>
+                     Danh bạ thư điện tử
+                    </a>
+                   </li>
+                  </ul>
+                 </li>
+                </ul>
+               </div>
+               <!--/.nav-collapse -->
+              </div>
+              <!-- /.navbar -->
+             </div>
+             <!-- /.menu -->
+             <div class="header_search col-xs-12 col-sm-2 col-md-3 ">
+              <div class="sosearchpro-wrapper so-search " id="sosearchpro">
+               <div class="spr-empty">
+               </div>
+               <div class="search input-group" id="search1">
+                <input class="autosearch-input form-control" id="txtSearchArticle" name="search" onkeydown="return SearchProcess(event,document.getElementById('txtSearchArticle').value);" placeholder="Tìm kiếm ..." size="50" type="text" value=""/>
+                <span class="input-group-btn">
+                 <button class="button-search btn btn-default btn-lg" onclick="OnSearch(document.getElementById('txtSearchArticle').value);" type="reset">
+                  <i class="fa fa-search">
+                  </i>
+                 </button>
+                </span>
+               </div>
+              </div>
+             </div>
+            </div>
+            <!-- /.row -->
+           </div>
+           <!-- /.container -->
+          </div>
+          <script type="text/javascript">
+           pscjq(document).ready(function () {
+ 			var selector='#icon-search';
+ 			pscjq(selector).on('click', function(){	
+ 			    pscjq(this).toggleClass('closed');
+ 			    pscjq('.header_search').toggleClass('active');
+ 			});
+ 		});
+          </script>
+         </div>
+        </div>
+        <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-cc985d6c-ea84-4213-88cf-b1277a6d96d1" style="">
+         <div class="psc-divPortlet-Content">
+          <span style="background: #0768d5 none repeat scroll 0% 0%; color: yellow;">
+           <marquee align="center" direction="left" onmouseout="this.start()" onmouseover="this.stop()" scrollamount="5" style="width: 100%; height: 24px; margin-top: 0px; background: #0768d5 none repeat scroll 0% 0%;">
+            <strong>
+             - Kỷ niệm 71 năm Ngày Thương binh, liệt sĩ (27/7/1947 - 27/7/2018)              - Khánh Hòa là xứ Trầm Hương - Non cao biển rộng, người thương đi về
+            </strong>
+           </marquee>
+          </span>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div id="psc-divPanelMid">
+       <div id="psc-divPanelLeft" style="">
+        <div id="psc-divPanelLeft-Content" style="min-height: 30px;">
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-b93f77f5-3355-41e7-a853-ba503473b24d" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="navbar-vertical">
+            <ul class="left-menu">
+             <li class="drop">
+              <a class="">
+               Giới thiệu tổng quan
+              </a>
+              <ul class="drop-down">
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/tong-quan-khanh-hoa">
+                 Giới thiệu chung
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/dieu-kien-tu-nhien">
+                 Điều kiện tự nhiên
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/lich-su-hinh-thanh">
+                 Lịch sử hình thành
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/tiem-nang-du-lich">
+                 Tiềm năng du lịch
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/co-so-ha-tang-003">
+                 Cơ sở hạ tầng
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/tai-nguyen-thien-nhien">
+                 Tài nguyên thiên nhiên
+                </a>
+               </li>
+               <li>
+                <a href="/vi/gioi-thieu-tong-quan-789/gioi-thieu-tong-quan-huyen-thi-xa-thanh-pho">
+                 Huyện, thị xã, thành phố
+                </a>
+               </li>
+               <li>
+                <a href="/vi/hoi-dap-ve-khanh-hoa">
+                 Hỏi - Đáp về Khánh Hòa
+                </a>
+               </li>
+               <li>
+                <a href="/vi/thai-nguyen">
+                 Tỉnh kết nghĩa
+                </a>
+               </li>
+              </ul>
+             </li>
+             <li class="drop">
+              <a class="">
+               Tổ chức hành chính
+              </a>
+              <ul class="drop-down">
+               <li>
+                <a href="/vi/thuong-truc-hdnd-tinh/thuong-truc-hoi-dong-nhan-dan-tinh">
+                 Thường trực HĐND tỉnh
+                </a>
+               </li>
+               <li>
+                <a href="/vi/lanh-dao-ubnd-tinh/lanh-dao-ubnd-tinh">
+                 Lãnh đạo UBND tỉnh
+                </a>
+               </li>
+               <li>
+                <a href="/vi/uy-vien-ubnd-tinh/uy-vien-ubnd-tinh">
+                 Ủy viên UBND tỉnh
+                </a>
+               </li>
+               <li>
+                <a href="/vi/cac-so-ban-nganh/don-vi-truc-thuoc-0052">
+                 Các sở, ban ngành
+                </a>
+               </li>
+               <li>
+                <a href="/vi/to-chuc-hanh-chinh/huyen-thi-xa-thanh-pho">
+                 Huyện, thị xã, thành phố
+                </a>
+               </li>
+              </ul>
+             </li>
+             <li class="drop">
+              <a class="">
+               Tin tức - Sự kiện
+              </a>
+              <ul class="drop-down">
+               <li>
+                <a href="/vi/tin-tuc-noi-bat">
+                 Tin tức nổi bật
+                </a>
+               </li>
+               <li>
+                <a href="/vi/tin-hoat-dong-trong-tinh-0331">
+                 Tin hoạt động trong tỉnh
+                </a>
+               </li>
+               <li>
+                <a href="/vi/van-de-ban-doc-quan-tam">
+                 Vấn đề bạn đọc quan tâm
+                </a>
+               </li>
+              </ul>
+             </li>
+             <li class="drop">
+              <a class="">
+               Quy hoạch Phát triển
+              </a>
+              <ul class="drop-down">
+               <li>
+                <a href="/vi/quy-hoach">
+                 Quy hoạch
+                </a>
+               </li>
+               <li>
+                <a href="/vi/dinh-huong-phat-trien">
+                 Định hướng phát triển
+                </a>
+               </li>
+               <li>
+                <a href="/vi/kinh-te-xa-hoi">
+                 Kinh tế - Xã hội
+                </a>
+               </li>
+              </ul>
+             </li>
+             <li>
+              <a href="/thong-tin-doi-ngoai">
+               Thông tin đối ngoại
+              </a>
+             </li>
+            </ul>
+           </div>
+           <script type="text/javascript">
+            var arrActive = jQuery('.active');
+     var arrDrop = jQuery('.drop');
+     arrDrop.each(function () {
+         jQuery(this).click(function () {
+             console.log('arrDrop', this);
+             jQuery('.drop').removeClass('active');
+             jQuery(this).addClass("active");
+             jQuery(this).style.display = "block";
+         });
+     });
+           </script>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-0a3a44e6-3365-40a0-adc4-3fc0f3f84a04" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget sytem-document">
+            <div class="widget-content">
+             <div class="imgl">
+              <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/hethongvanban.png"/>
+             </div>
+             <div class="img_vb">
+              <a href="http://www.khanhhoa.gov.vn/module/document">
+               VB chỉ đạo điều hành
+              </a>
+             </div>
+             <div class="img_vb">
+              <a href="http://www.khanhhoa.gov.vn/module/tra-cuu-van-ban-sao-y">
+               Văn bản sao y
+              </a>
+             </div>
+             <div class="img_vb">
+              <a href="http://www.khanhhoa.gov.vn/vi/lay-y-kien-ve-du-thao-van-ban-qppl/lay-y-kien-gop-y">
+               Lấy ý kiến về VBPL
+              </a>
+             </div>
+             <div class="img_vb">
+              <a href="http://vbpl.vn/TW/Pages/Home.aspx" target="_blank">
+               VBQPPL Trung ương
+              </a>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-d1262ede-5fe9-4964-8555-aa2986aa1037" style="">
+          <div class="psc-divPortlet-Content">
+           <a href="http://www.congbaokhanhhoa.gov.vn/" target="_blank">
+            <img alt="" src="/Resources/Images/SubDomain/homepage/Banner/img_CongBao.gif" style="margin-top: 1px; width: 100%;"/>
+           </a>
+           <br/>
+           <a href="http://phapdien.moj.gov.vn/Pages/chi-tiet-bo-phap-dien.aspx" target="_blank">
+            <img alt="" src="/Resources/Images/SubDomain/homepage/Banner/Bophapdien.jpg" style="margin-top: 2px; width: 100%;"/>
+           </a>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-e9eacde7-5903-422a-aa75-fe3f92bfd2ce" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget scheduler">
+            <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/lichlamviec.png"/>
+            <div class="lichlamviec">
+             <p>
+              <a href="http://www.khanhhoa.gov.vn/module/lich-cong-tac">
+               Lịch làm việc của
+               <br/>
+               Lãnh đạo UBND tỉnh
+              </a>
+             </p>
+             <p>
+              <a href="http://daibieunhandankhanhhoa.gov.vn/Default.aspx?ModuleId=208ee0dd-1415-4ddd-bcc3-f7c8f113f651">
+               Lịch làm việc của
+               <br/>
+               Thường trực HĐND Tỉnh
+               <br/>
+               và Đoàn ĐBQH tỉnh
+              </a>
+             </p>
+             <p>
+              <a href="http://www.khanhhoa.gov.vn/vi/lich-tiep-cong-dan">
+               Lịch tiếp công dân
+              </a>
+             </p>
+             <a href="http://www.khanhhoa.gov.vn/vi/lich-tiep-cong-dan">
+             </a>
+            </div>
+            <a href="http://www.khanhhoa.gov.vn/vi/lich-tiep-cong-dan">
+            </a>
+           </div>
+           <a href="http://www.khanhhoa.gov.vn/vi/lich-tiep-cong-dan">
+           </a>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-c43b32b4-9420-4763-ad92-a1b62b3df536" style="">
+          <div class="psc-divPortlet-Content">
+           <a href="http://www.khanhhoa.gov.vn/vi/thong-bao-moi-hop-006/23-7-2018-den-27-7-2018" target="_blank">
+            <img alt="" src="/Resources/Images/banner/TH%C3%94NG%20B%C3%81O%20M%E1%BB%9CI%20H%E1%BB%8CP.jpg" style="margin-top: 1px; width: 100%;"/>
+           </a>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-1ef47303-b120-4265-924c-7ad1564a4ece" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Chuyên trang - Chuyên mục
+             </a>
+            </div>
+            <div class="widget-content">
+             <ul class="list-style-1">
+              <li class="drop">
+               <a href="/phong-chong-thien-tai">
+                Phòng chống thiên tai
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/cap-nhat-tien-do-giai-trinh-kien-nghi-cu-tri">
+                Giải trình ý kiến cử tri
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/thong-tin-cho-bao-chi-987">
+                Thông tin cho báo chí
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/danh-sach-nguoi-phat-ngon-003/danh-sach-nguoi-phat-ngon-va-cung-cap-thong-tin-cho-bao-chi-cua-cac-co-quan-hanh-chinh-nha-nuoc-tinh-khanh-hoa-4060">
+                Thông tin người phát ngôn
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/khoa-hoc-cong-nghe">
+                Khoa học công nghệ
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/ngay-phap-luat">
+                Ngày Pháp luật
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/giam-dinh-tu-phap">
+                Giám định tư pháp
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/cong-tac-kiem-tra-giam-sat-dang">
+                Công tác giám sát Đảng
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/cong-tac-dan-van">
+                Công tác dân vận
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/an-toan-giao-thong">
+                An toàn giao thông
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/giai-quyet-khieu-nai-to-cao">
+                Kết quả giải quyết khiếu nại - tố cáo
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/giai-dap-phap-luat-005">
+                Giải đáp pháp luật
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/thi-dua-khen-thuong">
+                Thi đua - khen thưởng
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/kinh-te-xa-hoi">
+                Kinh tế - xã hội
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/thong-tin-du-an-dau-tu">
+                Thông tin dự án đầu tư
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/tai-nguyen-moi-truong">
+                Tài nguyên - Môi trường
+               </a>
+              </li>
+              <li class="drop">
+               <a href="http://nhadautu.khanhhoa.gov.vn/vi/quy-hoach-ke-hoach-su-dung-dat/cac-du-an-bds-du-dieu-kien-dang-ky-cap-giay-chung-nhan-quyen-su-dung-dat-quyen-so-huu-nha-o-va-tai-san-khac-gan-lien-voi-dat-cho-nguoi-nhan-chuyen-nhuong-quyen-su-dung-dat-mua-nha-o-cong-trinh-xay-dung-trong-cac-du-an-phat-trien-nha-o">
+                Các dự án BĐS đủ điều kiện đăng ký, cấp giấy chứng nhận quyền sử dụng đất
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/thong-tin-doanh-nghiep-nha-nuoc">
+                Thông tin doanh nghiệp nhà nước
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/cong-khai-ngan-sach-nha-nuoc">
+                Công khai ngân sách
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/dich-vu-ke-toan-thong-tin">
+                Thông tin dịch vụ kế toán, kiểm toán
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/toan-dan-chung-suc-xay-dung-nong-thon-moi">
+                Toàn dân chung sức xây dựng nông thôn mới
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/toan-dan-doan-ket-xay-dung-doi-song-van-hoa">
+                Toàn dân đoàn kết xây dựng đời sống văn hóa
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/xay-dung-xa-hoi-hoc-tap">
+                Xây dựng xã hội học tập
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/phong-chong-hivaids">
+                Phòng chống HIV/AIDS
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/phong-chong-bao-luc-gia-dinh">
+                Phòng, chống BLGĐ
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/phong-chay-chua-chay">
+                Phòng cháy, chữa cháy
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/so-hoa-truyen-hinh">
+                Số hóa truyền hình
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/thong-tin-xu-phat-vi-pham-hanh-chinh">
+                Thông tin xử phạt vi phạm hành chính
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/ky-niem-ngay-thuong-binh-liet-si-27-7">
+                Kỷ niệm ngày thương binh, Liệt sĩ 27-7
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/chinh-sach-danh-cho-nguoi-nuoc-ngoai">
+                Chính sách dành cho người nước ngoài
+               </a>
+              </li>
+              <li class="drop">
+               <a href="/vi/tiep-can-thong-tin">
+                Triển khai Luật Tiếp cận thông tin
+               </a>
+              </li>
+             </ul>
+            </div>
+            <!-- /.widget-content -->
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-76c0c142-e80e-4a34-ad5c-cec2e2c67bd5" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget notification-new ">
+            <div class="backgroud-top">
+             <img src="/Resources/ImagesPortal/HomePage/imgs/Thong-bao-top.png"/>
+            </div>
+            <div class="widget-wrap width-common">
+             <div class="widget-title style-white">
+              <a href="/vi/thong-bao-moi-nhat">
+               Thông báo mới nhất
+              </a>
+             </div>
+             <div class="widget-content">
+              <ul class="list-style-4">
+               <li>
+                <a href="/vi/thong-bao-moi-nhat/tuyen-dung-cong-chuc-hanh-chinh-tinh-khanh-hoa-nam-2018">
+                 Tuyển dụng công chức hành chính tỉnh Khánh Hòa năm 2018
+                </a>
+               </li>
+               <li>
+                <a href="/vi/thong-bao-moi-nhat/tham-gia-tham-dinh-gia-dat-khu-dat-thuc-hien-du-an-theo-quyet-dinh-so-2013-qd-ubnd-ngay-16-7-2018-cua-ubnd-tinh">
+                 Tham gia thẩm định giá đất khu đất thực hiện dự án theo Quyết định số 2013/QĐ-UBND ngày 16/7/2018 của UBND tỉnh
+                </a>
+               </li>
+               <li>
+                <a href="/vi/thong-bao-moi-nhat/thong-bao-tuyen-dung-lao-dong">
+                 Thông báo tuyển dụng lao động
+                </a>
+               </li>
+              </ul>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-ba7dcc61-11c5-4aa6-837e-5ddfa6779737" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget weather">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Thời tiết
+             </a>
+            </div>
+            <div class="widget-content">
+             <select class="tentp" id="ddlWeather" onchange="GetWeatherInfo();">
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1572151&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Nha Trang
+              </option>
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1566083&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Hồ Chí Minh
+              </option>
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1581130&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Hà Nội
+              </option>
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1584071&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Đà Lạt
+              </option>
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1583992&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Đà Nẵng
+              </option>
+              <option value="http://api.openweathermap.org/data/2.5/weather?id=1580240&amp;APPID=d64d00967612a5fe7236ead21b262f9d">
+               Thừa Thiên Huế
+              </option>
+             </select>
+             <div class="hinh">
+              <img alt="" id="weatherImg" src="https://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/10n.png" style="width: 88px; height: 84px;"/>
+              <p id="temp">
+               24.3 °C
+              </p>
+             </div>
+             <div class="do_am">
+              Độ ẩm:
+              <span id="humidity">
+               96 %
+              </span>
+              <br/>
+              Sức gió:
+              <span id="wind">
+               19 km/h
+              </span>
+             </div>
+            </div>
+            <!-- /.widget-content -->
+           </div>
+           <script lang="javascript" type="text/javascript">
+            function GetWeatherInfo() {
+         //dia chi cua tỉnh th&agrave;nh
+         var placeLink = document.getElementById('ddlWeather').value;
+         try {
+             var Httpreq = new XMLHttpRequest(); // a new request
+             Httpreq.open("GET", placeLink, true);
+             Httpreq.onreadystatechange = function () {
+                 if (Httpreq.readyState == 4 && Httpreq.status == 200) {
+                     var resultJSON = Httpreq.responseText;
+                     var result = Sys.Serialization.JavaScriptSerializer.deserialize(resultJSON);
+ 
+                     document.getElementById("temp").innerHTML = parseFloat(parseFloat(result.main.temp) - 273.15).toFixed(1) + " &deg;C";
+                     document.getElementById("humidity").innerHTML = Math.round(parseFloat(result.main.humidity)) + " %";
+                     document.getElementById("wind").innerHTML = Math.round(parseFloat(result.wind.speed) * 3.6) + " km/h";
+                     document.getElementById("weatherImg").src =  "http://openweathermap.org/img/w/" + result.weather[0].icon + ".png";                    
+                 }
+             }
+             Httpreq.send(null);
+         }
+         catch (e) {
+         }
+     }
+ 
+ 
+     GetWeatherInfo();
+           </script>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-81385da6-e7e9-4d4d-9b7c-f30d2d1203b8" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Liên kết web
+             </a>
+            </div>
+            <div class="widget-content" style="margin-top: -5px; box-shadow: #adabad 0px 9px 16px 1px; margin-bottom: 20px; padding: 15px 10px;">
+             <select onchange="if (this.value!=0)window.open(this.value);" size="1" style="border-bottom: 1px solid #cfcfcf; font-size: 15px; color: #6c6c6c; height: 25px; width: 100%; font-family: roboto, time;">
+              <option selected="selected">
+               Chọn Website
+              </option>
+              <option value="http://daibieunhandankhanhhoa.gov.vn">
+               Đại biểu nhân dân tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.chinhphu.vn">
+               Cổng thông tin điện tử Chính phủ
+              </option>
+              <option value="http://www.sbvkh.gov.vn./">
+               Ngân hàng Nhà nước chi nhánh tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.khanhhoa.edu.vn">
+               Sở Giáo dục và Đào tạo tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.ict-khanhhoa.vn">
+               Sở Thông tin và Truyền thông tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.congankhanhhoa.gov.vn">
+               Công an tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.sgtvtkhanhhoa.gov.vn">
+               Sở Giao thông Vận tải tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.khanhhoainvest.gov.vn">
+               Sở Kế hoạch và Đầu tư tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.dostkhanhhoa.gov.vn">
+               Sở Khoa học và Công nghệ tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.tnmtkhanhhoa.gov.vn">
+               Sở Tài nguyên và Môi trường tỉnh Khánh Hòa
+              </option>
+              <option value="http://www.soytekhanhhoa.gov.vn">
+               Sở Y tế tỉnh Khánh Hòa
+              </option>
+              <option value="http://sct.khanhhoa.gov.vn">
+               Sở Công thương tỉnh Khánh Hòa
+              </option>
+              <option value="http://sldtbxh.khanhhoa.gov.vn">
+               Sở Lao động - Thương binh và Xã hội tỉnh Khánh Hòa
+              </option>
+              <option value="http://dofakhanhhoa.gov.vn">
+               Sở Ngoại vụ tỉnh Khánh Hòa
+              </option>
+              <option value="http://snv.khanhhoa.gov.vn">
+               Sở Nội vụ tỉnh Khánh Hòa
+              </option>
+              <option value="http://stc.khanhhoa.gov.vn">
+               Sở Tài chính tỉnh Khánh Hòa
+              </option>
+              <option value="http://stp.khanhhoa.gov.vn">
+               Sở Tư pháp tỉnh Khánh Hòa
+              </option>
+              <option value="http://sxd.khanhhoa.gov.vn">
+               Sở Xây dựng tỉnh Khánh Hòa
+              </option>
+              <option value="http://thanhtra.khanhhoa.gov.vn">
+               Thanh tra tỉnh Khánh Hòa
+              </option>
+              <option value="http://ktv.org.vn">
+               Đài Phát thanh - Truyền hình Khánh Hòa
+              </option>
+              <option value="http://nhatrang.khanhhoa.gov.vn">
+               Thành phố Nha Trang
+              </option>
+              <option value="http://camranh.khanhhoa.gov.vn">
+               Thành phố Cam Ranh
+              </option>
+              <option value="http://ninhhoa.khanhhoa.gov.vn">
+               Thị xã Ninh Hòa
+              </option>
+              <option value="http://dienkhanh.khanhhoa.gov.vn">
+               Huyện Diên Khánh Hòa
+              </option>
+              <option value="http://vanninh.khanhhoa.gov.vn">
+               Huyện Vạn Ninh Hòa
+              </option>
+              <option value="http://www.vanphong.gov.vn">
+               Ban Quản lý Khu kinh tế Vân Phong
+              </option>
+              <option value="http://www.kso.gov.vn">
+               Cục Thống kê tỉnh Khánh Hòa
+              </option>
+              <option value="http://congdoankh.org.vn/">
+               Liên Đoàn lao động tỉnh Khánh Hòa
+              </option>
+              <option value="http://quangnam.gov.vn">
+               Cổng Thông tin điện tử tỉnh Quảng Nam
+              </option>
+              <option value="http://thuathienhua.gov.vn">
+               Cổng Thông tin điện tử Thừa Thiên Huế
+              </option>
+              <option value="http://taisancong.vn">
+               Thông tin về tài sản nhà nước
+              </option>
+              <option value="http://www.cpv.org.vn">
+               Báo điện tử Đảng Cộng Sản Việt Nam
+              </option>
+              <option value="http://congly.com.vn">
+               Báo Công lý
+              </option>
+              <option value="http://xahoi.com.vn">
+               Báo Xã hội
+              </option>
+              <option value="http://ngoisao.vn">
+               Báo Ngôi sao
+              </option>
+              <option value="http://www.khanhhoa.gov.vn/?PageId=0a78af0d-1bf5-4722-ae49-a57cf2f5b019">
+               Dành cho thanh thiếu niên
+              </option>
+              <option value="http://www.khanhhoa.gov.vn/?PageId=5ddc10b8-f945-444b-ba50-f96dc7549532">
+               Dành cho học sinh - sinh viên
+              </option>
+              <option value="http://www.khanhhoa.gov.vn/?PageId=7865bb3c-2689-4b0d-b9c7-d50a6e111ff9">
+               Dành cho người cao tuổi
+              </option>
+              <option value="http://www.khanhhoa.gov.vn/?PageId=adae28bb-37f9-45da-842d-f99c1e0912cf">
+               Dành cho Kiều bào
+              </option>
+              <option value="http://www.thanhnien.com.vn">
+               Báo Thanh niên
+              </option>
+              <option value="http://www.tuoitre.com.vn">
+               Báo Tuổi trẻ
+              </option>
+              <option value="http://www.nhandan.com.vn">
+               Báo Nhân Dân
+              </option>
+              <option value="http://www.dntm.vn">
+               Tạp chí Doanh nghiệp và Thương mại
+              </option>
+             </select>
+            </div>
+            <!-- /.widget-content -->
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-4c4a4dc7-b005-4fbe-be1a-a62551fc737a" style="">
+          <div class="psc-divPortlet-Content">
+           <div>
+            <a href="http://thuysantuanha.com.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/banner-KH-gov.gif" style="margin-top: 2px; width: 100%;"/>
+            </a>
+           </div>
+           <div>
+            <a href="http://www.vishipel.com.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/banner/Banner%20website.jpg" style="margin-top: 2px; width: 100%;"/>
+            </a>
+           </div>
+           <div>
+            <a href="http://ktv.org.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/Logo/baner_KTV.jpg" style="margin-top: 2px; width: 100%;"/>
+            </a>
+           </div>
+           <div>
+            <a href="http://bhxhkhanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/Logo/BHXH-KH.jpg" style="margin-top: 2px; width: 100%;"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-58ad6e26-cbec-40ed-8103-1a69abc8e06e" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget truycap">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Thống kê
+             </a>
+            </div>
+            <div class="onlinetotal">
+             <p>
+              <span>
+               TỔNG TRUY CẬP:
+              </span>
+              <span id="ctl08_psc-portlet-58ad6e26-cbec-40ed-8103-1a69abc8e06e_Label1">
+               36,683,024
+              </span>
+             </p>
+             <p>
+              <span>
+               TRUY CẬP THÁNG:
+              </span>
+              <span id="ctl08_psc-portlet-58ad6e26-cbec-40ed-8103-1a69abc8e06e_Label3">
+               364,934
+              </span>
+             </p>
+             <p>
+              <span>
+               ĐANG ONLINE:
+              </span>
+              <span id="ctl08_psc-portlet-58ad6e26-cbec-40ed-8103-1a69abc8e06e_Label2">
+               889
+              </span>
+             </p>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="psc-divPanelCenter" style="width: 560px;">
+        <div id="psc-divPanelCenter-Content" style="min-height: 30px;">
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-7a760006-f52e-4e2a-b82a-7c9bc7502151" style="">
+          <div class="psc-divPortlet-Content">
+           <style>
+            .sp-caption-container a
+     {
+         display: -webkit-box;
+         overflow: hidden;
+         text-overflow: ellipsis;
+         -webkit-line-clamp: 2;
+         -webkit-box-orient: vertical;
+         height: 40px !important;
+     }
+           </style>
+           <div class="main-slider slider-pro">
+            <div class="sp-slides">
+             <div class="sp-slide">
+              <img alt="/vi/tin-tuc-noi-bat/thuc-hien-255-dich-vu-cong-muc-do-3-4-trong-nam-2018-2019" class="sp-image" src="/Temp/ArticleImage/83c38932-4dac-4884-a403-597a02e20257.jpg"/>
+              <div class="sp-caption">
+               <a class="title" href="/vi/tin-tuc-noi-bat/thuc-hien-255-dich-vu-cong-muc-do-3-4-trong-nam-2018-2019">
+                Thực hiện 255 dịch vụ công mức độ 3,4 trong năm 2018-2019
+               </a>
+              </div>
+             </div>
+             <div class="sp-slide">
+              <img alt="/vi/tin-tuc-noi-bat/che-do-ho-tro-nguoi-co-cong-voi-cach-mang-dang-dinh-cu-o-nuoc-ngoai" class="sp-image" src="/Temp/ArticleImage/e85663b9-7a93-4acb-96f7-4cab7d89556a.jpg"/>
+              <div class="sp-caption">
+               <a class="title" href="/vi/tin-tuc-noi-bat/che-do-ho-tro-nguoi-co-cong-voi-cach-mang-dang-dinh-cu-o-nuoc-ngoai">
+                Chế độ hỗ trợ người có công với cách mạng đang định cư ở nước ngoài
+               </a>
+              </div>
+             </div>
+             <div class="sp-slide">
+              <img alt="/vi/tin-tuc-noi-bat/ban-hanh-tieu-chi-xac-dinh-san-pham-san-xuat-tu-hoat-dong-tai-che-xu-ly-chat-thai" class="sp-image" src="/Temp/ArticleImage/726f4259-7453-4018-9db0-59b5bd6e4955.jpg"/>
+              <div class="sp-caption">
+               <a class="title" href="/vi/tin-tuc-noi-bat/ban-hanh-tieu-chi-xac-dinh-san-pham-san-xuat-tu-hoat-dong-tai-che-xu-ly-chat-thai">
+                Ban hành tiêu chí xác định sản phẩm sản xuất từ hoạt động tái chế, xử lý chất thải
+               </a>
+              </div>
+             </div>
+             <div class="sp-slide">
+              <img alt="/vi/tin-tuc-noi-bat/sua-doi-dieu-kien-chung-de-duoc-cap-chung-chi-hanh-nghe-hoat-dong-xay-dung" class="sp-image" src="/Temp/ArticleImage/a2bdad15-a3d5-4f5d-a84f-2377f0ff5f00.jpg"/>
+              <div class="sp-caption">
+               <a class="title" href="/vi/tin-tuc-noi-bat/sua-doi-dieu-kien-chung-de-duoc-cap-chung-chi-hanh-nghe-hoat-dong-xay-dung">
+                Sửa đổi điều kiện chung để được cấp chứng chỉ hành nghề hoạt động xây dựng
+               </a>
+              </div>
+             </div>
+            </div>
+           </div>
+           <script type="text/javascript">
+            pscjq(document).ready(function () {
+         pscjq('.main-slider').sliderPro({
+             width: 536,
+             height: 330,
+             fade: true,
+             arrows: true,
+             buttons: false,
+             fullScreen: true,
+             shuffle: true,
+             thumbnailArrows: true,
+             autoplay: true,
+             breakpoints: {
+                 600: {
+                     width: 536,
+                     height: 330
+                 },
+                 920: {
+                     width: 536,
+                     height: 330,
+                 }
+             }
+         });
+     });
+           </script>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-5c7d425f-bf66-4662-82d3-31bc22c35196" style="">
+          <div class="psc-divPortlet-Content">
+           <link href="/Components/vendors/css/owl.theme.default.min.css" rel="stylesheet" type="text/css"/>
+           <link href="/Components/vendors/css/owl.carousel.min.css" rel="stylesheet" type="text/css"/>
+           <style>
+            #owl-demo .owl-buttons
+     {
+     display: none;
+     }
+     #owl-demo
+     {
+     overflow: hidden;
+     }
+           </style>
+           <div class="owl-carousel owl-theme" id="owl-demo">
+            <div class="item ">
+             <img alt="" src="/Resources/Images/banner/NamDLQG%202019.jpg"/>
+            </div>
+            <div class="item ">
+             <img alt="" src="/Resources/Images/banner/nha-trang-%C4%91i%E1%BB%83m-%C4%91%E1%BA%BFn-%E1%BA%A5n-t%C6%B0%E1%BB%A3ng.gif"/>
+            </div>
+           </div>
+           <script src="/Components/CarouselSlider/Scripts/owl.carousel.js" type="text/javascript">
+           </script>
+           <script>
+            pscjq("#owl-demo").owlCarousel({            
+             
+             items : 1,     
+             autoPlay: true,         
+         });
+           </script>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-bdb439dc-a884-4309-9610-9c370a16a240" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue-2">
+             <a href="/vi/tin-hoat-dong-trong-tinh-0331">
+              Tin hoạt động trong tỉnh
+             </a>
+            </div>
+            <div class="widget-content">
+             <div class="article-hot">
+              <div class="article-thumb">
+               <a href="/vi/tin-hoat-dong-trong-tinh/le-phong-tang-truy-tang-danh-hieu-ba-me-viet-nam-anh-hung-anh-hung-luc-luong-vu-trang-nhan-dan-4152">
+                <img alt="" src="/Temp/ArticleImage/02582bc7-d0aa-4f42-b180-35988fd833c4.JPG"/>
+               </a>
+              </div>
+              <div class="article-content">
+               <h4 class="article-title">
+                <a href="/vi/vi-tin-hoat-dong-trong-tinh-0331/le-phong-tang-truy-tang-danh-hieu-ba-me-viet-nam-anh-hung-anh-hung-luc-luong-vu-trang-nhan-dan-4152">
+                 Lễ phong tặng, truy tặng danh hiệu Bà mẹ Việt Nam Anh hùng, Anh hùng Lực lượng vũ trang nhân dân
+                </a>
+               </h4>
+               <div class="article-description">
+                Sáng 27-7-2018, Tỉnh ủy, HĐND, UBND, Ủy ban Mặt trận Tổ quốc Việt Nam tỉnh Khánh Hòa tổ chức Lễ phong tặng, truy tặng danh hiệu Bà mẹ Việt Nam Anh hùng, Anh hùng Lực lượng vũ trang nhân dân.
+               </div>
+              </div>
+             </div>
+             <!-- /.article-hot -->
+             <ul class="tintuckhac list-style-2">
+              <li>
+               <a href="/vi/tin-hoat-dong-trong-tinh-0331/hon-1-000-doan-vien-thanh-nien-thap-nen-tri-an-cac-anh-hung-liet-si">
+                Hơn 1.000 đoàn viên, thanh niên thắp nến tri ân các anh hùng liệt sĩ
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-hoat-dong-trong-tinh-0331/3-hop-tac-xa-to-lien-ket-san-xuat-toi-nhan-giay-chung-nhan-vietgap">
+                3 hợp tác xã, tổ liên kết sản xuất tỏi nhận giấy chứng nhận VietGAP
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-hoat-dong-trong-tinh-0331/lanh-dao-tinh-khanh-hoa-va-tp-nha-trang-vieng-nghia-trang-liet-si-hon-dung-va-dang-huong-tai-dien-tho-thap-tram-huong-5330">
+                Lãnh đạo tỉnh Khánh Hòa và TP. Nha Trang:
+                <br/>
+                Viếng Nghĩa trang liệt sĩ Hòn Dung và dâng hương tại điện thờ Tháp Trầm Hương
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-hoat-dong-trong-tinh-0331/khai-mac-phien-cho-nong-san-khanh-hoa-nam-2018">
+                Khai mạc Phiên chợ nông sản Khánh Hòa năm 2018
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-6556c9bb-4162-46f2-81f7-4f64cc1a06f8" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <a class="text-align-center" href="http://www.khanhhoa.gov.vn/module/gop-y">
+             <img alt="" class="img-responsive" src="/Resources/ImagesPortal/HomePage/imgs/banner_gopy.jpg"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-ffac750c-422b-494e-b20e-4d02b418322e" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue-2">
+             <a href="/vi/van-de-ban-doc-quan-tam">
+              Vấn đề bạn đọc quan tâm
+             </a>
+            </div>
+            <div class="widget-content">
+             <div class="article-hot">
+              <div class="article-thumb">
+               <a href="/vi/van-de-ban-doc-quan-tam/dung-the-hdbank-se-duoc-hoan-tien-khi-mua-ve-vietjet">
+                <img alt="" src="/Temp/ArticleImage/d792c621-208b-43ca-80b2-93eb2bc0880d.jpg"/>
+               </a>
+              </div>
+              <div class="article-content">
+               <h4 class="article-title">
+                <a href="/vi/vi-van-de-ban-doc-quan-tam/dung-the-hdbank-se-duoc-hoan-tien-khi-mua-ve-vietjet">
+                 Dùng thẻ HDBank sẽ được hoàn tiền khi mua vé Vietjet
+                </a>
+               </h4>
+               <div class="article-description">
+                Hoà nhịp cùng mùa hè sôi động, từ nay đến ngày 30-9, HDBank liên kết cùng Vietjet thực hiện chương trình khuyến mãi “ Xài thẻ đồng thương hiệu - hoàn tiền sành điệu” dành riêng cho quý khách hàng sở hữu thẻ tín dụng quốc tế đồng thương hiệu HDBank- Vietjet Air.
+               </div>
+              </div>
+             </div>
+             <!-- /.article-hot -->
+             <ul class="tintuckhac list-style-2">
+              <li>
+               <a href="/vi/van-de-ban-doc-quan-tam/viet-nam-khong-nhap-vaccine-kem-chat-luong-cua-trung-quoc">
+                Việt Nam không nhập vaccine kém chất lượng của Trung Quốc
+               </a>
+              </li>
+              <li>
+               <a href="/vi/van-de-ban-doc-quan-tam/chung-tay-cham-soc-suc-khoe-nguoi-cao-tuoi">
+                Chung tay chăm sóc sức khỏe người cao tuổi
+               </a>
+              </li>
+              <li>
+               <a href="/vi/van-de-ban-doc-quan-tam/phat-huy-cac-gia-tri-van-hoa-trong-xay-dung-nong-thon-moi">
+                Phát huy các giá trị văn hóa trong xây dựng nông thôn mới
+               </a>
+              </li>
+              <li>
+               <a href="/vi/van-de-ban-doc-quan-tam/giup-doanh-nghiep-tham-nhap-sau-hon-chuoi-cung-ung-toan-cau">
+                Giúp doanh nghiệp thâm nhập sâu hơn chuỗi cung ứng toàn cầu
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-f533bd9b-58a0-43bb-a382-875157880ca3" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget ">
+            <a class="text-align-center" href="http://www.khanhhoa.gov.vn/module/phan-hoi">
+             <img alt="" class="img-responsive" src="/Resources/ImagesPortal/HomePage/imgs/banner_coquantraloi.gif"/>
+            </a>
+            <a href="http://doanhnghiep.khanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/banner/%C4%90%E1%BB%93ng%20h%C3%A0nh%20c%C3%B9ng%20doanh%20nghi%E1%BB%87p%202018.jpg" style="margin-top: 1px; width: 540px; height: 133px;"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-94fd84d2-5759-4fb9-8778-a4ad1fdb91ca" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue-2">
+             <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh">
+              Thông tin điều hành của UBND Tỉnh
+             </a>
+            </div>
+            <div class="widget-content">
+             <ul class="list-style-2 font-weight-bold">
+              <li>
+               <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh/tang-cuong-cong-tac-tuyen-truyen-van-dong-cac-to-chuc-ca-nhan-ho-tro-cho-chuong-trinh-ngan-hang-bo">
+                Tăng cường công tác tuyên truyền, vận động các tổ chức, cá nhân hỗ trợ cho Chương trình “Ngân hàng bò”
+               </a>
+              </li>
+              <li>
+               <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh/hoan-thanh-viec-thoai-von-doanh-nghiep-nha-nuoc-truoc-ngay-30-9-2018">
+                Hoàn thành việc thoái vốn doanh nghiệp nhà nước trước ngày 30-9-2018
+               </a>
+              </li>
+              <li>
+               <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh/tiep-tuc-quan-tam-xu-ly-cac-khoan-no-xau">
+                Tiếp tục quan tâm xử lý các khoản nợ xấu
+               </a>
+              </li>
+              <li>
+               <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh/khan-truong-hoan-thien-cac-quy-dinh-ve-co-che-mot-cua-quoc-gia-co-che-mot-cua-asean">
+                Khẩn trương hoàn thiện các quy định về cơ chế một cửa quốc gia, cơ chế một cửa ASEAN
+               </a>
+              </li>
+              <li>
+               <a href="/vi/thong-tin-dieu-hanh-cua-ubnd-tinh/tam-dung-viec-bo-nhiem-pho-truong-phong-va-tuong-duong-1946">
+                Tạm dừng việc bổ nhiệm phó trưởng phòng và tương đương
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-d6934e4b-a321-4618-a8f9-9514b060aed7" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget advs">
+            <a href="http://www.yensaokhanhhoa.com.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/Yensao2018.gif" style="margin-top: 1px; width: 260px; height: 130px;"/>
+            </a>
+            <a href="http://khatoco.com/hocbong2018/" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/khanh-hoa-gov.png" style="margin-top: 2px; width: 260px; height: 130px;"/>
+            </a>
+            <a href="http://www.metrang.com.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/Me%20trang%20-%202018.jpg" style="margin-top: 2px; width: 260px; height: 130px;"/>
+            </a>
+            <a href="http://www.vietcombank.com.vn" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/vietcombank7-2018.gif" style="margin-top: 2px; width: 260px; height: 130px;"/>
+            </a>
+            <a href="http://www.khanhhoa.vinaphone.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/quangcao/vinafone4-10-2017.gif" style="margin-top: 2px; width: 260px; height: 130px;"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-3f51b81d-c4cf-46d1-b933-e3434e0adeef" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue-2">
+             <a href="#">
+              Liên kết Website
+             </a>
+            </div>
+            <div class="widget-content">
+             <div class="widget_three-tab panel with-nav-tabs panel-default">
+              <div class="panel-heading">
+               <ul class="nav nav-tabs list-style-7">
+                <li class="active">
+                 <a data-toggle="tab" href="#tab1default">
+                  Cơ quan chuyên môn thuộc tỉnh
+                 </a>
+                </li>
+                <li>
+                 <a data-toggle="tab" href="#tab2default">
+                  Ban ngành thuộc tỉnh Khánh Hòa
+                 </a>
+                </li>
+                <li>
+                 <a data-toggle="tab" href="#tab3default">
+                  UBND Các huyện - Thành phố
+                 </a>
+                </li>
+               </ul>
+              </div>
+              <div class="panel-body">
+               <div class="tab-content">
+                <div class="tab-pane fade in active" id="tab1default">
+                 <ul class="list-style-5 col-2">
+                  <li>
+                   <a href="http://bandantoc.khanhhoa.gov.vn/">
+                    Ban Dân Tộc
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://stnmt.khanhhoa.gov.vn/">
+                    Sở Tài nguyên và Môi trường
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://stttt.khanhhoa.gov.vn/">
+                    Sở Thông tin và Truyền thông
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://svhtt.khanhhoa.gov.vn/">
+                    Sở Văn hóa và Thể thao
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sct.khanhhoa.gov.vn/">
+                    Sở Công Thương
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://snv.khanhhoa.gov.vn/">
+                    Sở Nội vụ
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sldtbxh.khanhhoa.gov.vn/">
+                    Sở Lao động - Thương binh và Xã hội
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://snnptnt.khanhhoa.gov.vn/news/us/">
+                    Sở Nông nghiệp và Phát triển Nông thôn
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://www.dostkhanhhoa.gov.vn/">
+                    Sở Khoa học và Công nghệ
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sgtvt.khanhhoa.gov.vn/">
+                    Sở Giao thông Vận tải
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://thanhtra.khanhhoa.gov.vn/">
+                    Thanh tra tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sxd.khanhhoa.gov.vn/">
+                    Sở Xây dựng
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://skhdt.khanhhoa.gov.vn/">
+                    Sở Kế hoạch và Đầu tư
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://khanhhoa.edu.vn/">
+                    Sở Giáo dục và Đào tạo
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://khanhhoa.gov.vn/">
+                    Văn phòng UBND tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sngv.khanhhoa.gov.vn/">
+                    Sở Ngoại vụ
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://stp.khanhhoa.gov.vn/">
+                    Sở Tư pháp
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://syt.khanhhoa.gov.vn/">
+                    Sở Y tế
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://stc.khanhhoa.gov.vn/">
+                    Sở Tài chính
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://sdl.khanhhoa.gov.vn/">
+                    Sở Du lịch
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+                <div class="tab-pane fade" id="tab2default">
+                 <ul class="list-style-5 col-2">
+                  <li>
+                   <a href="">
+                    Ban QLDA KDL Bắc bán đảo Cam Ranh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Ban QLDA đầu tư xây dựng các công trình NN và PTNN tỉnh Khánh Hòa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Ban QLDA đầu tư xây dựng các công trình Giao thông tỉnh Khánh Hòa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://ktv.org.vn/">
+                    Đài Phát thanh - Truyền hình tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://www.sbvkh.gov.vn./">
+                    Chi nhánh Ngân hàng Nhà nước
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://nhatrangxanhsachdep.vn/">
+                    Ban QLDA phát triển tỉnh Khánh Hòa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Bộ đội Biên phòng tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://khanhhoa.gdt.gov.vn/wps/portal">
+                    Cục Thuế
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://www.khanhhoa.gov.vn/vi/quy-dau-tu-phat-trien-khanh-hoa/gioi-thieu-chung">
+                    Quỹ Đầu tư phát triển Khánh Hòa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Liên minh các HTX
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Cục Hải quan
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://vanphong.khanhhoa.gov.vn/">
+                    Ban Quản lý khu Kinh tế Vân Phong
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Ban Đổi mới và Phát triển Doanh nghiệp
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Bộ Chỉ huy Quân sự tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Công an tỉnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://www.gso.gov.vn/default.aspx?tabid=496&amp;idmid=1&amp;itemid=1971">
+                    Cục Thống kê
+                   </a>
+                  </li>
+                  <li>
+                   <a href="">
+                    Ban QLDA đầu tư xây dựng các công trình Dân dụng và Công nghiệp tỉnh
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+                <div class="tab-pane fade" id="tab3default">
+                 <ul class="list-style-5 col-2">
+                  <li>
+                   <a href="">
+                    Huyện Trường Sa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://khanhson.khanhhoa.gov.vn/">
+                    Huyện Khánh Sơn
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://khanhvinh.khanhhoa.gov.vn/">
+                    Huyện Khánh Vĩnh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://vanninh.khanhhoa.gov.vn/">
+                    Huyện Vạn Ninh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://camlam.khanhhoa.gov.vn/">
+                    Huyện Cam Lâm
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://ninhhoa.khanhhoa.gov.vn/">
+                    Thị xã Ninh Hòa
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://dienkhanh.khanhhoa.gov.vn/">
+                    Huyện Diên Khánh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://camranh.khanhhoa.gov.vn/">
+                    Thành phố Cam Ranh
+                   </a>
+                  </li>
+                  <li>
+                   <a href="http://nhatrang.khanhhoa.gov.vn/">
+                    Thành phố Nha Trang
+                   </a>
+                  </li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-f0a172e6-f6c7-4d55-b966-29e0b7d9e650" style="">
+          <div class="psc-divPortlet-Content">
+           <style type="text/css">
+            .videobody {
+          background-color: #07396e;
+      }
+ 
+      .blog_topic_an2 {
+          float: left;
+          margin-bottom: 5px;
+          width: 100%;
+      }
+ 
+      .border-video {
+          clear: both;
+          float: left;
+          width: 100%;
+          text-align: center;
+          border-left: 1px solid #0768D5;
+          float: left;
+          border-bottom: 1px solid #0768D5;
+          border-right: 1px solid #0768D5;
+      }
+ 
+      ul.videoclip {
+          font: normal 11px Arial, Helvetica, sans-serif;
+          text-align: justify;
+          clear: both;
+          margin: 0 auto;
+          padding: 5px 0px 5px 0px;
+          margin-bottom: 5px;
+          line-height: 18px;
+      }
+ 
+         ul.videoclip li {
+             margin: 0 auto;
+             padding: 0;
+             float: left;
+             width: 100%;
+             list-style-image: url(/Resources/ImagesPortal/arrow_top.png);
+             margin: 0px 15px 0px 0px;
+             padding: 5px 0px 5px 5px;
+             list-style: none;
+             border-top: 1px solid #7FB9FB !important;
+             background: #fff; /* For browsers that do not support gradients */
+             background: -webkit-linear-gradient( #fff, #CBE9FB); /* For Safari 5.1 to 6.0 */
+             background: -o-linear-gradient( #fff, #CBE9FB); /* For Opera 11.1 to 12.0 */
+             background: -moz-linear-gradient( #fff, #CBE9FB); /* For Firefox 3.6 to 15 */
+             background: linear-gradient( #fff, #CBE9FB); /* Standard syntax (must be last) */
+         }
+ 
+     ul.videoclip li:last-child {
+         border: none;
+     }
+ 
+     ul.videoclip li a {
+         text-decoration: none;
+         color: rgba(9, 67, 132, 0.74);
+         font-size: 13px;
+         font-family: Arial;
+     }
+ 
+     ul.videoclip li a:hover {
+         text-decoration: underline;
+     }
+ 
+     #pnVideo {
+         width: 100%;
+         position: relative;
+     }
+ 
+     .title-video {
+         width: 100%;
+         padding: 20px 5px;
+         float: left;
+         text-align: left;
+     }
+ 
+     .title-video a {
+         font-size: 15px;
+         color: #0768d5;
+         font-weight: bold;
+         text-align: left !important;
+     }
+ 
+      #pnVideo .imagevideo {
+          width: 100%;
+      }
+ 
+      #pnVideo span {
+         position: absolute;
+         top: 50%;
+         left: 50%;
+         margin: -25px 0 0 -25px;
+         text-align: center;
+      }
+      .stylea
+      {
+         font-weight: 600;
+         font-size: 12px;
+      }
+           </style>
+           <div class="blog_topic_an2">
+            <div style="padding: 10px 0px; float: left; width: 100%; border-radius: 10px 10px 0px 0px; text-align: center; background: #0768d5;">
+             <a href="/module/video" style="color: #fdfdfd; font-weight: bold;">
+              VIDEO CLIP
+             </a>
+            </div>
+            <div class="border-video">
+             <div id="empty" style="display:none;">
+              Chưa có video clip nào
+             </div>
+             <div id="pnVideo" style="clear: both; float: left">
+              <a data-href="module/video/mp4/khanh-hoa-co-phat-trien-cat-nhan-tao-hay-khong-35" data-id="D:\Hosting\Portal_KhanhHoa26012018\Resources\VideoClips\SubDomain\HomePage\Video Clip\/khanh-hoa-co-phat-trien-cat-nhan-tao-hay-khong-35.mp4" href="javascript:void(0)" onclick="RedictPage(this)">
+               <img alt="Khánh Hòa có phát triển cát nhân tạo hay không" class="imagevideo" src="/Resources/ImagePhoto/khanh-hoa-co-phat-trien-cat-nhan-tao-hay-khong-35.jpg" title="Khánh Hòa có phát triển cát nhân tạo hay không"/>
+               <span class="icon">
+                <img src="/Resources/ImagesPortal/HomePage/images/icon-player.png"/>
+               </span>
+              </a>
+             </div>
+             <div class="title-video">
+              <a data-href="module/video/mp4/khanh-hoa-co-phat-trien-cat-nhan-tao-hay-khong-35" href="javascript:void(0)" onclick="RedictPage(this)" title="D:\Hosting\Portal_KhanhHoa26012018\Resources\VideoClips\SubDomain\HomePage\Video Clip\/khanh-hoa-co-phat-trien-cat-nhan-tao-hay-khong-35.mp4">
+               Khánh Hòa có phát triển cát nhân tạo hay không
+              </a>
+             </div>
+             <div style="clear: both; float: left">
+              <ul class="videoclip">
+               <li>
+                <img alt="imgvideo" src="/Resources/ImagePhoto/nong-van-de-tuyen-sinh-vao-lop-10-thpt-cong-lap-54.jpg" style="width:110px;float:left; margin-right: 8px;"/>
+                <a class="stylea" clip="D:\Hosting\Portal_KhanhHoa26012018\Resources\VideoClips\SubDomain\HomePage\Video Clip\nong-van-de-tuyen-sinh-vao-lop-10-thpt-cong-lap-54.mp4" data-href="module/video/mp4/nong-van-de-tuyen-sinh-vao-lop-10-thpt-cong-lap-54" href="javascript:void(0)" onclick="RedictPage(this)" style="cursor: pointer">
+                 Nóng vấn đề tuyển sinh vào lớp 10 THPT công lập
+                </a>
+               </li>
+               <li>
+                <img alt="imgvideo" src="/Resources/ImagePhoto/ky-niem-ngay-bao-chi-cach-mang-viet-nam-21-6-va-trao-giai-bao-chi-khanh-hoa-2018-53.jpg" style="width:110px;float:left; margin-right: 8px;"/>
+                <a class="stylea" clip="D:\Hosting\Portal_KhanhHoa26012018\Resources\VideoClips\SubDomain\HomePage\Video Clip\ky-niem-ngay-bao-chi-cach-mang-viet-nam-21-6-va-trao-giai-bao-chi-khanh-hoa-2018-53.mp4" data-href="module/video/mp4/ky-niem-ngay-bao-chi-cach-mang-viet-nam-21-6-va-trao-giai-bao-chi-khanh-hoa-2018-53" href="javascript:void(0)" onclick="RedictPage(this)" style="cursor: pointer">
+                 Kỷ niệm ngày Báo chí Cách mạng Việt Nam 21-6 và trao Giải Báo chí Khánh Hòa 2018
+                </a>
+               </li>
+               <li>
+                <img alt="imgvideo" src="/Resources/ImagePhoto/ky-niem-trong-the-70-nam-ngay-chu-tich-ho-chi-minh-ra-loi-keu-goi-thi-dua-ai-quoc-21.jpg" style="width:110px;float:left; margin-right: 8px;"/>
+                <a class="stylea" clip="D:\Hosting\Portal_KhanhHoa26012018\Resources\VideoClips\SubDomain\HomePage\Video Clip\ky-niem-trong-the-70-nam-ngay-chu-tich-ho-chi-minh-ra-loi-keu-goi-thi-dua-ai-quoc-21.mp4" data-href="module/video/mp4/ky-niem-trong-the-70-nam-ngay-chu-tich-ho-chi-minh-ra-loi-keu-goi-thi-dua-ai-quoc-21" href="javascript:void(0)" onclick="RedictPage(this)" style="cursor: pointer">
+                 Kỷ niệm trọng thể 70 năm ngày Chủ tịch Hồ Chí Minh ra Lời kêu gọi thi đua ái quốc
+                </a>
+               </li>
+              </ul>
+             </div>
+            </div>
+           </div>
+           <script type="text/javascript">
+            function RedictPage(item) {
+         var link = window.location.href;
+         if (link.toLowerCase().indexOf("page") > -1)
+             window.location.href += $(item).attr("data-href").replace("/?", "&");
+         else
+             window.location.href += $(item).attr("data-href").replace("/?", "?");
+     }
+           </script>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-61114787-db62-468a-b189-822402986856" style="">
+          <div class="psc-divPortlet-Content">
+           <link href="/Portlets/NivoSlider/CSS/nivo-slider.css" rel="stylesheet"/>
+           <link href="/Portlets/NivoSlider/CSS/themes/default/default.css" rel="stylesheet"/>
+           <script src="/Scripts/knockout-lastest.js">
+           </script>
+           <script src="/Portlets/NivoSlider/Scripts/jquery.nivo.slider.js">
+           </script>
+           <script src="/Portlets/NivoSlider/Scripts/System.Utility.NivoSlider.js">
+           </script>
+           <script type="text/javascript">
+            pscjq(function () {
+         (new System.Utility.NivoSlider('ctl08_psc-portlet-61114787-db62-468a-b189-822402986856_slider', '[{"Id":"24a68bf6-bc40-4c8d-be9d-04715126ca51","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/10.jpg","Link":"#","Order":6,"DataId":"61114787-db62-468a-b189-822402986856"},{"Id":"e84c5dc7-3f2a-47fb-930d-a369d3cce819","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/09.jpg","Link":"#","Order":5,"DataId":"61114787-db62-468a-b189-822402986856"},{"Id":"6782b0c4-8c4b-40c9-b7a8-c04bea0a53ea","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/08.jpg","Link":"#","Order":4,"DataId":"61114787-db62-468a-b189-822402986856"},{"Id":"7bcd4c65-7fef-4e34-8d8c-540ad02add38","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/07.jpg","Link":"#","Order":3,"DataId":"61114787-db62-468a-b189-822402986856"},{"Id":"e87da0f4-2bfb-478c-96a6-8663da3053ec","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/06.jpg","Link":"#","Order":2,"DataId":"61114787-db62-468a-b189-822402986856"},{"Id":"1e222b2e-e801-4c3b-ae0a-419517af21b1","Title":"","Url":"Resources/imagesPortlet/61114787-db62-468a-b189-822402986856/04.jpg","Link":"#","Order":1,"DataId":"61114787-db62-468a-b189-822402986856"}]')).CreateSlider();
+         var total = pscjq('.nivo-control').length;
+         pscjq('#nivo-slider-status').show();
+         pscjq('#nivo-slider-status > .total-slides').html(total);
+         current_slide_no = jQuery('.nivoSlider').data('nivo:vars').currentSlide;
+         pscjq('#nivo-slider-status > .current-slide').html((current_slide_no + 1) + " / ");
+     });
+           </script>
+           <style type="text/css">
+            /*.imgslidermain
+     {
+         height: 282px !important;
+     }*/
+ 
+ 
+ /*@media(max-width:520px){
+     .imgslidermain
+     {
+         height: 200px !important;
+     }
+ }
+ 
+ @media(max-width:920px){
+     .imgslidermain
+     {
+         height: 200px !important;
+     }
+ }
+ @media(max-width:450px){
+     .imgslidermain
+     {
+         height: 200px !important;
+     }
+ }*/
+           </style>
+           <div class="slider_outter">
+            <div class="slider">
+             <div class="slider-wrapper theme-default">
+              <div class="nivoSlider" id="ctl08_psc-portlet-61114787-db62-468a-b189-822402986856_slider">
+               <!-- ko foreach: $data -->
+               <img alt="Slider Khanhhoa Portal" class="imgslidermain" data-bind="attr: { src: '/' + Url, title: Title }"/>
+               <!-- /ko -->
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div id="psc-divPanelRight" style="float:right">
+        <div id="psc-divPanelRight-Content" style="min-height: 30px;">
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-ed283604-fe1a-42cc-8964-fa871a53b788" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="/vi/tin-tuc-noi-bat">
+              Tin tức nổi bật
+             </a>
+            </div>
+            <div class="widget-content">
+             <ul class="list-style-3">
+              <li>
+               <a href="/vi/tin-tuc-noi-bat/thuc-hien-255-dich-vu-cong-muc-do-3-4-trong-nam-2018-2019">
+                Thực hiện 255 dịch vụ công mức độ 3,4 trong năm 2018-2019
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-tuc-noi-bat/che-do-ho-tro-nguoi-co-cong-voi-cach-mang-dang-dinh-cu-o-nuoc-ngoai">
+                Chế độ hỗ trợ người có công với cách mạng đang định cư ở nước ngoài
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-tuc-noi-bat/ban-hanh-tieu-chi-xac-dinh-san-pham-san-xuat-tu-hoat-dong-tai-che-xu-ly-chat-thai">
+                Ban hành tiêu chí xác định sản phẩm sản xuất từ hoạt động tái chế, xử lý chất thải
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-tuc-noi-bat/sua-doi-dieu-kien-chung-de-duoc-cap-chung-chi-hanh-nghe-hoat-dong-xay-dung">
+                Sửa đổi điều kiện chung để được cấp chứng chỉ hành nghề hoạt động xây dựng
+               </a>
+              </li>
+              <li>
+               <a href="/vi/tin-tuc-noi-bat/thu-tuong-yeu-cau-day-manh-cac-phong-trao-thi-dua">
+                Thủ tướng yêu cầu đẩy mạnh các phong trào thi đua
+               </a>
+              </li>
+             </ul>
+            </div>
+            <!-- /.widget-content -->
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-fd4f6f52-6327-40da-ab00-d072dc367f74" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a>
+              Bản đồ hành chính
+             </a>
+            </div>
+            <a href="http://gis.chinhphu.vn/?r=7FvTaDqKDkODwI2C0UIKw" target="_blank">
+             <img alt="" class="img_bando" src="/Resources/ImagesPortal/HomePage/imgs/Ban-do.png"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-fe084683-8049-4dd3-94b8-4346445a9411" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget advs-2">
+            <a href="http://vpdk.stnmt.khanhhoa.gov.vn/atlat.aspx" target="_blank">
+             <img alt="" src="/Resources/Images/banner/Bandodiachinh.jpg"/>
+            </a>
+            <a href="http://hcm.khanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/banner/hcm.jpg" style="width: 210px; height: 124px;"/>
+            </a>
+            <a href="http://tsty.khanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/tsty.jpg"/>
+            </a>
+            <a href="http://tinhuykhanhhoa.vn/" target="_blank">
+             <img alt="" src="/Resources/Images/banner/tinhuykh.jpg"/>
+            </a>
+            <a href="http://daibieunhandankhanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/banner-dai-bieu-nhan-dan-s-1.jpg"/>
+            </a>
+            <a href="http://tuyengiaokhanhhoa.vn/" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/tgkh1.jpg"/>
+            </a>
+            <a href="http://tuyengiaokhanhhoa.vn/?TopicId=06744249-cd45-4c90-80e9-20d433a2f284" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/Chongdienbienhoabinh.jpg"/>
+            </a>
+            <a href="http://nhatrangfestival.vn/" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/Fetivalvien_2015.jpg"/>
+            </a>
+            <a href="http://cchc.khanhhoa.gov.vn/" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/cchc2.jpg"/>
+            </a>
+            <a href="http://khanhhoa.gov.vn/vi/cai-cach-hanh-chinh-007/tiep-nhan-phan-anh-kien-nghi-ve-quy-dinh-hanh-chinh" target="_blank">
+             <img alt="" src="/Resources/Images/banner/Quydinhhanhchinh.jpg" style="width: 210px; height: 70px;"/>
+            </a>
+            <a href="http://cchc.khanhhoa.gov.vn/?PageId=1d325ca0-0763-4de8-9e3c-62d0b66fa22d&amp;TypeId=0" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/Dich-vu-cong-banner.png"/>
+            </a>
+            <a href="http://kstthc.khanhhoa.gov.vn/TCHS.aspx" target="_blank">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/right/tra-cuu-tinh trang-xy-ly-ho-so.png"/>
+            </a>
+            <a href="http://csdl.thutuchanhchinh.vn/Pages/danh-sach-thu-tuc-hanh-chinh.aspx?&amp;filter=1&amp;tthcDonVi=Kh%C3%A1nh%20H%C3%B2a" target="_blank">
+             <img alt="" src="/Resources/Images/banner/dcsdltthc.jpg" style="width: 210px; height: 70px;"/>
+            </a>
+            <a href="https://cskh.cpc.vn/frm_DichVuTrucTuyen.aspx" target="_blank">
+             <img alt="" src="/Resources/Images/banner/Baner-%20KHPC.jpg" style="width: 210px; height: 99px;"/>
+            </a>
+            <a href="/vi/cuoc-thi-viet-tim-hieu-ve-dat-nuoc-con-nguoi-viet-nam-nhat-ban" target="_blank">
+             <img alt="" src="/Resources/Images/banner/T%C3%ACm%20hi%E1%BB%83u%20v%E1%BB%81%20%C4%91%E1%BA%A5t%20n%C6%B0%E1%BB%9Bc,%20con%20ng%C6%B0%E1%BB%9Di%20Vi%E1%BB%87t%20Nam%20-%20Nh%E1%BA%ADt%20B%E1%BA%A3n.jpg"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-c3257407-58fd-47e7-b84b-811212419491" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget advs-3">
+            <a href="http://danhgia.khanhhoa.gov.vn/FrontEnd/TouchScreen/RatingIndex.aspx?Id=ef26f804-a2e7-4ec7-af5d-3386d692f159" target="_blank">
+             <img alt="" src="/Resources/Images/banner/ee.jpg"/>
+            </a>
+            <br/>
+            <a href="/module/feedbackhotline">
+             <img alt="" src="Resources/Images/banner/DUONGDAYNONG.png" style="margin-top: 1px;"/>
+            </a>
+            <br/>
+            <a href="http://ttlh.khanhhoa.gov.vn/vi/ubnd-tinh-khanh-hoa/van-phong-ubnd-tinh-khanh-hoa">
+             <img alt="" src="/Resources/Images/banner/th%C3%B4ng%20tin%20lh%20c%C3%A1c%20c%C6%A1%20quan.jpg" style="margin-top: 1px;"/>
+            </a>
+            <br/>
+            <a href="http://www.khanhhoa.gov.vn/vi/thong-tin-duong-day-nong">
+             <img alt="" src="/Resources/Images/banner/%C4%91%C6%B0%E1%BB%9Dng-d%C3%A2y-n%C3%B3ng-sbnth.gif" style="margin-top: 1px;"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-af5dadef-9bdb-4f11-b807-a3a627849206" style="">
+          <div class="psc-divPortlet-Content">
+           <style type="text/css">
+            .NoBorder
+     {
+         text-decoration: none;
+     }
+     .imgslider
+     {
+         width: 100%;
+         height: 90px;
+         border: 0px; 
+         overflow: hidden;
+         display: block; 
+         vertical-align: top; 
+         margin-bottom: 3px;
+     }
+     .marqueeqc
+     {
+         float: left;
+         height: 150px;
+     }
+           </style>
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Thông tin
+             </a>
+            </div>
+            <div id="divmain" style="width: 100%; height: 150px !important; border: 0px;">
+             <div class="scrollqc" id="main" style="height: 150px !important;">
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-d00fcef2-79bc-4e36-adb9-2b748b30c1bb" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Thông báo cần biết
+             </a>
+            </div>
+            <div class="widget-content ">
+             <ul class="list-style-6">
+              <li>
+               <a href="http://dukhach.khanhhoa.gov.vn/vi/y-te/danh-sach-cac-benh-vien-trung-tam-y-te-phong-kham-trong-tinh-khanh-hoa">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-y-te.png"/>
+                </span>
+                <span>
+                 Y Tế
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://dukhach.khanhhoa.gov.vn/vi/giao-thong">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-giao-thong.png"/>
+                </span>
+                <span>
+                 Giao Thông
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://dukhach.khanhhoa.gov.vn/vi/dien-thoai-can-biet">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-phone.png"/>
+                </span>
+                <span>
+                 ĐT Cần biết
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://khanhhoa.edu.vn/">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-dao-tao.png"/>
+                </span>
+                <span>
+                 Giáo Dục Và Đào Tạo
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://dukhach.khanhhoa.gov.vn/vi/ngan-hang/he-thong-ngan-hang-tren-dia-ban-tp-nha-trang">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-ngan-hang.png"/>
+                </span>
+                <span>
+                 Ngân Hàng
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://dukhach.khanhhoa.gov.vn/vi/dia-diem-dat-may-atm">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-ATM.png"/>
+                </span>
+                <span>
+                 Điểm Đặt ATM
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://www.ctnkh.com.vn/">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-nuoc.png"/>
+                </span>
+                <span>
+                 Dịch vụ nước
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://www.khpc.com.vn/lichcatdien.aspx">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-dien.png"/>
+                </span>
+                <span>
+                 Lịch cắt điện
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://ktv.org.vn/">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-TV.png"/>
+                </span>
+                <span>
+                 Truyền hình
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://tthc.khanhhoa.gov.vn/module/thu-tuc-hanh-chinh">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-thu-tuc.png"/>
+                </span>
+                <span>
+                 Thủ tục hành chính
+                </span>
+               </a>
+              </li>
+              <li>
+               <a href="http://www.xosokhanhhoa.com.vn/ketquaxskh.php">
+                <span class="icon">
+                 <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/icons/icon-xo-so.png"/>
+                </span>
+                <span>
+                 Xổ số kiến thiết
+                </span>
+               </a>
+              </li>
+             </ul>
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-49622f84-c802-4eb7-8148-3c03e947ac7f" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget ongate">
+            <iframe frameborder="0" scrolling="no" src="http://kstthc.khanhhoa.gov.vn/IFrameReportNT.aspx">
+            </iframe>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-06d4d9d1-6bb1-4dc2-9a00-f85e914f4161" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="/module/album">
+              Album ảnh
+             </a>
+            </div>
+            <a class="album-img" href="/module/album">
+             <img alt="" src="/Resources/ImagesPortal/HomePage/imgs/album.jpg"/>
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-73199110-e4d0-400e-8415-98643a01e906" style="">
+          <div class="psc-divPortlet-Content">
+           <div class="widget">
+            <div class="widget-title style-blue">
+             <a href="#">
+              Sự kiện qua con số
+             </a>
+            </div>
+            <div class="conso">
+             <span class="number">
+              13.329 tỷ đồng
+             </span>
+             <span>
+              thu ngân sách 6 tháng năm 2018
+             </span>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div id="psc-divPanelBottom" style="width:100%;float:left">
+       <div id="psc-divPanelBottom-Content" style="min-height: 30px;">
+        <div class="psc-divPortlet-Wrapper" id="psc-divPortlet-6bb34672-d758-4865-9a77-12aa65d6ada2" style="">
+         <div class="psc-divPortlet-Content">
+          <script type="text/javascript">
+           pscjq(document).ready(function () {
+         if (location.hostname != "en.khanhhoa.gov.vn") {
+             pscjq("#homepage-urlfo").attr("href", "http://khanhhoa.gov.vn");
+         }
+         else {
+             pscjq("#homepage-urlfo").attr("href", "http://en.khanhhoa.gov.vn");
+         }
+     });
+          </script>
+          <footer class="footer width-common">
+           <div class="footer-menu container">
+            <ul class="menu_footer">
+             <li class="home">
+              <a href="#" id="homepage-urlfo">
+               <i class="fa fa-home">
+               </i>
+              </a>
+             </li>
+             <li>
+              <a href="http://mail.khanhhoa.gov.vn" title="Thư điện tử">
+               Thư điện tử
+              </a>
+             </li>
+             <li>
+              <a href="/vi/so-do-website/so-do-website" title="Sơ đồ website">
+               Sơ đồ website
+              </a>
+             </li>
+             <li>
+              <a href="#" title="English">
+               English
+              </a>
+             </li>
+             <li>
+              <a href="http://ru.khanhhoa.gov.vn/" title="Русский">
+               Русский
+              </a>
+             </li>
+            </ul>
+           </div>
+           <div class="footer-bottom container">
+            <div class="text_footer">
+             <strong>
+              CỔNG THÔNG TIN ĐIỆN TỬ TỈNH KHÁNH HÒA
+             </strong>
+             <div>
+              Giấy phép: số 01/GP-STTTT do Sở Thông tin và Truyền thông tỉnh Khánh Hòa cấp ngày 07/01/2016
+             </div>
+             <div>
+              Trưởng Ban biên tập: Phạm Duy Lộc - Giám đốc Sở Thông tin và Truyền thông tỉnh Khánh Hòa.
+             </div>
+             <div>
+              Địa chỉ: Nhà A1, Khu Liên cơ số 1 Trần Phú, Thành phố Nha Trang.
+             </div>
+             <div>
+              Điện thoại: 0258.3812434 - Fax: 0258.3812434 - Email: banbientap@khanhhoa.gov.vn
+             </div>
+             <div>
+              Ghi rõ nguồn "Cổng Thông tin điện tử tỉnh Khánh Hòa" hoặc "www.khanhhoa.gov.vn" khi bạn phát hành lại thông tin từ Website này.
+             </div>
+            </div>
+           </div>
+          </footer>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <script src="/Components/vendors/js/bootstrap.min.js">
+    </script>
+    <script src="/Components/vendors/js/jquery.smartmenus.min.js">
+    </script>
+    <script src="/Components/vendors/js/jquery.smartmenus.bootstrap.min.js">
+    </script>
+    <script src="/Components/vendors/js/jquery.sliderPro.min.js">
+    </script>
+    <script src="/Components/vendors/Nivo-Slider/jquery.nivo.slider.js">
+    </script>
+    <script src="/Resources/ImagesPortal/HomePage/js/sidebar-toggle.js">
+    </script>
+    <script src="/Components/vendors/js/jquery.scrollbox.min.js">
+    </script>
+    <script>
+     pscjq(document).ready(function () {
+        
+             pscjq("#psc-divPanelMid").wrapAll("<div id='KhanhHoaWraper' class='container'/>");
+             pscjq("#psc-divPanelMid").addClass("row row-offcanvas row-offcanvas-left");
+             pscjq("#psc-divPanelWrapper #KhanhHoaWraper").wrapAll("<div class='main-content  width-common' />");
+ 
+ 
+             pscjq('#psc-divPanelMid #psc-divPanelLeft').wrapAll("<div id='sidebar' class='col-left col-xs-12 col-sm-3 col-md-3 sidebar-offcanvas' />");
+             pscjq('#psc-divPanelMid #psc-divPanelLeft').addClass("main-left col-xs-12 col-sm-3 col-md-3");
+ 
+             pscjq('#psc-divPanelMid #psc-divPanelCenter').addClass("col-content col-xs-12 col-sm-6 col-md-6");
+             pscjq('#psc-divPanelMid #psc-divPanelCenter-Content').addClass("wrapper-container");
+             pscjq('#psc-divPanelMid #psc-divPanelRight').addClass("col-right col-xs-12 col-sm-3 col-md-3");
+ 
+        
+        
+ 
+         //pscjq('#psc-divPanelMid #psc-divPanelRight').addClass("content-tin-hoatdong-right");
+         //pscjq('#psc-divPanelMid #psc-divPanelRight-Content').addClass("content-tin-hoatdong-right");
+      
+       
+     });
+    </script>
+    <a class="backtotop" href="#" id="backTop" style="display: block;">
+     <i class="fa fa-angle-up">
+     </i>
+    </a>
+    <div class="modal fade" id="articleModal" role="form">
+     <div class="modal-dialog modal-lg vertical-align-center-modal">
+      <div class="modal-content">
+       <div class="modal-header">
+        <button class="close" data-dismiss="modal" type="button">
+         ×
+        </button>
+       </div>
+       <div class="modal-body">
+        <p>
+         Some text in the modal.
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+    <script language="javascript" src="/Portlets/AdvertisementScroller/Scripts/scrollbox.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+     var panelHolder = document.getElementById('main'); panelHolder.innerHTML = "<div class='widget-content scrollbox1 scroll-text'><ul><li><a href='http://halongtourism.com.vn/vi/category/nam-du-lich-quoc-gia-2018-halong-quang-ninh' class='NoBorder' id='slidera' target='_blank'><img src='Resources/Images/Advertisement/af5dadef-9bdb-4f11-b807-a3a627849206/HaLong-Quang Ninh-2018-210.jpg' class ='imgslider'/></a></li><li><a href='http://daicoviet.ninhbinh.gov.vn/' class='NoBorder' id='slidera' target='_blank'><img src='Resources/Images/Advertisement/af5dadef-9bdb-4f11-b807-a3a627849206/NN DaiCoViet-NinhBinh.jpg' class ='imgslider'/></a></li><li><a href='http://dukhach.khanhhoa.gov.vn/vi/giao-thong/vietnam-airlines-mo-duong-bay-nha-trang-seoul' class='NoBorder' id='slidera' target='_blank'><img src='Resources/Images/Advertisement/af5dadef-9bdb-4f11-b807-a3a627849206/VN-Han Quoc210.jpg' class ='imgslider'/></a></li><li><a href='http://dulich.yenbai.gov.vn/Pages/Trang-chu.aspx' class='NoBorder' id='slidera' target='_blank'><img src='Resources/Images/Advertisement/af5dadef-9bdb-4f11-b807-a3a627849206/Yen bai.jpg' class ='imgslider'/></a></li></ul></div>";
+    </script>
+    <script type="text/javascript">
+     //<![CDATA[
+ Sys.Application.add_init(function() {
+     $create(Telerik.Web.UI.RadWindowManager, {"clientStateFieldID":"RadWindowManager1_ClientState","formID":"form1","iconUrl":"","minimizeIconUrl":"","name":"RadWindowManager1","skin":"Default","windowControls":"[]"}, null, null, $get("RadWindowManager1"));
+ });
+ //]]>
+    </script>
+   </form>
+  </body>
+ </html>

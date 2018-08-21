@@ -1,0 +1,512 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Louis Royer
+   </title>
+   <link href="css/style.css" rel="stylesheet" type="text/css"/>
+   <script src="http://code.jquery.com/jquery-1.9.1.min.js">
+   </script>
+   <link href="fancybox/source/jquery.fancybox.css?v=2.1.4" media="screen" rel="stylesheet" type="text/css"/>
+   <script src="fancybox/source/jquery.fancybox.pack.js?v=2.1.4" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    function checkMandatory(){
+ 	var ok=true;
+ 	$( ".required" ).each(function( index ) {
+ 		
+ 			if($(this).val()==""){
+ 				ok=false;
+ 			 $(this).css( "border", "solid 1px red" );
+ 				}
+ 				else{
+ 				 $(this).css( "border", "solid 1px white" );	
+ 					}
+ 		});
+ 		
+ 		return ok;
+ 	}
+ 
+ $(document).ready(function() {
+ 	$(".various").fancybox({
+ 		maxWidth	: 300,
+ 		maxHeight	: 400,
+ 		fitToView	: true,
+ 		
+ 		autoSize	: true,
+ 		closeClick	: false,
+ 		openEffect	: 'none',
+ 		closeEffect	: 'none'
+ 	});
+ 	
+     // lorsque je soumets le formulaire
+ 	
+ 	
+ 	
+     $('#legalAge').on('submit', function() {
+ 	var language=$("#language option:selected").val();
+         // je récupère les valeurs
+       if(language=="")
+ 	  language="en";
+ 
+         // je vérifie une première fois pour ne pas lancer la requête HTTP
+         // si je sais que mon PHP renverra une erreur
+         if(!checkMandatory()) {
+            // alert('Please fill all the required fields');
+ 			$.fancybox({
+ 				maxWidth	: 300,
+ 				maxHeight	: 200,
+ 				fitToView	: true,
+ 				autoSize	: true,
+ 				closeClick	: false,
+ 				openEffect	: 'none',
+ 				closeEffect	: 'none',
+ 				href : '#pleasefill'+language
+ 			});
+         } else {
+             // appel Ajax
+             $.ajax({
+                 url: $(this).attr('action'), // le nom du fichier indiqué dans le formulaire
+                 type: $(this).attr('method'), // la méthode indiquée dans le formulaire (get ou post)
+                 data: $(this).serialize(),// je sérialise les données (voir plus loin), ici les $_POST
+ 				dataType: 'json', 
+                 success: function(json) { // je récupère la réponse du fichier PHP
+                    if(json.adult) {
+                        location.href=json.url;
+                     } else {
+                        // alert( json.reponse);
+ 						$("#messagebox p").html(json.reponse);
+ 						$.fancybox({
+ 				maxWidth	: 300,
+ 				maxHeight	: 200,
+ 				fitToView	: true,
+ 				autoSize	: true,
+ 				closeClick	: false,
+ 				openEffect	: 'none',
+ 				closeEffect	: 'none',
+ 				href : '#messagebox'
+ 			});
+                     }
+                 }
+             });
+         }
+         return false; // j'empêche le navigateur de soumettre lui-même le formulaire
+     });
+ });
+   </script>
+  </head>
+  <body>
+   <div id="general">
+    <object data="00_prehome.swf" height="500" type="application/x-shockwave-flash" width="1000">
+     <param name="movie" value="00_prehome.swf">
+     </param>
+     <param name="wmode" value="transparent">
+     </param>
+    </object>
+    <div id="legal_age">
+     <form action="scripts/legal.php" id="legalAge" method="POST">
+      <div id="col1">
+       <label id="label_language">
+        Please select your language
+       </label>
+       <br/>
+       <select class="required" id="language" name="language">
+        <option selected="selectd" value="">
+        </option>
+        <option value="fr">
+         Français
+        </option>
+        <option value="en">
+         English
+        </option>
+        <option value="ci">
+         Chinese
+        </option>
+        <!--       <option value="jp">Japanese</option> -->
+       </select>
+       <br/>
+       <label>
+        Please select your country
+       </label>
+       <select class="required" id="country" name="country">
+        <option selected="selectd" value="">
+        </option>
+        <option value="andorra">
+         Andorra
+        </option>
+        <option value="angola">
+         Angola
+        </option>
+        <option value="argentine">
+         Argentine
+        </option>
+        <option value="australia">
+         Australia
+        </option>
+        <option value="austria">
+         Austria
+        </option>
+        <option value="azerbaijan">
+         Azerbaijan
+        </option>
+        <option value="belarus">
+         Belarus
+        </option>
+        <option value="belgium">
+         Belgium
+        </option>
+        <option value="bolivia">
+         Bolivia
+        </option>
+        <option value="bosnia-herzegovina">
+         Bosnia &amp; herzegovina
+        </option>
+        <option value="botswana">
+         Botswana
+        </option>
+        <option value="brazil">
+         Brazil
+        </option>
+        <option value="bulgaria">
+         Bulgaria
+        </option>
+        <option value="cambodia">
+         Cambodia
+        </option>
+        <option value="cameroun">
+         Cameroun
+        </option>
+        <option value="canada-english">
+         Canada (english)
+        </option>
+        <option value="canada-french">
+         Canada (french)
+        </option>
+        <option value="chile">
+         Chile
+        </option>
+        <option value="chine">
+         Chine
+        </option>
+        <option value="colombia">
+         Colombia
+        </option>
+        <option value="congo">
+         Congo
+        </option>
+        <option value="costa-rica">
+         Costa rica
+        </option>
+        <option value="ivory-coast">
+         Ivory coast
+        </option>
+        <option value="czech-rpublic">
+         Czech rpublic
+        </option>
+        <option value="denmark">
+         Denmark
+        </option>
+        <option value="dominican-republic">
+         Dominican Republic
+        </option>
+        <option value="estonia">
+         Estonia
+        </option>
+        <option value="finland">
+         Finland
+        </option>
+        <option value="france">
+         France
+        </option>
+        <option value="gabon">
+         Gabon
+        </option>
+        <option value="georgia">
+         Georgia
+        </option>
+        <option value="germany">
+         Germany
+        </option>
+        <option value="ghana">
+         Ghana
+        </option>
+        <option value="gibraltar">
+         Gibraltar
+        </option>
+        <option value="greece">
+         Greece
+        </option>
+        <option value="guam">
+         Guam
+        </option>
+        <option value="haiti">
+         Haiti
+        </option>
+        <option value="honduras">
+         Honduras
+        </option>
+        <option value="hong-kong">
+         Hong kong
+        </option>
+        <option value="hungary">
+         Hungary
+        </option>
+        <option value="iceland">
+         Iceland
+        </option>
+        <option value="india">
+         India
+        </option>
+        <option value="indonesia">
+         Indonesia
+        </option>
+        <option value="ireland">
+         Ireland
+        </option>
+        <option value="israel">
+         Israël
+        </option>
+        <option value="italy">
+         Italy
+        </option>
+        <option value="jamaica">
+         Jamaica
+        </option>
+        <option value="japan">
+         Japan
+        </option>
+        <option value="kazakhstan">
+         Kazakhstan
+        </option>
+        <option value="kenya">
+         Kenya
+        </option>
+        <option value="korea">
+         Korea
+        </option>
+        <option value="laos">
+         Laos
+        </option>
+        <option value="lebanon">
+         Lebanon
+        </option>
+        <option value="lithuania">
+         Lithuania
+        </option>
+        <option value="luxembourg">
+         Luxembourg
+        </option>
+        <option value="malaysia">
+         Malaysia
+        </option>
+        <option value="mali">
+         Mali
+        </option>
+        <option value="mexico">
+         Mexico
+        </option>
+        <option value="netherlands">
+         Netherlands
+        </option>
+        <option value="new-zealand">
+         New zealand
+        </option>
+        <option value="nicaragua">
+         Nicaragua
+        </option>
+        <option value="nigeria">
+         Nigeria
+        </option>
+        <option value="norway">
+         Norway
+        </option>
+        <option value="oman">
+         Oman
+        </option>
+        <option value="panama">
+         Panama
+        </option>
+        <option value="paraguay">
+         Paraguay
+        </option>
+        <option value="peru">
+         Peru
+        </option>
+        <option value="philippines">
+         Philippines
+        </option>
+        <option value="poland">
+         Poland
+        </option>
+        <option value="portugal">
+         Portugal
+        </option>
+        <option value="puerto-rico">
+         Puerto rico
+        </option>
+        <option value="romania">
+         Romania
+        </option>
+        <option value="russian-federation">
+         Russian federation
+        </option>
+        <option value="saint-berthelemey">
+         Saint Berthelemey
+        </option>
+        <option value="senegal">
+         Senegal
+        </option>
+        <option value="singapore">
+         Singapore
+        </option>
+        <option value="slovakia">
+         Slovakia
+        </option>
+        <option value="south-korea">
+         South korea
+        </option>
+        <option value="south-africa">
+         South africa
+        </option>
+        <option value="spain">
+         Spain
+        </option>
+        <option value="sri-lanka">
+         Sri lanka
+        </option>
+        <option value="surinam">
+         Surinam
+        </option>
+        <option value="sweden">
+         Sweden
+        </option>
+        <option value="switzerland">
+         Switzerland
+        </option>
+        <option value="taiwan">
+         Taiwan
+        </option>
+        <option value="thailand">
+         Thailand
+        </option>
+        <option value="tunisia">
+         Tunisia
+        </option>
+        <option value="turkey">
+         Turkey
+        </option>
+        <option value="ukraine">
+         Ukraine
+        </option>
+        <option value="united-arab-emirates">
+         United Arab Emirates
+        </option>
+        <option value="united-kingdom">
+         United kingdom
+        </option>
+        <option value="uruguay">
+         Uruguay
+        </option>
+        <option value="usa">
+         Usa
+        </option>
+        <option value="venezuela">
+         Venezuela
+        </option>
+        <option value="vietnam">
+         Vietnam
+        </option>
+       </select>
+      </div>
+      <div id="col2">
+       <label>
+        Please enter your birth date
+       </label>
+       <br/>
+       <input autocomplete="off" class="required" name="month" placeholder="MM" size="2" type="text"/>
+       <input autocomplete="off" class="required" name="day" placeholder="DD" size="2" type="text"/>
+       <input autocomplete="off" class="required" name="year" placeholder="YYYY" size="4" type="text"/>
+       <br/>
+       <p id="agree">
+        I agree to the
+        <a class="various" href="mentions-legales.html" target="_blank">
+         legal terms and privacy policy
+        </a>
+       </p>
+      </div>
+      <div id="col3">
+       <p>
+        <input type="submit" value="Enter"/>
+       </p>
+      </div>
+     </form>
+    </div>
+    <div class="spacer">
+    </div>
+    <p id="legend">
+     LOUIS ROYER VOUS RECOMMANDE UNE CONSOMMATION RESPONSABLE. L'ABUS D'ALCOOL EST DANGEREUX POUR LA SANTE, A CONSOMMER AVEC MODERATION.
+     <br/>
+     LOUIS ROYER IS COMMITED TO RESPONSIBLE DRINKING. PLEASE ENJOY RESPONSIBLY
+     <br/>
+     LOUIS ROYER 提醒您适度理性饮酒
+     <br/>
+     「当社では飲酒責任を遵守しています。皆様の飲酒責任のもと当社製品をお楽しみ下さい」
+    </p>
+    <div id="footer">
+     LOUIS ROYER - COGNAC - CHARENTE - XO - VSOP - DISTILLERIE - GRANDE CHAMPAGNE - PETITE CHAMPAGNE - FINE CHAMPAGNE - DIGESTIF - APERITIF - CHAIS - PARADIS - DISTILLATION - EAU-DE-VIE - RANCIO
+     <br/>
+     LOUIS ROYER - COGNAC - CHARENTE - XO - VSOP - DISTILLERY - GRANDE CHAMPAGNE - PETITE CHAMPAGNE - FINE CHAMPAGNE	- DIGESTIVE - APERITIVE - CELLARS - PARADISE - DISTILLATION - EAU-DE-VIE - RANCIO
+     <br/>
+     路易老爷 - 干邑 - 塞伦特 - 蒸馏室 - 大香槟 - 小香槟 – 优质香槟 - 酒窖 - 蒸馏 – 生命之水 - 熟酿 - 天堂 – 消化 - 开胃
+     <br/>
+     ルイ・ロワイエ - コニャック - シャラント - ＸＯ - ＶＳＯＰ - ディスティラリー - グランド・シャンパーニュ - プティット・シャンパーニュ - フィーヌ・シャンパーニュ - ディジェスティフ - アペリティフ -　シェ　 - パラダイス - ディスティレーション - オー・ドゥ・ヴィー -　ランシオ
+    </div>
+   </div>
+   <div id="inline" style="display:none">
+    <p>
+     Pour visiter le site Louis Royer, vous devez avoir l'âge légal requis pour consommer de l'alcool,
+     <br/>
+     dans votre pays de résidence.
+     <br/>
+     <br/>
+     <i>
+      To visit Louis Royer site, you must be of legal drinking age within your country of residence.
+     </i>
+    </p>
+   </div>
+   <div id="pleasefillen" style="display:none">
+    <p>
+     Please fill all the required fields
+    </p>
+   </div>
+   <div id="pleasefillfr" style="display:none">
+    <p>
+     Merci de compléter tous les champs
+    </p>
+   </div>
+   <div id="pleasefilljp" style="display:none">
+    <p>
+     Please fill all the required fields
+    </p>
+   </div>
+   <div id="pleasefillci" style="display:none">
+    <p>
+     请填写所有内容
+    </p>
+   </div>
+   <div id="messagebox" style="display:none">
+    <p>
+    </p>
+   </div>
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+   ga('create', 'UA-830221-6', 'louisroyer.com');
+   ga('send', 'pageview');
+   </script>
+  </body>
+ </html>
