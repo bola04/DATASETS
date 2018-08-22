@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <title>
+    die-spieltruhe.de
+   </title>
+   <meta content="die-spieltruhe.de" name="description"/>
+   <meta content="die-spieltruhe.de" name="keywords"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <meta content="telephone=no" name="format-detection"/>
+   <meta content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" name="SKYPE_TOOLBAR"/>
+   <meta content="noindex,nofollow" name="robots"/>
+   <!-- FAVCICONS -->
+   <link href="/assets/img/favicons/favicon.png" rel="shortcut icon"/>
+   <!-- 32x32 -->
+   <link href="/assets/img/favicons/apple-touch-icon.png" rel="apple-touch-icon"/>
+   <!-- 152x152 -->
+   <!-- CSS -->
+   <link href="/assets/css/nxframework.min.css" rel="stylesheet"/>
+   <!-- JAVASCRIPT -->
+   <script type="text/javascript">
+    var nx_shop_path = "/";
+             var nx_firma_shopname = "die-spieltruhe.de";
+   </script>
+   <script src="/assets/js/jquery.min.js">
+   </script>
+   <script src="/jslang.php?de">
+   </script>
+   <script src="/assets/js/nxframework.min.js">
+   </script>
+   <script>
+    $( document ).ready(function() {
+                 $("#form1 input:text").first().focus();
+ 
+                 $("#form1-passwortvergessen").click(function() {
+                     $("#form1").hide();
+                     $("#form1 .form1--alert").hide();
+                     $("#form2 .form2--alert").hide();
+                     $("#form2").show();
+                     $("#form2 .form2--fields1").show();
+                     $("#form2 input:text").first().focus();
+                 });
+ 
+                 $("#form1button1").click(function() {
+                     var adr_nr_val = $("#adr_nr").val();
+                     var adr_pass_val = $("#adr_pass").val();
+                     $("#adr_nr_alt").val(adr_nr_val);
+                     $("#adr_pass_alt").val(adr_pass_val);
+ 
+                     var values = {};
+                     var mykdnr = adr_nr_val;
+                     var mypass = adr_pass_val;
+                     var persitent = $("#rememberme").attr('checked')?1:0;
+                     values['action'] = "login";
+                     values['kdnr'] = mykdnr;
+                     values['pass'] = mypass;
+                     values['persistent'] = persitent;
+                     if ($('#nxloginpage').length > 0) {
+                         values['path'] = 'loginpage';
+                     }else{
+                         values['path'] = '#cart/step2';
+                     }
+                     $.ajax({
+                         type:'POST',
+                         url: "ajaxaction.php",
+                         data:values,
+                         success:logincallback,
+                         dataType:"json"
+                     });
+                     return false;
+                 });
+ 
+                 function logincallback(data){
+                     if (data.error) {
+                         var alerts = "Anmeldung nicht erfolgreich!##Zugangsdaten unbekannt, gesperrt oder Passwort fehlerhaft. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.".split("##");
+                         nxAlert(alerts[0],alerts[1],"error","OK","shopbutton danger","","",function(callback){
+                             if (callback=="nxalertButton1") { $("#form1 input:text").first().focus(); }
+                         },false,true)
+                     } else {
+                         window.location = ".";
+                     }
+                 }
+ 
+                 $("#form2button1").click(function() {
+                     $("#form2 .form2--fields1").hide();
+                     $("#form2 .form2--fields2").show();
+                 });
+ 
+                 $("#form2button2").click(function() {
+                     $("#form2 .form2--fields1").hide();
+                     $("#form1").show();
+                     $("#form1 input:text").first().focus();
+                 });
+             });
+   </script>
+  </head>
+  <body>
+   <section class="private--login">
+    <div class="login--overlay1" style="background-image: url(/assets/img/shop/login-background.jpg);">
+    </div>
+    <div class="login--overlay2">
+    </div>
+    <div class="bs-container">
+     <div class="bs-row1">
+      <img src="/assets/img/shop/login-logo.png"/>
+     </div>
+     <div class="bs-row2">
+      <form id="form1">
+       <div class="form1--fields1">
+        <b>
+         Diese Seite ist exklusiv für Bildungseinrichtungen!
+        </b>
+        <p>
+         Bitte geben Sie Ihre Zugangsdaten ein:
+        </p>
+        <input autocapitalize="off" id="adr_nr" placeholder="Kundennummer *" type="text"/>
+        <input id="adr_pass" placeholder="Passwort *" type="password"/>
+        <div class="check-with-label">
+         <input checked="checked" id="rememberme" name="checkbox" type="checkbox"/>
+         <label class="normal m0" for="rememberme">
+          angemeldet bleiben
+         </label>
+         <a class="link-arrow" href="#" id="form1-passwortvergessen" style="white-space: nowrap;">
+          Passwort vergessen?
+         </a>
+        </div>
+        <a class="shopbutton gray addthis btn-block" href="#" id="form1button1">
+         anmelden
+        </a>
+        <br/>
+        <br/>
+        Privatkunden dürfen gerne hier stöbern:
+        <br/>
+        <a class="link-arrow" href="http://www.spieltruhe.de" target="_blank">
+         http://www.spieltruhe.de
+        </a>
+       </div>
+      </form>
+      <form id="form2">
+       <div class="form2--fields1">
+        Bitte prüfen Sie zunächst ob Sie als Zugangsdaten im oberen Feld die richtige „SpielTruhe Kunden-Nummer“ eingegeben haben.
+        <br/>
+        <br/>
+        Sie finden die Kunden-Nummer auf jeder SpielTruhe-Rechnung oder wenn Sie E-Mails von uns erhalten im Betreff.
+        <br/>
+        <br/>
+        Ihr Passwort ist die Postleitzahl der Rechnungsadresse und kann nicht geändert werden.
+        <br/>
+        Ist die PLZ 4-stellig bitte eine 0 davor.
+        <br/>
+        <br/>
+        <b>
+         Haben Sie möglicherweise noch gar keine Kunden-Nummer? Dann ändern wir das gerne! Bitte nehmen Sie Kontakt mit uns auf.
+        </b>
+        <br/>
+        <br/>
+        <b>
+         Hinweis:
+        </b>
+        <br/>
+        Unser Kundenservice steht Montag bis Freitag (außer an Feier-/ Brückentage) von 09:00 – bis 17:00 zur Verfügung.
+        <br/>
+        <br/>
+        <b>
+         E-Mail:
+        </b>
+        info@die-spieltruhe.de
+        <br/>
+        <b>
+         Telefon:
+        </b>
+        +49 (88 22) 94873-0
+        <br/>
+        <br/>
+        <a class="shopbutton gray addthis btn-block" href="#" id="form2button2">
+         zur Anmeldung
+        </a>
+       </div>
+      </form>
+     </div>
+    </div>
+   </section>
+  </body>
+ </html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Batzentauschring Startseite
+   </title>
+   <!--
+         Content Management System "A-Test"
+         Copyright 2013 - Silvio Seidel, Leipzig, Germany
+         Version: 6.5001 (At)
+ -->
+   <meta content="Batzen, Geldsystem, Tauschen" name="Keywords"/>
+   <meta content="Startseite" name="Description"/>
+   <meta content="Batzen-Tauschring Leipzig e.V." name="copyright"/>
+   <meta content="de" name="content-language"/>
+   <meta content="de" name="language"/>
+   <meta content="A-Test CMS" name="generator"/>
+   <link href="favicon.ico" rel="icon" type="images/ico"/>
+   <link href="favicon.ico" rel="shortcut icon"/>
+   <link href="skin/skin_01/skin_01.css" rel="stylesheet" type="text/css"/>
+   <script language="javascript" src="js/ajax.js" type="text/javascript">
+   </script>
+   <script src="js/jquery-1.3.2.min.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="js/launchwin.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" type="text/javascript">
+    function send_text(){
+ 	var fehler = false;
+ 
+ 
+ 	if(document.fr_eintragen.ueberschrift.value =="" || document.fr_eintragen.ueberschrift.value ==" "){
+ 		document.fr_eintragen.ueberschrift.focus();
+ 		document.getElementById('ueberschrift').style.backgroundColor = "#fd9";
+ 		alert("Bitte gib eine Überschrift ein!");
+ 		fehler = true;
+ 		return;
+ 	}else{
+ 		document.getElementById('ueberschrift').style.backgroundColor = "";
+ 	}
+ 
+ 		var area_content = tinyMCE.get('html_text').getContent();
+ 		
+ 		if(area_content =="" || area_content =="<p></p>"){
+ 			alert("Du mußt einen Text eingeben!");
+ 			fehler = true;
+ 			return;
+ 		}
+ 
+ 	if(fehler == false){
+ 		window.document.fr_eintragen.submit();
+ 	}
+ }
+ 
+ 
+ function fk_eintrag_verschieben(para_1,para_2){
+ 
+ 		window.document.frm_eintrag_verschieben.id_eintrag.value = para_1;
+ 		window.document.frm_eintrag_verschieben.reihnfolge.value = para_2;
+ 		window.document.frm_eintrag_verschieben.submit();
+ }
+ 
+ 
+ function fk_eintrag_bearbeiten(para_1){
+ 
+ 		/*	para_1 = id_eintrag */
+ 	
+ 
+ 	if(document.frm_edit_sperren.edit_sperren.value != "1"){	
+ 			document.getElementById('button_'+para_1).style.visibility = "hidden";	
+ 			
+ 			
+ 			var var_ueberschrift = document.getElementById('ueberschrift_daten_'+para_1).value;
+ 			var var_text_eintrag = document.getElementById('html_text_daten_'+para_1).value;
+ 			 
+ 				
+ 			var text_zuweisen = '<div style="clear:both">';
+ 				text_zuweisen = text_zuweisen+'<form action="index.php?id_kat=35&sprache=de&sektion=35" method="post" name="fr_eintragen" target="_self">';
+ 				text_zuweisen = text_zuweisen+'<input name="act" type="hidden" value="2" />';
+ 				text_zuweisen = text_zuweisen+'<input name="id_eintrag" type="hidden" value="'+para_1+'" />';
+ 				
+ 				text_zuweisen = text_zuweisen+'<input class="inpAnm" name="ueberschrift_'+para_1+'" id="ueberschrift_'+para_1+'" value="'+document.getElementById('ueberschrift_daten_'+para_1).value+'" type="text" maxlength="150" title="Überschrift" style="width:480px" />';
+ 				text_zuweisen = text_zuweisen+'<textarea name="html_text_'+para_1+'" id="html_text_'+para_1+'" title="Textfeld" cols="150" rows="5" style="width:98%" maxlength="1500">'+document.getElementById('html_text_daten_'+para_1).value+'</textarea>';
+ 				text_zuweisen = text_zuweisen+'<br /><input name="abschicken" type="submit" value="Speichern"/>';
+ 				text_zuweisen = text_zuweisen+' &nbsp; <input name="abbrechen" type="button" value="Abbrechen" onclick="frm_eintrag_abbrechen.submit()"></form>';
+ 		
+ 				document.getElementById('div_html_text_'+para_1).innerHTML = text_zuweisen;
+ 				
+ 				fk_mce_ini();
+ 		}else{
+ 		
+ 			alert('Sie können immer nur einen Eintrag bearbeiten!');
+ 		
+ 		}		
+ 	
+ 		/* Sperrt die Bearbeitung für die anderen Einträge */
+ 		
+ 		document.frm_edit_sperren.edit_sperren.value = "1";
+ 
+ }
+ 
+ 
+ function fk_seite_zuweisen(para_1){
+ 	window.document.frm_seite.seite.value = para_1;
+ 	window.document.frm_seite.submit();
+ }
+ 
+ function fk_eintrag_loeschen(para_1){
+ 	var x = confirm("Willst du diesen Eintrag wirklich löschen?");
+ 	if (x == true){
+ 		window.document.frm_eintrag_loeschen.id_eintrag.value = para_1;
+ 		window.document.frm_eintrag_loeschen.submit();
+ 		
+ 	}
+ }
+ 
+ function fk_mce_ini(para_1){
+ 
+ 		tinyMCE.init({
+ 				
+ 					// General options
+ 					mode : "textareas",
+ 					language: "de",
+ 					theme : "advanced",
+ 					skin : "o2k7",
+ 					skin_variant : "silver",
+ 					plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
+ 			
+ 					// Theme options
+ 					theme_advanced_buttons1 : "bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,|,bold,italic,underline,strikethrough,|,sub,sup,|,visualchars,nonbreaking,|,charmap,emotions,advhr,hr",
+ 					theme_advanced_buttons2 : "",
+ 					theme_advanced_buttons3 : "",
+ 					theme_advanced_toolbar_location : "top",
+ 					theme_advanced_toolbar_align : "left",
+ 					theme_advanced_statusbar_location : "bottom",
+ 					theme_advanced_resizing : true,
+ 			
+ 					// Example content CSS (should be your site CSS)
+ 					content_css : "skin/skin_01/skin_01_tinymce.css",
+ 			
+ 					// Drop lists for link/image/media/template dialogs
+ 					template_external_list_url : "lists/template_list.js",
+ 					external_link_list_url : "lists/link_list.php",
+ 					//external_image_list_url : "lists/image_list.php",
+ 					//media_external_list_url : "lists/media_list.js",
+ 			
+ 					// Style formats
+ 					style_formats : [
+ 						{title : 'Text fett', inline : 'b'},
+ 						{title : 'Text rot', inline : 'span', styles : {color : '#ff0000'}},
+ 					],
+ 			
+ 					// Replace values for the template plugin
+ 					template_replace_values : {
+ 						username : "Some User",
+ 						staffid : "991234"
+ 					}
+ 				});
+ 
+ }
+   </script>
+  </head>
+  <body>
+   <div id="inhaltRahmen">
+    <a id="top" name="#oben">
+    </a>
+    <div id="head" style="height:150px;background-color:#FFFFFF;">
+     <p>
+      <img alt="" height="150" src="../medien/bilder/DSC00847.jpg" style="display: block; margin-left: auto; margin-right: auto;" width="983"/>
+     </p>
+    </div>
+    <div id="navMain">
+     <ul>
+      <li class="menuItem">
+       <a class="nav_sek_aktiv" href="index.php?id_kat=35&amp;sprache=de&amp;sektion=35" title="Startseite">
+        Startseite
+       </a>
+      </li>
+      <li class="menuItem">
+       <a class="nav_sek" href="index.php?id_kat=134&amp;sprache=de&amp;sektion=134" title="Unsere Anzeigen">
+        Anzeigen
+       </a>
+      </li>
+      <li class="menuItem">
+       <a class="nav_sek" href="index.php?id_kat=143&amp;sprache=de&amp;sektion=143" title="Die Regeln">
+        Regeln
+       </a>
+      </li>
+      <li class="menuItem">
+       <a class="nav_sek" href="index.php?id_kat=144&amp;sprache=de&amp;sektion=144" title="Impressum">
+        Impressum
+       </a>
+      </li>
+      <li class="menuItem">
+       <a class="nav_sek" href="index.php?id_kat=261&amp;sprache=de&amp;sektion=261" title="hÃ¤ufig gestellte Fragen">
+        Hilfe
+       </a>
+      </li>
+     </ul>
+    </div>
+    <div class="locator">
+     <div class="locPath">
+      <a href="index.php?id_kat=35&amp;sprache=de">
+       » Startseite
+      </a>
+     </div>
+     <div class="locSubmenu">
+      <a href="index.php?id_kat=4&amp;sprache=de" title="Seitenplan">
+       Seitenplan
+      </a>
+      <a href="index.php?id_kat=132&amp;sprache=de" title="Suche Anzeigen">
+       Suche Anzeigen
+      </a>
+      <a href="druckansicht.php?id_kat=35&amp;monat=8&amp;jahr=2018&amp;sprache=de&amp;zeit=" target="_blank" title="Drucken">
+       Drucken
+      </a>
+     </div>
+    </div>
+    <div class="clearboth">
+    </div>
+    <div id="navLinks">
+     <ul>
+      <li class="nav" style="padding-left:0px">
+       <a class="nav" href="index.php?id_kat=262&amp;sprache=de&amp;sektion=35" title="Anmeldeformular">
+        Anmeldeformular
+       </a>
+      </li>
+      <li class="nav" style="padding-left:0px">
+       <a class="nav" href="index.php?id_kat=221&amp;sprache=de&amp;sektion=35" title="Geschichte des Tauschringes">
+        Geschichte des Tauschringes
+       </a>
+      </li>
+     </ul>
+     <br/>
+     <br/>
+     <p class="loginBtn">
+      <a class="nav_2" href="index.php?id_kat=5&amp;sprache=de&amp;sektion=35" title="zum Mitgliederbereich">
+       Login
+      </a>
+     </p>
+    </div>
+    <div id="content">
+     <script src="admin/tinymce/jscripts/tiny_mce/tiny_mce.js" type="text/javascript">
+     </script>
+     <form action="index.php?id_kat=35&amp;sprache=de&amp;sektion=35" method="post" name="frm_seite" target="_self">
+      <input id="seite" name="seite" type="hidden"/>
+      <input id="anz_pro_seite" name="anz_pro_seite" type="hidden" value="10"/>
+     </form>
+     <div id="div_html_text_32">
+      <p>
+      </p>
+      <h4>
+       Liebe Mitglieder,
+      </h4>
+      <a name="#32">
+      </a>
+      <p>
+       der Verein hat seit dem 04.06.2018 einen neuen Vorstand.
+      </p>
+      <p>
+      </p>
+      <p>
+       Eine Mail mit dem Protokoll der Versammlung erhaltet ihr alsbald.
+      </p>
+      <p>
+       Wir freuen uns, dass es bald mit frischem Mut und einer gehörigen Portion Motivation weiter geht.
+      </p>
+      <p>
+       Bis dahin bitten wir euch noch um etwas Geduld, so dass sich der neue Vorstand sammeln und organisieren kann, bis er die täglichen Geschäfte in gewohnter Routine bearbeiten kann.
+      </p>
+      <p>
+      </p>
+      <p>
+       <strong>
+        Vielen Dank für eure Unterstützung und Geduld!
+       </strong>
+      </p>
+     </div>
+     <form action="index.php?id_kat=35&amp;sprache=de&amp;sektion=35" enctype="application/x-www-form-urlencoded" method="post" name="frm_eintrag_loeschen" target="_self">
+      <input name="act" type="hidden" value="3"/>
+      <input name="seite" type="hidden" value="1"/>
+      <input name="anz_pro_seite" type="hidden" value="10"/>
+      <input name="id_eintrag" type="hidden"/>
+     </form>
+     <form action="index.php?id_kat=35&amp;sprache=de&amp;sektion=35" enctype="application/x-www-form-urlencoded" method="post" name="frm_eintrag_verschieben" target="_self">
+      <input name="act" type="hidden" value="4"/>
+      <input name="seite" type="hidden" value="1"/>
+      <input name="anz_pro_seite" type="hidden" value="10"/>
+      <input name="id_eintrag" type="hidden"/>
+      <input name="reihnfolge" type="hidden"/>
+     </form>
+     <form action="#" enctype="application/x-www-form-urlencoded" method="post" name="frm_edit_sperren" target="_self">
+      <input name="edit_sperren" type="hidden" value="0"/>
+     </form>
+     <form action="#" enctype="application/x-www-form-urlencoded" method="post" name="frm_daten_edit" target="_self">
+     </form>
+     <form action="index.php?id_kat=35&amp;sprache=de&amp;sektion=35" enctype="application/x-www-form-urlencoded" method="post" name="frm_eintrag_abbrechen" target="_self">
+      <input name="seite" type="hidden" value="1"/>
+      <input name="anz_pro_seite" type="hidden" value="10"/>
+     </form>
+     <noscript>
+      <div id="noscript">
+       <p>
+        <strong>
+         Hinweis
+        </strong>
+       </p>
+       <p>
+        Die volle Funktionalität dieser Seiten kann nur bei eingeschaltetem JavaScript genutzt werden.
+       </p>
+       <p>
+        Bitte aktiviere JavaScript in deinem Browser.
+       </p>
+      </div>
+     </noscript>
+    </div>
+   </div>
+  </body>
+ </html>

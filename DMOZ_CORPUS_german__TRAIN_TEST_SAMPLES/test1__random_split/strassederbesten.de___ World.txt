@@ -1,0 +1,1764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <title>
+    GEDENKSEITE kostenfrei auf Online Friedhof erstellen
+   </title>
+   <meta content="www.strassederbesten.de ist ein virtueller Friedhof und bietet Ihnen die Gelegenheit, einem Verstorbenen einen wuerdigen Abschied zu bereiten." name="description"/>
+   <meta content="Online Friedhof, virtueller Friedhof, Online Cemetery, kostenlos Grab anlegen, Menschen Gedenken, Denkmal setzen, Letzte Ehre, letzter Nachruf, Kondolenz, Kondolenzbuch, Beerdigung" name="keywords"/>
+   <link href="/onlinefriedhof/images/misc/sdb.ico" rel="SHORTCUT ICON"/>
+   <link href="/onlinefriedhof/css/hires/rip.css" rel="stylesheet" type="text/css"/>
+   <link href="/onlinefriedhof/css/hires/jqueryui/default/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" type="text/css"/>
+   <script src="/onlinefriedhof/js/jquery-1.11.0.min.js" type="text/javascript">
+   </script>
+   <script src="/onlinefriedhof/js/jquery-ui-1.10.3.custom.min.js" type="text/javascript">
+   </script>
+   <script src="/onlinefriedhof/js/jquery.validate.js" type="text/javascript">
+   </script>
+   <script src="/onlinefriedhof/js/jquery.jeditable.js" type="text/javascript">
+   </script>
+   <script src="/onlinefriedhof/js/jquery.periodicalupdater.js" type="text/javascript">
+   </script>
+   <script src="/onlinefriedhof/js/colorpicker/syronex-colorpicker.js" type="text/javascript">
+   </script>
+   <link href="/onlinefriedhof/js/colorpicker/syronex-colorpicker.css" rel="stylesheet" type="text/css"/>
+   <script src="/onlinefriedhof/js/tiptip/jquery.tipTip.js" type="text/javascript">
+   </script>
+   <link href="/onlinefriedhof/js/tiptip/tipTip.css" rel="stylesheet" type="text/css"/>
+   <script src="/onlinefriedhof/js/jquery.ui.touch-punch.js" type="text/javascript">
+   </script>
+   <script type="text/Javascript">
+    function MSGBox (head,content) {
+ 	$("#SDBMSGBOX").empty();
+ 	$("#SDBMSGBOX").append(content);
+ 	$("#SDBMSGBOX").dialog({ position: [400,0], title: head, body : content });
+ }
+ 
+ 
+ $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+     _title: function(title) {
+         if (!this.options.title ) {
+             title.html("&#160;");
+         } else {
+             title.html(this.options.title);
+         }
+     }
+ }));
+ 
+ //Erzeuge Message Alert / Highlight JQueryUI Element
+ function setMessageStyle(myElement, type, icon) {
+     if (!icon) {
+         if (type === 'highlight') {
+             icon = 'ui-icon-info';
+         } else {
+             icon = 'ui-icon-alert';
+         }
+     }
+     
+ 	$(myElement).addClass('ui-widget');
+ 	var alertHtml = '<div class="ui-state-' + type + ' ui-corner-all" style="padding:0 .7em;">';
+ 	alertHtml += '<p>';
+ 	alertHtml += '<span class="ui-icon ' + icon + '" style="float:left;margin-right: .3em;"></span>';
+ 	alertHtml += $(myElement).text();
+ 	alertHtml += '</p>';
+ 	alertHtml += '</div>';
+ 
+ 	$(myElement).html(alertHtml);
+ }
+ 
+ 
+ $(document).ready(function() {
+ 	
+ 	
+ 	
+ 
+ 	
+ 	
+ 	
+ 	$("#quicksearch").click(function() {
+ 		var url = "/de/cgi-bin/onlinefriedhof/search.cgi?operation=formQuickSearch";
+ 		$(this).append('<div class="spinner"><img src="/onlinefriedhof/images/main/spinner.gif" /></div>');
+ 		$("#contentquicksearch").empty();
+ 		
+ 		if ($("#contentquicksearch").css("display") == "none") {
+ 			$.ajax({
+ 				url: url,
+ 				async: false,
+ 				cache: true,
+ 				success: function(data){
+ 					$("#contentquicksearch").append(data);
+ 					
+ 					var x = $("#quicksearch").offset().left;
+ 					var y = $("#quicksearch").offset().top;
+ 					$("#contentquicksearch").css({ "left": x + "px", "top": y + "px" }).fadeIn("slow");
+ 					$(".spinner").remove();
+ 
+ 					$("#closeQsearch").click(function() {
+ 						$("#contentquicksearch").fadeOut("slow");
+ 						$("#contentquicksearch").empty();
+ 					});	
+ 				}
+ 			});
+ 		}
+ 	});
+ 	
+ 	
+ 	
+ 	$(function(){
+ 		$(".tooltipTipTip").tipTip();
+ 	});
+ 	
+ 	
+ 	
+ 	function UserOnline()
+ 	{
+ 	$("#myOnlineSpinningCycle").fadeIn();
+ 	
+ 		$.ajax({
+ 			method: 'get',
+ 			cache: false,
+ 			url : '/de/cgi-bin/onlinefriedhof/SdbInfoBox.cgi?operation=GetUserOnline',
+ 			dataType : 'json',
+ 			success: function (data) { 
+ 				if (data.guest != $("#guestOnline").html()) {
+ 					$("#guestOnline").empty();
+ 					$("#guestOnline").append(data.guest);
+ 				}
+ 				
+ 				
+ 				if (data.memories != $("#countMemories").html()) {
+ 					$("#countMemories").empty();
+ 					$("#countMemories").append(data.memories);
+ 				}
+ 				if (data.guests != $("#countVisitors").html()) {
+ 					$("#countVisitors").empty();
+ 					$("#countVisitors").append(data.guests);
+ 				}
+ 				if (data.candles != $("#countCandles").html()) {
+ 					$("#countCandles").empty();
+ 					$("#countCandles").append(data.candles);
+ 				}				
+ 			},
+ 			complete: function(data){
+ 				//$(".OnlineSpinner").remove();
+ 				$("#myOnlineSpinningCycle").fadeOut();
+ 			}			
+ 		
+ 		});	
+ 	
+ 
+ 	}
+ 	UserOnline();
+ 	var holdTheInterval = setInterval(UserOnline, 20000);
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	$('.closeLink').on('click', function() {
+ 		SplitArray = new Array();
+ 		SplitArray = $(this).attr('id').split('_');
+ 		$("#" + SplitArray[1]).hide();
+ 	});
+ 	
+ 	
+ 	
+ 	$(".flashMsg").on('click', function() {
+ 		
+ 		var myID = $(this).attr('id');
+ 
+ 		
+ 		SplitArray = new Array();
+ 		SplitArray = $(this).attr('id').split('_');			
+ 		
+ 		var image = $('<img src="/onlinefriedhof/images/piktogramm/ajax-loader.gif" />');
+ 
+ 		
+ 		if ( $("#containerFormNewFlashMsg").length > 0 ) {
+ 			$('#containerFormNewFlashMsg').slideUp('slow', function() {
+ 				$("#containerFormNewFlashMsg").remove();
+ 			});				
+ 		}
+ 	
+ 		$('<div class="mySpinner">loading ...</div>').appendTo("#" + myID);
+ 
+ 		var url = "/de/cgi-bin/onlinefriedhof/manageMessage.cgi?operation=formNewFlashMsg&useridto=" + SplitArray[1];
+ 		$.ajax({
+ 			url: url,
+ 			async: true,
+ 			cache: false,
+ 			success: function(data){
+ 				$(".mySpinner").remove();
+ 				$("body").append(data);
+ 			}				
+ 		});
+ 	});
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 		var url = "/de/cgi-bin/onlinefriedhof/cemeteryNew.cgi?operation=ViewPremiumCemetery&map_id=0&noPremiumButton=1&noTagCloud=1&innerPremiumButton=1";
+ 
+ 		$.ajax({
+ 			url: url,
+ 			async: true,
+ 			cache: false,
+ 			success: function(data){
+ 				$("#PremiumGrabMapMain").append(data);
+ 			}
+ 		});		
+ 	
+ 		
+ 	
+ 	
+ 	
+ 	
+ 		
+ 		var url = "/de/cgi-bin/onlinefriedhof/HighlightPremiumGrave.cgi?operation=getPremiumGravePlaceIndex";
+ 		$('#HighlightPremiumGrave').append("<div class='mySpinner'><img src='/onlinefriedhof/images/piktogramm/ajax-loader.gif'/></div>");
+ 		$.ajax({
+ 			url: url,
+ 			async: true,
+ 			cache: false,
+ 			success: function(data){
+ 				$('#HighlightPremiumGrave').empty();
+ 				$('#HighlightPremiumGrave').append(data);
+ 			}
+ 		});
+ 		
+ 	
+ 			
+ 	
+ });
+   </script>
+   <style type="text/css">
+    body {
+ 	background-color:#FFF;
+ 	background: url("/onlinefriedhof/images/hires/premium_siteBackground_waldundwiese_wenigerFarbe.jpg");
+ 	-webkit-background-size: cover;
+ 	-moz-background-size: cover;
+ 	-o-background-size: cover;
+ 	background-size: cover;
+ 	background-attachment:fixed;
+ 
+ }
+ 
+ html,body {
+               height:100%;
+ }
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .googleFont_DancingScript
+ {
+         font-family: 'Dancing Script', cursive;
+ }
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=IM+Fell+Double+Pica:400,400italic" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .myHeadLine
+ {
+         font-family: 'IM Fell Double Pica', serif;
+         font-size: 28px;
+ 		font-style:italic;
+ 		text-align:center;
+ 		color:#000;
+ 		border-bottom:1px groove #C0C0C0;
+ 		height:32px;		
+ }
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=IM+Fell+Double+Pica:400,400italic" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .googleFont_ImFellDoublePica
+ {
+         font-family: 'IM Fell Double Pica', serif;
+ 		font-style:italic;
+ 		text-align:center;
+ }
+   </style>
+   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .fontAwesome_grey
+ {
+         color:#CCC;
+         font-size: 25px;
+ }
+ .circle-icon {
+         background: #FFF;
+         color: #A8550F;
+         width: 30px;
+         height: 30px;
+         border-radius: 50%;
+         text-align: center;
+         line-height: 30px;
+         vertical-align: middle;
+         padding: 10px;
+ }
+   </style>
+   <script type="text/javascript">
+    var _gaq = _gaq || [];
+ 	  _gaq.push(['_setAccount', 'UA-202671-4']);
+ 	  _gaq.push (['_gat._anonymizeIp']);
+ 	  _gaq.push(['_trackPageview']);
+ 
+ 	  (function() {
+ 		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 		ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+ 		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 	  })();
+   </script>
+   <!-- Begin Cookie Consent plugin by Silktide - http://silktide.com/cookieconsent -->
+   <script type="text/javascript">
+    window.cookieconsent_options = {"message":"Diese Website verwendet Cookies zur Sicherstellung der Funktionalitaet unseres Angebotes und zur Analyse des Datenverkehrs sowie zur Messung von Anzeigen.","dismiss":"Verstanden","learnMore":"Mehr Informationen","link":"https://www.soulium.de/cgi-bin/onlinefriedhof/legal.cgi?operation=datenschutz","theme":"dark-top"};
+   </script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/cookieconsent.min.js" type="text/javascript">
+   </script>
+   <!-- End Cookie Consent plugin -->
+  </head>
+  <body>
+   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .fontAwesome_grey
+ 	{
+ 		color:#CCC;
+ 		font-size: 12px;
+ 	}
+   </style>
+   <link href="https://fonts.googleapis.com/css?family=Dancing+Script" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    .googleFont_DancingScript
+ {
+         font-family: 'Dancing Script', cursive;
+ }
+   </style>
+   <script type="text/Javascript">
+    var a = 0;
+ $(document).scroll(function(){
+     if($(this).scrollTop() > a)
+     {   
+        //$('.myMenue').css({"background":"red"});
+ 	   //$(".myMenue").css('font-size', '20px');
+ 	   $(".myMenue").stop().animate({
+             backgroundColor: 'white'
+         }, 1000);
+         
+ 	   $(".myLink").stop().animate({
+             color: 'black'
+         });         
+         	   
+         $(".myImage").stop().animate({
+             width: '25px'
+         });
+ 		
+ 		$(".myLinkEdit").stop().animate({
+             color: 'red'
+         },1000);		
+         
+     } else {
+ 	   $(".myMenue").stop().animate({
+             backgroundColor: '#A52A2A'
+         },1000);
+ 		
+ 		$(".myLinkEdit").stop().animate({
+             color: 'yellow'
+         },1000);		
+         
+ 	   $(".myLink").stop().animate({
+             color: 'white'
+         });        
+     
+ 	   $(".myImage").stop().animate({
+             width: '30px'
+         });    }
+ });
+ 
+ $(document).ready(function() {
+ 	$("#toogleSearch").click(function() {
+ 		$("#quick-search-form").toggle();
+ 	});
+ 	
+ 	
+ 	
+ 	
+ 	$("#nav li:has(ul)").hover(function(){
+ 		$(this).find("ul").slideDown();
+ 	}, function(){
+ 		$(this).find("ul").hide();
+ 	});
+ 	
+ 
+ 	
+ 	
+ 	
+     
+ 
+ 	  
+ 	$(document).keydown(function(e) {  
+ 		if (e.keyCode == 27) {  
+ 			$("#login-panel").hide(0);  
+ 		}  
+ 	}); 
+ 
+ 	$("#quick-login-link").click(function(){  
+         $("#login-panel").slideToggle(200);  
+     })
+ 		
+ 	
+ 
+ 		$("form#quickLogin").submit(function (event) {
+ 
+ 		   if ( $('#username').val().length == 0 || $('#password').val().length == 0 ) { 
+ 			return false 
+ 		   }
+ 		   event.preventDefault();
+ 		   $('#rc-msg').html('<img src="/onlinefriedhof/images/piktogramm/ajax-loader.gif"/>');
+ 
+ 		   $.ajaxSetup({
+ 			  error: function(xhr, status, error) {
+ 				 $('#rc-msg').html('Error: ' + error);
+ 			  },
+ 			  timeout: 10000
+ 		   });
+ 
+ 			$.post("/de/cgi-bin/onlinefriedhof/manageUser.cgi",
+ 			   {
+ 				operation: 'doLogin',
+ 				email:   $('#username').val(),
+ 				lang:	$('#lang').val(),
+ 				passwd: $('#password').val()
+ 			   },
+ 			   function(data){
+ 			
+ 				 if (data.rc >= 1) {
+ 					$('#rc-msg').html('');
+ 					window.location.replace("/de" + data.msg);
+ 				 } else {
+ 					$('#rc-msg').html(data.msg);
+ 				 }
+ 			   },
+ 			   "json"
+ 			);
+ 		});	
+ 	
+ 	
+ 	
+ });
+   </script>
+   <div style="position: fixed;text-align:right; margin-right:20px; z-index: 100; width: 100%; height:20px; top: 0px; left: 0px; background-color: #3E4043; opacity: .9; filter:Alpha(Opacity=90);">
+    <div class="fontAwesome_grey" id="getListUserOnline">
+     <div style="width:300px;">
+      <div id="myOnlineSpinningCycle" style="float:left;">
+       <i class="fa fa-spinner fa-pulse">
+       </i>
+      </div>
+      <div style="margin-left:18px; float:left;">
+       <span id="guestOnline" style="font-weight:bold;">
+       </span>
+       Benutzer Online
+      </div>
+     </div>
+    </div>
+    <div style="text-align:right; margin-right:100px;">
+     <i class="fa fa-user fa-lg fontAwesome_grey">
+     </i>
+     <a href="#login" id="quick-login-link" style="color:#CCC;" title="Login">
+      Login
+     </a>
+     <div id="login-panel" style="top:70px; text-align:left;">
+      <div id="rc-msg" style="font-size:9px; color:#FF0000;">
+      </div>
+      <form action="" id="quickLogin" method="post">
+       <input id="lang" name="lang" type="hidden" value="de"/>
+       <label>
+        Ihre E-Mail Adresse
+       </label>
+       <input id="username" name="username" type="text" value=""/>
+       <br/>
+       <label>
+        Ihr Passwort
+       </label>
+       <input id="password" name="password" type="password" value=""/>
+       <br/>
+       <br/>
+       <input name="submit" type="submit" value="Login"/>
+       <small>
+        Press ESC to close
+       </small>
+      </form>
+     </div>
+     <i class="fa fa-user-plus fa-lg fontAwesome_grey" style="margin-left:10px;">
+     </i>
+     <a class="fontAwesome_grey" href="/de/cgi-bin/onlinefriedhof/manageUser.cgi?operation=FormCreateUser">
+      Registrieren
+     </a>
+    </div>
+   </div>
+   <div class="shadow myMenue" style="font-size:14px; position: fixed; padding:5px; z-index: 100; width: 100%; top: 20px; left: 0px; background-color: white; opacity: .9; filter:Alpha(Opacity=90);">
+    <div style="float:right; text-align:right; margin-right:10px;">
+     <a href="http://www.strassederbesten.de/">
+      <img border="0/" class="lang shadow" src="/onlinefriedhof/images/misc/lang/de.jpg"/>
+     </a>
+     <a href="http://www.soulium.com/en/">
+      <img border="0/" class="lang shadow" src="/onlinefriedhof/images/misc/lang/en.jpg"/>
+     </a>
+    </div>
+    <div style="text-align:right; margin-right: 100px; float:right;">
+     <i class="fa fa-search fa-lg fontAwesome_grey" style="margin-left:10px;">
+     </i>
+     <a class="myLink" id="toogleSearch">
+      Suche
+     </a>
+    </div>
+    <div id="nav">
+     <ul>
+      <li>
+       <a href="http://www.strassederbesten.de">
+        <i class="fa fa-home fa-lg fontAwesome_grey">
+        </i>
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="/de/cgi-bin/onlinefriedhof/Premium.cgi?operation=aboutPremiumAccount">
+        <i class="fa fa-diamond fa-lg fontAwesome_grey">
+        </i>
+        Premium
+       </a>
+      </li>
+      <!--li>
+ 				
+ 				<a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=createGraveIntro">
+ 					<i class="fa fa-heart fa-lg fontAwesome_grey"></i>
+ 					Grab anlegen
+ 				</a>
+ 			</li-->
+      <li>
+       <a href="#">
+        <i class="fa fa-fire fa-lg fontAwesome_grey">
+        </i>
+        Gedenken
+       </a>
+       <ul class="sub_menu">
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=createGraveIntro">
+          Neue Gedenkstätte anlegen
+         </a>
+        </li>
+        <li>
+         <a href="/onlinefriedhof/Kerze-anzuenden.html">
+          Halle des Lichtes
+          <br/>
+          Gedenkkerze anzünden
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/griefCandle.cgi?operation=Main">
+          <img src="/onlinefriedhof/images/piktogramm/icon-favorite.png" style="width:10px; height:10px;"/>
+          Trauerkerze anzünden
+         </a>
+        </li>
+        <li>
+         <a href="/onlinefriedhof/VirtuellerFriedhof.html">
+          <img src="/onlinefriedhof/images/piktogramm/icon-favorite.png" style="width:10px; height:10px;"/>
+          Virtueller Friedhof
+         </a>
+        </li>
+        <li>
+         <a href="/de/onlinefriedhof/Nekrolog/2017">
+          Nekrolog
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=getMostRecentCondolences">
+          Neue Kondolenzen
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=getMostRecentCandles">
+          Neueste Kerzen
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=getMostRecentMemorials">
+          Neueste Gedenkstätten
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/grab.cgi?operation=getMourningToday">
+          Heute gedenken wir
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/Premium.cgi?operation=getAllPremiumGrab">
+          <img src="/onlinefriedhof/images/piktogramm/icon-favorite.png" style="width:10px; height:10px;"/>
+          Premium Gedenkseiten
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="/onlinefriedhof/Trauer-Forum.html">
+        <i class="fa fa-university fa-lg fontAwesome_grey">
+        </i>
+        Trauerforum
+       </a>
+      </li>
+      <li>
+       <a href="#">
+        <i class="fa fa-search fa-lg fontAwesome_grey">
+        </i>
+        Erweiterte Suche
+       </a>
+       <ul class="sub_menu">
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/search.cgi?operation=formAdvancedMemorialSearch">
+          Erweiterte Suche
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/MapView.cgi?operation=getMapsView">
+          Kartensuche
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="#">
+        <i class="fa fa-user-circle-o fa-lg fontAwesome_grey">
+        </i>
+        Anmelden
+       </a>
+       <ul class="sub_menu">
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/manageUser.cgi?operation=FormCreateUser">
+          Registrieren
+         </a>
+        </li>
+        <li>
+         <a href="/de/cgi-bin/onlinefriedhof/manageUser.cgi?operation=Login">
+          Login
+         </a>
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </div>
+    <div id="quick-search-form" style="width:180px; margin-right:10px; text-align:right; display:none; float:right;">
+     <meta charset="utf-8"/>
+     <style>
+      .ui-autocomplete-loading { background: white url('/onlinefriedhof/images/piktogramm/spinner.gif') right center no-repeat; }
+     </style>
+     <script>
+      $(function() {
+ 			var cache = {},
+ 				lastXhr;
+ 			$( "#qsearch" ).autocomplete({
+ 				minLength: 2,
+ 				source: function( request, response ) {
+ 					var term = request.term;
+ 					if ( term in cache ) {
+ 						response( cache[ term ] );
+ 						return;
+ 					}
+ 
+ 					lastXhr = $.getJSON( "/de/cgi-bin/onlinefriedhof/search.cgi?operation=doQuickSearch", request, function( data, status, xhr ) {
+ 						cache[ term ] = data;
+ 						if ( xhr === lastXhr ) {
+ 							response( data );
+ 						}
+ 					});
+ 				},
+ 				select: function( event, ui ) {
+ 					if (ui.item) {
+ 						//alert("Selected: " + ui.item.label + "-" + ui.item.id);
+ 						window.location.href='/onlinefriedhof/Trauer/' + ui.item.id;
+ 					}
+ 				}			
+ 			});
+ 		});
+     </script>
+     <form>
+      <span style="background:#F63F00;font-size:14px;text-transform:uppercase;padding:2px 10px 4px;margin: -4px;">
+       Suche
+      </span>
+      <input id="qsearch" style="width:100px;line-height: 18px;margin: 0px;"/>
+     </form>
+    </div>
+   </div>
+   <div id="ContainerHead" style="height:70px;">
+   </div>
+   <style type="text/css">
+    .block-textNonAlpha {
+     background-color: rgba(255, 255, 255, 1);
+     border-radius: 10px;
+     padding: 00px;
+     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+ }
+   </style>
+   <div id="fb-root">
+   </div>
+   <script>
+    (function(d, s, id) {
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) return;
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/de_DE/all.js#xfbml=1";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+   </script>
+   <div id="mainContent" style="margin:0 auto 0;width:1180px; position:relative;">
+    <div id="leftContent" style="float:left;width:60px;">
+     <div style="position:relative; top:460px;">
+      <ul class="social-icons-list social-blog no-bullet" style="float:right">
+       <li>
+        <a class="icon-twitter" href="http://www.twitter.com/share?url=http://www.strassederbesten.de/" target="_blank" title="Twittern">
+        </a>
+       </li>
+       <li>
+        <a class="icon-google" href="https://plus.google.com/share?url=http://www.strassederbesten.de/" target="_blank" title="Google">
+        </a>
+       </li>
+       <li>
+        <a class="icon-facebook" href="http://www.facebook.com/sharer.php?u=http://www.strassederbesten.de/" target="_blank" title="Facebook">
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <!--div  id="centerContent" style="margin:0px auto; width:940px; position:relative; top:-140px; float:left;"-->
+    <div id="centerContent" style="float:left; width:940px;">
+     <div style="text-align:center; top:50px; position:relative;">
+      <img src="/onlinefriedhof/images/hires/LogoStrassederbesten_de.png" style="width:400px; position:relative;"/>
+     </div>
+     <div class="block-textNonAlpha" id="NewWrapperLogoBox" style="margin: 0px auto; width:940px; height:250px; position:relative; top:100px;">
+      <div id="PremiumGrabMapMain" style="position:absolute; top:103px; left:340px;">
+      </div>
+      <div id="dialog-form" title="">
+      </div>
+      <div id="HighlightPremiumGrave" style="width:750px; padding:5px; height:80px; text-align:center; margin:0px auto;top:-40px; position:relative;">
+      </div>
+     </div>
+     <div style="padding:5px; background-color:#FFF; border-radius: 10px; position:relative; top:115px;">
+      <script>
+       $(function() {
+ $( "#tabs" ).tabs({
+ 	beforeLoad: function( event, ui ) {
+ 		ui.jqXHR.error(function() {
+ 		ui.panel.html(
+ 		"Couldn't load this tab. We'll try to fix this as soon as possible. ");
+ 		});
+ 		}
+ 	});
+   });
+      </script>
+      <script src="/onlinefriedhof/js/vticker/jquery.vticker.js">
+      </script>
+      <script type="text/javascript">
+       $(function(){
+ 	$('#gedenken').vTicker({ 
+ 		speed: 5000,
+ 		pause: 0,
+ 		animation: 'fade',
+ 		mousePause: false,
+ 		showItems: 6
+ 	});
+ });
+      </script>
+      <script type="text/Javascript">
+       $(document).ready(function() {
+ 	var url = "/de/cgi-bin/onlinefriedhof/PremiumGrabCandle.cgi?operation=getMostRecentPremiumCandle&limit=14";
+ 	$('#contentMostRecentPremiumCandle').append("<div class='mySpinner'><img src='/onlinefriedhof/images/piktogramm/ajax-loader.gif'/></div>");
+ 	$.ajax({
+ 		url: url,
+ 		async: true,
+ 		cache: false,
+ 		success: function(data){
+ 			$('#contentMostRecentPremiumCandle').empty();
+ 			$('#contentMostRecentPremiumCandle').append(data);
+ 		}
+ 	});
+ 	
+ 
+ });
+      </script>
+      <script type="text/Javascript">
+       $(document).ready(function() {
+ 	var url = "/de/cgi-bin/onlinefriedhof/cemeteryNew.cgi?operation=Main&ajax=1";
+ 	$('#contentVirtuellerFriedhof').append("<div class='mySpinner'><img src='/onlinefriedhof/images/piktogramm/ajax-loader.gif'/></div>");
+ 	$.ajax({
+ 		url: url,
+ 		async: true,
+ 		cache: false,
+ 		success: function(data){
+ 			$('#contentVirtuellerFriedhof').empty();
+ 			$('#contentVirtuellerFriedhof').append(data);
+ 		}
+ 	});
+ });
+      </script>
+      <table class="googleFont_DancingScript" style="border-spacing:20px;text-align:center; top:-60px; position:relative; width:100%; color:#3B1B00; font-size:28px;">
+       <tr>
+        <td style="width:33%;">
+         <i class="fa fa-fire fa-lg fontAwesome_grey circle-icon shadow" style="font-size:28px; color:#3B1B00;">
+         </i>
+        </td>
+        <td style="width:33%;">
+         <i class="fa fa-gift fa-lg fontAwesome_grey circle-icon shadow" style="font-size:28px; color:#3B1B00;">
+         </i>
+        </td>
+        <td style="width:33%;">
+         <i class="fa fa-clock-o fa-lg fontAwesome_grey circle-icon shadow" style="font-size:28px; color:#3B1B00;">
+         </i>
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <span class="indexTableHead">
+          Gedenken und trauern
+         </span>
+        </td>
+        <td>
+         <span class="indexTableHead">
+          Kostenfrei und würdevoll
+         </span>
+        </td>
+        <td>
+         <span class="indexTableHead">
+          24 Stunden erreichbar
+         </span>
+        </td>
+       </tr>
+      </table>
+      <style>
+       .myImage2gray {
+ 	  transition: filter .5s ease-in-out;
+ 	  -webkit-filter: grayscale(0%); /* Ch 23+, Saf 6.0+, BB 10.0+ */
+ 	  filter: grayscale(0%); /* FF 35+ */
+ 	}
+ 	.myImage2gray:hover {
+ 	  -webkit-filter: grayscale(100%); /* Ch 23+, Saf 6.0+, BB 10.0+ */
+ 	  filter: grayscale(100%); /* FF 35+ */
+ 	}
+      </style>
+      <div style="width:100%; text-align:center;">
+       <a href="/onlinefriedhof/MoM.html?utm_campaign=MoM&amp;utm_medium=BannerIndex&amp;utm_source=Index&amp;utm_content=MoMBanner">
+        <img class="myImage2gray" src="/onlinefriedhof/images/MoM/Memory_Of_Mankind_Horizontal.jpg"/>
+       </a>
+      </div>
+      <div style="width:700px; text-align:center; margin: 0px auto;">
+       <h1 class="googleFont_DancingScript" style="color:#000; font-size:35px;">
+        Der Online Friedhof im Internet, Gedenkseite Online
+       </h1>
+       <div style="padding:5px; font-size:1.2em;">
+        strassederbesten.de, der virtuelle Friedhof. Hier können Sie kostenfrei und würdevoll Gedenkstätten für Ihre Liebsten erstellen, die für immer in Ihrer Erinnerung weiterleben sollen. Sie können bei uns auch gemeinsam trauern und sich mit anderen Betroffenen austauschen.
+       </div>
+       <div style="text-align:center;">
+        <img class="shadow" src="/onlinefriedhof/images/main/bootMain.jpg" style="padding:5px; width:690px;"/>
+       </div>
+      </div>
+      <div style="clear:both; padding-top:10px; border-top:1px solid; border-color:#ECECEC;">
+       <div id="contentMostRecentPremiumCandle" style="margin:0px auto; width:742px;">
+       </div>
+      </div>
+      <div style="clear:both; padding-top:10px; border-top:1px solid; border-color:#ECECEC;">
+       <div id="contentVirtuellerFriedhof" style="margin:0px auto;">
+       </div>
+      </div>
+      <div class="center-row" style="margin-top:10px; clear:both;">
+       <div class="Gradient_Box_left" style="float:left;">
+        <div style="border-bottom:1px solid;margin-bottom: 5px;">
+         <h4>
+          Neueste Gedenkstätten
+         </h4>
+        </div>
+        <div>
+         <div class="wrapper">
+          <div class="date-1">
+           83
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           10.02.1933 - 31.07.2016
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37652">
+             Irmgard Lucas
+            </a>
+           </b>
+           <br/>
+           Stendal
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           75
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           15.05.1943 - 01.06.2018
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37651">
+             Rosemarie Wagner
+            </a>
+           </b>
+           <br/>
+           Mannheim
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           2
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           28.07.2016 - 28.07.2018
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37650">
+             Heiko   von der Pliensau (Hund)
+            </a>
+           </b>
+           <br/>
+           Unterweissach
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           74
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           01.01.1944 - 27.03.2018
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37649">
+             Max Edgar Riedel
+            </a>
+           </b>
+           <br/>
+           Fürstenwalde/Spree
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           61
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           13.07.1957 - 23.07.2018
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37648">
+             Uwe Ferdinand  Bohne
+            </a>
+           </b>
+           <br/>
+           Hagen.
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           -13
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           26.05.2018 - 10.12.2005
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37647">
+             Manfred Laruelle
+            </a>
+           </b>
+           <br/>
+           München
+          </div>
+         </div>
+         <div class="wrapper">
+          <div class="date-1">
+           94
+           <span>
+            Jahre
+           </span>
+          </div>
+          <div class="date-2">
+           05.07.1924 - 08.07.2018
+          </div>
+          <div>
+           <b>
+            <a href="/onlinefriedhof/Trauer/37646">
+             Anneliese Leiß
+            </a>
+           </b>
+           <br/>
+           Iserlohn
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="Gradient_Box_right" style="float:left; margin-left: 12px;">
+        <div style="border-bottom:1px solid;margin-bottom: 5px;">
+         <h4>
+          Heute gedenken wir
+         </h4>
+        </div>
+        <div id="gedenken">
+         <ul style="list-style-type:none;">
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/1499_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             03.08.1943 - 01.08.2008
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_1499.html">
+               † Monika Klemmin
+              </a>
+             </b>
+             <br/>
+             Bremen
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/28812_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             01.11.1935 - 01.08.2011
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_28812.html">
+               † Anneliese Scherer
+              </a>
+             </b>
+             <br/>
+             Saarbrücken
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/9892_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             23.08.1939 - 01.08.2009
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_9892.html">
+               † Klaus Sandmann
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/27440_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             19.12.1971 - 01.08.2012
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_27440.html">
+               † Alex Westerburg
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/18000_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             30.01.1985 - 01.08.2008
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_18000.html">
+               † Peter Eckel
+              </a>
+             </b>
+             <br/>
+             Christertshofen
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/24783_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             01.08.2011 - 01.08.2011
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_24783.html">
+               † Timo und Robin Schmidt
+              </a>
+             </b>
+             <br/>
+             Iserlohn
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/1192_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             04.04.1952 - 01.08.2007
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_1192.html">
+               † Wolfhard lutz
+              </a>
+             </b>
+             <br/>
+             goslar
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/5452_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             01.04.1946 - 01.08.2001
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_5452.html">
+               † Johann Blinde
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/21566_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             26.10.1935 - 01.08.2007
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_21566.html">
+               † maria Quentin
+              </a>
+             </b>
+             <br/>
+             Lungen Klinik Lengen
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left; width:50px;">
+            <img src="/onlinefriedhof/images/grabpic/preview/17693_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left; width:150px;">
+            <div class="date-2">
+             04.07.1940 - 01.08.2003
+            </div>
+            <div>
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_17693.html">
+               † Werner Dauflinger
+              </a>
+             </b>
+             <br/>
+             Nurenberg
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/21405_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1931 - 19.07.2011
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_21405.html">
+               ∗ Alma Esser
+              </a>
+             </b>
+             <br/>
+             Manheim
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/5506_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1910 - 19.03.2000
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_5506.html">
+               ∗ Helene Hildebrandt
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/33659_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1908 - 13.04.1987
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_33659.html">
+               ∗ Alma Maria Herzig
+              </a>
+             </b>
+             <br/>
+             Paderborn
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/5966_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1922 - 06.06.2009
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_5966.html">
+               ∗ Martha Irmgard Funke
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/30384_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1999 - 04.12.2012
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_30384.html">
+               ∗ Felix Albrecht
+              </a>
+             </b>
+             <br/>
+             Berlin
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/22497_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1933 - 21.09.2011
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_22497.html">
+               ∗ Elisabeth Sieben
+              </a>
+             </b>
+             <br/>
+             oberhausen
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/33934_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1944 - 28.05.2013
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_33934.html">
+               ∗ Klaus Quiel
+              </a>
+             </b>
+             <br/>
+             Gronau
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/1110_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.2006 - 01.08.2006
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_1110.html">
+               ∗ Niklas-Alexander Taenzer
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/14548_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1958 - 12.01.2010
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_14548.html">
+               ∗ Bernd Schleifenheimer
+              </a>
+             </b>
+             <br/>
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+          <li style="height:80px;">
+           <div class="date-1" style="float:left;">
+            <img src="/onlinefriedhof/images/grabpic/preview/7267_s.gif" style="width:40px; height:40px;"/>
+           </div>
+           <div style="float:left;">
+            <div class="date-2">
+             01.08.1928 - 22.12.2003
+            </div>
+            <div style="color:white; text-align:left;">
+             <b>
+              <a href="/onlinefriedhof/virtueller_friedhof_grab_7267.html">
+               ∗ Reinhold Hartkopf
+              </a>
+             </b>
+             <br/>
+             Hannover
+            </div>
+           </div>
+           <p style="clear:both;">
+           </p>
+          </li>
+         </ul>
+        </div>
+       </div>
+       <div class="Gradient_Box_right" style="float:left; margin-left: 12px;">
+        <div style="border-bottom:1px solid;">
+         <h4>
+          Zu empfehlende Gedenkstätten
+         </h4>
+        </div>
+        <div id="tabs" style="width:270px; background: #eee;border: 1px solid #DDD;background: -moz-linear-gradient(right, #EEE, #FFF);	background: -webkit-linear-gradient(right, #eee, #fff);background: -ms-linear-gradient(right, #eee, #fff); background: -o-linear-gradient(right, #eee, #fff);">
+         <ul>
+          <li style="width:120px;">
+           <a href="/de/cgi-bin/onlinefriedhof/SdbAnalysis.cgi?operation=getLongtimeNoCandle">
+            Vergesst nicht
+           </a>
+          </li>
+          <li style="width:120px;">
+           <a href="/de/cgi-bin/onlinefriedhof/SdbAnalysis.cgi?operation=getTop10GravesToday">
+            Heute Populär
+           </a>
+          </li>
+          <li style="width:250px;">
+           <a href="/de/cgi-bin/onlinefriedhof/SdbAnalysis.cgi?operation=getTop10GravesbyMonth">
+            Populär in den letzten 30 Tagen
+           </a>
+          </li>
+          <li style="width:250px;">
+           <a href="/de/cgi-bin/onlinefriedhof/Premium.cgi?operation=Top10PremiumGrab">
+            Premium Gedenkseiten
+           </a>
+          </li>
+          <!--li><a href="/de/cgi-bin/onlinefriedhof/SdbAnalysis.cgi?operation=getTop10GravesbyYear">Dieses Jahr</a></li-->
+         </ul>
+        </div>
+       </div>
+      </div>
+      <div class="center-row" style="margin-top:15px; clear:both;">
+       <div style="width:880px; float:left; margin-left:30px;">
+        <div style="border-bottom:1px solid; border-color:#ECECEC; text-align:center;">
+         <h4>
+          Neueste Foreneinträge
+         </h4>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             01.08.2018 14:50:08
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2147">
+              Online-Trauertherapie für Hinterbliebene von Krebserkrankte...
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2147">
+             Liebe Userin, Lieber User, 
+ 
+ wir möchten hier gerne über ein Kostenloses Unterstützungsangebot in...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             14.07.2018 03:42:26
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+              Kritik an strassederbesten.de?
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+             Guten morgen Liebe Admins.
+ 
+ WIE kann es sein da es hier wieder seit d.1 Juli sooooooooooooooooooo
+ mi...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             02.07.2018 04:47:59
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=1981">
+              Ihre Meinung ist gefragt
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=1981">
+             Habe am 25,Juni...den Beitrag für die Premium Gedenkseite bezahlt und bin bis jetzt noch nicht fr...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <p style="clear:both;">
+        </p>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             01.07.2018 06:29:08
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2146">
+              Premium Gedenkseite
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2146">
+             Habe am 25,Juni...den Beitrag für die Premium Gedenkseite bezahlt und bin bis jetzt noch nicht frei...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             27.06.2018 07:18:58
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+              Kritik an strassederbesten.de?
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+             Wie wäre es mit einen:
+ 
+ Guten tag, kann mir jemand bitte helfen?
+ 
+ Oder ist das zuviel verlangt? 
+ Ei...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             26.06.2018 13:01:35
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+              Kritik an strassederbesten.de?
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=29">
+             Wie kann ich ein Grab löschen
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <p style="clear:both;">
+        </p>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             17.06.2018 00:09:21
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=31">
+              Sie benoetigen Hilfe zu Funktionen von strassederbesten.de?
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=31">
+             Schön guten Abend, kann mir vielleicht Jemand einen Rat geben, wie ich auf einer bereits angelegten...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             18.04.2018 10:50:16
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2144">
+              Gedenkstätte "Oma Erna"
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2144">
+             Hallo ihr Lieben! Zuerst möchte ich mich mal bei allen für die vielen Kerzen und lieben Worte bei ...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="wrapper" style="float:left; width:250px;">
+         <div class="overflow">
+          <div class="box-quote">
+           <div class="name-date">
+            <span>
+             13.04.2018 15:00:33
+            </span>
+            <b>
+             <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2143">
+              Danke
+             </a>
+            </b>
+            <br/>
+            <a href="/de/cgi-bin/onlinefriedhof/forum.cgi?operation=getForumThreadComment&amp;f_thread_id=2143">
+             Ich möchte mich ganz herzlich bei allen bedanken die am 08.04.2018 an meine Tochter Linda gedacht h...
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+        <p style="clear:both;">
+        </p>
+        <p style="clear:both;">
+        </p>
+       </div>
+      </div>
+      <br style="clear:both;"/>
+      <div style="margin:0px auto; width:940px; text-align:center;">
+       <br/>
+       <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+       </script>
+       <!-- SDB Horizontal Big Box -->
+       <ins class="adsbygoogle" data-ad-client="ca-pub-9658814088965475" data-ad-slot="2148954542" style="display:inline-block;width:336px;height:280px">
+       </ins>
+       <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+       </script>
+       <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+       </script>
+       <!-- SDB Horizontal Big Box -->
+       <ins class="adsbygoogle" data-ad-client="ca-pub-9658814088965475" data-ad-slot="2148954542" style="display:inline-block;width:336px;height:280px">
+       </ins>
+       <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+       </script>
+      </div>
+      <div style="margin-top:30px;">
+       <div style="background-color:#000;opacity: .6; filter:Alpha(Opacity=60); color:#FFF; width:100%;">
+        <div style="width:600px; text-align:center; margin: 0px auto;">
+         <a href="/de/cgi-bin/onlinefriedhof/legal.cgi?operation=agb" style="color:#FFF;">
+          AGB
+         </a>
+         <a href="/de/cgi-bin/onlinefriedhof/legal.cgi?operation=impressum" style="color:#FFF;">
+          Impressum
+         </a>
+         <a href="/de/cgi-bin/onlinefriedhof/legal.cgi?operation=datenschutz" style="color:#FFF;">
+          Datenschutz
+         </a>
+        </div>
+       </div>
+       <div style="text-align:center; width:100%;">
+        <h1 class="googleFont_DancingScript" style="color:#000; font-size:28px;">
+         Der Online Friedhof im Internet, Gedenkseite Online
+        </h1>
+        <div style="color:#000;">
+         <span id="countMemories">
+         </span>
+         angelegte Gedenkseiten,
+         <span id="countVisitors">
+         </span>
+         Besucher von Gedenkseiten,
+         <span id="countCandles">
+         </span>
+         angezündete Gedenkkerzen
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div id="rightContent" style="width:165px; float:left; position:relative; top:480px;">
+     <div style="width:160px; margin-left:5px; top:2px;">
+      <script async="" src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+      </script>
+      <!-- SDB Vertikal Large -->
+      <ins class="adsbygoogle" data-ad-client="ca-pub-9658814088965475" data-ad-slot="5102420945" style="display:inline-block;width:160px;height:600px">
+      </ins>
+      <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+     </div>
+    </div>
+   </div>
+   <p style="clear:both; height:50px; position:relative; top:30px; top:180px;">
+   </p>
+   <div id="SDBMSGBOX" title="">
+   </div>
+  </body>
+ </html>

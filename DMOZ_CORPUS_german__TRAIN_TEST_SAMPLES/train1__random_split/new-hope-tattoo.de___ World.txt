@@ -1,0 +1,1482 @@
+<!-- diese ist die zentrale Initialisierungsdatei für das AddOn -->
+ <!DOCTYPE html>
+ <html>
+  <head>
+   <title>
+    New Hope Tattoo Club
+   </title>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1 minimum-scale=1 user-scalable=no" name="viewport"/>
+   <link href="stylesheets/screen.css" rel="stylesheet" type="text/css"/>
+   <link href="js/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css"/>
+   <link href="//fonts.googleapis.com/css?family=Roboto:100,400,300,500,700" rel="stylesheet" type="text/css"/>
+   <script src="js/lib/jquery.min.js" type="text/javascript">
+   </script>
+   <script src="js/html5shiv/source/html5shiv.js" type="text/javascript">
+   </script>
+   <script src="js/fancybox/source/jquery.fancybox.js" type="text/javascript">
+   </script>
+   <script src="js/element_heights/source/element_heights.js" type="text/javascript">
+   </script>
+   <script src="js/gallery/source/gallery.js" type="text/javascript">
+   </script>
+   <script src="js/taetowierer/source/taetowierer.js" type="text/javascript">
+   </script>
+   <script src="js/neuigkeiten/source/neuigkeiten.js" type="text/javascript">
+   </script>
+   <script src="js/lazy/source/jquery.lazy.min.js" type="text/javascript">
+   </script>
+   <script src="jquery.mixitup.js">
+   </script>
+   <script>
+    // mixitupFilter code
+     var checkboxFilter = {
+     $filters: null,
+     $reset: null,
+     groups: [],
+     outputArray: [],
+     outputString: '',
+     // the "init" method will run on document ready and cache any jquery objects we will need.
+     init: function() {
+         var self = this; // as a best practice, in each method we will asign "this" to the variable "self" so that it remains scope-agnostic. we will use it to refer to the parent "checkboxfilter" object so that we can share methods and properties between all parts of the object.
+ 
+         self.$filters = $('#controls');
+         self.$reset = $('#Reset');
+         self.$container = $('#gallery');
+         self.$filters.find('fieldset').each(function() {
+             self.groups.push({
+                 $inputs: $(this).find('input'),
+                 active: [],
+                 tracker: false
+             });
+         });
+ 
+         self.bindHandlers();
+     },
+     // the "bindhandlers" method will listen for whenever a form value changes. 
+     bindHandlers: function() {
+         var self = this;
+ 
+         self.$filters.on('change', function(){
+             self.parseFilters();
+         });
+         self.$reset.on('click', function(e){
+             e.preventDefault();
+             self.$filters[0].reset();
+             self.parseFilters();
+         });
+     },
+     // the parsefilters method checks which filters are active in each group:
+     parseFilters: function() {
+         var self = this;
+ 
+         // loop through each filter group and add active filters to arrays
+         for (var i = 0, group; group = self.groups[i]; i++) {
+             group.active = []; // reset arrays
+             group.$inputs.each(function(){ 
+                 $(this).is(':checked') && group.active.push(this.value);
+             });
+ 
+             group.active.length && (group.tracker = 0);
+         };
+ 
+         self.concatenate();
+     },
+     // the "concatenate" method will crawl through each group, concatenating filters as desired:
+     concatenate: function() {
+         var self = this,
+             cache = '',
+             crawled = false,
+             checkTrackers = function() {
+                 var done = 0;
+ 
+                 for (var i = 0, group; group = self.groups[i]; i++) {
+                   (group.tracker === false) && done++;
+                 };
+ 
+                 return (done < self.groups.length);
+             },
+             crawl = function(){
+                 for (var i = 0, group; group = self.groups[i]; i++) {
+                     group.active[group.tracker] && (cache += group.active[group.tracker]);
+ 
+                     if(i === self.groups.length - 1){
+                         self.outputArray.push(cache);
+                         cache = '';
+                         updateTrackers();
+                     };
+                 };
+             },
+             updateTrackers = function() {
+                 for (var i = self.groups.length - 1; i > -1; i--) {
+                     var group = self.groups[i];
+ 
+                     if(group.active[group.tracker + 1]){
+                         group.tracker++; 
+                         break;
+                     } else if(i > 0){
+                         group.tracker && (group.tracker = 0);
+                     } else {
+                         crawled = true;
+                     };
+                 };
+             };
+ 
+             self.outputArray = []; // reset output array
+ 
+             do {
+               crawl();
+             } while(!crawled && checkTrackers());
+ 
+             self.outputString = self.outputArray.join();
+ 
+             // if the output string is empty, show all rather than none:
+             !self.outputString.length && (self.outputString = 'all');
+ 
+             // send the output string to mixitup via the 'filter' method:
+ 
+             if(self.$container.mixItUp('isLoaded')){
+                 self.$container.mixItUp('filter', self.outputString);
+             }
+         }
+     };
+ 
+     $(function() {
+         // lazyload
+         $('.lazy').lazy({ effect: 'fadeIn' });
+ 
+         // fancybox
+         $('.fancybox').fancybox({
+             prevEffect: 'none',
+             nextEffect: 'none',
+             helpers: {
+                 title: {
+                     type: 'outside',
+                 },
+                 thumbs: {
+                     width: 50,
+                     height: 50,
+                 },
+             },
+             beforeLoad: function() {
+                 this.title = $(this.element).attr('data-title')
+             }
+         });
+ 
+ 
+ 
+ 
+ 
+         // initialize mixitupFilter code
+         checkboxFilter.init();
+ 
+         // create gallery mixitup element
+         $('#gallery').mixItUp({
+             animation: {
+                 duration: 250,
+                 effects: 'fade scale(0.01) translateX(-100%) translateY(-100%) translateZ(-1000px) rotateX(-180deg) rotateY(-180deg) rotateZ(-180deg) stagger(0ms)',
+                 easing: 'cubic-bezier(0.39, 0.575, 0.565, 1)'
+             },
+             callbacks: {
+                 onMixEnd: function(state){
+                     $(window).scroll();
+ 
+                     $('#gallery .mix:visible').find('.fancybox').attr('rel', 'filteredGallery');
+                     $('#gallery .mix:not(:visible)').find('.fancybox').attr('rel', 'notFilteredGallery');
+                 }
+             }
+         });
+     });
+   </script>
+  </head>
+  <body>
+   <header>
+    <nav>
+     <a href="#" id="menu">
+     </a>
+     <ul class="rex-navi1 rex-navi-depth-1 rex-navi-has-6-elements">
+      <li class="rex-article-1 rex-normal">
+       <a class="" href="index.php?article_id=1">
+        Galerie
+       </a>
+      </li>
+      <li class="rex-article-2 rex-normal">
+       <a class="" href="index.php?article_id=2">
+        Tätowierer
+       </a>
+      </li>
+      <li class="rex-article-3 rex-current">
+       <a class="rex-current" href="index.php?article_id=3">
+        Neuigkeiten
+       </a>
+      </li>
+      <li class="rex-article-4 rex-normal">
+       <a class="" href="index.php?article_id=4">
+        Informationen / Downloads
+       </a>
+      </li>
+      <li class="rex-article-5 rex-normal">
+       <a class="" href="index.php?article_id=5">
+        Kontakt
+       </a>
+      </li>
+      <li class="rex-article-6 rex-normal">
+       <a class="" href="index.php?article_id=6">
+        Impressum
+       </a>
+      </li>
+     </ul>
+     <a href="https://www.facebook.com/pages/New-Hope-Tattoo-Club/157072904337300">
+      <section id="facebook">
+       <img src="img/icon/icon_facebook.png"/>
+      </section>
+     </a>
+     <script type="text/javascript">
+      $(document).ready(function() {
+     $("#menu").on("click", function(e) {
+       e.preventDefault();
+       $("header nav ul").slideToggle();
+     });
+     $(window).resize(function(){
+       if( $(window).width() > 1150 && $("header nav ul").is(":hidden") ) {
+         $("header nav ul").removeAttr("style");
+       }
+     });
+   });
+     </script>
+    </nav>
+    <section class="title">
+     <h1>
+      New Hope Tattoo Club
+     </h1>
+     <section class="clearfix" id="blockquote">
+      <h2>
+       Der New Hope Tattoo Club hat sich ausschließlich auf individuelle Einzelstücke spezialisiert, sogennante Custom Tattoos.
+      </h2>
+     </section>
+    </section>
+    <a href="index.php?article_id=1">
+     <img alt="New-Hope-Tattoo-Club" id="logo" src="img/logo/logo.png"/>
+    </a>
+   </header>
+   <nav id="filter">
+    <nav id="filter">
+     <section id="openFilter">
+      <div class="textFilter">
+       <a href="index.php?article_id=1">
+        <div>
+         <b>
+          Galerie
+         </b>
+        </div>
+        <div>
+         ansehen
+        </div>
+       </a>
+      </div>
+     </section>
+    </nav>
+   </nav>
+   <section id="main">
+    <section id="content">
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        04
+       </p>
+       <p class="month">
+        JUNI
+       </p>
+       <p class="year">
+        2018
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        NEUE TERMINE
+       </h3>
+       <h4>
+        Ich vergebe Termine für Juli bis September
+       </h4>
+       <p>
+        Hallo Freunde der schönen Hautkunst
+       </p>
+       <p>
+        Meine Stärken liegen immer noch in individuellen Einzelstücken. Mein bevorzugter Stil ist der asiatische. Gerne leihe ich mir Inspirationen beim Jugendstil von Alfons Mucha oder im Bereich Manga. Mir gefallen körperangepasste, fließende Tätowierungen mit Persönlichkeit und Idee dahinter. Plakativ, aussagekräftig aber nicht plump.
+       </p>
+       <p>
+        Der Mecha Stil hat es mir in der letzten Zeit auch angetan wobei ich mich da gerne von der klassischen Biomechanik entferne und meine Inspirationen lieber in Filmen wie Elysium, District 9 oder ähnlichem, modernem Mechdesign suche.
+       </p>
+       <p>
+        Solltet Ihr andere, intererssante Wünsche und Ideen haben, scheut euch nicht mich zu fragen. Herrausforderungen sind immer willkommen.
+       </p>
+       <p>
+        Nur Im Blackwork und Tribal Bereich bin ich nach wie vor nicht zuhause. Mir fehlt der Bezug und das Hintergrundwissen und es gibt sicher Andere, die diesen Stil sehr gut beherrschen.
+       </p>
+       <p>
+        Also, schaut euch meine neuesten Arbeiten auf der Website, auf Facebook oder auf Instagram an und lasst euch inspirieren.
+       </p>
+       <p>
+        Ich freu mich auf eure Anfragen.
+       </p>
+       <p>
+        Bestes,
+       </p>
+       <p>
+        Thomas
+       </p>
+       <p>
+        thomas@new-hope-tattoo.de
+       </p>
+       <p>
+        FB:newhopetattooclub
+       </p>
+       <p>
+        Insta:thomasundcookie
+       </p>
+      </div>
+      <section class="gallery clearfix">
+       <ul>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/kalender_2018_1.jpg" rel="5b619ec7c2">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=kalender_2018_1.jpg"/>
+          </a>
+         </figure>
+        </li>
+       </ul>
+      </section>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        12
+       </p>
+       <p class="month">
+        März
+       </p>
+       <p class="year">
+        2018
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        Waldarm
+       </h3>
+       <h4>
+        Konzeptarbeit mit viel Details
+       </h4>
+       Hab vor eine paar Jahren einen Wald/Natur Arm-Tattoo tätowiert.
+  Letzte Woche bekam ich endlich mal die Chance einen Blick auf das verheilte Tattoo zu werfen und ein paar Photos zu machen. Will ich euch nicht vorenthalten, das war damals ne schwere Geburt, weil so viele Ideen und Details für den Arm bestanden.
+ Zapfen, Hirschkäfer, Reh, Hirsch und Kitz, Höhenlininen einer Karte, ein Text, Fuchs, Pilze, Steinbock, Uhu, und eine Bergsee-Silhouette.
+ Und als Herausforderung nur in Schwarz-Weiß, was es deutlich schwieriger macht, Details voneinander zu diferenzieren.
+ Ich finde es ist aber auch nach Jahren noch ein sehr Schönes Tattoo mit viel zu entdecken.
+       <p>
+        Bestes,Thomas
+       </p>
+      </div>
+      <section class="gallery clearfix">
+       <ul>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/basti_waldarm_totale.jpg" rel="5b619ec7c3">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=basti_waldarm_totale.jpg"/>
+          </a>
+         </figure>
+        </li>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/basti_waldarm_zapfen_und_rehe.jpg" rel="5b619ec7c3">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=basti_waldarm_zapfen_und_rehe.jpg"/>
+          </a>
+         </figure>
+        </li>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/bast_waldarm_hirschkaefer_und_hoehenlinien.jpg" rel="5b619ec7c3">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=bast_waldarm_hirschkaefer_und_hoehenlinien.jpg"/>
+          </a>
+         </figure>
+        </li>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/basti_waldarm_oben_mitte.jpg" rel="5b619ec7c3">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=basti_waldarm_oben_mitte.jpg"/>
+          </a>
+         </figure>
+        </li>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/basti_waldarm_oben.jpg" rel="5b619ec7c3">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=basti_waldarm_oben.jpg"/>
+          </a>
+         </figure>
+        </li>
+       </ul>
+      </section>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        08
+       </p>
+       <p class="year">
+        2018
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        Frohes Neues
+       </h3>
+       <h4>
+        und alles Gute!!!
+       </h4>
+       <p>
+        Ein neues Jahr hat begonnen. Ich wünsche allen Frieden, Freude und Eierkuchen ;)
+        <br/>
+        …Und viele Gute Ideen für Tattoos. Macht die Welt ein wenig schöner und freundlicher.
+       </p>
+       <p>
+        Wir sehen uns,
+       </p>
+       <p>
+        Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        22
+       </p>
+       <p class="month">
+        Dez
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <img src=".//files/keine-boeller.png"/>
+       <h3>
+        Weihnachtsferien
+       </h3>
+       <h4>
+        Vom 23.12 - 8.1 bleibt der Laden geschlossen
+       </h4>
+       <p>
+        Ich werd mich rund und kugelig fressen und faul in der Ecke liegen, haha
+        <br/>
+        Wünsche Euch Allen eine schöne und friedliche Zeit. Erholt euch gut und lasst das mit den dummen Knallern undRaketen mal sein. So viel Schrecken für meinen Hund und so viel vergeudetes Geld und
+        <span class="caps">
+         SOOOOO
+        </span>
+        viel Umweltverschmutzung… Wir kämpfen um den Erhalt des Planeten aber verballern Tonnen an Böllern und Raketen? – Wofür???
+        <br/>
+        In dem Sinne, Wir sehen uns nächstes Jahr,
+        <br/>
+        Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        22
+       </p>
+       <p class="month">
+        Dez
+       </p>
+       <p class="year">
+        2018
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        Work Over
+       </h3>
+       <h4>
+        Mal ein Beispiel für eine Überarbeitung
+       </h4>
+       <p>
+        Gestern hab ich ein altes Tattoo überarbeitet. Da ja viele von Euch alte Schätzchen haben, wollte ich an diesem Beispiel mal zeigen, was man durch Überarbeitung noch rausholen kann.
+        <br/>
+        Frohe Feiertage und es sind noch Termine im ersten Quartal 2018 frei ;)
+        <br/>
+        Der Thomas
+       </p>
+      </div>
+      <section class="gallery clearfix">
+       <ul>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/thomas_work_over_aufgezeichnet.jpg" rel="5b619ec7c4">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=thomas_work_over_aufgezeichnet.jpg"/>
+          </a>
+         </figure>
+        </li>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/thomas_over_work.jpg" rel="5b619ec7c4">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=thomas_over_work.jpg"/>
+          </a>
+         </figure>
+        </li>
+       </ul>
+      </section>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        18
+       </p>
+       <p class="month">
+        Dez
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        Frohe Feiertage
+       </h3>
+       <h4>
+        Und einen guten Rutsch
+       </h4>
+       <p>
+        Ich hatte ein volles, ereignissreiches Jahr. Viele Anderungen. Umzug, Azubine weg – ein neues Arbeiten – ganz alleine.
+        <br/>
+        Aber es war vor allem eine neues, gutes Jahr. Tolle Arbeiten, viele, neue, Möglichkeiten und ein gestärktes, eigenes Interesse an meiner Arbeit!
+        <br/>
+        Ich habe für mich in diesem Jahr mehr und mehr erkannt, das es keinen Sinn macht, halbe Dinge zu machen, faule Kompromisse zu schließen und nicht an seiner Überzeugung fest zu halten. An seinen Ideen und Prinzipien.
+        <br/>
+        Für das neue Jahr wünsch ich mir viel Vertrauen meiner Kunden und eine Beständigkeit in der Terminlage. Im Moment ist es doch ein wenig mau…
+        <br/>
+        Euch wünsch ich erstmal ganz tolle Feiertage und eine schöne Zeit mit euren Lieben! Nehmt euch Zeit, das Jahr noch einmal an euch vorbei ziehen zu lassen. Und kommt gut ins neue Jahr!
+        <br/>
+        Wir werden uns wieder sehen ;)
+        <br/>
+        Ab dem 9.1. bin ich wieder im Laden. In dringenden Fällen schreibt mir eine Email. Ich werde zwischendurch mal in die Mailbox schauen!
+        <br/>
+        Alles Gute,
+        <br/>
+        Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        27
+       </p>
+       <p class="month">
+        Nov
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        FREIE TERMINE
+       </h3>
+       <h4>
+        Ich hab noch jede Menge freie Termine für den Jahresanfang 2018
+       </h4>
+       <p>
+        Hey Leute,
+        <br/>
+        Mögt ihr meine Tattoos nicht mehr? Oder macht Ihr euch die Tattoos jetzt  Alle selber, mit youtube-tutorials, haha.
+        <br/>
+        Nein, Spass bei Seite. Ich habe wirklich noch jede Menge freier Termine in Januar, Februar und März 2018.
+        <br/>
+        Würde mich freuen schöne, ausgefallene und originelle Aufträge von euch zu bekommen.
+        <br/>
+        Schreibt: thomas@new-hope-tattoo.de
+        <br/>
+        Facebookt mit oder ruft mich an: 02302 / 1767450
+        <br/>
+        Ich freu mich drauf!
+        <br/>
+        Bestes,Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        18
+       </p>
+       <p class="month">
+        Nov
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        TEMINVERGABE
+       </h3>
+       <h4>
+        Erstes Quartal 2018
+       </h4>
+       <p>
+        Ich hab´ nen neuen Kalender für 2018 und vergebe ab sofort Termine für das erste Quartal 2018, also Januar, Februar, März.
+        <br/>
+        Schreibt mir am besten ne Mail: Thomas@new-hope-tattoo.de, ruft an: 02302/1767450 oder schickt mir nen Postkarte ;) wenn ihr neue Farbe von mir unter die Haut wollt!
+        <br/>
+        Ich freu mich auf eure Ideen, schaut aber bitte vorher was ich so mache und kann. Also kein Photorealismus, kein Blackwork, -keine Hundepfoten und Unendlichkeitszeichen, hahaha ;)
+        <br/>
+        Allen ein schönes Wochenende,
+        <br/>
+        Thomas
+       </p>
+      </div>
+      <section class="gallery clearfix">
+       <ul>
+        <li>
+         <figure>
+          <a class="fancybox" href=".//files/kalender_2018.jpg" rel="5b619ec7c5">
+           <img src="index.php?rex_img_type=news&amp;rex_img_file=kalender_2018.jpg"/>
+          </a>
+         </figure>
+        </li>
+       </ul>
+      </section>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        22
+       </p>
+       <p class="month">
+        Jul
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <img src=".//files/img_20170706_163204.jpg"/>
+       <h3>
+        Bierchen und Quatschen
+       </h3>
+       <h4>
+        Vol. 1
+       </h4>
+       <p>
+        Wer Bock und Zeit hat, ist am Samstag ab 16 Uhr eingeladen im Laden in Witten vorbei zu schauen.
+        <br/>
+        Entspannt ein Bierchen zusammen zischen, ein bischen plaudern. Über neue Tattoo-Ideen und Gott und die Welt. Ich mach auch gerne Termine, nur keine Tattoos an dem Tag.
+       </p>
+       <p>
+        Freu mich auf Euch,
+       </p>
+       <p>
+        Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news news_teaser">
+      <div class="maincolor border">
+      </div>
+      <div class="grey border">
+      </div>
+      <div class="date">
+       <p class="day">
+        16
+       </p>
+       <p class="month">
+        Mai
+       </p>
+       <p class="year">
+        2017
+       </p>
+      </div>
+      <div class="text">
+       <h3>
+        Melissa ist nicht mehr beim NHTC
+       </h3>
+       <h4>
+        Meine Azubine hat bei mir aufgehört
+       </h4>
+       <p>
+        Leider haben sich unsere Wege getrennt. Melissa arbeitet nicht mehr bei mir im New Hope Tattoo Club.
+        <br/>
+        Ich wünsche Ihr alles Gute auf Ihrem Weg. Schade, das es mit uns nicht bis zum Ende der Ausbildung geklappt hat.
+        <br/>
+        <span class="caps">
+         FAREWELL
+        </span>
+        !
+        <br/>
+        Thomas
+       </p>
+      </div>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=20">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         25
+        </p>
+        <p class="month">
+         März
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         NEW HOPE TATTOO CLUB
+        </h3>
+        <h4>
+         KAFFEE KLATSCH
+        </h4>
+        <p>
+         Hallo Freunde der bunten Haut.
+ Wir möchten euch einladen, ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=19">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         08
+        </p>
+        <p class="month">
+         Feb
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Damit Ihr uns auch findet
+        </h3>
+        <h4>
+         So sieht die Einfahrt von der Ardeystraße aus
+        </h4>
+        <p>
+         Ihr werdet jetzt nie mehr vorbeifahren ;-)
+ Von Bochum komme...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=18">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         01
+        </p>
+        <p class="month">
+         Feb
+        </p>
+        <p class="year">
+         2016
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Der New Hope Tattoo Club zieht um
+        </h3>
+        <h4>
+         Neue Adresse und mehr Kontakte
+        </h4>
+        <p>
+         Der New Hope Tattoo Club teil sich auf. Ab dem 1.2. sind Mel...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=17">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         31
+        </p>
+        <p class="month">
+         Jan
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Entstehung eines Tattoos
+        </h3>
+        <h4>
+         So machen wir´s
+        </h4>
+        <p>
+         Ich wollte Euch mal zeigen, wie ich mein Tattoos zusammen mi...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=16">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         31
+        </p>
+        <p class="month">
+         Dezember
+        </p>
+        <p class="year">
+         2016
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Allen ein gutes, neues Jahr 2017
+        </h3>
+        <h4>
+         Es ändert sich was...
+        </h4>
+        <p>
+         Hallo Freunde, Kunden, Interessierte,
+ im Jahr 2017 wird sic...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=15">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         31
+        </p>
+        <p class="month">
+         Dez
+        </p>
+        <p class="year">
+         2015
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         ALLEN!
+        </h3>
+        <h4>
+         ein gutes, neues Jahr!!!
+        </h4>
+        <p>
+         Wir wünschen euch von Herzen alles Gute für das neue Jahr ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=14">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         11
+        </p>
+        <p class="month">
+         August
+        </p>
+        <p class="year">
+         2015
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Nachrichten aus Nepal
+        </h3>
+        <h4>
+         Danke für eure SUPER HILFE!
+        </h4>
+        <p>
+         Wir haben Photos und Nachricht aus Nepal bekommen.
+ Unser Be...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=13">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         23
+        </p>
+        <p class="month">
+         Juni
+        </p>
+        <p class="year">
+         2015
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Spendenaktion
+        </h3>
+        <h4>
+         Hari und Nepal werden sich freuen
+        </h4>
+        <p>
+         Hurra!!!
+ Unsere Benifiz-Spenden-Tattoo-Aktion war ein volle...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=12">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+        </p>
+        <p class="month">
+        </p>
+        <p class="year">
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Fertiger Flash
+        </h3>
+        <h4>
+         Nepal Aid Sonntag
+        </h4>
+        <p>
+         Hier noch schnell mein fertiger Flash für den Nepal Sonntag...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=11">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         24
+        </p>
+        <p class="month">
+         Aug
+        </p>
+        <p class="year">
+         2015
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Sara Rosenbaum zu Gast
+        </h3>
+        <h4>
+         Wir freuen uns auf schöne Arbeiten und Austausch
+        </h4>
+        <p>
+         Sara arbeitet sehr gerne frei. ihr Stil bewegt sich irgendwo...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=10">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         21
+        </p>
+        <p class="month">
+         Juni
+        </p>
+        <p class="year">
+         2015
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         SPENDEN TATTOOS FÜR NEPAL
+        </h3>
+        <h4>
+         Wir wollen helfen, mit Eurer Hilfe
+        </h4>
+        <p>
+         Liebe Freunde des New Hope Tattoo Clubs und der Hautkunst.
+ ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=9">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+        </p>
+        <p class="month">
+        </p>
+        <p class="year">
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Gruppentattoo
+        </h3>
+        <h4>
+         mal was Lustiges
+        </h4>
+        <p>
+         Wir haben bei einer Tattoosession viel Quatsch gemacht und r...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=8">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         18
+        </p>
+        <p class="month">
+         Aug
+        </p>
+        <p class="year">
+         2010
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Beitrag im Radio CT
+        </h3>
+        <h4>
+         Eine Reporterin versucht sich an einer Banane …
+        </h4>
+        <p>
+         ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         22
+        </p>
+        <p class="month">
+         Jul
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Bierchen und Quatschen
+        </h3>
+        <h4>
+         Vol. 1
+        </h4>
+        <p>
+         Wer Bock und Zeit hat, ist am Samstag ab 16 Uhr eingeladen i...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         16
+        </p>
+        <p class="month">
+         Mai
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Melissa ist nicht mehr beim NHTC
+        </h3>
+        <h4>
+         Meine Azubine hat bei mir aufgehört
+        </h4>
+        <p>
+         Leider haben sich unsere Wege getrennt. Melissa arbeitet nic...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         18
+        </p>
+        <p class="month">
+         Nov
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         TEMINVERGABE
+        </h3>
+        <h4>
+         Erstes Quartal 2018
+        </h4>
+        <p>
+         Ich hab´ nen neuen Kalender für 2018 und vergebe ab sofort...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         27
+        </p>
+        <p class="month">
+         Nov
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         FREIE TERMINE
+        </h3>
+        <h4>
+         Ich hab noch jede Menge freie Termine für den Jahresanfang 2018
+        </h4>
+        <p>
+         Hey Leute,
+ Mögt ihr meine Tattoos nicht mehr? Oder macht I...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         18
+        </p>
+        <p class="month">
+         Dez
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Frohe Feiertage
+        </h3>
+        <h4>
+         Und einen guten Rutsch
+        </h4>
+        <p>
+         Ich hatte ein volles, ereignissreiches Jahr. Viele Anderunge...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         22
+        </p>
+        <p class="month">
+         Dez
+        </p>
+        <p class="year">
+         2018
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Work Over
+        </h3>
+        <h4>
+         Mal ein Beispiel für eine Überarbeitung
+        </h4>
+        <p>
+         Gestern hab ich ein altes Tattoo überarbeitet. Da ja viele ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         12
+        </p>
+        <p class="month">
+         März
+        </p>
+        <p class="year">
+         2018
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Waldarm
+        </h3>
+        <h4>
+         Konzeptarbeit mit viel Details
+        </h4>
+        <p>
+         Hab vor eine paar Jahren einen Wald/Natur Arm-Tattoo tätow...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         22
+        </p>
+        <p class="month">
+         Dez
+        </p>
+        <p class="year">
+         2017
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Weihnachtsferien
+        </h3>
+        <h4>
+         Vom 23.12 - 8.1 bleibt der Laden geschlossen
+        </h4>
+        <p>
+         Ich werd mich rund und kugelig fressen und faul in der Ecke ...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         08
+        </p>
+        <p class="month">
+        </p>
+        <p class="year">
+         2018
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         Frohes Neues
+        </h3>
+        <h4>
+         und alles Gute!!!
+        </h4>
+        <p>
+         Ein neues Jahr hat begonnen. Ich wünsche allen Frieden, Fre...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+     <article class="news">
+      <a href="index.php?article_id=3">
+       <div class="maincolor border">
+       </div>
+       <div class="grey border">
+       </div>
+       <div class="date">
+        <p class="day">
+         04
+        </p>
+        <p class="month">
+         JUNI
+        </p>
+        <p class="year">
+         2018
+        </p>
+       </div>
+       <div class="text">
+        <h3>
+         NEUE TERMINE
+        </h3>
+        <h4>
+         Ich vergebe Termine für Juli bis September
+        </h4>
+        <p>
+         Hallo Freunde der schönen Hautkunst
+ 
+ Meine Stärken liege...
+        </p>
+       </div>
+       <img class="next_arrow" src="./img/next.png"/>
+      </a>
+     </article>
+    </section>
+   </section>
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ 
+   ga('create', 'UA-6371619-14', 'new-hope-tattoo.de');
+   ga('send', 'pageview');
+   </script>
+  </body>
+ </html>

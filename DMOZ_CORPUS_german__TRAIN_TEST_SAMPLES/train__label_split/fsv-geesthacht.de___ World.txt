@@ -1,0 +1,753 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="de" xml:lang="de" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <!-- 
+ 	This website is powered by TYPO3 - inspiring people to share!
+ 	TYPO3 is a free open source Content Management Framework initially created by Kasper Skaarhoj and licensed under GNU/GPL.
+ 	TYPO3 is copyright 1998-2006 of Kasper Skaarhoj. Extensions are copyright of their respective owners.
+ 	Information and contribution at http://typo3.com/ and http://typo3.org/
+ -->
+   <style type="text/css">
+    /*<![CDATA[*/
+ 	<!--
+ 	/* default styles for extension "tx_indexedsearch" */
+ 		.tx-indexedsearch .tx-indexedsearch-browsebox LI { display:inline; margin-right:5px; }
+ 		.tx-indexedsearch .tx-indexedsearch-searchbox INPUT.tx-indexedsearch-searchbox-button { width:100px; }
+ 		.tx-indexedsearch .tx-indexedsearch-searchbox INPUT.tx-indexedsearch-searchbox-sword { width:150px; }
+ 		.tx-indexedsearch .tx-indexedsearch-whatis { margin-top:10px; margin-bottom:5px; }
+ 		.tx-indexedsearch .tx-indexedsearch-whatis .tx-indexedsearch-sw { font-weight:bold; font-style:italic; }
+ 		.tx-indexedsearch .tx-indexedsearch-noresults { text-align:center; font-weight:bold; }
+ 		.tx-indexedsearch .tx-indexedsearch-res TD.tx-indexedsearch-descr { font-style:italic; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-descr .tx-indexedsearch-redMarkup { color:red; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-info { background:#eeeeee; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead { margin-top:20px; margin-bottom:5px; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead H2 { margin-top:0px; margin-bottom:0px; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .tx-indexedsearch-secHead TD { background:#cccccc; vertical-align:middle; }
+ 		.tx-indexedsearch .tx-indexedsearch-res .noResume { color:#666666; }
+ 		.tx-indexedsearch .tx-indexedsearch-category { background:#cccccc; font-size:16px; font-weight:bold; }
+ 
+ 		/* Additional styles, needed for the tableless template_css.tmpl (styles don't conflict with the original template) */
+ 		.tx-indexedsearch .res-tmpl-css { clear:both; margin-bottom:1em; }
+ 		.tx-indexedsearch .searchbox-tmpl-css LABEL { margin-right:1em; width:10em; float:left; }
+ 		.tx-indexedsearch .result-count-tmpl-css, .tx-indexedsearch .percent-tmpl-css { letter-spacing:0; font-weight:normal; margin-top:-1.2em; float:right; }
+ 		.tx-indexedsearch .info-tmpl-css dt, .tx-indexedsearch dl.info-tmpl-css dd { float:left; }
+ 		.tx-indexedsearch .info-tmpl-css dd.item-mtime { float:none; }
+ 		.tx-indexedsearch .info-tmpl-css dd.item-path { float:none; }
+ /* default styles for extension "tx_cssstyledcontent" */
+ 	/* Captions */
+ 	DIV.csc-textpic-caption-c .csc-textpic-caption { text-align: center; }
+ 	DIV.csc-textpic-caption-r .csc-textpic-caption { text-align: right; }
+ 	DIV.csc-textpic-caption-l .csc-textpic-caption { text-align: left; }
+ 
+ 	/* Needed for noRows setting */
+ 	DIV.csc-textpic DIV.csc-textpic-imagecolumn { float: left; display: inline; }
+ 
+ 	/* Border just around the image */
+ 	DIV.csc-textpic-border DIV.csc-textpic-imagewrap .csc-textpic-image IMG {
+ 		border: 2px solid black;
+ 		padding: 0px 0px;
+ 	}
+ 
+ 	DIV.csc-textpic-imagewrap { padding: 0; }
+ 
+ 	DIV.csc-textpic IMG { border: none; }
+ 
+ 	/* DIV: This will place the images side by side */
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap DIV.csc-textpic-image { float: left; }
+ 
+ 	/* UL: This will place the images side by side */
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap UL { list-style: none; margin: 0; padding: 0; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap UL LI { float: left; margin: 0; padding: 0; }
+ 
+ 	/* DL: This will place the images side by side */
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap DL.csc-textpic-image { float: left; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap DL.csc-textpic-image DT { float: none; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap DL.csc-textpic-image DD { float: none; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap DL.csc-textpic-image DD IMG { border: none; } /* FE-Editing Icons */
+ 	DL.csc-textpic-image { margin: 0; }
+ 	DL.csc-textpic-image DT { margin: 0; display: inline; }
+ 	DL.csc-textpic-image DD { margin: 0; }
+ 
+ 	/* Clearer */
+ 	DIV.csc-textpic-clear { clear: both; }
+ 
+ 	/* Margins around images: */
+ 
+ 	/* Pictures on left, add margin on right */
+ 	DIV.csc-textpic-left DIV.csc-textpic-imagewrap .csc-textpic-image,
+ 	DIV.csc-textpic-intext-left-nowrap DIV.csc-textpic-imagewrap .csc-textpic-image,
+ 	DIV.csc-textpic-intext-left DIV.csc-textpic-imagewrap .csc-textpic-image {
+ 		display: inline; /* IE fix for double-margin bug */
+ 		margin-right: 10px;
+ 	}
+ 
+ 	/* Pictures on right, add margin on left */
+ 	DIV.csc-textpic-right DIV.csc-textpic-imagewrap .csc-textpic-image,
+ 	DIV.csc-textpic-intext-right-nowrap DIV.csc-textpic-imagewrap .csc-textpic-image,
+ 	DIV.csc-textpic-intext-right DIV.csc-textpic-imagewrap .csc-textpic-image {
+ 		display: inline; /* IE fix for double-margin bug */
+ 		margin-left: 10px;
+ 	}
+ 
+ 	/* Pictures centered, add margin on left */
+ 	DIV.csc-textpic-center DIV.csc-textpic-imagewrap .csc-textpic-image {
+ 		display: inline; /* IE fix for double-margin bug */
+ 		margin-left: 10px;
+ 	}
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap .csc-textpic-image .csc-textpic-caption { margin: 0; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap .csc-textpic-image IMG { margin: 0; }
+ 
+ 	/* Space below each image (also in-between rows) */
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap .csc-textpic-image { margin-bottom: 5px; }
+ 	DIV.csc-textpic-equalheight DIV.csc-textpic-imagerow { margin-bottom: 5px; display: block; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagerow { clear: both; }
+ 
+ 	/* No margins around the whole image-block */
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap .csc-textpic-firstcol { margin-left: 0px !important; }
+ 	DIV.csc-textpic DIV.csc-textpic-imagewrap .csc-textpic-lastcol { margin-right: 0px !important; }
+ 
+ 	/* Add margin from image-block to text (in case of "Text w/ images") */
+ 	DIV.csc-textpic-intext-left DIV.csc-textpic-imagewrap,
+ 	DIV.csc-textpic-intext-left-nowrap DIV.csc-textpic-imagewrap {
+ 		margin-right: 10px !important;
+ 	}
+ 	DIV.csc-textpic-intext-right DIV.csc-textpic-imagewrap,
+ 	DIV.csc-textpic-intext-right-nowrap DIV.csc-textpic-imagewrap {
+ 		margin-left: 10px !important;
+ 	}
+ 
+ 	/* Positioning of images: */
+ 
+ 	/* Above */
+ 	DIV.csc-textpic-above DIV.csc-textpic-text { clear: both; }
+ 
+ 	/* Center (above or below) */
+ 	DIV.csc-textpic-center { text-align: center; /* IE-hack */ }
+ 	DIV.csc-textpic-center DIV.csc-textpic-imagewrap { margin: 0 auto; }
+ 	DIV.csc-textpic-center DIV.csc-textpic-imagewrap .csc-textpic-image { text-align: left; /* Remove IE-hack */ }
+ 	DIV.csc-textpic-center DIV.csc-textpic-text { text-align: left; /* Remove IE-hack */ }
+ 
+ 	/* Right (above or below) */
+ 	DIV.csc-textpic-right DIV.csc-textpic-imagewrap { float: right; }
+ 	DIV.csc-textpic-right DIV.csc-textpic-text { clear: right; }
+ 
+ 	/* Left (above or below) */
+ 	DIV.csc-textpic-left DIV.csc-textpic-imagewrap { float: left; }
+ 	DIV.csc-textpic-left DIV.csc-textpic-text { clear: left; }
+ 
+ 	/* Left (in text) */
+ 	DIV.csc-textpic-intext-left DIV.csc-textpic-imagewrap { float: left; }
+ 
+ 	/* Right (in text) */
+ 	DIV.csc-textpic-intext-right DIV.csc-textpic-imagewrap { float: right; }
+ 
+ 	/* Right (in text, no wrap around) */
+ 	DIV.csc-textpic-intext-right-nowrap DIV.csc-textpic-imagewrap { float: right; clear: both; }
+ 	/* Hide from IE5-mac. Only IE-win sees this. \*/
+ 	* html DIV.csc-textpic-intext-right-nowrap .csc-textpic-text { height: 1%; }
+ 	/* End hide from IE5/mac */
+ 
+ 	/* Left (in text, no wrap around) */
+ 	DIV.csc-textpic-intext-left-nowrap DIV.csc-textpic-imagewrap { float: left; clear: both; }
+ 	/* Hide from IE5-mac. Only IE-win sees this. \*/
+ 	* html DIV.csc-textpic-intext-left-nowrap .csc-textpic-text { height: 1%; }
+ 	/* End hide from IE5/mac */
+ /* default styles for extension "tx_srfreecap_pi2" */
+ 		.tx-srfreecap-pi2-image { margin-left: 1em; }
+ 		.tx-srfreecap-pi2-cant-read { font-size: .9em; color:#35006d; }
+ 		.tx-srfreecap-pi2-cant-read a:link { background-color:transparent; font-weight:bold; text-decoration:none; }
+ 	-->
+ 		/*]]>*/
+   </style>
+   <link href="uploads/tf/01_newstyle.css" media="all" rel="stylesheet" type="text/css"/>
+   <link href="http://www.fcmusterclub.de/" rel="bookmark" title=""/>
+   <link href="index.php?id=1" rel="start" title="Home"/>
+   <link href="index.php?id=sitemap" rel="contents" title="Sitemap"/>
+   <link href="index.php?id=16" rel="copyright" title="Impressum"/>
+   <link href="index.php?id=suche" rel="search" title="Suche"/>
+   <link href="typo3conf/ext/perfectlightbox/res/css/slightbox.css" media="screen,projection" rel="stylesheet" type="text/css"/>
+   <script src="typo3conf/ext/perfectlightbox/res/js/prototype-packed.js" type="text/javascript">
+   </script>
+   <script src="typo3conf/ext/perfectlightbox/res/js/scriptaculousEffects-packed.js?load=effects" type="text/javascript">
+   </script>
+   <script src="typo3conf/ext/perfectlightbox/res/js/lightbox-packed.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    var borderSize = 10;
+ 	var resizeSpeed = 400;
+ 	var animate = true;
+ 	var overlayOpacity = 0.8;
+ 	var allowSave = false;
+ 	var enableSlideshowAutoplay = true;
+ 	var slideshowAutoclose = true;
+ 	var slideshowInterval = 5000;
+ 	var lllImage = 'Bild';
+ 	var lllOf = 'von';
+   </script>
+   <title>
+    FSV Geesthacht: Home
+   </title>
+   <meta content="TYPO3 4.1 CMS" name="generator"/>
+   <meta content="Fussball ,Sport,Geesthacht,FSV 07,Liga" name="keywords"/>
+   <meta content="FSV Geesthacht" name="description"/>
+   <meta content="kaliber5 GmbH" name="creator"/>
+   <script type="text/javascript">
+    /*<![CDATA[*/
+ <!--
+ 	function openPic(url,winName,winParams)	{	//
+ 		var theWindow = window.open(url,winName,winParams);
+ 		if (theWindow)	{theWindow.focus();}
+ 	}
+ 
+ // -->
+ 	/*]]>*/
+   </script>
+  </head>
+  <body>
+   <div id="page">
+    <div id="logo">
+     <a href="#">
+     </a>
+    </div>
+    <div id="topright">
+     <div id="tr1">
+     </div>
+     <div id="tr2">
+     </div>
+    </div>
+    <div id="navoben">
+     <div id="no1">
+     </div>
+     <form action="index.php" method="get">
+      <input name="id" type="hidden" value="suche"/>
+      <div id="nav2">
+       <ul>
+        <li>
+         Suche
+         <input name="tx_indexedsearch[sword]" type="text"/>
+        </li>
+        <li>
+         <a href="index.php?id=sitemap" title="Das komplette Inhaltsverzeichnis der Website">
+          Sitemap
+         </a>
+        </li>
+        <li>
+         <a href="index.php?id=17">
+          Kontakt
+         </a>
+        </li>
+        <li>
+         <a href="index.php?id=16">
+          Impressum
+         </a>
+        </li>
+       </ul>
+      </div>
+     </form>
+     <div id="no3">
+     </div>
+    </div>
+    <div id="pfad">
+     <div id="p1">
+      <ul>
+       <li>
+        <a href="index.php?id=1" title="FSV Geesthacht">
+         Home
+        </a>
+       </li>
+      </ul>
+     </div>
+     <div id="p2">
+     </div>
+    </div>
+    <div id="re">
+    </div>
+    <div id="container">
+     <div id="cl">
+      <div class="boxnav">
+       <div class="boxtop">
+       </div>
+       <div class="navco">
+        <ul class="st">
+         <li>
+          <a href="index.php?id=10">
+           Home
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=231">
+           Mitglied werden!
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=9" title="Aktuelle News, Termine, TV-Tipps u.v.m.">
+           Aktuelles
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=797" title="Aktuelle News, Termine, TV-Tipps u.v.m.">
+           Turniere
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=208">
+           Vorstand
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=7">
+           Teams Fußball
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=614">
+           Schiedsrichter
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=3">
+           Sponsoren
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=188">
+           Historie
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=189">
+           Bildergalerie
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=204">
+           Download
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=316">
+           Gästebuch
+          </a>
+         </li>
+         <li>
+          <a href="index.php?id=384">
+           Links
+          </a>
+         </li>
+        </ul>
+       </div>
+       <div class="boxfooter">
+       </div>
+      </div>
+      <div class="box">
+       <h1>
+        Tabelle
+       </h1>
+       <div class="tx-k5ligamanager-pi1">
+        <div class="tx-k5ligamanager-minitable">
+         <table>
+          <tr class="odd">
+           <td class="pos">
+            1
+           </td>
+           <td class="team">
+            <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=295&amp;cHash=d595a5ac48">
+            </a>
+           </td>
+           <td class="games">
+            30
+           </td>
+           <td class="diff">
+            +58
+           </td>
+           <td class="points">
+            72
+           </td>
+          </tr>
+          <tr class="even" id="ownteam">
+           <td class="pos">
+            2
+           </td>
+           <td class="team">
+            <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=8&amp;cHash=255483afe9">
+            </a>
+           </td>
+           <td class="games">
+            30
+           </td>
+           <td class="diff">
+            +33
+           </td>
+           <td class="points">
+            64
+           </td>
+          </tr>
+          <tr class="odd">
+           <td class="pos">
+            3
+           </td>
+           <td class="team">
+            <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=4&amp;cHash=9b83b1307f">
+            </a>
+           </td>
+           <td class="games">
+            30
+           </td>
+           <td class="diff">
+            +38
+           </td>
+           <td class="points">
+            56
+           </td>
+          </tr>
+          <tr class="even">
+           <td class="pos">
+            4
+           </td>
+           <td class="team">
+            <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=187&amp;cHash=351348cafa">
+            </a>
+           </td>
+           <td class="games">
+            30
+           </td>
+           <td class="diff">
+            +6
+           </td>
+           <td class="points">
+            50
+           </td>
+          </tr>
+          <tr class="odd">
+           <td class="pos">
+            5
+           </td>
+           <td class="team">
+            <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=301&amp;cHash=585fd1271b">
+            </a>
+           </td>
+           <td class="games">
+            30
+           </td>
+           <td class="diff">
+            -7
+           </td>
+           <td class="points">
+            47
+           </td>
+          </tr>
+         </table>
+        </div>
+       </div>
+       <div class="boxcontent">
+        <a href="index.php?id=13">
+         Die volle Tabelle
+        </a>
+       </div>
+       <div class="boxfooter">
+       </div>
+      </div>
+     </div>
+     <div id="cm">
+      <div class="box_content">
+       <h3 class="box">
+        Home
+       </h3>
+       <div class="bc_content">
+        <a id="c1808">
+        </a>
+        <h3>
+         Was geht ab? Das HSV Fußball Camp beim FSV.
+        </h3>
+        <div class="csc-textpic csc-textpic-center csc-textpic-above">
+         <div class="csc-textpic-imagewrap" style="width:350px;">
+          <dl class="csc-textpic-image csc-textpic-firstcol csc-textpic-lastcol" style="width:350px;">
+           <dt>
+            <a href="typo3temp/pics/7b0bea5a3a.jpg" rel="lightbox[presentlb1808]">
+             <img alt="" border="0" height="496" src="typo3temp/pics/dc3eb98408.jpg" width="350"/>
+            </a>
+           </dt>
+           <dd class="csc-textpic-caption">
+           </dd>
+          </dl>
+         </div>
+         <div class="csc-textpic-text">
+          <p>
+           Super, Dino wir kommen. Wohin? Natürlich auf unser Zentralen Sportanlage in Geesthacht, Berliner Str. 62. Denn die HSV Fußballschule ist erneut bei uns in den Herbstferien zu Gast worüber wir uns als FSV Geesthacht sehr freuen.
+          </p>
+          <p>
+           Alle Fußball-Nachwuchsspieler aus Geesthacht und Umgebung sind herzlich willkommen, egal ob Anfänger oder schon talentierter Vereinsspieler, Mädchen oder Jungen. Mit den lizenzierten und motivierten HSV Trainern wird nach einem pädagogischen und sportlichen Konzept trainiert, so dass sich alle Mädels und Jungs über Lernfortschritte durch das Fußball Trainings-Camp freuen können. Es wird professionelles Kinder- und Jugendtraining angeboten wobei die Freude am Fußball immer Vordergrund steht.
+          </p>
+          <p>
+           Und im Anschluss besteht die Möglichkeit das erlernte gleich beim FSV Geesthacht umzusetzen. Werde Mitglied in einem FSV Team und freue dich auf mitreißende Spiele.
+          </p>
+          <p>
+           Vom 15.10. – 19.10.2017 ist die HSV-Fußballschule in Geesthacht. Trainiert wird täglich von 09:30 Uhr bis 15:30 Uhr auf dem schönen Rasen im Fußballstadion oder auf Kunstrasen. Zwischen den Trainingseinheiten gibt es ein gemeinsames Mittagessen und ein buntes Rahmenprogramm rund um den HSV. Teilnehmen können alle fußballbegeisterten Jungen und Mädchen der Jahrgänge 2005 bis 2012 (das Mindestalter zum Beginn des Camps beträgt 6 Jahre).
+          </p>
+          <p>
+           Die Teilnahmegebühr für die fünf aufregenden Tage beträgt 187 Euro. Mitglieder im Kids-Club und Mitglieder des FSV Geesthacht (bitte Kids-Club angeben und unter „Sonstiges“ in der Anmeldung vermerken) erhalten fünf Euro Ermäßigung.
+          </p>
+          <p>
+           Jeder Teilnehmer erhält eine tolle HSV-Adidas Trainingsausrüstung bestehend aus kurzer Hose, Stutzen und Kurzarmtrikot mit eigenem Namen, sowie einer Trinkflasche. Dazu viele weitere kleinere HSV-Überraschungen, wobei das professionelle Training im Vordergrund steht. Das gemeinsame Mittagessen zwischen den Trainingseinheiten und die Getränke während des Camps sind ebenfalls im Preis enthalten.
+          </p>
+          <p>
+           Weitere Informationen und ein Online-Anmeldeformular gibt es unter www.hsv-fussballschule.de und telefonisch unter 040 41551887.
+          </p>
+         </div>
+        </div>
+        <div class="csc-textpic-clear">
+         <!-- -->
+        </div>
+        <a id="c2877">
+        </a>
+        <h1>
+         <a href="index.php?id=21" target="_blank">
+          **** Aktuelle Termine - hier klicken für alle Termine ****
+         </a>
+        </h1>
+        <p>
+         Keine News in dieser Ansicht.
+        </p>
+        <a id="c2876">
+        </a>
+        <h1>
+         <a href="index.php?id=23" target="_blank">
+          ***** Aktuelle News - hier klicken für alle News *****
+         </a>
+        </h1>
+        <div class="box_content">
+         <h3 class="box">
+          24.09.17
+          <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2481&amp;tx_ttnews[backPid]=1&amp;cHash=2692cdd3ca" title="[Frauen] Gewinne, Gewinne für unsere Fußball Frauen">
+           [Frauen] Gewinne, Gewinne für unsere Fußball Frauen
+          </a>
+         </h3>
+         <div class="bc_content">
+          <div class="bc_content_text">
+           Die Erfolge unserer FSV Fußball Frauen reihen sich diesen Sommer wie eine Perlenschnur auf und neben dem Fußballfeld aneinander. Bei einem Gewinnspiel der Firma Wolfgang Krajewski GmbH &amp; Co. KG aus Lüneburg wurde der Hauptreis abgeräumt. Trixi Stilke von der Krajewski GmbH kam zur Preisübergabe extra nach Geesthacht. Dafür...
+           <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2481&amp;tx_ttnews[backPid]=1&amp;cHash=2692cdd3ca" title="[Frauen] Gewinne, Gewinne für unsere Fußball Frauen">
+            mehr
+           </a>
+          </div>
+          <div class="bc_content_pic">
+           <img alt="" border="0" height="105" src="typo3temp/pics/e2e4b128ab.jpg" title="" width="140"/>
+          </div>
+         </div>
+         <div class="bc_footer">
+         </div>
+        </div>
+        <div class="box_content">
+         <h3 class="box">
+          18.07.17
+          <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2477&amp;tx_ttnews[backPid]=1&amp;cHash=c723ac4ea7" title="[1.Frauen] Allianz G20 Cup: Ein voller Erfolg">
+           [1.Frauen] Allianz G20 Cup: Ein voller Erfolg
+          </a>
+         </h3>
+         <div class="bc_content">
+          <div class="bc_content_text">
+           Die Fußballfrauen des FSV Geesthacht luden zum G20 Turnier am 08.07.2017 nach Geesthacht auf die Zentrale Sportanlage an der Berliner Straße ein. Im Vorfeld konnten die 20 Teilnehmer, dank der Allianz, von den getroffenen Sicherheitsmaßnahmen überzeugt werden. Darunter die Hamburger Meisterinnen des TSC Wellingsbüttel (BZL),...
+           <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2477&amp;tx_ttnews[backPid]=1&amp;cHash=c723ac4ea7" title="[1.Frauen] Allianz G20 Cup: Ein voller Erfolg">
+            mehr
+           </a>
+          </div>
+          <div class="bc_content_pic">
+           <img alt="" border="0" height="93" src="typo3temp/pics/294902d596.jpg" title="" width="140"/>
+          </div>
+         </div>
+         <div class="bc_footer">
+         </div>
+        </div>
+        <a id="c3039">
+        </a>
+        <h1>
+         <a href="index.php?id=19">
+          ***** Aktuelle Presse - hier klicken für alle Artikel *****
+         </a>
+        </h1>
+        <div class="box_content">
+         <h3 class="box">
+          23.12.14
+          <a href="http://www.bergedorfer-zeitung.de/printarchiv/lokalsport/article135675455/Harte-Sitten-Pro-Gegentor-zehn-Liegestuetze.html" target="_blank" title="[23.12.14 // BZ/LZ // FSV] Harte Sitten: Pro Gegentor zehn Liegestütze">
+           [23.12.14 // BZ/LZ // FSV] Harte Sitten: Pro Gegentor zehn Liegestütze
+          </a>
+         </h3>
+         <div class="bc_content">
+          <div class="bc_content_text">
+           An zwei Tagen: Hallenturniere des FSV Geesthacht
+ Früher war André Wengorra der Torgarant des Fußball-Bezirksligisten FSV Geesthacht. Inzwischen kickt der 32-Jährige zwar beim SV Hamwarde, dem FSV aber ist er immer verbunden geblieben. Und so läuft Wengorra an diesem Wochenende beim Geesthachter Hallenturnier in einer...
+           <a href="http://www.bergedorfer-zeitung.de/printarchiv/lokalsport/article135675455/Harte-Sitten-Pro-Gegentor-zehn-Liegestuetze.html" target="_blank" title="[23.12.14 // BZ/LZ // FSV] Harte Sitten: Pro Gegentor zehn Liegestütze">
+            mehr
+           </a>
+          </div>
+          <div class="bc_content_pic">
+          </div>
+         </div>
+         <div class="bc_footer">
+         </div>
+        </div>
+        <div class="box_content">
+         <h3 class="box">
+          21.12.14
+          <a href="http://www.bergedorfer-zeitung.de/printarchiv/lokalsport/article135607716/Die-Formel-fuer-den-perfekten-Kick.html" target="_blank" title="[21.12.14 // BZ/LZ // FSV] Die Formel für den perfekten Kick">
+           [21.12.14 // BZ/LZ // FSV] Die Formel für den perfekten Kick
+          </a>
+         </h3>
+         <div class="bc_content">
+          <div class="bc_content_text">
+           Hallenfußball: Im Heimatgebiet gibt es verschiedene Ansichten, wie ein Turnier aussehen sollte
+ Wenn am kommenden Wochenende mit dem TT24-Hallen-Cup des FSV Geesthacht (Vorturnier: Sonnabend, 15 Uhr; Hauptturnier: Sonntag, 13 Uhr, Neuer Krug) die Hallenfußball-Saison beginnt, ist auch die Diskussion darum eröffnet, wie ein...
+           <a href="http://www.bergedorfer-zeitung.de/printarchiv/lokalsport/article135607716/Die-Formel-fuer-den-perfekten-Kick.html" target="_blank" title="[21.12.14 // BZ/LZ // FSV] Die Formel für den perfekten Kick">
+            mehr
+           </a>
+          </div>
+          <div class="bc_content_pic">
+          </div>
+         </div>
+         <div class="bc_footer">
+         </div>
+        </div>
+        <a id="c1126">
+        </a>
+        <h2>
+         ********* Jugendtrainer beim FSV **********
+        </h2>
+        <div class="csc-textpic-text">
+         <p>
+          <strong>
+           Welcher fußballbegeistere Erwachsene oder Jugendliche ab 15 Jahre hat Lust und Spaß den Fußballsport an Jugendliche zu vermitteln?
+          </strong>
+         </p>
+         <p>
+          <strong>
+           Die Jugendabteilung des FSV sucht Trainger und/oder Trainerinnen die Lust haben eine Team aufzubauen oder zu unterstützen.
+          </strong>
+         </p>
+         <p>
+          Eine Jugendmannschaft zu trainieren, zu führen und zu betreuen hat seine Reize. Dafür wird eine Basis benötigt, die durch Lehrgänge beim HFV erworben wird. Mit den enstprechenden Kenntnissen ist ein Trainer sehr schnell in der Lage ein Mannschaft zu formen und zum Spielen zu bringen.
+         </p>
+         <p>
+          <strong>
+           Der FSV unterstützt seine Jugendtrainer beim Erwerb der Trainerscheine für die Jugend und der C-Lizenz.
+          </strong>
+         </p>
+         <p>
+          Der Einstieg ist auf verschiedene Weise möglich. Ob als Trainer für eine bestehendes, oder für eine neues Team, z.B. eine G-Jugend oder Bambini, kann direkt mit unserem
+          <strong>
+           Jugendleiter Olaf Aurin (Tel. 0170 920 61 83)
+          </strong>
+          abgestimmt werden, der auch gerne für weitere Auskünfte zur Verfügung steht.
+         </p>
+        </div>
+        <a id="c3564">
+        </a>
+        <h2>
+         ********* Jugendfußball beim FSV **********
+        </h2>
+        <div class="csc-textpic csc-textpic-center csc-textpic-below">
+         <div class="csc-textpic-text">
+          <h3>
+           Kicker suchen wir immer, ob schon länger dabei oder als Neueinsteiger.
+          </h3>
+          <p>
+           <strong>
+            <br/>
+            Herzlich willkommen
+           </strong>
+           sind uns alle Jugendlichen die gerne Fußball spielen möchten, und das in jeder Altersstufe. Und ihr seid sofort dabei. Ist der Spielerpass genehmig erhaltet ihr umgehend Spielpraxis in einer unserer Mannschaften in den Jahrgängen 1997 bis 2010.
+          </p>
+          <h3>
+           Verstärkung suchen alle unsere Mannschaftgen. Ruft einfach Olaf Aurin (0170-9206183) den Jugendleiter oder Trainer/Betreuerrinnen der Teams an und schon seid ihr beim Training dabei.
+          </h3>
+          <h2>
+           Ganz neu ab März 2015 unser G-Jugend für Mädels und Jungs in den Jahrgängen 2009 und 2010.
+          </h2>
+         </div>
+         <div class="csc-textpic-imagewrap" style="width:435px;">
+          <dl class="csc-textpic-image csc-textpic-firstcol csc-textpic-lastcol" style="width:435px;">
+           <dt>
+            <a href="typo3temp/pics/4945ed6cbf.jpg" rel="lightbox[lb3564]">
+             <img alt="" border="0" height="615" src="typo3temp/pics/1be38da4a1.jpg" width="435"/>
+            </a>
+           </dt>
+           <dd class="csc-textpic-caption">
+           </dd>
+          </dl>
+         </div>
+        </div>
+        <div class="csc-textpic-clear">
+         <!-- -->
+        </div>
+        <a id="c2212">
+        </a>
+        <h4>
+         -----------------------------------------------------------------------------------
+        </h4>
+        <div class="csc-textpic-text">
+        </div>
+       </div>
+       <div class="bc_footer">
+       </div>
+      </div>
+     </div>
+     <div id="cr">
+      <div class="box">
+       <h1>
+        Letztes Spiel
+       </h1>
+       <div class="boxcontent">
+        <div class="tx-k5ligamanager-pi1">
+         <div class="tx-k5ligamanager-lastgame">
+          <div class="teams">
+           <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=302&amp;cHash=89d55beeb8">
+           </a>
+           -
+           <a href="index.php?id=28&amp;tx_k5ligamanager_pi1[team]=8&amp;cHash=255483afe9">
+           </a>
+          </div>
+          <div class="result">
+           2:5
+          </div>
+          <div class="remark">
+          </div>
+          <div class="report">
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="boxfooter">
+       </div>
+      </div>
+      <div class="box">
+       <h1>
+        Letzte Meldungen
+       </h1>
+       <div class="boxcontent">
+        <p>
+         <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2481&amp;tx_ttnews[backPid]=1&amp;cHash=2692cdd3ca" title="[Frauen] Gewinne, Gewinne für unsere Fußball Frauen">
+          [Frauen] Gewinne, Gewinne für unsere Fußball Frauen
+         </a>
+         <br/>
+         Die Erfolge unserer FSV Fußball Frauen reihen...
+        </p>
+        <p>
+         <a href="index.php?id=singlenews&amp;tx_ttnews[tt_news]=2477&amp;tx_ttnews[backPid]=1&amp;cHash=c723ac4ea7" title="[1.Frauen] Allianz G20 Cup: Ein voller Erfolg">
+          [1.Frauen] Allianz G20 Cup: Ein voller Erfolg
+         </a>
+         <br/>
+         Die Fußballfrauen des FSV Geesthacht luden zum...
+        </p>
+        <p>
+         <a href="index.php?id=23" target="_blank">
+          Weitere News
+         </a>
+        </p>
+       </div>
+       <div class="boxfooter">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </body>
+ </html>

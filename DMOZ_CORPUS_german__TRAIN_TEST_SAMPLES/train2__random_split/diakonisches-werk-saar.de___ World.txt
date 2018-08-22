@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+ <html lang="de">
+  <head>
+   <meta charset="utf-8"/>
+   <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+   <meta content="initial-scale=0.56, maximum-scale=1.0, width=640, user-scalable=yes" name="viewport"/>
+   <meta content="index, follow" name="robots"/>
+   <meta content="3 month" name="revisit-after"/>
+   <meta content="Diakonisches Werk an der Saar" name="author"/>
+   <meta content="website" property="og:type"/>
+   <meta content="Startseite" property="og:title"/>
+   <title>
+    Diakonisches Werk an der Saar - Startseite
+   </title>
+   <!-- styles -->
+   <link href="./css/style.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/font.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/forum.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/font/font_100.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/style_small.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/style_phone_style.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/font_phone_style.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/tipped/tipped.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/lightbox/lightbox.css" rel="stylesheet" type="text/css"/>
+   <link href="./css/swiper/idangerous.swiper.css" rel="stylesheet" type="text/css"/>
+   <link href="./cookiebar/cookieBar.css" rel="stylesheet" type="text/css"/>
+   <!--[if lt IE 9]>
+ 			<script src="./js/html5shiv/html5shiv.min.js"></script>
+ 			<script src="./js/html5shiv/html5shiv-printshiv.min.js"></script>
+ 		<![endif]-->
+   <script src="./js/jquery/jquery.min.js">
+   </script>
+   <script src="./js/tipped/tipped.js">
+   </script>
+   <script src="./js/lightbox/lightbox.min.js">
+   </script>
+   <script src="./js/swiper/idangerous.swiper.min.js">
+   </script>
+   <script src="./js/loadnews.js" type="text/javascript">
+   </script>
+   <script src="./cookiebar/jquery.cookieBar.js">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function() {
+ 			$.cookieBar();
+ 			});
+   </script>
+   <script>
+    (function(d, s, id) {
+ 		  var js, fjs = d.getElementsByTagName(s)[0];
+ 		  if (d.getElementById(id)) return;
+ 		  js = d.createElement(s); js.id = id;
+ 		  js.src = "//connect.facebook.net/de_DE/sdk.js#xfbml=1&version=v2.5";
+ 		  fjs.parentNode.insertBefore(js, fjs);
+ 		}(document, 'script', 'facebook-jssdk'));
+   </script>
+   <script type="text/javascript">
+    var RecaptchaOptions = {
+ 				    theme : 'clean'
+ 				 };
+   </script>
+   <script type="text/javascript">
+    jQuery("document").ready(function () {
+ 				// mobile
+ 				jQuery("#nav_mobile").on('click', function(){
+ 					jQuery("#navigation nav ul").toggle();
+ 				});
+ 
+ 				
+ 				// gallery
+ 				 var mySwiper = $('.swiper-container').swiper({
+ 					    mode:'horizontal',
+ 					    loop: true,
+ 					    autoplay: 5000,
+ 					    speed: 1000,
+ 					    keyboardControl: true,
+ 					  });
+ 
+ 				$('.arrow-left').on('click', function(e){
+ 					 e.preventDefault()
+ 					 mySwiper.swipePrev()
+ 				})
+ 				
+ 				$('.arrow-right').on('click', function(e){
+ 					 e.preventDefault()
+ 					 mySwiper.swipeNext()
+ 				})
+ 
+ 				// banner
+ 				if (jQuery("#banner").length > 0){
+ 					jQuery("#banner img").click(function() {
+ 						// Ajax request
+ 						jQuery.ajax( 
+ 						{
+ 							url: './php/banner/bannerref.php?id='+jQuery(this).attr('data-id'),
+ 				           	type: "POST",
+ 						});
+ 					});
+ 				};
+ 
+ 				// News 
+ 				if (jQuery("section.archive").length > 0)
+ 				{				
+ 					// Select news container
+ 					news_container = jQuery("section.archive");
+ 					
+ 					// We are on the news page...
+ 					jQuery(window).bind("DOMScrollEvent scroll", function (e)
+ 					{
+ 						// [Absolute page size] - [Window size(Displayed content size)] <= Scrollbarposition (Top->Bottom)
+ 						if (jQuery(document).height() - jQuery(window).height() - jQuery('footer').height() <= jQuery(window).scrollTop())
+ 						{
+ 															load_next_news(1);
+ 													}
+ 					});
+ 				}
+ 				// Search
+ 				if (jQuery("section.search article").length > 0)
+ 				{
+ 					// Select news container
+ 					news_container = jQuery("section.search");
+ 					
+ 					// We are on the news page...
+ 					jQuery(window).bind("DOMScrollEvent scroll", function (e)
+ 					{
+ 						// [Absolute page size] - [Window size(Displayed content size)] <= Scrollbarposition (Top->Bottom)
+ 						if (jQuery(document).height() - jQuery(window).height() - jQuery('footer').height()/2 <= jQuery(window).scrollTop())
+ 						{
+ 							if (jQuery("section.search.news_search").length > 0)
+ 							{
+ 								load_search("news");
+ 							}
+ 							else if (jQuery("section.search.content_search").length > 0)
+ 							{
+ 								load_search("content");
+ 							}
+ 							else if (jQuery("section.search.user_search").length > 0)
+ 							{
+ 								load_search("user");
+ 							}							
+ 						}
+ 					});
+ 				}
+ 				if (jQuery("section.search .teaser").length > 0)
+ 				{
+ 					// Select news container
+ 					news_container = jQuery("section.search");
+ 					
+ 					// We are on the news page...
+ 					jQuery(window).bind("DOMScrollEvent scroll", function (e)
+ 					{
+ 						// [Absolute page size] - [Window size(Displayed content size)] <= Scrollbarposition (Top->Bottom)
+ 						if (jQuery(document).height() - jQuery(window).height() - jQuery('footer').height()/2 <= jQuery(window).scrollTop())
+ 						{
+ 							if (jQuery("section.search.news_search").length > 0)
+ 							{
+ 								load_search("news");
+ 							}
+ 							else if (jQuery("section.search.content_search").length > 0)
+ 							{
+ 								load_search("content");
+ 							}
+ 							else if (jQuery("section.search.user_search").length > 0)
+ 							{
+ 								load_search("user");
+ 							}
+ 							else if (jQuery("section.search.download_search").length > 0)
+ 							{
+ 								load_search("download");
+ 							}						
+ 						}
+ 					});
+ 				}
+ 						/*  accordion animation */
+ 						$(document).on("click",'section.forum article.topic > aside > .trigger',function(){
+ 						    $(this).toggleClass('rotate');
+ 						    $(this).parent().parent().children('section').slideToggle("slow", "linear");			
+ 						});
+ 						$(document).on("click",'section.forum article.child > aside > .trigger',function(){
+ 						    $(this).toggleClass('rotate').parent().parent().find('.more.child').slideToggle("slow", "linear");
+ 						    $(this).parent().parent().find('section').slideToggle("slow", "linear");			
+ 						});
+ 						$(document).on("click", 'section.forum article.answer aside > .trigger', function(){
+ 						    $(this).toggleClass('rotate').parent().parent().find('.more.answer').slideToggle("slow", "linear");
+ 						});
+ 			});
+   </script>
+  </head>
+  <body>
+   <div id="fb-root">
+   </div>
+   <div id="main_wrapper">
+    <header>
+     <nav>
+      <ul>
+       <li>
+        <a class="zoom" href="./php/font/size.php?fontsize=increase">
+         +
+        </a>
+       </li>
+       <li>
+        <a class="zoom" href="./php/font/size.php?fontsize=decrease">
+         -
+        </a>
+       </li>
+       <li>
+        <a class="imprint" href="index.php?content_id=420">
+         Impressum
+        </a>
+       </li>
+       <li>
+        <a class="imprint" href="index.php?content_id=419">
+         Kontakt
+        </a>
+       </li>
+       <li>
+        <a href="index.php?login=1">
+         Login
+        </a>
+       </li>
+      </ul>
+      <div style="clear:both;">
+      </div>
+     </nav>
+     <div id="logo">
+      <figure>
+       <a href="index.php">
+        <img alt="Home" src="./images/logos/diakonisches_werk_saar_de.jpg"/>
+       </a>
+      </figure>
+     </div>
+     <div class="gallery">
+      <div class="swiper-container">
+       <div class="arrow-left">
+       </div>
+       <div class="arrow-right">
+       </div>
+       <div class="swiper-wrapper">
+        <div class="swiper-slide">
+         <figure>
+          <img alt="alt2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2258/Fotolia_17954443_L-Mann.jpg"/>
+         </figure>
+        </div>
+        <!-- .swiper-slide -->
+        <div class="swiper-slide">
+         <figure>
+          <img alt="alt2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2258/Fotolia_100634207_XL.jpg"/>
+         </figure>
+        </div>
+        <!-- .swiper-slide -->
+        <div class="swiper-slide">
+         <figure>
+          <img alt="alt2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2258/startbahnm25_metall.jpg"/>
+         </figure>
+        </div>
+        <!-- .swiper-slide -->
+        <div class="swiper-slide">
+         <figure>
+          <img alt="alt2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2258/KIEZ_Kinder_SAP_072017.jpg"/>
+         </figure>
+        </div>
+        <!-- .swiper-slide -->
+       </div>
+       <!-- .swiper-container -->
+      </div>
+      <!-- .swiper-wrapper -->
+     </div>
+     <!-- .gallery -->
+    </header>
+    <div id="main">
+     <div class="sidebar_background">
+      <div id="navigation">
+       <form action="index.php" class="search" enctype="multipart/form-data" method="post" name="search">
+        Schnellsuche:
+        <input name="searchword" size="15"/>
+        <input class="submit desktop" type="submit" value="suchen"/>
+        <input class="submit mobile" type="submit" value=""/>
+       </form>
+       <nav>
+        <img alt="Menü" id="nav_mobile" src="./images/nav/nav_mobile.jpg"/>
+        <ul>
+         <li class="active">
+          <a href="./index.php">
+           Startseite
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=483">
+           Wir über uns
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=238">
+           Bildung und Soziale Teilhabe
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=281">
+           Kinder-Jugend-Familie
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=321">
+           Berufliche Integration
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=7192">
+           Ambulante Pflege
+          </a>
+         </li>
+         <li>
+          <a href="http://www.familienbildung-saar.de" target="_blank">
+           Evangelische Familienbildungsstätte
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=8898">
+           Stabsstelle Flüchtlingsarbeit
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=375">
+           Servicebereich Betriebswirtschaft
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=5195">
+           Freiwilligendienste
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=7175">
+           Praktika
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=394">
+           Spenden
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=527">
+           Stellenbörse
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=1046">
+           Presse
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=500">
+           Verbundene Organisationen
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=399">
+           Downloads
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=418">
+           Links
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=419">
+           Kontakt
+          </a>
+         </li>
+         <li>
+          <a href="index.php?content_id=424">
+           Datenschutzerklärung
+          </a>
+         </li>
+        </ul>
+       </nav>
+       <ul class="banner">
+        <li>
+         <a href="http://diakonisches-werk-saar.de/index.php?content_id=394">
+          <img alt="Spenden Banner DW" data-id="97" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/97-img1.png" width="180"/>
+         </a>
+        </li>
+        <li>
+        </li>
+       </ul>
+       <aside class="banner">
+        <ul>
+         <li>
+          <a href="http://youtu.be/UQyIJITb1wU" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://youtu.be/UQyIJITb1wU');" target="_blank">
+           <img alt="Die Diakonie im Film" data-id="85" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/85-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.familienbildung-saar.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.familienbildung-saar.de');" target="_blank">
+           <img alt="Evangelische Familienbildungsstätte" data-id="2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2018/Banner_Fambild.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=1779&amp;parent_id=1772">
+           <img alt="Ehrenamt" data-id="158" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/505/Banner_Ehrenamt.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=10225&amp;parent_id=321">
+           <img alt="Sozialkaufhäuser" data-id="17" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/17-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=7127" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://diakonisches-werk-saar.de/index.php?content_id=7127');" target="_blank">
+           <img alt="Sprach- und Integrationskurse" data-id="28" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/28-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonie-saar.de/index.php?content_id=678&amp;parent_id=676">
+           <img alt="Referat Kindertageseinrichtungen" data-id="164" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2018/Kindertages.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+        </ul>
+        <div style="clear:both;">
+        </div>
+       </aside>
+       <!-- #banner -->
+       <aside class="banner">
+        <ul>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=676">
+           <img alt="Verbindungsstelle des Diakonischen Werkes der Ev. Kirche im Rheinland" data-id="1" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonie-rwl.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://diakonie-rwl.de');" target="_blank">
+           <img alt="Diakonie RWL" data-id="10" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/10-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.evangelisch-im-saarland.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.evangelisch-im-saarland.de');" target="_blank">
+           <img alt="Evangelisch im Saarland" data-id="100" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/100-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakoniestiftung-saar.de/index.php?content_id=9631" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.diakoniestiftung-saar.de/index.php?content_id=9631');" target="_blank">
+           <img alt="Diakoniestiftung" data-id="82" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/82-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=5606&amp;parent_id=394">
+           <img alt="Statt Blumen: Verschenken Sie Hilfe" data-id="69" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/69-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="https://www.diakonie-rwl.de/dossiers/diakonie-gegen-armut">
+           <img alt="Diakonie gegen Armut" data-id="159" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/696/Banner-Armut.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+        </ul>
+        <div style="clear:both;">
+        </div>
+       </aside>
+       <!-- #banner -->
+      </div>
+      <!--  #navigation -->
+      <div class="home">
+       <aside class="banner">
+        <ul>
+         <li>
+          <a href="http://youtu.be/UQyIJITb1wU" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://youtu.be/UQyIJITb1wU');" target="_blank">
+           <img alt="Die Diakonie im Film" data-id="85" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/85-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.familienbildung-saar.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.familienbildung-saar.de');" target="_blank">
+           <img alt="Evangelische Familienbildungsstätte" data-id="2" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2018/Banner_Fambild.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=1779&amp;parent_id=1772">
+           <img alt="Ehrenamt" data-id="158" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/505/Banner_Ehrenamt.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=10225&amp;parent_id=321">
+           <img alt="Sozialkaufhäuser" data-id="17" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/17-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=7127" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://diakonisches-werk-saar.de/index.php?content_id=7127');" target="_blank">
+           <img alt="Sprach- und Integrationskurse" data-id="28" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/28-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakonie-saar.de/index.php?content_id=678&amp;parent_id=676">
+           <img alt="Referat Kindertageseinrichtungen" data-id="164" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2018/Kindertages.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+        </ul>
+        <div style="clear:both;">
+        </div>
+       </aside>
+       <!-- #banner -->
+       <section class="news list" id="current">
+        <header>
+         <h1>
+          Aktuelle Meldungen
+         </h1>
+        </header>
+        <article>
+         <a href="index.php?content_id=7268&amp;news_id=22414">
+          <div class="mobile_arrow">
+          </div>
+         </a>
+         <div>
+          <figure>
+           <a href="index.php?content_id=7268&amp;news_id=22414">
+            <img alt="Die Diakonie Katastrophenhilfe leistet mit einer Partnerorganisation  Nothilfe für Rohingya in Bangladesh.  Foto: Emtiaz Ahmed Dulu / Diakonie Katastrophenhilfe" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2049/DKH-Bilanz2018_03.jpg"/>
+           </a>
+           <figcaption>
+            <a class="no_mobile" data-lightbox="image-4-22414" data-title="Die Diakonie Katastrophenhilfe leistet mit einer Partnerorganisation  Nothilfe für Rohingya in Bangladesh.  Foto: Emtiaz Ahmed Dulu / Diakonie Katastrophenhilfe" href="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2049/DKH-Bilanz2018_03.jpg">
+             <img alt="show" src="./images/lightbox/show.jpg"/>
+            </a>
+            <img class="mobile alt=" show="" src="./images/lightbox/show.jpg"/>
+            Die Diakonie Katastrophenhilfe leistet mit einer Partnerorganisation  Nothilfe für Rohingya in Bangladesh.  Foto: Emtiaz Ahmed Dulu / Diakonie Katastrophenhilfe
+           </figcaption>
+          </figure>
+          <div class="teaser">
+           <header>
+            <h3>
+             <time datetime="2018-07-30 00:00:00">
+              30.  Juli 2018
+             </time>
+             <br/>
+             Diakonie Katastrophenhilfe stellt Jahresbilanz vor
+            </h3>
+           </header>
+           <span>
+            Die Diakonie Katastrophenhilfe fordert mehr Menschlichkeit in Politik und öffentlicher Debatte. „In den derzeitigen Diskussionen um Flucht und Asyl spielen Menschen und Einzelschicksale kaum noch eine Rolle“, kritisiert Martin Keßler, Leiter der Diakonie Katastrophenhilfe.
+            <br/>
+            <br/>
+           </span>
+           <a class="readmore" href="index.php?content_id=7268&amp;news_id=22414">
+            weiterlesen
+           </a>
+          </div>
+         </div>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <a href="index.php?content_id=7268&amp;news_id=22398">
+          <div class="mobile_arrow">
+          </div>
+         </a>
+         <div>
+          <figure>
+           <a href="index.php?content_id=7268&amp;news_id=22398">
+            <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2274/MobiSaar_web.jpg"/>
+           </a>
+           <figcaption>
+            <a class="no_mobile" data-lightbox="image-4-22398" data-title="" href="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/2274/MobiSaar_web.jpg">
+             <img alt="show" src="./images/lightbox/show.jpg"/>
+            </a>
+            <img class="mobile alt=" show="" src="./images/lightbox/show.jpg"/>
+           </figcaption>
+          </figure>
+          <div class="teaser">
+           <header>
+            <h3>
+             <time datetime="2018-07-27 00:00:00">
+              27.  Juli 2018
+             </time>
+             <br/>
+             Nahverkehr: „mobisaar-Lotsen“ helfen durch Neunkircher Baustellen
+            </h3>
+           </header>
+           <span>
+            Durch die Straßenbauarbeiten in der Neunkircher Innenstadt fahren viele 
+ Busse anders als gewohnt. Auch Bushaltestellen wurden verlegt. Da ist es 
+ manchmal schwierig, den Überblick zu behalten. Dabei helfen die „mobisaar-
+ Lotsen“ allen Bürgerinnen und Bürgern.
+            <br/>
+            <br/>
+           </span>
+           <a class="readmore" href="index.php?content_id=7268&amp;news_id=22398">
+            weiterlesen
+           </a>
+          </div>
+         </div>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <a class="archive" href="index.php?content_id=7268&amp;archive=4">
+         Weitere aktuelle Meldungen
+        </a>
+        <div style="clear:both;">
+        </div>
+       </section>
+       <section class="content list">
+        <h6>
+         Content List
+        </h6>
+        <article>
+         <header>
+          <h2>
+           Bildung und
+           <br/>
+           Soziale Teilhabe
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=238">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/584/zedi-fundraising-moho_2013_2.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           <p>
+            In der Abteilung "Bildung und Soziale Teilhabe" stehen die Armutsproblematik mit den damit verbundenen Auswirkungen, die Beratungs- und Gemeinwesenarbeit, die Arbeit mit Freiwilligen und Ehrenamtlichen sowie die Betreuung von Zuwanderern und Flüchtlingen im Mittelpunkt.
+           </p>
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=238">
+          weiterlesen
+         </a>
+         <a class="simpletext" href="http://diakonisches-werk-saar.de/index.php?content_id=238&amp;language_id=5">
+          einfache Sprache
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <header>
+          <h2>
+           Berufliche Integration
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=321">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/82/321-img1.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           <p>
+            Die Abteilung "Berufliche Integration" in der Diakonie Saar stellt einen umfassenden Maßnahmeverbund zur beruflichen Eingliederung Jugendlicher, junger Erwachsener und Langzeitarbeitsloser dar.
+           </p>
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=321">
+          weiterlesen
+         </a>
+         <a class="simpletext" href="http://diakonisches-werk-saar.de/index.php?content_id=321&amp;language_id=5">
+          einfache Sprache
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <header>
+          <h2>
+           <br/>
+           Kinder-Jugend-Familie
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=281">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/303/Fotolia_23108421_XL_Gruppe-Haende.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+           <title>
+           </title>
+           <p>
+            Die Abteilung "Kinder - Jugend - Familie" bietet vielfältige
+ Unterstützungs- angebote für Kinder, Jugendliche, junge Erwachsene
+ und ihre Familien. Ambulante, teilstationäre und stationäre Hilfen
+ vernetzen sich mit Bildung und Betreuungsangeboten an Schulen.
+            <br/>
+            <em>
+             Foto: toolklickit -
+            </em>
+           </p>
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=281">
+          weiterlesen
+         </a>
+         <a class="simpletext" href="http://diakonisches-werk-saar.de/index.php?content_id=281&amp;language_id=5">
+          einfache Sprache
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <header>
+          <h2>
+           <br/>
+           Ambulante Pflege
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=7192">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/334/pflege.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           Diakonie und Caritas sind die größten Träger ambulanter 
+ Pflegeeinrichtungen im Saarland. Sie arbeiten im Pflegebereich 
+ zusammen, damit alte oder pflegebedürftige Menschen weiter gut 
+ in ihrem gewohnten Umfeld leben können.
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=7192">
+          weiterlesen
+         </a>
+         <a class="simpletext" href="http://diakonisches-werk-saar.de/index.php?content_id=7192&amp;language_id=5">
+          einfache Sprache
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <header>
+          <h2>
+           <br/>
+           Wir über uns
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=483">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/584/nachmittagsbetreuung_kinder_gruppenfotot.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           Das DIAKONISCHE WERK AN DER SAAR gGMBH ist der evangelische 
+ Wohlfahrtsverband im Saarland und zugleich eine gemeinnützige 
+ Gesellschaft der Kirchenkreise Saar-Ost und Saar-West. Wir 
+ arbeiten in rund 100 Einrichtungen.
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=483">
+          weiterlesen
+         </a>
+         <a class="simpletext" href="http://diakonisches-werk-saar.de/index.php?content_id=483&amp;language_id=5">
+          einfache Sprache
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <header>
+          <h2>
+           <br/>
+           Freiwilligendienste
+          </h2>
+         </header>
+         <figure>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=5195">
+           <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/327/ehrung_22_05_2014_web.jpg"/>
+          </a>
+         </figure>
+         <div class="teaser">
+          <span>
+           Ein Freiwilliges Soziales Jahr (FSJ) oder ein Bundesfreiwilligendienst (BFD) gibt Einblick in den Alltag sozialer Berufe. Junge Leute können sich in unbekannten Arbeitsfeldern ausprobieren sowie viele gute Erfahrungen fürs Leben sammeln.
+          </span>
+         </div>
+         <a class="readmore" href="http://diakonisches-werk-saar.de/index.php?content_id=5195">
+          weiterlesen
+         </a>
+         <div style="clear:both;">
+         </div>
+        </article>
+       </section>
+       <!-- .content list -->
+       <section class="news list" id="event">
+        <header>
+         <h1>
+          Termine
+         </h1>
+        </header>
+        <article>
+         <a href="index.php?content_id=7268&amp;news_id=22029">
+          <div class="mobile_arrow">
+          </div>
+         </a>
+         <div>
+          <figure>
+           <a href="index.php?content_id=7268&amp;news_id=22029">
+            <img alt="" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/764/Web_Äktion_im_Anger.png"/>
+           </a>
+           <figcaption>
+            <a class="no_mobile" data-lightbox="image-3-22029" data-title="" href="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/764/Web_Äktion_im_Anger.png">
+             <img alt="show" src="./images/lightbox/show.jpg"/>
+            </a>
+            <img class="mobile alt=" show="" src="./images/lightbox/show.jpg"/>
+           </figcaption>
+          </figure>
+          <div class="teaser">
+           <header>
+            <h3>
+             <time datetime="2018-08-01 00:00:00">
+              01.  August 2018
+             </time>
+             <br/>
+             „Äktion im Anger“ Ferienprogramm des Sozialraumbüros Dudweiler
+            </h3>
+           </header>
+           <span>
+            Im Rahmen des Ferienprogramms des Sozialraumbüros in Saarbrücken Dudweiler steht am Mittwoch, 1. August, steht das Rockmobil von 15 bis 18 Uhr auf den Schulhof der Gemeinschaftsschule Dudweiler.
+            <br/>
+            <br/>
+           </span>
+           <a class="readmore" href="index.php?content_id=7268&amp;news_id=22029">
+            weiterlesen
+           </a>
+          </div>
+         </div>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <article>
+         <a href="index.php?content_id=7268&amp;news_id=22343">
+          <div class="mobile_arrow">
+          </div>
+         </a>
+         <div>
+          <figure>
+           <a href="index.php?content_id=7268&amp;news_id=22343">
+            <img alt="Foto: Diakonie Saar" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/110/P1050555.JPG"/>
+           </a>
+           <figcaption>
+            <a class="no_mobile" data-lightbox="image-3-22343" data-title="Foto: Diakonie Saar" href="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/110/P1050555.JPG">
+             <img alt="show" src="./images/lightbox/show.jpg"/>
+            </a>
+            <img class="mobile alt=" show="" src="./images/lightbox/show.jpg"/>
+            Foto: Diakonie Saar
+           </figcaption>
+          </figure>
+          <div class="teaser">
+           <header>
+            <h3>
+             <time datetime="2018-08-02 00:00:00">
+              02.  August 2018
+             </time>
+             <br/>
+             Seniorencafé im Café Valz
+            </h3>
+           </header>
+           <span>
+            Beim nächsten Seniorencafé am Donnerstag, 2. August, von 15 bis 17 Uhr im Café Valz der Diakonie Saar  in Völklingen (Gatterstraße 13) geht es um das Smartphone. Experten beantworten alle Fragen und helfen bei Problemen gerne weiter.
+            <br/>
+            <br/>
+           </span>
+           <a class="readmore" href="index.php?content_id=7268&amp;news_id=22343">
+            weiterlesen
+           </a>
+          </div>
+         </div>
+         <div style="clear:both;">
+         </div>
+        </article>
+        <a class="archive" href="index.php?content_id=7268&amp;archive=3">
+         Weitere aktuelle Meldungen
+        </a>
+        <div style="clear:both;">
+        </div>
+       </section>
+       <aside class="banner">
+        <ul>
+         <li>
+          <a href="http://www.diakonisches-werk-saar.de/index.php?content_id=676">
+           <img alt="Verbindungsstelle des Diakonischen Werkes der Ev. Kirche im Rheinland" data-id="1" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonie-rwl.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://diakonie-rwl.de');" target="_blank">
+           <img alt="Diakonie RWL" data-id="10" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/10-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.evangelisch-im-saarland.de" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.evangelisch-im-saarland.de');" target="_blank">
+           <img alt="Evangelisch im Saarland" data-id="100" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/100-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://www.diakoniestiftung-saar.de/index.php?content_id=9631" onmouseout="nd();" onmouseover="return overlib('Externer Link zu : http://www.diakoniestiftung-saar.de/index.php?content_id=9631');" target="_blank">
+           <img alt="Diakoniestiftung" data-id="82" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/82-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="http://diakonisches-werk-saar.de/index.php?content_id=5606&amp;parent_id=394">
+           <img alt="Statt Blumen: Verschenken Sie Hilfe" data-id="69" src="http://evangelische-kirche-saar.de/pnsys/upload/banner/69-img1.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+         <li>
+          <a href="https://www.diakonie-rwl.de/dossiers/diakonie-gegen-armut">
+           <img alt="Diakonie gegen Armut" data-id="159" src="http://evangelische-kirche-saar.de/pnsys/upload/upload/10/696/Banner-Armut.jpg" width="180"/>
+          </a>
+         </li>
+         <li>
+         </li>
+        </ul>
+        <div style="clear:both;">
+        </div>
+       </aside>
+       <!-- #banner -->
+       <div style="clear:both;">
+       </div>
+      </div>
+      <!--  #home -->
+      <div style="clear:both;">
+      </div>
+     </div>
+     <!-- #navigation_background -->
+    </div>
+    <!-- #main -->
+   </div>
+   <!-- #main_wrapper -->
+   <footer>
+    <section>
+     <h6>
+      Footer
+     </h6>
+     <form action="index.php" class="search" enctype="multipart/form-data" method="post" name="search">
+      Schnellsuche:
+      <input name="searchword" size="15"/>
+      <input class="submit desktop" type="submit" value="suchen"/>
+      <input class="submit mobile" type="submit" value=""/>
+     </form>
+     <article class="contact">
+      <header>
+       <h3>
+        Kontakt
+       </h3>
+      </header>
+      Diakonisches Werk an der Saar
+      <br/>
+      Rembrandtstraße 17-19
+      <br/>
+      66540 Neunkirchen
+      <br/>
+      Telefon: 		06821/956-0
+      <br/>
+      <a class="email" href="mailto:gf@dwsaar.de">
+       gf@dwsaar.de
+      </a>
+      <br/>
+     </article>
+     <nav>
+      <ul>
+       <li>
+        <a href="./index.php">
+         Startseite
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=483">
+         Wir über uns
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=238">
+         Bildung und Soziale Teilhabe
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=281">
+         Kinder-Jugend-Familie
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=321">
+         Berufliche Integration
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=7192">
+         Ambulante Pflege
+        </a>
+       </li>
+       <li>
+        <a href="http://www.familienbildung-saar.de" target="_blank">
+         Evangelische Familienbildungsstätte
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=8898">
+         Stabsstelle Flüchtlingsarbeit
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=375">
+         Servicebereich Betriebswirtschaft
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=5195">
+         Freiwilligendienste
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=7175">
+         Praktika
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=394">
+         Spenden
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=527">
+         Stellenbörse
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=1046">
+         Presse
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=500">
+         Verbundene Organisationen
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=399">
+         Downloads
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=418">
+         Links
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=419">
+         Kontakt
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=424">
+         Datenschutzerklärung
+        </a>
+       </li>
+      </ul>
+     </nav>
+     <figure>
+      <img alt="Diakonisches Werk Saar" src="./images/logos/diakonisches_werk_saar_de_footer.jpg"/>
+     </figure>
+     <article class="imprint">
+      <h6>
+       Imprint
+      </h6>
+      <ul>
+       <li>
+        <a href="index.php?content_id=420">
+         Impressum
+        </a>
+       </li>
+       <li>
+        <a href="index.php?content_id=420">
+         Datenschutz
+        </a>
+       </li>
+       <li>
+        <a href="index.php?login=1">
+         Login
+        </a>
+       </li>
+      </ul>
+     </article>
+     <div style="clear:both;">
+     </div>
+    </section>
+   </footer>
+  </body>
+ </html>

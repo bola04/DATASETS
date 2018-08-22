@@ -1,0 +1,802 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html>
+  <head>
+   <title>
+    Bau-Mogul
+   </title>
+   <meta content="_J3xe7kNXh4RXpWuhM9bToox_gGgrAEZx61-8iSvjDE" name="google-site-verification"/>
+   <meta content="c1a9e25edeb3526a9ec04135233068b1" name="verification"/>
+   <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR"/>
+   <meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE"/>
+   <meta content="JavaScript" name="vs_defaultClientScript"/>
+   <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema"/>
+   <meta content="Bau Mogul,Witrschaftsimualation;Browsergame;Game;Browserspiel;Spiel;Baumanager;Bauunternehmen" name="keywords"/>
+   <meta content="Bau Mogul ist ein Browserbasierende Wirtschaftssimulation, du brauchst nicht mehr als einen InternetfÃ¤higen PC und einen gÃ¤ngigen Internetbrowser und schon gehtâs los. In dem du ein Bauunternehmen grÃ¼ndest, und mit anderen um die besten AuftrÃ¤ge und Immobilien wetteiferst. So bald du dann der reichste und berÃ¼hmteste Bauunternehmer bist kannst du dich mit Stolz, BAU MOGUL nennen. " name="description"/>
+   <meta content="Wirtschaftssimulation eins Bau Unternehmens" name="DC.Description"/>
+   <meta content="Bau Mogul" name="title"/>
+   <meta content="German, de, deutsch" name="language"/>
+   <meta content="Wirtschaftsimualtion Bau-Unternehemen" name="page-topic"/>
+   <meta content="Browsergame" name="page-type"/>
+   <meta content="alle" name="audience"/>
+   <meta content="http://bau-mogu.de" name="generator"/>
+   <meta content="no-cache" name="pragma"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="text/javascript" http-equiv="Content-Script-Type"/>
+   <meta content="text/css" http-equiv="Content-Style-Type"/>
+   <link href="./style/baumogul.css" rel="stylesheet" type="text/css"/>
+   <link href="style/ui.jqgrid.css" rel="stylesheet" type="text/css"/>
+   <link href="style/jquery-ui-1.8.1.custom.css" rel="stylesheet" type="text/css"/>
+   <script src="js/jquery-1.4.2.min.js" type="text/javascript">
+   </script>
+   <script src="js/json2.js" type="text/javascript">
+   </script>
+   <script src="js/jquery-ui-1.8.1.custom.min.js" type="text/javascript">
+   </script>
+   <script src="js/i18n/grid.locale-de.js" type="text/javascript">
+   </script>
+   <script src="js/jquery.jqGrid.min.js" type="text/javascript">
+   </script>
+   <script src="js/jquery-ui-1.1.1.DD.custom.js" type="text/javascript">
+   </script>
+   <script src="js/bm_def.1.0.0.js" type="text/javascript">
+   </script>
+   <script language="javascript" src="ajax/ajax1_2.js" type="text/javascript">
+   </script>
+   <style type="text/css">
+    .ui-button-small {top: 4px; width:18px;height: 17px;}
+   </style>
+   <script language="javascript" type="text/javascript">
+    var TimeDelay = 1000;
+ 			var TimeBlendIn = 2500;
+ 			var TimeBlendOut = 5000;
+ 			var NewsIndex  = 0;
+ 			var ServerTime = new Date('2018','7','1', '15','32','38');
+ 						
+ 			
+ 			var arrNews = new Array('Willkommen bei Bau-Mogul');
+ var arrNewsAbs = new Array('&quot;News&quot; --- &quot;01.08.2018 15:32:37&quot;'); 
+ 						
+ 			function start_ticker() 
+ 			{ 
+ 				refresch_Time();
+ 				News_ShowTimer();
+ 				refresh_Chatdata();
+ 			} 
+ 			function News_HideTimer()
+ 			{
+ 				el=document.getElementById('News');
+ 				
+ 				 
+ 					document.getElementById('News_Titel').innerHTML= '' ;
+ 					document.getElementById('News_Text').innerHTML= '' ;
+ 					el.style.visibility='hidden';
+ 				
+ 				
+ 				setTimeout("News_ShowTimer()", TimeBlendIn);
+ 			}
+ 			function News_ShowTimer()
+ 			{
+ 				
+ 				el=document.getElementById('News');
+ 				
+ 				
+ 				document.getElementById('News_Titel').innerHTML= arrNewsAbs[NewsIndex];
+ 				document.getElementById('News_Text').innerHTML= arrNews[NewsIndex];
+ 				el.style.visibility='visible';
+ 				
+ 			
+ 			
+ 
+ 				if(++NewsIndex>=arrNews.length){ 
+ 						NewsIndex=0; 
+ 				}
+ 				setTimeout("News_HideTimer()", TimeBlendOut);
+ 			
+ 			}
+ 			function refresch_Time()
+ 			{
+ 				var Jahr = ServerTime.getFullYear();
+ 				var Monat = ServerTime.getMonth()+1;
+ 				var Tag = ServerTime.getDate();
+ 				var Stunden = ServerTime.getHours();
+ 				var Minuten = ServerTime.getMinutes();
+ 				var Sekunden = ServerTime.getSeconds();
+ 	    
+ 				ServerTime.setSeconds(Sekunden+1);
+ 	 
+  				if(Tag <= 9){Tag = "0" + Tag;}
+ 				if(Monat <= 9){Monat = "0" + Monat;}
+ 				if(Stunden <= 9){Stunden = "0" + Stunden;}
+ 				if(Minuten <= 9){Minuten = "0" + Minuten;}
+ 				if(Sekunden <= 9){Sekunden = "0" + Sekunden;}
+ 	 
+ 				Uhrzeitanzeige = Tag + "." + Monat + "." + Jahr + " um " + Stunden + ":" + Minuten + ":" + Sekunden;
+ 				document.getElementById("lblTime").innerHTML = Uhrzeitanzeige;
+ 			
+ 				setTimeout("refresch_Time()", TimeDelay);
+ 			}
+ 			function SelectAll(CheckBoxControl, SelectName) 
+ 			{
+ 				if (CheckBoxControl.checked == true) 
+ 				{
+ 					var i;
+ 					for (i=0; i < document.forms[0].elements.length; i++){
+ 						if ((document.forms[0].elements[i].type == 'checkbox') &&  
+ 							(document.forms[0].elements[i].name.indexOf(SelectName) > -1)){
+ 								document.forms[0].elements[i].checked = true;
+ 						}
+ 					}
+ 				}else{
+ 					var j;
+ 					for (j=0; j < document.forms[0].elements.length; j++){
+ 						if ((document.forms[0].elements[j].type == 'checkbox') && 
+ 							(document.forms[0].elements[j].name.indexOf(SelectName) > -1)){
+ 								document.forms[0].elements[j].checked = false;
+ 						}
+ 					}
+ 				}
+ 			}
+   </script>
+   <!-- Global site tag (gtag.js) - Google Analytics -->
+   <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-1802389-1">
+   </script>
+   <script>
+    window.dataLayer = window.dataLayer || [];
+ 	  function gtag(){dataLayer.push(arguments);}
+ 	  gtag('js', new Date());
+ 
+ 	  gtag('config', 'UA-1802389-1');
+   </script>
+  </head>
+  <body onload="start_ticker();">
+   <div id="fb-root">
+   </div>
+   <script type="text/javascript">
+    window.fbAsyncInit = function () {
+                 FB.init({
+                     appId: '186482758070421',
+                     cookie: true,
+                     xfbml: true,
+                     oauth: true
+                 });
+ 
+                 function facebooklogout() {
+                     FB.logout(function (response) {
+                         // user is now logged out
+                         document.forms(0).submit();
+                         //window.location.reload();
+                     });
+                 };
+                 function facebooklogin() {
+                     FB.login(function (response) {
+                         if (response.authResponse) {
+                             // user authorized
+                             window.location.reload();
+                         } else {
+                             // user cancelled
+                         }
+                     }, { scope: 'user_about_me,publish_stream,email' });
+                 };
+                 $(function () {
+                     // make the button is only enabled after the facebook js sdk has been loaded.
+                     $('#fblogout').attr('disabled', false).click(facebooklogout);
+                 });
+                 $(function () {
+                     // make the button is only enabled after the facebook js sdk has been loaded.
+                     $('#fblogin').attr('disabled', false).click(facebooklogin);
+                 });
+             };
+             (function () {
+                 var e = document.createElement('script'); e.async = true;
+                 e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+                 document.getElementById('fb-root').appendChild(e);
+             } ());
+             function FBLogout() {
+                 FB.logout(function (response) {
+                     // user is now logged out
+                     document.forms(0).submit();
+                 });
+                 return false;
+             };
+   </script>
+   <div style="vertical-align: middle; margin-right: auto; margin-left: auto; width: 850px;">
+    <table border="0" cellpadding="0" cellspacing="0">
+     <tr>
+      <td style="padding-top: 5px" valign="top">
+       <form action="./" id="Form1" method="post">
+        <input id="__VIEWSTATE_KEY" name="__VIEWSTATE_KEY" type="hidden" value="VIEWSTATE_ga5z5mjm3mrvcoynyal0twpr_636687343576522692"/>
+        <input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value=""/>
+        <script src="/ScriptResource.axd?d=g1B0BD-KSOJUsj_PX4WtzQmpHqstkFPjKlGAPQ6qx8XfNT7VUvlWKrFzSoHGkS0rsSMogzLA5MjBD32OviRXE5Ib4YVhbUHquP6xk2DQynJpfIGst_YKd2HMpO982EXN9RD2-tizzGoBgUWoibLqoHg3qsvMpgkWXSl_fmC-SJuUttJq5w_SeGAOR35lBWKb0&amp;t=72fc8ae3" type="text/javascript">
+        </script>
+        <script type="text/javascript">
+         //<![CDATA[
+ if (typeof(Sys) === 'undefined') throw new Error('Fehler beim Laden des clientseitigen ASP.NET Ajax-Frameworks.');
+ //]]>
+        </script>
+        <input id="__EVENTVALIDATION" name="__EVENTVALIDATION" type="hidden" value="/wEdAAuvVXD1oYELeveMr0vHCmYP60ObndruohM1CSl+J42vI+xPhcrFfQ0rKykqatJ0K+Gn6s2ixglkRRJyLTLrucJqg69C3MZ6vIXYeuUuBxRJ6uq5uWgAzCor0fCg0WYKJOTP9LAkyZfuy1tncTvI9lKh6rTYi9OJdtW0+MBbaFIHFeXMgy6nEu1WZ29BMCN2b49kvoKPAWPVwZwuFJsCgttlLbj4GByJWXlqeUeo1tCbjZc/6B7jTjky4TLdLUqIRxED9wHe3EQxmDdGKMGsUDcb"/>
+        <table border="0" cellpadding="2" cellspacing="2" class="BODY" id="Table3" width="900">
+         <tr>
+          <td colspan="3">
+           <table cellpadding="0" cellspacing="0" class="Modul" id="Table1" width="100%">
+            <tr>
+             <td class="topleft">
+             </td>
+             <td class="top" colspan="2">
+             </td>
+             <td class="topright">
+             </td>
+            </tr>
+            <tr>
+             <td class="left">
+             </td>
+             <td>
+              <a href="./default.aspx">
+               <img alt="Bau-Mogul" border="0" height="95" src="images/Banner01.gif" title="Bau-Mogul" width="526"/>
+              </a>
+             </td>
+             <td style="padding-left: 20px" valign="top">
+              <div class="time">
+               <span id="lblTime">
+                01.08.2018 um 15:32:37
+               </span>
+              </div>
+              <div class="ticker" id="News">
+               <div align="center" class="tickertitel" id="News_Kopf">
+                <font class="tickertitel">
+                 <span id="News_Titel">
+                 </span>
+                </font>
+               </div>
+               <div class="tickerinhalt" id="News_Inhalt">
+                <font class="tickerinhalt">
+                 <span id="News_Text">
+                 </span>
+                </font>
+               </div>
+              </div>
+             </td>
+             <td class="right">
+             </td>
+            </tr>
+            <tr>
+             <td class="bottomleft">
+             </td>
+             <td class="bottom" colspan="2">
+             </td>
+             <td class="bottomright">
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         <tr>
+          <td colspan="3" height="5">
+          </td>
+         </tr>
+         <tr>
+          <td colspan="3">
+           <table cellpadding="0" cellspacing="0" class="Modul" id="Table2" width="100%">
+            <tr>
+             <td class="topleft">
+             </td>
+             <td class="top" colspan="2">
+             </td>
+             <td class="topright">
+             </td>
+            </tr>
+            <tr height="40">
+             <td class="left">
+             </td>
+             <td align="left">
+              <table>
+               <tr>
+                <td align="center">
+                 <input alt="Markt" id="Home" language="javascript" name="Home" onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("Home", "", true, "", "", false, false))' onmouseout="javascript:this.src='images/home2.jpg';" onmouseover="javascript:this.src='images/home2sel.jpg';" src="images/home2.jpg" type="image"/>
+                 <br/>
+                 <font class="MenuTitel">
+                  Home
+                 </font>
+                </td>
+                <td>
+                </td>
+                <td align="center">
+                 <a href="http://forum.bau-mogul.de" target="_blank">
+                  <img alt="Forum" border="0" height="45" onmouseout="javascript:this.src='images/forum.jpg';" onmouseover="javascript:this.src='images/forumselNeu.jpg';" src="images/forum.jpg" width="45"/>
+                 </a>
+                 <br/>
+                 <font class="MenuTitel">
+                  Forum
+                 </font>
+                </td>
+                <td>
+                </td>
+                <td align="center">
+                 <a href="http://www.bau-mogul.de/Imp/voteseiten.htm" target="_blank">
+                  <img alt="Vote/Partner" border="0" height="45" onmouseout="javascript:this.src='images/vote.jpg';" onmouseover="javascript:this.src='images/votesel.jpg';" src="images/vote.jpg" width="45"/>
+                 </a>
+                 <br/>
+                 <font class="MenuTitel">
+                  Vote/Partner
+                 </font>
+                </td>
+                <td>
+                </td>
+                <td align="center">
+                 <a href="?nlink=NEWS&amp;link=http://news.bau-mogul.de" target="_blank">
+                  <img alt="Aktuelle News" border="0" height="45" onmouseout="javascript:this.src='images/news.png';" onmouseover="javascript:this.src='images/newssel.png';" src="images/news.png" width="45"/>
+                 </a>
+                 <br/>
+                 <font class="MenuTitel">
+                  Aktuelle News
+                 </font>
+                </td>
+               </tr>
+              </table>
+             </td>
+             <td align="right">
+              <table>
+               <tr>
+                <td align="center">
+                 <input alt="Registrieren" id="Registrier." language="javascript" name="Registrier." onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("Registrier.", "", true, "", "", false, false))' onmouseout="javascript:this.src='images/Regist.jpg';" onmouseover="javascript:this.src='images/Registsel.jpg';" src="images/Regist.jpg" type="image"/>
+                 <br/>
+                 <font class="MenuTitel">
+                  Registrier.
+                 </font>
+                </td>
+               </tr>
+              </table>
+             </td>
+             <td class="right">
+             </td>
+            </tr>
+            <tr>
+             <td class="bottomleft">
+             </td>
+             <td class="bottom" colspan="2">
+             </td>
+             <td class="bottomright">
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" colspan="3" height="5">
+           <font color="red">
+           </font>
+           <font color="blue">
+           </font>
+          </td>
+         </tr>
+         <tr>
+          <td colspan="3">
+           <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+             <td style="width: 220px" valign="top" width="206">
+              <table cellpadding="0" cellspacing="0" class="Modul" width="100%">
+               <tr>
+                <td class="topleft">
+                </td>
+                <td class="top">
+                </td>
+                <td class="topright">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <th class="Modul">
+                 Anmeldung
+                </th>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <td width="210px">
+                 <div id="_ctl48_Panel1">
+                  <table border="0" cellpadding="1" cellspacing="1" id="Table1" width="200">
+                   <tr>
+                    <td align="center" colspan="2">
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                     Server:
+                    </td>
+                    <td>
+                     <select id="_ctl48_drpServer" name="_ctl48:drpServer">
+                      <option value="SVR0">
+                       0 (Testserver)
+                      </option>
+                      <option selected="selected" value="SVR1">
+                       1 (Endlos)
+                      </option>
+                      <option value="SVR2">
+                       2 (Runden)
+                      </option>
+                     </select>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                     Username:
+                    </td>
+                    <td>
+                     <input id="_ctl48_txtUsername" maxlength="20" name="_ctl48:txtUsername" size="11" type="text"/>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                     Password:
+                    </td>
+                    <td>
+                     <input id="_ctl48_txtPassword" maxlength="20" name="_ctl48:txtPassword" size="11" type="password"/>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td>
+                     <img alt="" src="./Controls/japimage.aspx"/>
+                    </td>
+                    <td>
+                     <input id="_ctl48_txtCaptcha" maxlength="4" name="_ctl48:txtCaptcha" size="3" type="text"/>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td align="center" colspan="2">
+                     <input id="_ctl48_cmdLogin" language="javascript" name="_ctl48:cmdLogin" onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("_ctl48:cmdLogin", "", true, "", "", false, false))' type="submit" value="Anmelden"/>
+                    </td>
+                   </tr>
+                   <tr>
+                    <td align="center" colspan="2">
+                    </td>
+                   </tr>
+                   <tr>
+                    <td colspan="2">
+                     <a href='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("_ctl48:lnkSendPassword", "", true, "", "", false, true))' id="_ctl48_lnkSendPassword">
+                      Password vergessen.
+                     </a>
+                    </td>
+                   </tr>
+                  </table>
+                 </div>
+                </td>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="bottomleft">
+                </td>
+                <td class="bottom">
+                </td>
+                <td class="bottomright">
+                </td>
+               </tr>
+              </table>
+              <br/>
+              <table cellpadding="0" cellspacing="0" class="Modul" width="100%">
+               <tr>
+                <td class="topleft">
+                </td>
+                <td class="top">
+                </td>
+                <td class="topright">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <th class="Modul">
+                 Finde uns auf Facebook
+                </th>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <td width="210px">
+                 <iframe allowtransparency="true" frameborder="0" scrolling="no" src="http://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FBau-Mogul%2F124703354276738&amp;width=209&amp;colorscheme=light&amp;show_faces=true&amp;stream=true&amp;header=false&amp;height=495" style="border:none; overflow:hidden; width:209px; height:495px;">
+                 </iframe>
+                </td>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="bottomleft">
+                </td>
+                <td class="bottom">
+                </td>
+                <td class="bottomright">
+                </td>
+               </tr>
+              </table>
+              <br/>
+              <table cellpadding="0" cellspacing="0" class="Modul" width="100%">
+               <tr>
+                <td class="topleft">
+                </td>
+                <td class="top">
+                </td>
+                <td class="topright">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <th class="Modul">
+                 Vote for us
+                </th>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <td width="210px">
+                 <table border="0" cellpadding="1" cellspacing="1" id="Table1" width="200">
+                  <tr valign="middle">
+                   <td align="center" height="50">
+                    <a href="http://www.galaxy-news.de/?page=charts&amp;op=vote&amp;game_id=1471" target="_blank">
+                     <img alt="Die besten Browsergames in den Galaxy-News MMOG-Charts!" border="0" src="./images/vote.gif"/>
+                    </a>
+                   </td>
+                  </tr>
+                  <tr valign="middle">
+                   <td align="center" height="50">
+                    <a href="http://bgs.gdynamite.de/charts_vote_891.html" target="_blank">
+                     <img border="0" src="http://voting.gdynamite.de/images/gd_animbutton.gif"/>
+                    </a>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="bottomleft">
+                </td>
+                <td class="bottom">
+                </td>
+                <td class="bottomright">
+                </td>
+               </tr>
+              </table>
+             </td>
+             <td style="width: 10px" width="10">
+             </td>
+             <td style="width: 670px" valign="top" width="650">
+              <table cellpadding="0" cellspacing="0" class="Modul" width="100%">
+               <tr>
+                <td class="topleft">
+                </td>
+                <td class="top">
+                </td>
+                <td class="topright">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <th class="Modul">
+                 Willkommen
+                </th>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="left">
+                </td>
+                <td width="660px">
+                 <table border="0" width="100%">
+                  <tr>
+                   <td align="center" height="5" valign="top">
+                   </td>
+                  </tr>
+                  <tr>
+                   <td bgcolor="#f2f6f9">
+                    <p style="font-weight: bold">
+                     Bau Mogul ist ein Onlinespiel des Typs Wirtschaftssimulation, du brauchst nicht
+                 mehr als einen internetfÃ¤higen PC und einen gÃ¤ngigen Internetbrowser und schon kannst
+                 du in dieses Browserspiel einsteigen. In dem du ein Bauunternehmen grÃ¼ndest und
+                 mit vielen anderen Onlinespielern um die besten AuftrÃ¤ge und Immobilien wetteiferst.
+                 So bald du dann der reichste und berÃ¼hmteste Bauunternehmer bist kannst du dich
+                 mit Stolz, BAU MOGUL nennen.
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td height="5">
+                   </td>
+                  </tr>
+                  <tr>
+                   <td bgcolor="lightsteelblue">
+                    <p style="font-weight: bold">
+                     Auschreibungen
+                    </p>
+                   </td>
+                  </tr>
+                  <tr bgcolor="#f2f6f9">
+                   <td>
+                    <p>
+                     <img alt="" src="images/Ausschreibung.jpg" style="float: left"/>
+                     Gebe im Spiel dein
+                 Gebot ab, bei Ausschreiben fÃ¼r BauauftrÃ¤ge, kalkuliere deinen Preis anhand der aktuellen
+                 Rohstoffpreise und Personalkosten und unterbiete die Konkurrenten oder zahle einen
+                 Batzen Schmiergeld, um an lukrative AuftrÃ¤ge zu kommen, das ist alles in deiner
+                 Hand. Von der HundehÃ¼tte bis zum WM-Stadion ist alles denkbar und die Liste der
+                 AuftrÃ¤ge wÃ¤chst und bedenke dabei immer, dass du in unserm Browsergame nur mit echten
+                 Spielern um die AuftrÃ¤ge wetteiferst.
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td height="5">
+                   </td>
+                  </tr>
+                  <tr bgcolor="lightsteelblue">
+                   <td>
+                    <p style="font-weight: bold">
+                     Immobilien
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td bgcolor="#f2f6f9">
+                    <p>
+                     <img alt="" src="images/Imobilie.jpg" style="float: right"/>
+                     Baue, verkaufe oder Vermiete
+                 einige Immobilien oder werde gar gleich zum Immobilienmakler. Du hast die Wahl.
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td height="5">
+                   </td>
+                  </tr>
+                  <tr bgcolor="lightsteelblue">
+                   <td>
+                    <p style="font-weight: bold">
+                     AuftrÃ¤ge
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td bgcolor="#f2f6f9">
+                    <p>
+                     <img alt="" src="images/screenBau.jpg" style="float: left"/>
+                     Mit deinen eigenen Baugruppen
+                 arbeitest du die erhaltenen AuftrÃ¤ge ab und machst fÃ¼r deine Baugruppen die EinsatzplÃ¤ne
+                 oder baust deine Baugruppen aus, um grÃ¶Ãere und Interessantere BauauftrÃ¤ge zu ergattern.
+                    </p>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td align="center" valign="bottom">
+                    <font style="font-weight: bold; font-size: 4pt">
+                     Browserspiel Browsergame Browserspiel
+                 Browsergame Browserspiel Browsergame Browserspiel Browsergame Browserspiel Browsergame
+                 Browserspiel Browsergame Browserspiel Browsergame Browserspiel
+                    </font>
+                   </td>
+                  </tr>
+                  <tr>
+                   <td height="99%">
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td class="right">
+                </td>
+               </tr>
+               <tr>
+                <td class="bottomleft">
+                </td>
+                <td class="bottom">
+                </td>
+                <td class="bottomright">
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         <tr>
+          <td colspan="3" height="5">
+          </td>
+         </tr>
+         <tr>
+          <td colspan="3">
+           <table cellpadding="0" cellspacing="0" class="Modul" width="100%">
+            <tr>
+             <td class="topleft">
+             </td>
+             <td class="top" colspan="3">
+             </td>
+             <td class="topright">
+             </td>
+            </tr>
+            <tr height="20">
+             <td class="left">
+             </td>
+             <td>
+              <font class="copy">
+               Â© 2006-2015, by Thomas Wimmer
+              </font>
+             </td>
+             <td align="center">
+              <font class="link1">
+               <a href="imp/imp.htm" target="_blank">
+                Impressum
+               </a>
+               |
+               <a href="imp/agb.htm" target="_blank">
+                AGB/Nutzungsbedingung
+               </a>
+               |
+               <a href="imp/datenschutz.htm" target="_blank">
+                DatenschutzerklÃ¤rung
+               </a>
+              </font>
+             </td>
+             <td style="text-align: right" width="230px">
+              <font class="copy">
+               Version: 1.08.17
+              </font>
+             </td>
+             <td class="right">
+             </td>
+            </tr>
+            <tr>
+             <td class="bottomleft">
+             </td>
+             <td class="bottom" colspan="3">
+             </td>
+             <td class="bottomright">
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         <tr>
+          <td align="center" colspan="3" height="5" valign="top">
+           <font class="bgbs">
+            Browsergame Browserspiel Browserspiel Browsergame Browserspiel Browsergame
+                                     Browserspiel Browsergame Browserspiel Browsergame Browserspiel Browsergame Browserspiel
+                                     Browsergame Browserspiel
+           </font>
+          </td>
+         </tr>
+        </table>
+       </form>
+      </td>
+      <td style="padding-left: 5px; padding-top: 5px" valign="top" width="165px">
+       "&gt;
+       <script type="text/javascript">
+        <!--
+ google_ad_client = "pub-9414603945789124";
+ google_ad_width = 120;
+ google_ad_height = 600;
+ google_ad_format = "120x600_as";
+ google_ad_type = "image";
+ //2006-12-01: Chanel Forum 2
+ google_ad_channel = "1516288347";
+ google_color_border = "66B5FF";
+ google_color_bg = "FFFF66";
+ google_color_link = "0000FF";
+ google_color_text = "000000";
+ google_color_url = "008000";
+ //-->
+       </script>
+       <script src="http://pagead2.googlesyndication.com/pagead/show_ads.js" type="text/javascript">
+       </script>
+      </td>
+     </tr>
+    </table>
+   </div>
+  </body>
+ </html>

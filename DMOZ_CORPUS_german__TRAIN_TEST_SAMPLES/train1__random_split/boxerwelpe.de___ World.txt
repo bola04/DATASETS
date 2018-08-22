@@ -1,0 +1,358 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript">
+   </script>
+   <!--<script type="text/javascript" src="vionlink_grussticker.js"></script>
+ <link rel="stylesheet" type="text/css" href="vionlink_grussticker.css">-->
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Boxerwelpe.de - Boxerwelpen, Boxerzüchter mit langjähriger Erfahrung
+   </title>
+   <style type="text/css">
+    <!--
+ .style1 {color: #FFFFFF}
+ body,td,th {
+ 	font-family: Verdana, Arial, Helvetica, sans-serif;
+ 	font-size: 11px;
+ 	color: #000000;
+ }
+ a {
+ 	font-size: 11px;
+ 	color: #FFFFFF;
+ }
+ a:link {
+ 	text-decoration: none;
+ 	color: #000000;
+ }
+ a:visited {
+ 	text-decoration: none;
+ 	color: #000000;
+ }
+ a:hover {
+ 	color: #000000;
+ }
+ a:active {
+ 	text-align: center;
+ }
+ body {
+ 	margin-left: 0px;
+ 	margin-top: 0px;
+ 	margin-right: 0px;
+ 	margin-bottom: 0px;
+ 	color: #000;
+ }
+ .fg {
+ 	text-align: center;
+ 	font-size: 14px;
+ 	font-weight: bold;
+ }
+ .dffdf {
+ 	text-align: center;
+ }
+ .fgfgf {
+ 	text-align: left;
+ }
+ .Stil1 {font-size: 9px}
+ .style2 {color: #006600}
+ .Stil2 {color: #000000}
+ .Stil2 a {
+ 	color: #000;
+ }
+ .tick {
+ 	text-align: center;
+ }
+ -->
+   </style>
+   <script type="text/JavaScript">
+    <!--
+ function pviiObjbg(obj, new_color) { //v2.1 by Project VII
+ 	obj.style.backgroundColor=new_color
+ }
+ //-->
+   </script>
+   <!--CMBookFlipHS-->
+   <script type="text/javascript">
+    // 7 variables to control behavior
+ var Book_Image_Width=NaN;
+ var Book_Image_Height=NaN;
+ var Book_Border=true;
+ var Book_Border_Color="gray";
+ var Book_Speed=15;
+ var Book_NextPage_Delay=5*1000; //1 second=1000
+ var Book_Vertical_Turn=0;
+ 
+ // array to specify images and optional links. At least 4
+ // If Link is not needed keep it ""
+ 
+ Book_Image_Sources=new Array(
+ "images/alcaponedaughter.jpg","",
+ "images/capo1.jpg","",
+ "images/x3.jpg","",
+ "images/zuela.jpg","",
+ "images/iannaneu.jpg","" // NOTE No comma after last line
+ );
+ 
+ /***************** DO NOT EDIT BELOW **********************************/
+ var B_LI,B_MI,B_RI,B_TI,B_Angle=0,B_CrImg=6,B_MaxW,B_Direction=1;
+ var B_MSz,B_Stppd=false;B_Pre_Img=new Array(Book_Image_Sources.length);
+ 
+ function ImageBook(){
+ if(document.getElementById){
+ for(i=0;i<Book_Image_Sources.length;i+=2){
+ B_Pre_Img[i]=new Image();B_Pre_Img[i].src=Book_Image_Sources[i]}
+ Book_Div=document.getElementById("Book");
+ B_LI=document.createElement("img");Book_Div.appendChild(B_LI);
+ B_RI=document.createElement("img");Book_Div.appendChild(B_RI);
+ B_MI=document.createElement("img");Book_Div.appendChild(B_MI);
+ B_LI.style.position=B_MI.style.position=B_RI.style.position="absolute";
+ B_LI.style.zIndex=B_RI.style.zIndex=0;B_MI.style.zIndex=1;
+ B_LI.style.top=(Book_Vertical_Turn?Book_Image_Height+1:0)+"px";
+ B_LI.style.left=0+"px";
+ B_MI.style.top=0+"px";
+ B_MI.style.left=(Book_Vertical_Turn?0:Book_Image_Width+1)+"px";
+ B_RI.style.top=0+"px";
+ B_RI.style.left=(Book_Vertical_Turn?0:Book_Image_Width+1)+"px";
+ B_LI.style.height=Book_Image_Height+"px";
+ B_MI.style.height=Book_Image_Height+"px";
+ B_RI.style.height=Book_Image_Height+"px";
+ B_LI.style.width=Book_Image_Width+"px";
+ B_MI.style.width=Book_Image_Width+"px";
+ B_RI.style.width=Book_Image_Width+"px";
+ if(Book_Border){
+ B_LI.style.borderStyle=B_MI.style.borderStyle=B_RI.style.borderStyle="solid";
+ B_LI.style.borderWidth=1+"px";
+ B_MI.style.borderWidth=1+"px";
+ B_RI.style.borderWidth=1+"px";
+ B_LI.style.borderColor=B_MI.style.borderColor=B_RI.style.borderColor=Book_Border_Color}
+ B_LI.src=B_Pre_Img[0].src;
+ B_LI.lnk=Book_Image_Sources[1];
+ B_MI.src=B_Pre_Img[2].src;
+ B_MI.lnk=Book_Image_Sources[3];
+ B_RI.src=B_Pre_Img[4].src;
+ B_RI.lnk=Book_Image_Sources[5];
+ B_LI.onclick=B_MI.onclick=B_RI.onclick=B_LdLnk;
+ B_LI.onmouseover=B_MI.onmouseover=B_RI.onmouseover=B_Stp;
+ B_LI.onmouseout=B_MI.onmouseout=B_RI.onmouseout=B_Rstrt;
+ BookImages()}}
+ 
+ function BookImages(){
+ if(!B_Stppd){
+ if(Book_Vertical_Turn){
+ B_MSz=Math.abs(Math.round(Math.cos(B_Angle)*Book_Image_Height));
+ MidOffset=!B_Direction?Book_Image_Height+1:Book_Image_Height-B_MSz;
+ B_MI.style.top=MidOffset+"px";
+ B_MI.style.height=B_MSz+"px"}
+ else{	B_MSz=Math.abs(Math.round(Math.cos(B_Angle)*Book_Image_Width));
+ MidOffset=B_Direction?Book_Image_Width+1:Book_Image_Width-B_MSz;
+ B_MI.style.left=MidOffset+"px";
+ B_MI.style.width=B_MSz+"px"}
+ B_Angle+=Book_Speed/720*Math.PI;
+ if(B_Angle>=Math.PI/2&&B_Direction){
+ B_Direction=0;
+ if(B_CrImg==Book_Image_Sources.length)B_CrImg=0;
+ B_MI.src=B_Pre_Img[B_CrImg].src;
+ B_MI.lnk=Book_Image_Sources[B_CrImg+1];
+ B_CrImg+=2}
+ if(B_Angle>=Math.PI){
+ B_Direction=1;
+ B_TI=B_LI;
+ B_LI=B_MI;
+ B_MI=B_TI;
+ if(Book_Vertical_Turn)B_MI.style.top=0+"px";
+ else B_MI.style.left=Book_Image_Width+1+"px";
+ B_MI.src=B_RI.src;
+ B_MI.lnk=B_RI.lnk;
+ 
+ setTimeout("Book_Next_Delay()",Book_NextPage_Delay)}
+ else setTimeout("BookImages()",50)}
+ else setTimeout("BookImages()",50)}
+ 
+ function Book_Next_Delay(){
+ if(B_CrImg==Book_Image_Sources.length)B_CrImg=0;
+ B_RI.src=B_Pre_Img[B_CrImg].src;
+ B_RI.lnk=Book_Image_Sources[B_CrImg+1];
+ B_MI.style.zIndex=2;
+ B_LI.style.zIndex=1;
+ B_Angle=0;
+ B_CrImg+=2;
+ setTimeout("BookImages()",50)}
+ 
+ function B_LdLnk(){if(this.lnk)window.location.href=this.lnk}
+ function B_Stp(){B_Stppd=true;this.style.cursor=this.lnk?"pointer":"default"}
+ function B_Rstrt(){B_Stppd=false}
+ function MM_openBrWindow(theURL,winName,features) { //v2.0
+   window.open(theURL,winName,features);
+ }
+   </script>
+   <!--CMBookFlipHE-->
+   <meta content="Boxerwelpe, Boxerwelpen, Deutscher Boxer, Züchter, Boxerhund, nrw, Boxerzucht, Zucht, Boxer, Breeder, german, vdh, fci, boxer klub, club" name="Keywords"/>
+  </head>
+  <body>
+   <table align="center" border="0" cellpadding="0" cellspacing="0" width="924">
+    <tr>
+     <td colspan="3">
+      <img alt="Welpen, Deutscher Boxer, Boxerwelpen" height="72" src="version2/images/header3.gif" width="924"/>
+     </td>
+    </tr>
+    <tr>
+     <td background="version2/images/r1.gif" width="10">
+     </td>
+     <td bgcolor="#ECECEC" valign="top" width="901">
+      <p>
+      </p>
+      <table align="center" border="0" cellpadding="2" cellspacing="2" width="95%">
+       <tr>
+        <td class="tick" colspan="3" valign="middle">
+        </td>
+       </tr>
+       <tr>
+        <td valign="middle" width="35%">
+         <div align="center">
+          <p>
+           Welcome to the
+           <strong>
+            <br/>
+            "von den Busch Boxers"
+           </strong>
+          </p>
+          <p>
+           <a href="version2/index_en.php">
+            <img height="33" src="version2/images/gb.jpeg" width="50"/>
+           </a>
+           <br/>
+           Click flag for english version
+          </p>
+         </div>
+        </td>
+        <td valign="middle" width="30%">
+         <div align="center">
+          <a href="version2/index.php">
+           <img alt="Al-Capone bei boxerwelpe.de" border="0" height="230" src="version2/images/capo1.jpg" width="250"/>
+          </a>
+         </div>
+        </td>
+        <td valign="middle" width="35%">
+         <div align="center">
+          <p>
+           Herzlich Willkommen bei den
+           <br/>
+           <strong>
+            "von den Busch Boxern"
+           </strong>
+           <br/>
+           auf www.boxerwelpe.de
+          </p>
+         </div>
+        </td>
+       </tr>
+       <tr>
+        <td class="fgfgf">
+         <div align="left">
+         </div>
+        </td>
+        <td bgcolor="#649C00" class="fg">
+         <a href="version2/index.php">
+          EINGANG / ENTER
+         </a>
+        </td>
+        <td>
+         <div align="center">
+         </div>
+        </td>
+       </tr>
+       <tr>
+        <td class="fgfgf" colspan="3" height="30">
+         <div align="center" class="Stil1">
+          Mitglied im Boxer-Klub E.V. - Sitz München - Landesgruppe Rheinland
+         </div>
+        </td>
+       </tr>
+       <tr>
+        <td colspan="3">
+         <!--<iframe src="http://www.boxerwelpe.de/version2/scarcounter.php" name="I1" width="100%" marginwidth="1" height="120" marginheight="1" frameborder="0" id="I1" border="0"> Your browser does not support inline frames or is currently configured not to display inline frames. </iframe>-->
+        </td>
+       </tr>
+      </table>
+      <div align="center">
+       <!--CMBookFlipIE-->
+      </div>
+     </td>
+     <td background="version2/images/r2.gif" width="13">
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img height="22" src="version2/images/r4.gif" width="10"/>
+     </td>
+     <td bgcolor="#000000">
+      <table align="center" border="0" cellpadding="1" cellspacing="1" width="100%">
+       <tr>
+        <td class="dffdf" height="20" nowrap="nowrap">
+         <div align="center" class="style1">
+          Hier erfahren Sie alles über Zucht und Aufzucht von Boxerwelpen
+         </div>
+        </td>
+       </tr>
+      </table>
+     </td>
+     <td>
+      <img height="22" src="version2/images/r3.gif" width="13"/>
+     </td>
+    </tr>
+    <tr>
+     <td colspan="3">
+      <img alt="Boxerwelpen aus seriöser Zucht" height="24" src="version2/images/footer.gif" width="924"/>
+     </td>
+    </tr>
+   </table>
+   <div align="center">
+   </div>
+   <div align="center" class="Stil1">
+   </div>
+   <div align="center">
+    <table border="0" width="456">
+     <tr>
+      <td width="138">
+       <strong>
+        Partnerseiten:
+       </strong>
+      </td>
+      <td width="308">
+       <a href="http://www.vdb-immobilien.de" target="_blank" title="Immobilienbüro">
+        <u>
+         Immobilien von den Busch, Krefeld
+        </u>
+       </a>
+      </td>
+     </tr>
+     <tr>
+      <td>
+      </td>
+      <td>
+       <a href="http://www.wertgutachten-immobilien.com" target="_blank" title="Wertgutachten Immobilien">
+        <u>
+         Wertgutachten Immobilien
+        </u>
+       </a>
+      </td>
+     </tr>
+     <tr>
+      <td>
+      </td>
+      <td>
+       <u>
+        <a href="http://www.kurzgutachten.com" target="_blank" title="Immobilienbewertung und Kurzgutachten">
+         Immobilienbewertung
+        </a>
+       </u>
+      </td>
+     </tr>
+    </table>
+   </div>
+   <p align="center" class="Stil2">
+   </p>
+   <p align="center" class="Stil2">
+   </p>
+  </body>
+ </html>

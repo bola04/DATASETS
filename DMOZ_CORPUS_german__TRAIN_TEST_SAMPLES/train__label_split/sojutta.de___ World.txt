@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Jutta Sonnleitner
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="Jutta Sonnleitner, Design, Grafik Design, Nittenau, Regensburg, Illustration, Ausstellungen, 
+ 	    Kommunikations Design, Modeillustration, Gestaltung, Malerei, Zeichnung" name="keywords"/>
+   <meta content="" name="description"/>
+   <meta content="D" name="ABSTRACT"/>
+   <meta content="4days" name="revisit-after"/>
+   <meta content="index,follow" name="robots"/>
+   <meta content="" name="author"/>
+   <meta content="Grafikdesign" name="Page-topic"/>
+   <meta content="Alle" name="Audience"/>
+   <meta content="de" name="Content-Language"/>
+   <meta content="German, de, deutsch" name="Language"/>
+   <link href="/images/jutta_sonnleitner.ico" rel="SHORTCUT ICON"/>
+   <link href="css/main.css" rel="stylesheet" type="text/css"/>
+   <!--[if IE 6]>
+ 		    <style type="text/css">
+ 		    #subcontent .imgbox{
+ 					margin-right:5px;</style>}
+ 		  <![endif]-->
+   <script src="js/jquery-1.3.2.min.js" type="text/javascript">
+   </script>
+   <script src="js/jquery.validate.min.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function(){
+ 	    		
+ 	    		// Gallerie Thumb-Bilder tauschen
+ 	    		$('.thumb div').hover(function(){		
+ 	    			thumb = $(this).attr('class').substr(5, 1); // welches Bild wurde ausgewählt z.B 3
+ 	    			id = $(this).parent().parent().attr('id'); // zugehöriges Elternelement zum Bild z.b illu_mode_1
+ 	    			$(this).css('background', 'url(images/referenzen/'+id+'-'+thumb+'_thumb.jpg) no-repeat');
+ 						}, function() {
+ 							$(this).css('background', 'url(images/referenzen/thumb_'+thumb+'.jpg) no-repeat');
+ 	    		});
+ 	    		// Gallerie Main-Bilder tauschen
+ 	    		$('.thumb div').click(function(){
+ 	    			if ($(this).find('img').length <= 0){ // prüfen ob nicht bereits aktiv
+ 		    			thumb = $(this).attr('class').substr(5, 1); // welches Bild wurde ausgewählt z.B 3
+ 		    			id = $(this).parent().parent().attr('id'); // zugehöriges Elternelement zum Bild z.b illu_mode_1
+ 		    			$('#'+id+' .thumb div').empty(); // aktives thumb-Bild löschen 
+ 		    			$(this).html('<img src="images/referenzen/'+id+'-'+thumb+'_thumb.jpg" />'); // neues thumb-Bild einblenden 	    			
+ 	    				$('#'+id+' .imgbox img').fadeOut(0,function(){
+ 		    				$('#'+id+' .imgbox .img').empty();
+ 		    				$('#'+id+' .imgbox .img').html('<img src="images/referenzen/'+id+'-'+thumb+'.jpg" style="display:none"/>'); // neuen Main-Bild-Pfad setzen
+ 		    				$('#'+id+' .imgbox img').fadeIn(1200);// neues Main-Bild einblenden
+ 	    				});	
+ 	    				/* andere Version, funtionsbereit
+ 		    			$('#'+id+' .imgbox img').fadeTo(0,0,function(){
+ 		    				$('#'+id+' .imgbox .img').empty();
+ 		    				$('#'+id+' .imgbox .img').html('<img src="images/referenzen/'+id+'-'+thumb+'.jpg" />'); // neuen Main-Bild-Pfad setzen
+ 		    				$('#'+id+' .imgbox .img img').css("opacity",0);
+ 		    				$('#'+id+' .imgbox img').fadeTo(1200,1);// neues Main-Bild einblenden		    				
+ 		    			});	*/
+ 	    			}    			
+ 	    		});
+ 	    		
+ 	    		// --------------------- Validate neuen Eintrag anlegen
+ 					ready = false;
+ 					$("#kontakt").validate({
+ 						rules: {
+ 							name: {
+ 								required: true
+ 							},
+ 							q2fg: {
+ 								required: true,
+ 								email: true
+ 							},
+ 							anfrage: {
+ 								required: true
+ 							},
+ 							agree: "required"
+ 						},
+ 						messages: {
+ 							name: {
+ 								required: "Bitte ausfüllen!"
+ 							},
+ 							q2fg: {
+ 								required: "Bitte ausfüllen!",
+ 								email: "Ungültige Adresse!"
+ 							},
+ 							anfrage: {
+ 								required: "Bitte ausfüllen!",
+ 								range: "Diese Jahreszahl ist ungültig!"
+ 							}
+ 						},
+ 						/* errorLabelContainer: "#neu #error",
+ 		   			wrapper: "li" 
+ 		   			errorElement: 'div',
+ 						errorClass: 'error',
+ 						errorPlacement: function(error, element) {
+ 						        error.insertBefore(element.prev());
+ 						        element.parent().addClass('error');
+ 						},*/
+ 						errorPlacement: function(error, element) {
+ 						        $('df').val(error); // wird ins Nirvana schicken
+ 						},
+ 						submitHandler: function(form) {
+ 							var name = $("#name").attr("value");
+ 							var q2fg = $("#q2fg").attr("value");
+ 							var anfrage = $("#anfrage").attr("value");
+ 							var datum = $("#date").attr("value");
+ 							
+ 							var str = $(form).serialize();
+ 							//alert (str);
+ 							//alert ('Name:'+name+' Tel:'+tel+' Email:'+q2fg+' Anfrage:'+anfrage);
+ 							jQuery.ajax({
+ 								type: "POST",
+ 								url: "process_email.php",
+ 								dataType: "html",
+ 								data: str,
+ 								data: "name=" + name + "&q2fg=" + q2fg + "&anfrage=" + anfrage + "&date=" + datum,
+ 								success: function(response){
+ 							 		//alert("Rückgabewert: " + response);
+ 							 		//$("#serverMsg").append(response);
+ 							 		if(response == 'true'){
+ 							 			$("#check").html('<div>'+q2fg+'</div>');
+ 							 			$("#kontakt").fadeOut(0);
+ 							 			$("#danke").fadeIn(1000);
+ 							 		}			 			
+ 								},
+ 								error: function(){
+ 							 		alert("Übermittlung war leider fehlerhaft...");
+ 							 		//$('#response').html(response);
+ 								}
+ 							});
+ 		        }
+ 					});	// END Validation
+ 					
+ 					// Wichtig: submit unterbinden, return false		
+ 					$("#kontakt").submit(function(){
+ 						return false;
+ 					});		
+ 					
+ 					// Emailversand wiederholen	
+ 					$('#danke #recheck').click(function() {
+ 						// Eingaben löschen
+ 						$("#name").val('');
+ 						$("#q2fg").val('');
+ 						// Form einblenden
+ 						$("#danke").fadeOut(0);
+ 						$("#kontakt").fadeIn(1000);
+ 					});	
+ 
+ 	    		
+ 	    	});		// END of $(document).ready
+   </script>
+  </head>
+  <body>
+   <div id="preload">
+    <img src="images/mnav_illu_hov.gif"/>
+    <img src="images/mnav_grafik_hov.gif"/>
+    <img src="images/mnav_arbeiten_hov.gif"/>
+   </div>
+   <div id="container">
+    <div id="header">
+     <div id="logo">
+      <a href="index.php">
+       <img alt="Dipl. Design Jutta Sonnleitner, Nittenau" src="images/logo.gif"/>
+      </a>
+     </div>
+     <div id="menue_top">
+      <ul>
+       <li>
+        <a href="index.php?seite=illustration" id="mnav_illu">
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=grafik" id="mnav_grafik">
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=arbeiten" id="mnav_arbeiten">
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+    <!-- ENDE header -->
+    <div id="content">
+     <div id="startseite">
+      <a href="index.php?seite=aktuell">
+       <img alt="Illustration" id="start_illu" src="images/start_aktuell.jpg"/>
+      </a>
+      <a href="index.php?seite=illustration">
+       <img alt="Illustration" id="start_illu" src="images/start_illu.jpg"/>
+      </a>
+      <a href="index.php?seite=grafik">
+       <img alt="Grafik" id="start_illu" src="images/start_grafik.jpg"/>
+      </a>
+      <a href="index.php?seite=arbeiten&amp;subseite=vogel">
+       <img alt="freie Arbeiten" id="start_illu" src="images/start_grafik2.jpg"/>
+      </a>
+     </div>
+     <div class="clear">
+     </div>
+    </div>
+    <div id="footer">
+     <div id="menue_bottom">
+      <ul>
+       <li>
+        <a href="index.php?seite=aktuell">
+         .aktuell
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=lebenslauf">
+         .lebenslauf
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=profil">
+         .profil
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=kontakt">
+         .kontakt
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=links">
+         .links
+        </a>
+       </li>
+       <li>
+        <a href="index.php?seite=impressum">
+         .impressum
+        </a>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <!-- ENDE container -->
+  </body>
+ </html>

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, height=device-height, initial-scale=1, maximum-scale=0.5, user-scalable=0" name="viewport"/>
+   <title>
+    VOGTLAND RADIO ::        STARTSEITE
+   </title>
+   <!--<link href="//fonts.googleapis.com/css?family=Roboto:100italic,100,300italic,300,400italic,400,500italic,500,700italic,700,900italic,900" rel="stylesheet" type="text/css">-->
+   <link href="https://www.vogtlandradio.de/css/site.css" rel="stylesheet" type="text/css"/>
+   <link href="https://www.vogtlandradio.de/jquery/css/jquery-ui-1.10.1.custom.css" rel="stylesheet" type="text/css"/>
+   <link href="https://www.vogtlandradio.de/fancybox/jquery.fancybox-1.3.4.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="https://www.vogtlandradio.de/jquery/jplayer/css/player.css" media="screen" rel="stylesheet" type="text/css"/>
+   <script src="https://www.vogtlandradio.de/jquery/jquery-1.9.1.js">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/jquery-ui-1.10.1.custom.js">
+   </script>
+   <script src="https://www.vogtlandradio.de/fancybox/jquery.fancybox-1.3.4.js" type="text/javascript">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/jquery.mousewheel.min.js" type="text/javascript">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/jplayer/jquery.jplayer.min.js" type="text/javascript">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/jplayer/fix_button.js" type="text/javascript">
+   </script>
+   <script src="https://www.vogtlandradio.de/js/plupload/plupload.full.min.js">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/jquery.raty.min.js">
+   </script>
+   <script src="https://www.vogtlandradio.de/jquery/crossdomain.js" type="text/javascript">
+   </script>
+   <!-- SMOW SCRIPTE-->
+   <!--<script src="/js/snow/ThreeCanvas.js"></script>
+ <script src="/js/snow/Snow.js"></script>
+ <script src="/js/snow/programm.js"></script>-->
+   <!-- SMOW SCRIPTE ENDE -->
+   <script type="text/javascript">
+    $(document).ready(function(e){
+ 	
+        //initialisierung snow
+       // init_snow();
+ 	  
+ 	  if( getCookie('VR_Cookie') != 'y6CVBH7dWubVvP6Y'){
+ 		  $('#cookie-master').show( "slow", function(){
+ 			 $('#cookie-master' ).fadeTo( "slow" , 1 , function() {
+                  resize_cookie_div_margin();
+              });
+ 		  });
+ 	  }
+ 	  
+ 	  $('.cookie_button').click(function(){
+ 		  setCookie('VR_Cookie','y6CVBH7dWubVvP6Y',365 );
+ 		  $('#cookie-master' ).fadeTo( "slow" , 0 , function() {
+                  $('#cookie-master').remove();
+ 				 resize_cookie_div_margin();
+              });  								 
+ 	  });
+ 	  
+ 	   	
+ $('.vote_usergalerie_vote').raty({
+ 		starOff: 'css/img/star-off.png',
+         starOn : 'css/img/star-on.png',
+ 		hints: ['1 Punkt', '2 Punkte', '3 Punkte', '4 Punkte', '5 Punkte'],
+ 		score: 0 ,
+ 		click: function(score, evt){
+ 			    var  foto = $(this).data('id');
+ 				var  vote = score;
+ 			    $.ajax({ url: "module/usergalerie/ajax_vote.php?foto="+foto+'&vote='+vote,
+ 		                 success:function(responce){
+ 							   if(responce.error){
+ 				                    alert(responce.error);
+ 							   }
+ 							     if(responce.ok){
+ 				                     alert(responce.ok);
+ 							    }
+ 				          }
+                 });
+ 		   $(this).raty({
+ 			      readOnly: true,
+ 			      score: score ,
+ 			      starOff: 'css/img/star-off.png',
+                   starOn : 'css/img/star-on.png'
+ 			});
+          } 
+ 	});
+ 
+ 							   
+ $('.btn').button();
+ //--------------------------------------------------------------//
+ //--------------GALERIE BILDANZEIGE DETAIL  --------------------//
+ //--------------------------------------------------------------//   	
+ $("a[rel=gal_group]").fancybox({
+ 		transitionIn: 'none',
+ 		transitionOut: 'none',
+ 		titlePosition: 'over',
+         showNavArrows  : 'true',
+ 		titleFormat	: function(title, currentArray, currentIndex, currentOpts) {
+ 					                return '<span id="fancybox-title-over">Image ' +
+ 									        (currentIndex + 1) +
+ 											' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '')+
+ 									        '</span>';
+ 				               }
+ 			});
+ 	
+ //--------------------------------------------------------------//
+ //----------------------DRAG HORIZONTAL CLICK ------------------//
+ //--------------------------------------------------------------//     
+ $( "#site_master" ).draggable({ distance: 40 , axis: "x",
+ 	                                drag: function( event, ui ){
+ 											  breite_window = $(window).width() * 0.9 ;
+ 											  div_breite = $(this).width();
+ 											  //begrenzung rechts
+ 											  if( breite_window < ui.position.left ){ return false; }
+ 											  //begrenzung links
+ 											  if(((div_breite * 0.98 ) * -1 ) > ui.position.left ){ return false; }
+ 										}
+ });
+ //--------------------------------------------------------------//
+ //----------------------DRAG MOUSERAD --------------------------//
+ //--------------------------------------------------------------//
+ 
+ $('#site_master').on( 'mousewheel', function( event , delta ) {
+ 											  plus = 0 ;
+ 											  div_pos = $(this).position();
+ 											  breite_window = $(window).width();
+ 											  div_breite = $(this).width();
+ 											  if(delta < 0 ){ plus = plus + 60 ; }
+ 											  if(delta > 0 ){  plus = plus - 60 ; }
+ 											  neue_pos = div_pos.left + plus ;
+ 											  //begrenzung rechts
+ 											  if(delta < 0 && ( breite_window * 0.9 ) > neue_pos ){  $(this).css('left' , neue_pos ); }
+ 											  //begrenzung links
+ 											  if(delta > 0 && ((div_breite * 0.98 ) * -1 ) < neue_pos ){ $(this).css('left' , neue_pos ); }
+                                               return false;
+ });
+ 	 
+ //--------------------------------------------------------------//
+ //----------------------Berechnung Seite -----------------------//
+ //--------------------------------------------------------------//
+ 	   
+ 	   $(document).ajaxComplete(function(event,request, settings) {
+            //bei ajax update
+ 	       if($(window).height() > 590){
+ 		    seite_berechnen($(window).height());
+ 	       }
+        });
+ 	   
+ 	   //bei start auslesen
+ 	   if($(window).height() > 590){
+ 		   seite_berechnen($(window).height());
+ 	   }
+ 	   //bei resize
+ 	   $(window).resize(function(){
+ 		  //cookie berechnung
+ 		  resize_cookie_div_margin();						 
+ 	      
+ 		  //wenn gröser
+ 		  if($(window).height() > 590){
+ 		   seite_berechnen($(window).height());
+ 	      }
+ 		  //wenn kleiner
+ 		  if($(window).height() < 590){
+ 		   seite_berechnen(590);
+ 	     }
+ 	   });
+ //-----------------------------------------------------------//
+ 
+   
+   //ein wenig mehr zeit genben
+   setTimeout(function(){ create_all_players(); }, 200 );
+   
+   
+ });
+ 
+ //-----------------------------------------------------------//
+ //----- berechnung aller elemente mit class="data_size" -----//
+ //-----------------------------------------------------------//
+ function seite_berechnen(hoehe_window){
+ 	
+ 	//Verhaeltniss format berechnen
+ 	var format =  hoehe_window / 590 ;
+ 	
+ 	$('#aktuelles_format_site_format').val(format);
+ 	
+ 	$('.read_size').each(function(e){
+ 		
+ 		//daten aus element lesen
+ 		var data_size = $(this).attr('data_size');
+ 		var obj_data_size = jQuery.parseJSON(data_size);
+ 		
+ 		//berechnen höhe
+ 		if(obj_data_size.height){
+ 		   var height = obj_data_size.height * format ;
+ 	       $(this).height(r(height));
+ 		}
+ 		
+ 		//berechnen breite
+ 		if(obj_data_size.width){
+ 		   var width = obj_data_size.width * format ;
+ 		   $(this).width(r(width));
+ 		}
+ 		//berechnen left
+ 		if(obj_data_size.left){
+ 		   var left = obj_data_size.left * format ;
+ 	       $(this).css('left' , r(left) );
+ 		}
+ 		
+ 		//berechnen right
+ 		if(obj_data_size.right){
+ 		   var right = obj_data_size.right * format ;
+ 	       $(this).css('right' , r(right) );
+ 		}
+ 		
+ 		
+ 		//berechnen background_size
+ 		if(obj_data_size.background_size){
+ 		   var background_size = obj_data_size.background_size * format ;
+ 	       $(this).css('background-size' , r(background_size));
+ 		}
+ 		
+         //berechnen TOP
+ 		if(obj_data_size.top){
+ 		   var top = obj_data_size.top * format ;
+ 	       $(this).css('top', r(top) );
+ 		}
+ 		
+ 		//margin
+ 		 if(obj_data_size.margin){
+ 		    var margin = obj_data_size.margin * format ;
+ 		    $(this).css('margin', r(margin) );	
+ 		}
+ 		//margin top
+ 		if(obj_data_size.margin_top){
+ 		    var margin_top = obj_data_size.margin_top * format ;
+ 		   $(this).css('margin-top', r(margin_top) );
+ 		 }
+ 		 
+ 		//margin left
+ 		 if(obj_data_size.margin_left){
+ 		    var margin_left = obj_data_size.margin_left * format ;
+ 		    $(this).css('margin-left', r(margin_left) );	
+ 		}
+ 		//margin right
+ 		 if(obj_data_size.margin_right){
+ 		    var margin_right = obj_data_size.margin_right * format ;
+ 		    $(this).css('margin-right', r(margin_right) );	
+ 		}
+ 		//margin bottom
+ 		 if(obj_data_size.margin_bottom){
+ 		    var margin_bottom = obj_data_size.margin_bottom * format ;
+ 		    $(this).css('margin-bottom', r(margin_bottom) );	
+ 		}
+ 		
+ 		//padding right
+ 		 if(obj_data_size.padding){
+ 		    var padding = obj_data_size.padding * format ;
+ 		    $(this).css('padding', r(padding) );	
+ 		}
+ 		//font-size
+ 		if(obj_data_size.font_size){
+ 		   var font_size = obj_data_size.font_size * format ;
+ 		    $(this).css('font-size', r(font_size) );	
+ 		}
+ 		//font-size
+ 		if(obj_data_size.min_width){
+ 		   var min_width = obj_data_size.min_width * format ;
+ 		    $(this).css('min-width', r(min_width) );	
+ 		}
+ 		//max_width
+ 		if(obj_data_size.max_width){
+ 		   var max_width = obj_data_size.max_width * format ;
+ 		    $(this).css('max-width', r(max_width) );	
+ 		}
+ 		//max_height
+ 		if(obj_data_size.max_height){
+ 		   var max_height = obj_data_size.max_height * format ;
+ 		    $(this).css('max-height', r(max_height) );	
+ 		}
+ 		
+ 		//table_padding_td
+ 		if(obj_data_size.table_padding_td){
+ 		   var table_padding_td = obj_data_size.table_padding_td * format ;
+ 		    $(this).find('td').css('padding-top', table_padding_td).css('padding-bottom', table_padding_td);	
+ 		}
+ 	});
+ }
+ 
+ //runden
+ function r(wert){
+   return  Math.round(wert * 100) / 100 ;
+ }
+ 
+ 
+ var win=null;
+ onerror = stopError;
+ function stopError(){
+ 	return true;
+ }
+ function player_popup(){
+ 	myleft=100;
+ 	mytop=100;
+ 	settings="width=330,height=190,top=" + mytop + ",left=" + myleft + ",scrollbars=no,location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=no,dependent=no";
+ 	win=window.open("https://www.vogtlandradio.de/player_popup.php","mypopup",settings);
+ 	win.focus();
+ 
+ }
+ 
+ 
+ 
+ //create single players 
+ function create_all_players(){ 
+          
+ 		 
+ 		 $('.generatenewplayer').each(function(index, element ){
+ 			   //daten auslesen
+ 			   var daten = $(this).data('playerid');
+ 			   var aktuell = $(this); 
+ 			   $.ajax({  //type: "POST",  
+ 						 url: "https://www.vradio.info/EXTERN/player/ajax_create_player.php?id="+daten ,
+ 						 crossDomain: true,
+ 						 dataType : 'html',
+ 						 //data: {id:daten},
+ 					  success: function(responce){
+ 						 aktuell.html(responce); 
+ 						 aktuell.find('.single_players').each(function(index, element ){
+ 												var playerdaten = $(this).data('player');
+ 												//init Player
+ 												$(this).jPlayer({
+ 													ready: function (event) {
+ 														      var dieser_player = $(this);
+ 															  $('#player_'+playerdaten.id).find('.jp-play').click(function(e) {
+ 																  if($(this).attr('loaded') != 'true'){ 
+ 																   dieser_player.jPlayer("setMedia", { mp3: playerdaten.file }).jPlayer("play");
+ 																   //set loaded
+ 																   $(this).attr('loaded' , 'true');
+ 																  }
+ 															  });
+ 															  },
+ 												  swfPath: playerdaten.swf ,
+ 									  cssSelectorAncestor: '#player_'+playerdaten.id ,
+ 												 supplied: "mp3",
+ 													wmode: "window"
+ 															   }).bind($.jPlayer.event.play, function(){ 
+ 																		 $(this).jPlayer("pauseOthers");
+ 																});
+ 						});
+ 					  }
+ 				});
+ 		});
+ }
+ 
+ 
+ 
+ //-----------------------------------------------------------//
+ //alles Cookie scripte
+ //-----------------------------------------------------------//
+ function resize_cookie_div_margin(){
+ 	//margin füer cookoe
+ 	var margin_bottom_master = $('.cookie_text').height()+4;
+ 	$('#site_master').css('margin-bottom', margin_bottom_master );	
+ }
+ 
+ function setCookie(name,value,days) {
+     var expires = "";
+     if (days) {
+         var date = new Date();
+         date.setTime(date.getTime() + (days*24*60*60*1000));
+         expires = "; expires=" + date.toUTCString();
+     }
+     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+ }
+ function getCookie(name) {
+     var nameEQ = name + "=";
+     var ca = document.cookie.split(';');
+     for(var i=0;i < ca.length;i++) {
+         var c = ca[i];
+         while (c.charAt(0)==' ') c = c.substring(1,c.length);
+         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+     }
+     return null;
+ }
+ function eraseCookie(name) {   
+     document.cookie = name+'=; Max-Age=-99999999;';  
+ }
+ //-----------------------------------------------------------//
+   </script>
+   <!--<script type="text/javascript">
+   //nur wenn cookie bestätigt
+   if( getCookie('VR_Cookie') == 'y6CVBH7dWubVvP6Y'){
+        var _gaq = _gaq || [];
+ 	  _gaq.push(['_setAccount', 'UA-31049144-1']);
+ 	  _gaq.push(['_trackPageview']);
+ 	
+ 	  (function() {
+ 		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+ 		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 	  }) ();
+   }
+ </script>-->
+  </head>
+  <body>
+   <div id="snow_navigation" style="position:fixed; width:1024px">
+    <div class="read_size text_schatten" data_size='{"left":"10","font_size":"11", "top":"3"}' style="position:absolute;left:10px; top:3px; font-size:11px;color:#FFFFFF">
+     <a class="read_size nav_top_link" data_size='{"font_size":"11"}' href="index.php?c=74" target="_self" title="S T A R T S E I T E">
+      S T A R T S E I T E
+     </a>
+     •
+     <a class="read_size nav_top_link" data_size='{"font_size":"11"}' href="index.php?c=103" target="_self" title="K O N T A K T">
+      K O N T A K T
+     </a>
+     •
+     <a class="read_size nav_top_link" data_size='{"font_size":"11"}' href="index.php?c=118" target="_self" title="I M P R E S S U M">
+      I M P R E S S U M
+     </a>
+     •
+     <a class="read_size nav_top_link" data_size='{"font_size":"11"}' href="index.php?c=1621" target="_self" title="D A T E N S C H U T Z E R K L Ä R U N G">
+      D A T E N S C H U T Z E R K L Ä R U N G
+     </a>
+    </div>
+    <div class="read_size" data_size='{"font_size":"22" , "top":"20", "left":"15"}' id="kleine_navigation" style="font-size:22px;top:20px;left:15px;position:absolute;">
+     <a href="javascript:window.history.back();" target="_self">
+      <div class="read_size text_schatten" data_size='{"font_size":"14", "width":"40", "height":"30"}' style="font-size:14px; color:#91C24A;text-align:center;float:left;cursor:pointer;width:40px;height:30px;">
+       zurück
+      </div>
+     </a>
+     <div class="read_size text_schatten" data_size='{"height":"30", "min_width":"215" }' style="text-align:center;min-width:215px;cursor:default;float:left;height:30px;">
+      STARTSEITE
+     </div>
+     <a href="javascript:window.history.forward();" target="_self">
+      <div class="read_size text_schatten" data_size='{"font_size":"14", "width":"40", "height":"30"}' style="float:left;font-size:14px;cursor:pointer;color:#91C24A;width:40px;height:30px;">
+       vor
+      </div>
+     </a>
+    </div>
+   </div>
+   <div class="read_size" data_size='{"top":"50"}' style="width:100%;height:0px;border-bottom:#666 solid 1px; border-top:#CCC solid 1px;position:fixed;top:50px">
+   </div>
+   <div class="read_size" data_size='{"height":"510","width":"2297","top":"50"}' id="site_master" style="width:2297px;height:510px;position:relative; overflow:hidden;top:50px;cursor: e-resize;">
+    <div class="read_size" data_size='{"height":"510","margin_right":"15","width":"170"}' style="float:left;margin-right:15px;width:170px;height:510px">
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=74" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="" title="       STARTSEITE ">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8" , "margin_top":"4"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#8ebf47">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        STARTSEITE
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="https://vogtlandradio.de/module/radioplayer/" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_blank" title="      LIVE STREAM">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#8bbc44">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        LIVE STREAM
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=206" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title="      MEDIATHEK">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#88b941">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        MEDIATHEK
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=78" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title="     TEAM">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#85b63e">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        TEAM
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="https://www.vogtlandradio.de/index.php?c=323" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title="    JOBBÖRSE">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#82b33b">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        JOBBÖRSE
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?m=galerie&amp;was=jahre" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title="   RÜCKBLICK">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#7fb038">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        RÜCKBLICK
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=201" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="" title="  KINO">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#7cad35">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        KINO
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=184" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title=" MEDIA DATEN">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#79aa32">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        MEDIA DATEN
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?m=pinnwand" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title=" PINNWAND">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#76a72f">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        PINNWAND
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=486" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="" title=" SPORT REGIONAL">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#73a42c">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        SPORT REGIONAL
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=96" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title=" VA-TIPPS">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#70a129">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        VA-TIPPS
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=1217" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="" title="BÖRSE IM VOGTLAND">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#6d9e26">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        BÖRSE IM VOGTLAND
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=376" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_self" title="FREQUENZEN">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#6a9b23">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        FREQUENZEN
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=118" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="" title="I M P R E S S U M">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#679820">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        I M P R E S S U M
+       </div>
+      </div>
+     </a>
+     <a class="read_size text_schatten" data_size='{"font_size":"14"}' href="index.php?c=199" style="text-decoration:none;color:#FFFFFF;font-size:14px" target="_blank" title="TITELSUCHE">
+      <div class="box_kachel read_size" data_size='{"height":"26","width":"170", "margin":"8"}' style="float: none; width:170px; height:34.5px; margin:8px; background:#64951d">
+       <div class="read_size" data_size='{"margin":"6"}' style="margin:6px">
+        TITELSUCHE
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"39"}' style="float:left;margin-right:10px;width:39px;height:510px">
+     <div class="read_size" data_size='{"height":"510","width":"51" }' style="width:51px;height:510px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"502","width":"43", "margin":"4"}' style="float:none;background:#91c24a;width:43px;height:502px; margin:4px;">
+       <div class="read_size" data_size='{"width":"51"}' style="width:51px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1akiefc7l9pd88nqmd13uo1jht5.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"175"}' style="float:left;margin-right:10px;width:175px;height:510px">
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"margin":"5"}' style="margin:5px; width:100%">
+        <div class="read_size" data_size='{"width":"180", "height":"155" , "font_size":"14" , "margin_right":"10" }' style="width:175px;height:155px;font-size:14px;overflow:hidden;float:left; margin-right:10px;">
+         <strong>
+          ON AIR am Mikrofon
+         </strong>
+         <br/>
+         <a href="index.php?c=2057" style="text-decoration:none;color:#000;" target="_self">
+          <div class="read_size schatten" data_size='{"height":"100", "margin_right":"10" , "width":"75", "top":"0"}' style="overflow:hidden;position:relative;float:left;left:-10px; width:75px;height:100px;margin-right:10px; top:0px;">
+           <img border="0" class="read_size" data_size='{"width":"130"}' src="https://www.vogtlandradio.de/bilder_plupload/p1aojkgf7i1lc51dg9pmc1isd1h9g3.jpg" style="width:130px; margin-left:-30%;"/>
+          </div>
+          <div class="read_size" data_size='{"font_size":"9", "width":"66", "top":"125", "left":"6"}' style=" padding:5px; width:66px;font-size:9px;letter-spacing:-0.1em; color:#666666; position:absolute; top:125px; left:6px; white-space:nowrap">
+           Nachrichten:
+           <br/>
+           Nicole Neumann
+          </div>
+         </a>
+         <a href="index.php?c=86" style="text-decoration:none;color:#000;" target="_self">
+          <div class="read_size schatten" data_size='{"height":"100", "margin_right":"10" , "width":"75", "top":"0"}' style="overflow:hidden;position:relative;float:left;width:75px;height:100px;left:-10px; margin-right:10px; top:0px;">
+           <img border="0" class="read_size" data_size='{"width":"130"}' src="https://www.vogtlandradio.de/bilder_plupload/p17oe74fclnrs1nu983u58j1jap3.jpg" style="width:130px; margin-left:-40%;"/>
+          </div>
+          <div class="read_size " data_size='{"font_size":"9", "width":"68", "top":"125", "left":"90"}' style=" padding:5px; left:90px; width:68px;font-size:9px;letter-spacing:-0.1em; color:#666666; position:absolute; top:125px; left:90px; white-space:nowrap">
+           Moderation:
+           <br/>
+           Madlen Schulz
+          </div>
+         </a>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+         VOGTLAND RADIO am Mittag
+        </strong>
+        <br/>
+        <br/>
+        Wir wünschen Ihnen einen schönen Tag!
+        <br/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+         Aktuelle Jobangebote
+        </strong>
+        <br/>
+        · Umschulungen Logistikbranche (m/w)
+        <br/>
+        · Mitarbeiter Paketzentrum (m/w)
+        <br/>
+        · Mitarbeiter mit kaufm. Ausbildung (m/w)
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <a class="bbcode_link" href="https://www.vogtlandradio.de/index.php?c=323" target="_blank" title=" zu den Jobangeboten ">
+         zu den Jobangeboten
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"90"}' style="float:left;margin-right:10px;width:90px;height:510px">
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"85"}' style="width:85px;">
+        <a href="https://vogtlandradio.de/module/radioplayer/" target="_blank">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p18mc0kt1f1ash1glfv941p2c1vog3.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;background-image:url(https://www.vogtlandradio.de/bilder_plupload/p18rr4h1ra11jb18i019or1urn1fof3.jpg);background-size: 100%;background-repeat: no-repeat;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+        </strong>
+        <br/>
+        <div class="generatenewplayer" data-name=" Wettergespräch " data-playerid="21">
+         [Player]
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;background-image:url(https://www.vogtlandradio.de/bilder_plupload/p18rr4tu339kr1eju1rf11511aik4.jpg);background-size: 100%;background-repeat: no-repeat;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+        </strong>
+        <br/>
+        <div class="generatenewplayer" data-name=" Nachrichten " data-playerid="22">
+         [Player]
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;background-image:url(https://www.vogtlandradio.de/bilder_plupload/p18rr4lr23lr01jhld6iuohppa3.jpg);background-size: 100%;background-repeat: no-repeat;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+        </strong>
+        <br/>
+        <div class="generatenewplayer" data-name=" Jobbörse Button " data-playerid="23">
+         [Player]
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;background-image:url(https://www.vogtlandradio.de/bilder_plupload/p18re8v6cpek12dusqdla514ib3.jpg);background-size: 100%;background-repeat: no-repeat;">
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+        </strong>
+        <br/>
+        <div class="generatenewplayer" data-name=" Horoskop Single " data-playerid="18">
+         [Player]
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"85"}' style="width:85px;">
+        <a href="https://de-de.facebook.com/VOGTLAND-RADIO-405613896154349/" target="_blank">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p1atb9stn6sc4i9210dgoud1egb3.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"175"}' style="float:left;margin-right:10px;width:175px;height:510px">
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1c5aqhnb21ibusmq1oj01rno1r7a4.png" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p19s46aacvm9i7e6ub4fd81uvm3.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1cjdsioav1j6el2j17pqts51tkm4.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"39"}' style="float:left;margin-right:10px;width:39px;height:510px">
+     <div class="read_size" data_size='{"height":"510","width":"51" }' style="width:51px;height:510px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"502","width":"43", "margin":"4"}' style="float:none;background:#91c24a;width:43px;height:502px; margin:4px;">
+       <div class="read_size" data_size='{"width":"51"}' style="width:51px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1akiefc7l1l2n17drc6ssil3vb4.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"175"}' style="float:left;margin-right:10px;width:175px;height:510px">
+     <div class="read_size" data_size='{"height":"510","width":"170" }' style="width:170px;height:510px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"502","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:502px; margin:4px;">
+       <a href="index.php?c=964">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+         Veranstaltungen von und mit Ihrem VOGTLAND RADIO
+        </strong>
+        <br/>
+        <br/>
+        <b>
+         29.08.2018
+        </b>
+        <br/>
+        Volksbank Firmenlauf
+        <br/>
+        im Stadion Plauen
+        <br/>
+        Moderation: Madlen Schulz
+        <br/>
+        <br/>
+        <b>
+         08.09.2018
+        </b>
+        <br/>
+        Tag der Vogtländer
+        <br/>
+        in Adorf
+        <br/>
+        Moderation: Madlen Schulz
+        <br/>
+        <br/>
+        <b>
+         09.09.2018
+        </b>
+        <br/>
+        725 Jahre Adorf – Stadtfest
+        <br/>
+        <br/>
+        <b>
+         15.09.2018
+        </b>
+        <br/>
+        „Familienfest“ im KuK Gera
+        <br/>
+        <br/>
+        <b>
+         22.09.2018
+        </b>
+        <br/>
+        Tag der offenen Tür
+        <br/>
+        beim Geraer Verkehrsbetrieb
+        <br/>
+        <br/>
+        <b>
+         07.10.2018
+        </b>
+        <br/>
+        Trachten- und Landwirtschaftsfest Thüringen
+        <br/>
+        <br/>
+        <b>
+         07.10.2018
+        </b>
+        <br/>
+        VOGTLAND RADIO zum Geraer Höhlerfest
+        <br/>
+        <br/>
+        <i>
+         Während den Veranstaltungen wird vom Veranstalter fotografiert. Wir behalten uns vor, unser Bildmaterial im Rahmen des Veranstaltungsrückblicks auf unserer Internetseite zu veröffentlichen. Dabei verpflichten wir uns, die Persönlichkeitsrechte der Besucher zu wahren.
+         <br/>
+         <br/>
+        </i>
+       </div>
+       <div style="clear:both">
+       </div>
+       <div class="read_size" data_size='{"font_size":"9", "padding":"6"}' style="padding:6px;font-size:9px;">
+        <strong class="read_size" data_size='{"font_size":"14"}' style="font-size:14px;">
+        </strong>
+        <br/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"345"}' style="float:left;margin-right:10px;width:345px;height:510px">
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=1972">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=1972" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p19k2hno408jo1vl7sb8kf1176u3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=2051">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=2051" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1cirhudtsckto6c1ij7k5n19la3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=316">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=316" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1cc116mp8kepjn41ti1nm51fue3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="http://www.reeveland.de/#!/" target="_blank">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1cetk88e915d5q9ggo31tolp663.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"340" }' style="width:340px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"332", "margin":"4"}' style="float:none;background:#91c24a;width:332px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"340"}' style="width:340px;">
+        <img alt="#" border="0" class="read_size" data_size='{"height":"162"}' src="https://www.vogtlandradio.de/bilder_plupload/p1cbr7eerff771e84i0ddi71mf13.jpg" style="height:162px;"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"515"}' style="float:left;margin-right:10px;width:515px;height:510px">
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1amb95k7tng39kj1eqcdkkvqm7.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1amb93hlp39j1j57rbv1ptr1is93.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=1159">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=1159" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1amb9446ekqr15v6m2ts6b1ov44.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?m=pinnwand" target="_blank">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1amb94pbu1p216r012bufpi1b2o5.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1amb954uc1h4410i31apb1v8v1dkp6.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="https://www.vogtlandradio.de/index.php?c=486" target="_blank">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1c2r18rh9qgv1rjhtan1mep71t3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=1850">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=1850" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1c2qvufdnhsfbe91hqh1jed1bua3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="http://leben-lieben-lassen.de/" target="_blank">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1b5f60q7c1s901js39ei1knd1n8r3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"170","width":"170" }' style="width:170px;height:170px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"162","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:162px; margin:4px;">
+       <a href="index.php?c=2025">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=2025" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1chksh1mq1312nfaktv5im3c63.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"39"}' style="float:left;margin-right:10px;width:39px;height:510px">
+     <div class="read_size" data_size='{"height":"510","width":"51" }' style="width:51px;height:510px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"502","width":"43", "margin":"4"}' style="float:none;background:#91c24a;width:43px;height:502px; margin:4px;">
+       <div class="read_size" data_size='{"width":"51"}' style="width:51px;">
+        <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1akiefc7l1k9i9diaumnpn197u3.jpg" style="width:100%"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="read_size" data_size='{"height":"510","margin_right":"10","width":"175"}' style="float:left;margin-right:10px;width:175px;height:510px">
+     <div class="read_size" data_size='{"height":"85","width":"170" }' style="width:170px;height:85px;float:left;">
+      <div class="box_kachel_mb read_size" data_size='{"height":"77","width":"162", "margin":"4"}' style="float:none;background:#;width:162px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=208" target="_self">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p17ookk4ca1vbd1pqlgvkqvml4f4.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"170" }' style="width:170px;height:85px;float:left;">
+      <div class="box_kachel_mb read_size" data_size='{"height":"77","width":"162", "margin":"4"}' style="float:none;background:#;width:162px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?c=199" target="_self">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p17oolptkedf71ur81c6hbc85vs4.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"170" }' style="width:170px;height:85px;float:left;">
+      <div class="box_kachel_mb read_size" data_size='{"height":"77","width":"162", "margin":"4"}' style="float:none;background:#;width:162px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="index.php?m=pinnwand" target="_self">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p17ootdm981r8r1t5uauihlcdcb4.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"170" }' style="width:170px;height:85px;float:left;">
+      <div class="box_kachel_mb read_size" data_size='{"height":"77","width":"162", "margin":"4"}' style="float:none;background:#;width:162px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="https://www.vogtlandradio.de/index.php?c=323" target="_self">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p17qjj7u8f16vu1qkc1umr1f4u1vfo3.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;">
+       <a href="index.php?c=1416">
+        <div class="nav_link read_size" data_size='{"height":"60" , "width":"50"  }' style="width:60px;height:60px">
+         <div class="weiter_btn_mb read_size text_schatten" data_size='{"top":"40","font_size":"14"}' style="bottom:2px;font-size:14px">
+          mehr...
+         </div>
+        </div>
+       </a>
+       <div class="read_size" data_size='{"width":"85"}' style="width:85px;">
+        <a href="index.php?c=1416" target="_self">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1almc8sqh1v6p1jpb73ojos17jm7.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"85" }' style="width:85px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"77", "margin":"4"}' style="float:none;background:#91c24a;width:77px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"85"}' style="width:85px;">
+        <a href="http://www.vogtlandradio.de/index.php?m=galerie&amp;kategorie=265" target="_blank">
+         <img alt="#" border="0" src="https://www.vogtlandradio.de/bilder_plupload/p1bngbhlae5ge1umg1kfd1oja1rn3.jpg" style="width:100%"/>
+        </a>
+       </div>
+      </div>
+     </div>
+     <div class="read_size" data_size='{"height":"85","width":"170" }' style="width:170px;height:85px;float:left;">
+      <div class="box_kachel read_size" data_size='{"height":"77","width":"162", "margin":"4"}' style="float:none;background:#91c24a;width:162px;height:77px; margin:4px;">
+       <div class="read_size" data_size='{"width":"170"}' style="width:170px;">
+        <a href="http://www.vogtland-tourismus.de/" target="_blank">
+         <img alt="#" border="0" class="read_size" data_size='{"height":"77"}' src="https://www.vogtlandradio.de/bilder_plupload/p1atj1kak3190vkmv1bve1adm149j3.jpg" style="height:77px;"/>
+        </a>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <input id="aktuelles_format_site_format" type="hidden" value="1"/>
+   <!-- COOKIE DIV -->
+   <div id="cookie-master" style="display:none;">
+    <div class="cookie_text">
+     Unsere Webseite ( www.vogtlandradio.de ) verwendet Cookies. Sie erleichtern die Bereitstellung unserer Dienste und diverser Funktionen. 
+ Mit der Nutzung unserer Webseite erklären Sie sich damit einverstanden, dass wir Cookies verwenden.
+     <a class="bbcode_link" href="https://www.vogtlandradio.de/index.php?c=1621">
+      Hier erfahren Sie mehr.
+     </a>
+    </div>
+    <div class="btn read_size cookie_button" data_size='{"font_size":"10"}' style="font-size:10px">
+     OK
+    </div>
+   </div>
+   <!-- COOKIE DIV ENDE -->
+  </body>
+ </html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html lang="de" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="noindex, nofollow" name="robots"/>
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <meta content="de" http-equiv="Content-Language"/>
+   <script src="/js/jquery.js" type="text/javascript">
+   </script>
+   <script src="/js/jquery-ui.js" type="text/javascript">
+   </script>
+   <script src="/js/ui/i18n/ui.datepicker-de.js" type="text/javascript">
+   </script>
+   <!-- Current language shortname: de -->
+   <link href="/js/uitheme/jquery-ui-themeroller.css" media="screen" rel="stylesheet" type="text/css"/>
+   <script src="/js/wmd.js" type="text/javascript">
+   </script>
+   <style type="text/css">
+    div.fcol.notinuse{
+ 			background: #eee;
+ /*			color: #777; */
+ 		}
+ 		div.fcol.notinuse input{
+ 			background: #fff;
+ 		}
+ 		.hidden { display: none; }
+ 		.badfield { border: 2px solid red; }
+   </style>
+   <script type="text/javascript">
+    function showemail(col) {
+ 	$("div#emailbox").hide("fast");
+ 	$("#inneremailbox").load("emailaddr.php", { 'id': "", 'col': col } );	$("div#emailbox").show("fast");
+ }
+ 
+ function addBefore(text) {
+ 	$("div.fcol").eq(0).clone().prependTo($("div.fcols")).find("input").attr('value', '').focus(function () {
+ 		fillfields();
+ 	});	
+ 	$("div.fcol").eq(0).find("input.fcoli").attr('value', text)
+ }
+ 
+ function addAfter(text) {
+ 
+ 	if (text != '' && $("div.fcol:last").find("input.fcoli").attr('value') == '') {
+ 		$("div.fcol:last").find("input.fcoli").attr('value', text).focus();
+ 	}
+ 	else {
+ 		$("div.fcol:last").clone().appendTo($("div.fcol").parent())
+ 		$("div.fcol:last").find("input.fcoli").attr('value', text).focus();
+ 	}
+ 
+ 	$("div.fcol:last").find("div.subcolcontainer input").each(function(i){
+ 		$("div.fcol:last").find("div.subcolcontainer input").eq(i).attr('value', '');
+ 	});
+ 
+ 	$("div.fcol:first").find("p.deletebox").removeClass('hidden');
+ 	$("div.fcol:last").find("p.deletebox").removeClass('hidden');
+ }
+ 
+ function getDefinitionString() {
+ 	var defs = Array();
+ 	
+ 	$("div.fcol").each(function(i){
+ 		if (!$("div.fcol").eq(i).hasClass('notinuse')) {
+ 			var tdef = Array();
+ 			$("div.fcol").eq(i).find("div.subcolcontainer input[@value != '']").each(function(ii){
+ 				tdef.push( $("div.fcol").eq(i).find("div.subcolcontainer input[@value != '']").eq(ii).attr('value').replace(/,/, ";") );
+ 			});
+ 			if (tdef.length > 0) {
+ 				defs.push( $("div.fcol").eq(i).find('input.fcoli').attr('value').replace(/,/, ";") + '(' + tdef.join(',') + ')' );
+ 			} else {
+ 				defs.push( $("div.fcol").eq(i).find('input.fcoli').attr('value').replace(/,/, ";") );
+ 			}
+ 		}
+ 	});
+ 	var defstr = defs.join('|');
+ 	return defstr;
+ }
+ 
+ function fillfields() {
+ 	var columncount = 0;
+ 	$("div.fcol").each(function(i){
+ 		columncount++;
+ 		$("div.fcol p.deletebox").eq(i).removeClass('hidden');
+ 	});
+ 	if (columncount == 1) {
+ 		$("div.fcol p.deletebox").addClass('hidden');
+ 	}
+ }
+ 
+ 
+ $(document).ready(function() {
+ 	$("a[@id=ac]").
+ 		click(function(event){
+ 			event.preventDefault();
+ 			$("*[id=commentfield]").show();
+ 			$(this).hide("fast");
+ 			$("input[id=comment]").focus();
+ 		}
+ 	);
+ 	
+ 	$("div.fcol input").focus(function () {
+ 		fillfields();
+ 	});
+ 
+ 	function updatePreview() {
+ 		var defstr = getDefinitionString();
+ 		$("div[@id=previewpane]").load('preview.php', { 'def' : defstr }); 
+ 		$("*[@id=previewheader]").text($("input[@name=name]").attr('value'));
+ 		$("input[@id=coldef]").attr('value', defstr);
+ 	}
+ 
+ 	$("a[@id=link_preview]").click(function(event){updatePreview()});
+ 	$("a.buttonUpdatePreview").click(function(event){updatePreview()});
+ 	
+ 
+ 	$("#foodletabs > ul").tabs();
+ 	
+ 	/*
+ 	$("#foodledescr").resizable({ 
+ 	    handles: "all" 
+ 	});
+ 	*/
+ 	$("#deadline").datepicker({  
+ 		dateFormat: "yy-mm-dd 16:00",
+ 		firstDay: 1,
+ 		yearRange: '2015:2020'
+ /*		onSelect: function(date) { 
+ 			alert("The chosen date is " + date); 
+ 		} */
+ 	});
+ 
+ 	$("#inline").datepicker({  
+ 		dateFormat: "dd. M yy",
+ 		altFormat: "yy-mm-dd 16:00",
+ 		numberOfMonths: 1,
+ 		firstDay: 1,
+ 		yearRange: '2015:2020',
+ 		onSelect: function(date) { 
+ 			addAfter(date);
+ 			/* alert("The chosen date is " + date);  */
+ 		} 
+ 	});
+ });
+ 
+ function toggle(x) {
+ 	$("*[@id=" + x + "]").toggle();
+ }
+ 
+ 
+ function submit_foodle_form() {
+ 	 /* Required form fields:
+ 	 	- name
+ 	 	- at least one column with some string
+ 	 	- deadline/expire (expiration date)
+ 	 	Don't submit if one of those isn't filled usefully ...
+ 	 */
+ 
+ 	var submit_ok = true;
+ 	var err_msg = '';
+ 	var tab_to_be_corrected = $("#foodletabs > ul").tabs('length'); //Tab number, count starts from left to right with 0
+ 	var tab_nr; //Tab, the wrong field is in, count starts from left to right with 0
+ 
+ 	/* name field */
+ 	tap_nr = 0;
+ 	if ($("input[@name=name]").attr('value') == '' ) {
+ 		submit_ok = false;
+ 		err_msg += '- Bitte vergeben Sie einen Namen.\n';
+ 		$("input[@name=name]").addClass('badfield');
+ 		if (tab_to_be_corrected >= 0 && tap_nr < tab_to_be_corrected) {
+ 			tab_to_be_corrected = 0;
+ 		}
+ 	}
+ 	else
+ 	{
+ 		$("input[@name=name]").removeClass('badfield');
+ 	}
+ 
+ 
+ 	/* column names */
+ 	tap_nr = 1;
+ 	var defstr = getDefinitionString();
+ 	if (defstr == '' || defstr.replace(/|/g, "") == '') {
+ 		submit_ok = false;
+ 		err_msg += '- Bitte legen Sie mindestens eine Spalte mit einen Spaltennamen an.\n';
+ 		$("div.fcol:first").parent().addClass('badfield');
+ 		if (tab_to_be_corrected >= 0 && tap_nr < tab_to_be_corrected) {
+ 			tab_to_be_corrected = 1;
+ 		}
+ 	}
+ 	else
+ 	{
+ 		$("div.fcol:first").parent().removeClass('badfield');
+ 	}
+ 
+ 	/* deadline/expire */
+ 	tap_nr = 0;
+ 	var tmp_date = $("input[@name=expire]").attr('value');
+ 	if (tmp_date == '' || isNaN(Date.parse(tmp_date.replace(/-/g, '/'))) === true ) {
+ 		submit_ok = false;
+ 		err_msg += '- Bitte geben Sie ein gültigesAblaufdatum an.\n';
+ 		$("input[@name=expire]").addClass('badfield');
+ 		if (tab_to_be_corrected >= 0 && tap_nr < tab_to_be_corrected) {
+ 			tab_to_be_corrected = 0;
+ 		}
+ 	}
+ 	else
+ 	{
+ 		$("input[@name=expire]").removeClass('badfield');
+ 	}
+ 
+ 	if (err_msg != '') {
+ 		alert('\nSie haben nicht alle erforderlichen Felder korrekt ausgefüllt:\n\n'+err_msg+'\n\n');
+ 		if (tab_to_be_corrected >= 0) {
+ 			$("#foodletabs > ul").tabs('select', tab_to_be_corrected);
+ 		}
+ 		return submit_ok;
+ 	}
+ 	else
+ 	{
+ 		/* O'reidy, let's go! */
+ 		return submit_ok;
+ 	}
+ }
+   </script>
+   <link href="/css/design.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/css/feide.css" media="screen" rel="stylesheet" type="text/css"/>
+   <link href="/css/feide-foodle.css" media="screen" rel="stylesheet" type="text/css"/>
+   <title>
+    Terminplaner
+   </title>
+   <style type="text/css">
+    table#tlayout, table#tlayout td {
+ 			border: none;
+ 		}
+ 
+ 		.unicode {
+ 			font-family: "Unicode Symbols", "Times New Roman", "Apple Symbols","Arial Unicode MS";
+ 		}
+   </style>
+  </head>
+  <body>
+   <div id="Hovedtopp">
+    <div id="logo">
+     Terminplaner
+    </div>
+    <a alt="Link DFN-Verein e.V." href="http://www.dfn.de">
+     <img alt="Logo DFN-Verein e.V." id="ulogo" src="/resources/DFN_Zeichen2018.png"/>
+    </a>
+   </div>
+   <div class="stylehead">
+    <p style="float: left; margin-left: 1em">
+     Startseite
+    </p>
+    <br class="clear"/>
+   </div>
+   <div class="dokuwiki">
+    <div class="lang" style="">
+     <p style="float: right; margin-right: 1em">
+      Deutsch |
+      <a href="https://www.terminplaner.dfn.de/?language=en">
+       English
+      </a>
+     </p>
+    </div>
+    <div class="page">
+     <!-- wikipage start -->
+     <!--<div style="text-align: left; width: 300px; clear: right; float: right; border: 1px solid #ccc; margin: .2em; padding: .2em">
+ <h2>Statistics</h2>
+ <p>Foodle had 6440 responses last 7 days.</p>
+ </div>-->
+     <h1>
+      Willkommen beim Terminplaner
+     </h1>
+     <p>
+      Terminplaner ist ein Hilfsmittel zur Abstimmung von Terminen für die Teilnehmer am Deutschen Forschungsnetz. Terminplaner kann unentgeltlich genutzt werden.
+     </p>
+     <p>
+     </p>
+     Klicken Sie auf "Neuen Terminplan erstellen" um in drei einfachen Schritten ihren eigenen Terminplaner zu erstellen.
+     <p>
+      <!--Sie sind noch nicht angemeldet.<a class="button" style="" href="/simplesaml/saml2/sp/initSSO.php?RelayState=https%3A%2F%2Fwww.terminplaner.dfn.de%2F"><span>Anmelden</span></a>-->
+     </p>
+     <div style="clear: left; border: 1px solid #ccc; background: #f4f4f4; padding:1em; width: 300px; margin: 3em .5em .5em .5em">
+      <!-- h2>Neuen Terminplan erstellen</h2 -->
+      <form action="schedule.php" method="get">
+       <input type="submit" value="Neuen Terminplan erstellen"/>
+      </form>
+     </div>
+     <!--<h2>Status updates</h2>-->
+     <!--<h2>Weitere Informationen</h2>
+ <ul>
+ 	<li><a href="http://rnd.feide.no">Feide RnD Blog</a></li>
+ 	<li><a href="http://rnd.feide.no/content/foodle-users-guide">Terminplaner Benutzerhandbuch</a></li>
+ </ul>-->
+     <div id="expswitch">
+      <h1>
+       Drei Versionen verfügbar
+      </h1>
+      <p>
+      </p>
+      <h3>
+       <a href="https://terminplaner.dfn.de">
+        DFNTerminplaner (Diese Version)
+       </a>
+      </h3>
+      <p>
+       Der DFNTerminplaner ist die einfachste von drei Versionen, sie ist auf die wichtigsten Funktionalitäten beschränkt und vollständig anonym nutzbar.
+      </p>
+      <h3>
+       <a href="https://terminplaner2.dfn.de">
+        DFNTerminplaner+
+       </a>
+      </h3>
+      <p>
+       Der DFNTerminplaner+ bietet einen größeren Funktionsumfang u.a. eine Benachrichtigungsfunktion für den Ersteller der Abstimmung und eine zusätzliche Antwortmöglichkeit in Form einer „Vielleicht “-Option. Um eine Abstimmung zu erstellen, muss ein Nutzerkonto eingerichtet werden.
+      </p>
+      <h3>
+       <a href="https://abstimmung.dfn.de">
+        DFNTerminplaner 3.0
+       </a>
+      </h3>
+      <p>
+       Der DFNTerminplaner 3.0 verfügt über ein aktualisiertes Nutzerinterface und bietet eine erweiterte Auswahl von Antwortmöglichkeiten (Ja/Nein oder Ja/Nein/Vielleicht). Außerdem erleichtert er das Einladen von Teilnehmern durch die Möglichkeit Gruppen anzulegen. Ersteller einer Abstimmung können sich im Terminplaner 3.0 über die DFN-AAI anmelden.
+      </p>
+      <!-- <a class="button" href="https://terminplaner2.dfn.de/"><span>Zur neuen Version</span></a> -->
+     </div>
+     <br style="clear: both"/>
+     <!-- wikipage stop -->
+    </div>
+    <div class="clearer">
+    </div>
+    <div class="stylefoot">
+     <!--Sie sind noch nicht angemeldet.-->
+     <br/>
+     <p>
+      Die Software wurde von Andreas Akre Solberg vom norwegischen NREN
+      <a href="http://www.uninett.no">
+       UNINETT
+      </a>
+      entwickelt und vom
+      <a href="http://www.dfn.de">
+       DFN-Verein
+      </a>
+      angepasst.
+     </p>
+     <p>
+      <a href="http://www.dfn.de/verein/impressum/">
+       Impressum
+      </a>
+      /
+      <a href="https://terminplaner.dfn.de/datenschutz.php">
+       Datenschutz
+      </a>
+     </p>
+    </div>
+    <!-- end stylefoot -->
+   </div>
+   <!-- dokuwiki -->
+  </body>
+ </html>

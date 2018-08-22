@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Hotel Schenkenberger Hof
+   </title>
+   <meta content="type=text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <link href="lib/start.css" media="screen" rel="stylesheet"/>
+   <link href="http://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet" type="text/css"/>
+   <link href="https://www.schenkenberger-hof.de//image/favicon.png" rel="shortcut icon" type="image/png"/>
+   <link href="https://www.schenkenberger-hof.de//image/favicon.png" rel="icon" type="image/png"/>
+   <script src="lib/jQuery/jquery-1.7.1.min.js" type="text/javascript">
+   </script>
+   <script src="lib/start.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    $(document).ready(function(){
+             
+             var dayarray = ['So','Mo','Di','Mi','Do','Fr','Sa']
+             var weatherHTML = [];
+             
+             $.ajax({
+                 url:'http://api.openweathermap.org/data/2.5/forecast/daily?id=2938376',
+                 type:'post',
+                 async:true,
+                 dataType:'jsonp',                    
+                 success:function(xR){
+                     
+                     var weatherdata = xR;
+                     
+                     var temperatures = weatherdata.list;
+                     
+                     var daycount = 0;
+                     
+                     var temp_offset = -273.15;
+                     
+                     
+                     for (key in temperatures) {
+                         
+                         var day = new Date((temperatures[key].dt*1000));
+                        
+                         var temp_min = Math.round(temp_offset+temperatures[key].temp.min);
+                         var temp_max = Math.round(temp_offset+temperatures[key].temp.max);
+                         var temp_icon = temperatures[key].weather[0].icon+'.png';
+                         var weather_desc = temperatures[key].weather[0].description;
+                        
+                         var datum = day.getDate()+'.'+day.getMonth()+'.'+day.getFullYear();
+                        
+                         $('#wetter').append('<div class="weather_item"><table><tr><td class="col_1"><img src="image/icons/wetter/'+temp_icon+'" alt="'+weather_desc+'" width="36px"/></td><td class="col_2">'+dayarray[day.getDay()]+'</td><td class="col_3">'+temp_min+'° / '+temp_max+'°</td></tr></table></div>');
+                        
+                         daycount++;
+                         
+                         if (daycount>2) {
+                             break;
+                         }
+                         
+                     }
+                     
+                    
+                    
+                     
+             }});
+             
+             // NEWS BOX
+             $('#news_box .news_item').hide();
+                 
+             var news_size = $('#news_box .news_item').size();
+             
+             var news_navigation = $('<div id="news_navigation" />').css({'display':'block','height':'16px','text-align':'right','position':'absolute','bottom':'0','right':'4px'});
+             
+             var interval = 0;
+             
+             for(var i=0,k=news_size;i<k;i++)
+             {
+                 
+                 var link = $('<a />',{'href':'javascript:void(0)','data-show-item':i});
+                 
+                 link.on('click',function(){
+                     
+                     $('#news_box .news_item:visible').hide();
+                     
+                     $('#news_box .news_item:eq('+$(this).attr('data-show-item')+')').fadeIn(650);
+                     
+                     $('#news_navigation a').css('background','#666').removeClass('active');
+                     
+                     $(this).css('background','#970311').addClass('active');
+                     
+                     autoSlide();
+                     
+                 });
+                 
+                 
+                 link.css({'display':'inline','width':'6px','height':'6px','font-size':'12px','background':'#666','margin':'2px','padding':'0','float':'left'});
+                 news_navigation.append(link);
+                 
+             }
+             
+             $('#news_box').append(news_navigation);
+             
+             news_navigation.find('a').eq(0).trigger('click');
+             
+             
+             //$('#some_selector').parents('li').reverse();
+             //:)
+             
+             function autoSlide(){
+             
+                 clearInterval(interval);
+             
+                 interval = setInterval(function(){
+                     
+                     // Check the indexes
+                     var cIndex = $('#news_navigation a.active').index();
+                     var linkSize = $('#news_navigation a').size()-1;
+                     
+                     var nextIndex = (cIndex+1)>linkSize?0:(cIndex+1);
+                     
+                     $('#news_navigation a:eq('+nextIndex+')').trigger('click');
+                     
+                 },7000);
+             
+             }
+                 
+                 
+             
+                     
+         });
+   </script>
+  </head>
+  <body>
+   <div id="head_container">
+    <div id="head">
+     <script src="http://wis.profitroom.pl/schenkenbergerhof/BookNow.js?locale=de" type="text/javascript">
+     </script>
+     <img alt="Headergrafik" src="image/start/head_startseite.png"/>
+    </div>
+   </div>
+   <div id="content_container">
+    <div id="content">
+     <div class="box box1">
+      <img src="CMS/tinymce/jscripts/tiny_mce/plugins/imagemanager/files/startseite/uebernachten.jpg"/>
+      <div class="box_title">
+       Übernachten
+      </div>
+      <div class="box_subtitle">
+       Ruhe und Gastlichkeit genießen
+      </div>
+      <div class="box_links">
+       <a href="de/uebernachten/zimmer">
+        Zimmer
+       </a>
+       <a href="de/uebernachten/preise">
+        Preise
+       </a>
+       <a href="de/uebernachten/angebote">
+        Angebote
+       </a>
+       <a href="de/uebernachten/anfrage">
+        Buchungsanfrage
+       </a>
+      </div>
+     </div>
+     <div class="box box2">
+      <img src="CMS/tinymce/jscripts/tiny_mce/plugins/imagemanager/files/startseite/feiern.jpg"/>
+      <div class="box_title">
+       Feiern
+      </div>
+      <div class="box_subtitle">
+       Geschmackvolles
+       <br/>
+       Ambiente für jeden Anlass
+      </div>
+      <div class="box_links">
+       <a href="de/restaurant">
+        Restaurant
+       </a>
+       <a href="de/feierlichkeiten">
+        Feierlichkeiten
+       </a>
+       <a href="de/restaurant/speisen-der-saison">
+        Speisen der Saison
+       </a>
+       <a href="de/feierlichkeiten/anfrage">
+        Anfrage
+       </a>
+      </div>
+     </div>
+     <div class="box box3">
+      <img src="CMS/tinymce/jscripts/tiny_mce/plugins/imagemanager/files/startseite/delitzsch.jpg"/>
+      <div class="box_title">
+       Region
+      </div>
+      <div class="box_subtitle">
+       Delitzsch &amp; Umgebung
+      </div>
+      <div class="box_links">
+       <a href="de/freizeit/delitzsch">
+        Delitzsch
+       </a>
+       <a href="de/freizeit/goitzsche">
+        Goitzsche
+       </a>
+       <a href="de/freizeit/leipzig">
+        Leipzig
+       </a>
+       <a href="de/freizeit/lutherstadt-wittenberg">
+        Lutherstadt Wittenberg
+       </a>
+      </div>
+     </div>
+     <div class="box box4">
+      <img src="CMS/tinymce/jscripts/tiny_mce/plugins/imagemanager/files/startseite/kontakt.jpg"/>
+      <div class="box_title">
+       News &amp; Aktuelles
+      </div>
+      <div class="box_subtitle">
+       Worauf wir hinweisen möchten
+      </div>
+      <div class="box_links">
+       <div id="news_box">
+        <div class="news_item">
+         <b>
+          Bestpreis nur direkt im Hotel
+         </b>
+         <br/>
+         <i>
+          (13.01.2015)
+         </i>
+         <br/>
+         Keine Angst vor Kundenkarten, Booking-Card kostet nichts. 5% auf den tagesaktuellen Bestpreis sind garantiert.
+         <b>
+          <a href="index.php?page=115">
+           mehr
+          </a>
+         </b>
+         <p>
+         </p>
+        </div>
+        <!--<div class="news_item">
+                                 <b>Champions League</b><br/>
+                                                         <i>(05.03.2014)</i><br/>
+                                 Am 12.+13.03. starten die Rückspiele. Wir sind live dabei. <br/>
+                                                         <a href="http://www.kicker.de/news/fussball/chleague/startseite.html" target="_blank">mehr</a>
+                             </div>
+                             <div class="news_item">
+                                 <b>Champions League 2</b><br/>
+                                                         <i>(05.03.2014)</i><br/>
+                                 Am 12.+13.03. starten die Rückspiele. Wir sind live dabei. <br/>
+                                                         <a href="http://www.kicker.de/news/fussball/chleague/startseite.html" target="_blank">mehr</a>
+                             </div>
+                             <div class="news_item">
+                                 <b>Champions League 3</b><br/>
+                                                         <i>(05.03.2014)</i><br/>
+                                 Am 12.+13.03. starten die Rückspiele. Wir sind live dabei. <br/>
+                                                         <a href="http://www.kicker.de/news/fussball/chleague/startseite.html" target="_blank">mehr</a>
+                             </div>-->
+       </div>
+      </div>
+     </div>
+     <div style="clear: both">
+     </div>
+    </div>
+   </div>
+   <div id="footer_container">
+    <div id="footer_top">
+    </div>
+    <div id="footer_content">
+     <div class="footer_item_box" style="width: 210px">
+      <div class="footer_item_box_heading">
+       Schenkenberger Hof ***
+      </div>
+      <div class="footer_item_box_content">
+       <table id="op_imprint">
+        <tr>
+         <td>
+          Norbert Teresniak
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Hofegasse 3
+         </td>
+        </tr>
+        <tr>
+         <td>
+          04509 Delitzsch
+         </td>
+        </tr>
+        <tr>
+         <td>
+          OT Schenkenberg
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <div style="height:10px">
+          </div>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="mailto:kontakt@schenkenberger-hof.de">
+           kontakt@schenkenberger-hof.de
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Tel: +49 34202 730 0
+         </td>
+        </tr>
+        <tr>
+         <td>
+          Fax: +49 34202 730 73
+         </td>
+        </tr>
+       </table>
+      </div>
+     </div>
+     <div class="footer_item_spacer">
+     </div>
+     <div class="footer_item_box">
+      <div class="footer_item_box_heading">
+       Land-gut-Hotels
+      </div>
+      <div class="footer_item_box_content">
+       <a href="http://www.gut-hotels.de/" target="_blank" title="gut-Hotels-gruppe">
+        <img alt="Land-gut-Hotels" src="image/land-gut-hotels.png" style="border:0px;"/>
+       </a>
+      </div>
+     </div>
+     <div class="footer_item_spacer">
+     </div>
+     <div class="footer_item_box" style="width: 125px">
+      <div class="footer_item_box_heading">
+       Info &amp; News
+      </div>
+      <div class="footer_item_box_content">
+       <table>
+        <tr>
+         <td>
+          <a href="de/aktuelles">
+           Aktuelles
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="de/schenkenberger-hof/impressionen">
+           Impressionen
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="de/kontakt">
+           Kontakt
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="de/kontakt/impressum">
+           Impressum
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="de/kontakt/anfahrt">
+           Anreise
+          </a>
+         </td>
+        </tr>
+        <tr>
+         <td>
+          <a href="de/kontakt/datenschutz">
+           Datenschutz
+          </a>
+         </td>
+        </tr>
+       </table>
+      </div>
+     </div>
+     <div class="footer_item_box" style="width: 150px;">
+     </div>
+     <div class="footer_item_spacer">
+     </div>
+     <div class="footer_item_box" style="width: 150px">
+      <div class="footer_item_box_heading">
+       Wetter
+      </div>
+      <div class="footer_item_box_content" id="wetter">
+      </div>
+     </div>
+    </div>
+    <div id="footer_bottom">
+    </div>
+   </div>
+   <div id="copyright">
+    © 2014 - Schenkenberger Hof
+   </div>
+   <div id="cookies">
+    Diese Webseite verwendet Cookies, um bestimmte Funktionen zu ermöglichen und das Angebot zu verbessern. 
+ 								Indem Sie hier fortfahren, stimmen Sie der Nutzung von Cookies zu.
+    <a href="de/kontakt/datenschutz">
+     → Mehr Informationen
+    </a>
+    <button>
+     OK
+    </button>
+   </div>
+   <style type="text/css">
+    .pf_booknow_inner {
+             width: 980px !important;
+         }
+   </style>
+  </body>
+ </html>

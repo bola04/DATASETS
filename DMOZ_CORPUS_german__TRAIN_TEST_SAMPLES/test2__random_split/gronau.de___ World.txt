@@ -1,0 +1,1330 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+ <html>
+  <head>
+   <meta content="text/css" http-equiv="Content-Style-Type"/>
+   <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+   <title>
+    www.gronau.de
+   </title>
+   <link href="basic.css" rel="styleSheet" type="text/css"/>
+   <link href="basic_design.css" rel="styleSheet" type="text/css"/>
+   <link href="basic_nav.css" rel="styleSheet" type="text/css"/>
+   <style type="text/css">
+    .info_panel { border: 1px solid #FFE254; background: #FFF7D1; }
+ 		.info_panel_headline { background: #FFE254; }
+ 		#subnav a, #subnav a:link, #subnav a:visited { border-bottom: 1px solid #FFE254; }
+ 		.suchfeld { border: 1px solid #FFE254; }
+ 		.suchbutton { background: #FFF7D1; background-image:url(./media/output/csslink_intern.gif); border: 1px solid #FFF7D1; }
+ 
+ 		.mtp_header, .mtp_footer, .Mod_BC2,
+ 		.tpl_headline { background: #FFE254; }
+ 		.Mod_BC4 {background: #fff; }
+ 		.mtp_content, .tpl_spalte_rechts { border: 1px solid #FFE254; background: #FFF7D1; }
+ 
+ 		li.li_level_ac a { background: #FAE891; color: #fff; }
+ 		li.li_level a { background: #FFF7D1;  color: #fff;}
+ 
+ 		/*#mnav { background: url(media/bg_mnav_rathaus.gif) repeat-x;*/ }
+   </style>
+   <script language="JavaScript" src="/basic.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="/output/js/ikiss/basic.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" type="text/javascript">
+    try {  document.execCommand('BackgroundImageCache', false, true); } catch(e) { }
+   </script>
+   <style type="text/css">
+    body { font-size: 100%; }
+   </style>
+   <style type="text/css">
+    body {font-size:100%;}
+   </style>
+   <script src="/output/js/jquery/jquery-1.11.3.min.js" type="text/javascript">
+   </script>
+   <script charset="utf-8" src="/jquery.modal.min.js" type="text/javascript">
+   </script>
+   <link href="/jquery.modal.css" rel="styleSheet" type="text/css"/>
+   <!--[if lte IE 8]>
+ 			<style type="text/css">
+ 				.blocker { position: absolute; }
+ 			</style>
+ 			<![endif]-->
+   <script type="text/javascript">
+    window.wt_sendinfo = function() {}
+ 			
+ 			$(document).ready(function () {
+ 				
+ 				//Piwik Opt-Out Modal Box	
+ 				window.piwikModal = {
+ 					
+ 					init: function() {
+ 						var doTrack = ikiss_basic.getCookie("ikiss-tracking");
+ 						if (doTrack !== false)
+ 							return;
+ 						
+ 						this.load('1486.5971');
+ 					},
+ 					
+ 					onEvent: function(e) {
+ 						var d	= e.data,
+ 							sc	= d.scope,
+ 							fn	= d.fn;
+ 						sc[fn] && sc[fn].apply(sc, [e].concat(d.args || []));
+ 					},
+ 					
+ 					stopEvent: function(e) {
+ 						e.stopPropagation();
+ 						e.preventDefault();						
+ 					},
+ 					
+ 					onClick: function(e) {
+ 						var me		= this,
+ 							n		= $(e.target).closest('a');
+ 						
+ 						n = n && n[0];
+ 						
+ 						if (!n) return;	
+ 						
+ 						var d = n && $(n).data();
+ 							
+ 						if ($(n).is('a')) {
+ 							var href	= $(n).attr('href'),
+ 								trg		= $(n).attr('target'),
+ 								patt	= /(showobject\.phtml|index\.phtml)/g;
+ 								
+ 							if (patt.test(href)) {
+ 								href = href.replace(patt, 'output/get_content.php');
+ 								href = href.replace(/,/,'|');
+ 								$.get(href, function(html) { me.onLoad.call(me, html); });
+ 								me.stopEvent(e);
+ 								return false;	
+ 							}
+ 						}	
+ 							
+ 						if (d && d.txid) {
+ 							this.load(d.txid);	
+ 							me.stopEvent(e);
+ 							return false;
+ 						}
+ 						
+ 					},
+ 					
+ 					onModalClose: function() {
+ 						if(this.captureCloseEvent == false)
+ 							return;
+ 						
+ 						window.piwikModal.setCookie(1);
+ 					},
+ 									
+ 					load: function(id) {
+ 						var me = this;
+ 						$.get('/output/get_content.php?object=tx|'+id, function(html) { me.onLoad.call(me, html); });	
+ 					},				
+ 					
+ 					onLoad: function(html) {
+ 						var me		= this,
+ 							markUp	= me.wrapHtml(html),
+ 							app		= $(markUp).appendTo('body');
+ 							
+ 						me.captureCloseEvent = false;	
+ 						app.modal();	
+ 						app.on($.modal.AFTER_CLOSE,{fn: 'onModalClose', scope: me }, me.onEvent);
+ 						app.on('click',{fn: 'onClick', scope: me }, me.onEvent);
+ 						me.captureCloseEvent = true;
+ 					},
+ 					
+ 					wrapHtml: function(html) {
+ 						return [
+ 							'<div class="modal">', 
+ 								html,
+ 							'</div>'
+ 						].join('');	
+ 					},
+ 					
+ 					setCookie: function(v) {
+ 						var doTrack		= ikiss_basic.getCookie("ikiss-tracking"),
+ 							tracking	= (v == 2) ? -1 : 1;
+ 						
+ 						if (doTrack !== false)
+ 							return;
+ 							
+ 						ikiss_basic.setCookie('ikiss-tracking', tracking, 365);	
+ 						if (window._paq) {
+ 							if (tracking == 1) _paq.push(['trackEvent', 'ButtonPiwikTrackingOff','click']);
+ 							if (tracking == -1) _paq.push(['trackEvent', 'ButtonPiwikMenuOff','click']);
+ 						}
+ 						$.modal.close();						
+ 					}
+ 					
+ 				};
+ 				
+ 				window.piwikModal.init();
+ 			});
+   </script>
+  </head>
+  <body>
+   <a id="start" name="start">
+   </a>
+   <a id="oben" name="oben">
+   </a>
+   <div id="main">
+    <!-- Kopfbereich -->
+    <div id="header">
+     <a href="index.phtml" target="_top" title="Zurück zur Startseite">
+      <img alt="Zurück zur Startseite" class="schriftzug" src="media/schriftzug.gif"/>
+     </a>
+     <div id="slogan">
+      Netzwerk der Stadt Gronau (Westf.)
+     </div>
+     <div id="sprachen">
+      <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.38&amp;La=2" title="english">
+       <img alt="Icon english" src="/media/icon_gb.gif"/>
+      </a>
+      <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.38&amp;La=19" title="nederlands">
+       <img alt="Icon nederlands" src="/media/icon_nl.gif"/>
+      </a>
+     </div>
+     <div id="quicknav">
+      <ul>
+       <li>
+       </li>
+       <li>
+        <span class="qnav_lk">
+         <a href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.7344.1&amp;kat=&amp;kuo=2&amp;sub=0" target="">
+          Datenschutz
+         </a>
+        </span>
+       </li>
+       <li>
+        <span class="qnav_lk">
+         <a href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.7343.1&amp;kat=&amp;kuo=2&amp;sub=0" target="">
+          Impressum
+         </a>
+        </span>
+       </li>
+       <li>
+        <span class="qnav_lk">
+         <a href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.503.1&amp;sub=0" target="">
+          Kontakt
+         </a>
+        </span>
+       </li>
+       <li>
+        <span class="qnav_lk">
+         <a href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;ffmod=smp" target="">
+          Sitemap
+         </a>
+        </span>
+       </li>
+       <li>
+        <span class="qnav_lk">
+         <a href="http://www.unser-stadtplan.de/stadtplan/gronau/kartenstartpunkt/plan-gronau.map" target="">
+          Stadtplan
+         </a>
+        </span>
+       </li>
+      </ul>
+     </div>
+     <div id="datum">
+      Mittwoch, den 01.08.2018
+     </div>
+    </div>
+    <!-- /Kopfbereich -->
+    <!-- Navigationsbereich -->
+    <div id="mnav">
+     <div class="mnav_block">
+      <div class="mnav_topline gelb">
+      </div>
+      <a href="index.phtml?mNavID=1486.38&amp;La=1" title="Rat, Verwaltung &amp; Bürgerservice">
+       <img align="center" alt="Rat, Verwaltung &amp; Bürgerservice" border="0" class="top_img" src="media/bild_rat.jpg"/>
+      </a>
+      <div class="mnav_punkt gelb">
+       <a href="index.phtml?mNavID=1486.38&amp;La=1">
+        Rat, Verwaltung
+        <br/>
+        &amp; Bürgerservice
+       </a>
+      </div>
+     </div>
+     <div class="mnav_spacer">
+     </div>
+     <div class="mnav_block">
+      <div class="mnav_topline gruen">
+      </div>
+      <a href="index.phtml?mNavID=1486.37&amp;La=1" title="Tourismus &amp; Kultur, Sport &amp; Freizeit">
+       <img align="center" alt="Tourismus &amp; Kultur, Sport &amp; Freizeit" border="0" class="top_img" src="media/bild_touri.jpg"/>
+      </a>
+      <div class="mnav_punkt gruen">
+       <a href="index.phtml?mNavID=1486.37&amp;La=1">
+        Tourismus &amp; Kultur
+        <br/>
+        Sport &amp; Freizeit
+       </a>
+      </div>
+     </div>
+     <div class="mnav_spacer">
+     </div>
+     <div class="mnav_block">
+      <div class="mnav_topline rot">
+      </div>
+      <a href="index.phtml?mNavID=1486.40&amp;La=1" title="Familie, Jugend &amp; Bildung, Arbeit &amp; Soziales">
+       <img align="center" alt="Familie, Jugend &amp; Bildung, Arbeit &amp; Soziales" border="0" class="top_img" src="media/bild_familie.jpg"/>
+      </a>
+      <div class="mnav_punkt rot">
+       <a href="index.phtml?mNavID=1486.40&amp;La=1">
+        Familie, Jugend &amp;
+        <br/>
+        Bildung, Arbeit &amp; Soziales
+       </a>
+      </div>
+     </div>
+     <div class="mnav_spacer">
+     </div>
+     <div class="mnav_block">
+      <div class="mnav_topline blau">
+      </div>
+      <a href="index.phtml?mNavID=1486.41&amp;La=1" title="Planen, Bauen und Umwelt">
+       <img align="center" alt="Planen &amp; Bauen, Umwelt" border="0" class="top_img" src="media/bild_planen.jpg"/>
+      </a>
+      <div class="mnav_punkt blau">
+       <a href="index.phtml?mNavID=1486.41&amp;La=1">
+        Planen, Bauen &amp;
+        <br/>
+        Umwelt
+       </a>
+      </div>
+     </div>
+     <div class="mnav_spacer">
+     </div>
+     <div class="mnav_block">
+      <div class="mnav_topline orange">
+      </div>
+      <a href="index.phtml?mNavID=1486.42&amp;La=1" title="Wirtschaftsförderung &amp; Unternehmen">
+       <img align="center" alt="Wirtschaftsförderung &amp; Unternehmen" border="0" class="top_img" src="media/bild_wirtschaft.jpg"/>
+      </a>
+      <div class="mnav_punkt orange">
+       <a href="index.phtml?mNavID=1486.42&amp;La=1">
+        Wirtschaftsförderung &amp;
+        <br/>
+        Unternehmen
+       </a>
+      </div>
+     </div>
+     <div class="mnav_spacer">
+     </div>
+    </div>
+    <div class="clear">
+    </div>
+    <!-- /Navigationsbereich -->
+    <!-- Linke Spalte -->
+    <div id="spalte_links">
+     <div class="spacer_links">
+     </div>
+     <div class="info_panel">
+      <div class="info_panel_headline">
+       Volltextsuche
+      </div>
+      <div class="info_panel_content">
+       <form action="/index.phtml" method="get" name="suchform" style="display: inline;">
+        <input name="ffmod" type="hidden" value="suche"/>
+        <input name="mNavID" type="hidden" value="1486.38"/>
+        <input name="sNavID" type="hidden" value="1486.38"/>
+        <input name="La" type="hidden" value="1"/>
+        <input class="suchfeld" name="such" type="text" value=""/>
+        <input class="suchbutton" type="submit" value="    "/>
+       </form>
+      </div>
+     </div>
+     <div class="spacer_links">
+     </div>
+     <div class="info_panel">
+      <div class="info_panel_headline">
+       <span class="text4">
+        <strong>
+         Schriftgröße anpassen
+        </strong>
+       </span>
+      </div>
+      <div class="info_panel_content schriftoptionen">
+       <form action="/index.php" method="GET" name="css_1" style="display:inline">
+        <input name="sNavID" type="hidden" value="1486.38"/>
+        <input name="zoom" type="hidden" value="-1"/>
+        <input alt="" src="/media/css_smaller.gif" title="Zum Verkleinern der Schriftgröße bitte hier klicken" type="image"/>
+       </form>
+       <form action="/index.php" method="GET" name="css_2" style="display:inline">
+        <input name="sNavID" type="hidden" value="1486.38"/>
+        <input name="zoom" type="hidden" value="0"/>
+        <input alt="" src="/media/css_reset.gif" title="Zum Zurücksetzen der Schriftgröße bitte hier klicken" type="image"/>
+       </form>
+       <form action="/index.php" method="GET" name="css_3" style="display:inline">
+        <input name="sNavID" type="hidden" value="1486.38"/>
+        <input name="zoom" type="hidden" value="1"/>
+        <input alt="" src="/media/css_bigger.gif" title="Zum Vergrößern der Schriftgröße bitte hier klicken" type="image"/>
+       </form>
+      </div>
+     </div>
+     <div class="spacer_links">
+     </div>
+     <div class="info_panel">
+      <div class="info_panel_headline">
+       <!--
+ 	  <div class="info_panel_headline">
+ 		Hauptpunkt
+ 	  </div>
+ 	  <div id="subnav" class="info_panel_content">
+ 	  -->
+       <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.38&amp;La=1">
+        <span class="snav_ac">
+         Aktuelle Pressemitteilungen
+        </span>
+       </a>
+      </div>
+      <div class="info_panel_content" id="subnav">
+       <ul class="ul_level_1">
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.384&amp;La=1">
+          <span class="snav_lk">
+           Amtsblatt
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.48&amp;La=1">
+          <span class="snav_lk">
+           Anregungen und Beschwerden
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.46&amp;La=1">
+          <span class="snav_lk">
+           Ausschreibungen/Veräußerungen
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.151&amp;La=1">
+          <span class="snav_lk">
+           Bilder/Virtueller Stadtrundgang
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.382&amp;La=1">
+          <span class="snav_lk">
+           Bürgermeisterin
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.283&amp;La=1">
+          <span class="snav_lk">
+           Ehrenbürger und Ehrenbürgermeister
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.301&amp;La=1">
+          <span class="snav_lk">
+           Rat und Ausschüsse
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.53&amp;La=1">
+          <span class="snav_lk">
+           <b>
+            Rathaus online
+           </b>
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.282&amp;La=1">
+          <span class="snav_lk">
+           Stellenausschreibungen
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="http://www.gronau-inside.de/veranstaltungskalender" target="_blank">
+          <span class="snav_lk">
+           Veranstaltungskalender
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.274&amp;La=1">
+          <span class="snav_lk">
+           Vereine/Verbände
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.369&amp;La=1">
+          <span class="snav_lk">
+           Verwaltungssuchmaschine NRW
+          </span>
+         </a>
+        </li>
+        <li class="li_level">
+         <a href="/index.phtml?mNavID=1486.38&amp;sNavID=1486.337&amp;La=1">
+          <span class="snav_lk">
+           Infos für Kinder und Jugendliche
+          </span>
+         </a>
+        </li>
+       </ul>
+      </div>
+     </div>
+     <div class="spacer_links">
+     </div>
+     <div id="infoblock_links">
+      <div class="infoblock_links">
+       <!--
+ -->
+       <div class="info_panel">
+        <div class="info_panel_headline">
+         Der aktuelle Kultur-Tipp
+        </div>
+        <div class="info_panel_content">
+         <div class="text3" style="display:inline">
+          <div>
+           <div>
+            <div>
+             <div>
+              <div>
+               <div>
+                <div>
+                 <div>
+                  <div>
+                   <p>
+                    <strong>
+                     02.08. Dinkie on wheels
+                    </strong>
+                    <br/>
+                    die Volksbank-Inliner-Tour
+                    <br/>
+                    Start am TVG Vereinsheim
+                    <br/>
+                    19.30 Uhr, Laubstiege
+                   </p>
+                   <p>
+                    <strong>
+                     03.08. Chris de Burgh, Konzert
+                    </strong>
+                    ,
+                    <br/>
+                    20.00 Uhr Bürgerhalle
+                   </p>
+                   <p>
+                    <strong>
+                     04.08. 60 Jahre Bültenfreibad
+                    </strong>
+                    <br/>
+                    Open-Air-Kino mit 2 Filmen,
+                    <br/>
+                    ab 18.00 Uhr
+                   </p>
+                   <p>
+                    <strong>
+                     09.08. Meet and Eat:
+                    </strong>
+                    <br/>
+                    <strong>
+                     Dämmerschoppen
+                    </strong>
+                    <br/>
+                    der neue Abendmarkt in Gronau!
+                    <br/>
+                    17.00 bis 21.00 Uhr
+                   </p>
+                  </div>
+                 </div>
+                </div>
+                <div>
+                </div>
+               </div>
+               <div>
+                <p>
+                 <span class="text3">
+                  <font color="#000000">
+                   <br/>
+                  </font>
+                  <strong>
+                  </strong>
+                 </span>
+                </p>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <!-- /Linke Spalte -->
+    <div class="text2" id="ikiss_content" style="font-size: 75%;">
+     <div class="spacer_links">
+     </div>
+     <div id="ikiss_content_rechts">
+      <!-- 
+ Array
+ (
+     [1486.38] => Aktuelle Pressemitteilungen
+ )
+ 
+  -->
+      <div class="info_panel">
+       <div class="info_panel_headline">
+       </div>
+       <div class="info_panel_content" style="font-size: 100%;">
+        <!-- Webtrekk 2.1.6, (c) www.webtrekk.de -->
+        <script type="text/javascript">
+         if(typeof(wt_sendinfo) != "undefined")wt_sendinfo("de.Aktuelle_Pressemitteilungen.Sonja_Juergens_-_Homepage_20.11.2017._22");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Ausbildung_2019");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Image-Film");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Logo_Gronau_goes_digital_-_Text_hier");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Fairtrade_Stadt_Gronau");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Gronauer_Innenstadt");wt_sendinfo("de.Aktuelle_Pressemitteilungen.Ehrenamtskarte");wt_sendinfo("de.Aktuelle_Pressemitteilungen.gut_fuer_das_westmuensterland");
+        </script>
+        <noscript>
+         <div>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Sonja_Juergens_-_Homepage_20.11.2017._22&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Ausbildung_2019&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Image-Film&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Logo_Gronau_goes_digital_-_Text_hier&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Fairtrade_Stadt_Gronau&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Gronauer_Innenstadt&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Ehrenamtskarte&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+          <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.gut_fuer_das_westmuensterland&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+         </div>
+        </noscript>
+        <!-- /Webtrekk -->
+        <div class="text3" style="display:inline">
+         <p align="justify">
+          <font color="#000002" style="background-color: #888888;">
+           <font color="#000000" style="background-color: #ffffff;">
+            <u>
+             <strong>
+              Bürgermeisterin Sonja Jürgens
+              <br/>
+             </strong>
+            </u>
+           </font>
+          </font>
+         </p>
+         <p>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.4137.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Ihr direkter Kontakt zu
+            <br/>
+            Sonja Jürgens
+           </a>
+          </strong>
+          <br/>
+          <br/>
+          <img align="left" alt="Bürgermeisterin Sonja Jürgens" border="0" class="mt_left" height="167" hspace="15" src="https://www.gronau.de/media/custom/1486_9075_1_g.JPG?1511169953" title="Bürgermeisterin Sonja Jürgens" vspace="5" width="124"/>
+         </p>
+         <p>
+         </p>
+         <p>
+         </p>
+         <p>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <a class="csslink_intern_img" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.2485.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            <img align="left" alt="Ausbildung 2019" border="0" class="css_linkimg mt_left" height="53" hspace="15" src="https://www.gronau.de/media/custom/1486_9562_1_m.JPG?1530698134" vspace="5" width="200"/>
+           </a>
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+          </strong>
+         </p>
+         <p>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.7334.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            → azubiTALK
+           </a>
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           Entdecken Sie Gronau im
+           <br/>
+          </strong>
+          <strong>
+           <a class="csslink_extern" href="https://www.youtube.com/watch?v=9EaOxq2AkdM&amp;t=1s" target="_blank" title="Externer Link">
+            Imagefilm
+           </a>
+           !
+          </strong>
+          <a class="csslink_extern_img" href="http://www.gronau-inside.de/" target="_blank" title="Externer Link">
+           <img align="left" alt="Externer Link: Image-Film" border="0" class="css_linkimg mt_left" height="113" hspace="15" src="https://www.gronau.de/media/custom/1486_6234_1_m.PNG?1414130495" vspace="5" width="200"/>
+          </a>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
+         </p>
+         <p>
+         </p>
+         <p>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.5650.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Bürgerinnen und Bürger zeigen
+           </a>
+           <br/>
+           schöne Ansichten unserer Stadt!
+           <br/>
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <a class="csslink_intern_img" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.7286.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+           <img align="left" alt="Logo Gronau goes digital - Text hier" border="0" class="css_linkimg mt_left" height="100" hspace="15" src="https://www.gronau.de/media/custom/1486_9499_1_m.JPG?1527080256" vspace="5" width="200"/>
+          </a>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <a class="csslink_intern_img" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.4210.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+           <img align="left" alt="Fairtrade Stadt Gronau" border="0" class="css_linkimg mt_left" height="133" hspace="15" src="https://www.gronau.de/media/custom/1486_5645_1_m.JPG?1390981118" vspace="5" width="192"/>
+          </a>
+         </p>
+         <p>
+          <br/>
+          <br/>
+         </p>
+         <p>
+         </p>
+         <p>
+         </p>
+         <p>
+         </p>
+         <p>
+          <br/>
+          <a class="csslink_extern" href="https://www.youtube.com/watch?v=BotAWTSdh4g&amp;t=2s" target="_blank" title="Externer Link">
+           Fairtrade-Film Gronau
+          </a>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <a class="csslink_extern" href="http://46.245.220.4/Gronau/asp/main.asp" target="_blank" title="Externer Link">
+            Geografisches Bürgerinformationssystem
+           </a>
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <u>
+            Innenstadtentwicklung
+           </u>
+           <br/>
+          </strong>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.5925.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Bieterverfahren Hertie
+           </a>
+           <br/>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.3485.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Verfahren
+           </a>
+          </strong>
+          <br/>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.3446.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Meinungsforum
+           </a>
+          </strong>
+          <strong>
+           <img align="left" alt="Gronauer Innenstadt" border="0" class="mt_left" height="132" hspace="15" src="https://www.gronau.de/media/custom/1486_5017_1_m.JPG?1367852175" title="Gronauer Innenstadt" vspace="5" width="200"/>
+          </strong>
+         </p>
+         <p>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+          <strong>
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <a class="csslink_intern_img" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.1425.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            <img align="left" alt="Ehrenamtskarte" border="0" class="css_linkimg mt_left" height="132" hspace="15" src="https://www.gronau.de/media/custom/1486_861_1_m.JPG?1213883345" vspace="5" width="200"/>
+           </a>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+          <strong>
+          </strong>
+         </p>
+         <p>
+         </p>
+         <p>
+         </p>
+         <p>
+          <br/>
+          <br/>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <a class="csslink_intern" href="/index.phtml?La=1&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1486.7275.1&amp;kat=&amp;kuo=2&amp;sub=0" target="_self">
+            Online-Konsultation
+           </a>
+          </strong>
+          <strong>
+           zur
+           <br/>
+           Zukunfts Europas
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           Spendenportal
+           <br/>
+          </strong>
+          <span class="text2">
+           <a class="csslink_extern" href="http://www.gut-fuer-das-westmuensterland.de/" target="_blank" title="Externer Link">
+            www.gut-fuer-das-westmuensterland.de
+           </a>
+           <br/>
+          </span>
+          <strong>
+           <img align="left" alt="gut für das westmünsterland" border="0" class="mt_left" height="133" hspace="15" src="https://www.gronau.de/media/custom/1486_8438_1_m.JPG?1499415010" title="gut für das westmünsterland" vspace="5" width="116"/>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <p>
+          <strong>
+          </strong>
+         </p>
+         <hr align="left" i_tp="7" size="1" width="100%"/>
+         <p>
+          <strong>
+           <strong>
+            <a class="csslink_extern" href="https://www.gronau-inside.de/veranstaltungskalender" target="_blank" title="Externer Link">
+             Zum Veranstaltungskalender
+            </a>
+           </strong>
+          </strong>
+         </p>
+         <div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div id="ikiss_content_links">
+      <div style="width:100%">
+       <!-- Webtrekk 2.1.6, (c) www.webtrekk.de -->
+       <script type="text/javascript">
+        <!--
+ var webtrekk = new Object();
+ 
+ webtrekk.trackDomain = "advantic.webtrekk.net"; // track url
+ webtrekk.trackId = "658919812251280"; // webtrekk id(s)
+ webtrekk.domain = "https://www.gronau.de/"; // list or regexp of your domains
+ webtrekk.contentId = "de.Aktuelle_Pressemitteilungen.Startseite_mit_News"; // content id
+ 
+ ////// OPTIONAL
+ //// content group(s)
+ webtrekk.contentGroup = new Array();
+ webtrekk.contentGroup[1] = "gronau";
+ webtrekk.contentGroup[2] = "";
+ webtrekk.internalSearch  = "";
+ //-->
+       </script>
+       <script src="/output/js/webtrekk/webtrekk_216.js" type="text/javascript">
+       </script>
+       <!-- /Webtrekk -->
+       <!-- Webtrekk 2.1.6, (c) www.webtrekk.de -->
+       <script type="text/javascript">
+        if(typeof(wt_sendinfo) != "undefined")wt_sendinfo("de.Aktuelle_Pressemitteilungen.Startseite_mit_News");
+       </script>
+       <noscript>
+        <div>
+         <img alt="" height="1" src="https://advantic.webtrekk.net/658919812251280/wt.pl?p=216,de.Aktuelle_Pressemitteilungen.Startseite_mit_News&amp;ov=&amp;cr=&amp;oi=&amp;ba=&amp;co=&amp;qn=&amp;ca=&amp;pi=&amp;st=&amp;cd=&amp;cg1=gronau" width="1"/>
+        </div>
+       </noscript>
+       <!-- /Webtrekk -->
+       <div class="tpl_spalte_links_fest">
+        <div class="tpl_headline">
+         <div style="display:inline">
+          <strong>
+           Aktuelle Meldungen
+          </strong>
+         </div>
+        </div>
+        <div class="tpl_content ">
+         <div style="display:inline">
+          <a name="nr_1">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            23.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7352.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Stadtarchiv bis zum 17. August geschlossen
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_2">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="izg/stadtarchiv" border="0" class="mt_left" src="https://www.gronau.de/media/custom/1486_3609_1_m.JPG?1312469641" title="izg/stadtarchiv" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Das Stadtarchiv der Stadt Gronau ist vom 23. Juli bis zum 17. August - einschließlich - geschlossen.
+           <br/>
+           <br/>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_2">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            23.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7334.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Was machen die da in der Verwaltung eigentlich?! #azubiTALK
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_3">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="right" alt="azubiTALK" border="0" class="mt_right" src="https://www.gronau.de/media/custom/1486_9602_1_r.JPG?1531228263" style="width: 447px; height: 316px;" title="azubiTALK" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Trinken die IT-Fachinformatiker eigentlich den ganzen Tag nur Kaffee? Besteht die Hauptaufgabe der Verwaltungsfachangestellten nur daraus, Stempel unter Dokumente zu setzen? Und hat man neben einem dualen Studium überhaupt noch Freizeit?
+           <br/>
+           Am 04.07. startete die neue Bewerbungsphase für den Ausbildungsbeginn 2019 bei der Stadt Gronau. Noch bis zum 24.08. können sich Interessierte für ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7334.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  Was machen die da in der Verwaltung eigentlich?! #azubiTALK">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_3">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            19.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7349.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Stadtrat stimmt finalem Kaufvertrag für »Hertie«-Areal zu
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_4">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="Das Hertie-Gebäude in Gronau" border="0" class="mt_left" src="https://www.gronau.de/media/custom/1486_4703_1_g.JPG?1355922395" title="Das Hertie-Gebäude in Gronau" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Gronau/Oldenburg, 19. Juli 2018. Auf der nichtöffentlichen Sitzung des Stadtrates am 18. Juli 2018 wurde ein Meilenstein in der Geschichte der Stadtentwicklung gesetzt. Mit breiter Mehrheit stimmten die Ratsmitglieder dem Verkauf der städtischen Flächen des ehemaligen „Hertie“-Areals an die DRIO-Investoren HOFF und Partner und LIST Develop Commercial zu. „Es geht beim DRIO um eine moderne ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7349.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  Stadtrat stimmt finalem Kaufvertrag für »Hertie«-Areal zu">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_4">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            17.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7345.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             EU-Verantwortliche tagen zu Europa, EUREGIO und Städtepartnerschaften
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_5">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="EU-Verantwortliche tagen zu Europa, EUREGIO und Städtepartnerschaften" border="0" class="mt_left mt_autowidth" src="https://www.gronau.de/media/custom/1486_9611_1_r.JPG?1531816134" style="width: 100%; height: auto;" title="EU-Verantwortliche tagen zu Europa, EUREGIO und Städtepartnerschaften" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Bocholt (EUBOH) - Der Kreis Borken hatte erstmals die Verantwortlichen für EU-Kontakte und –Projekte aus seinen 17 Kommunen am 12. Juli 2018 in das Europa-Haus Bocholt eingeladen. Ziel dieser Veranstaltung war, dass die Kolleginnen und Kollegen sich kreisweit kennen lernen. Dr. Gerd Eckstein vom Kreis Borken informierte über die Europa- und grenzüberschreitende Arbeit des Kreises. ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7345.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  EU-Verantwortliche tagen zu Europa, EUREGIO und Städtepartnerschaften">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_5">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            16.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7342.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Einkommens- und Verbrauchsstichprobe 2018
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_6">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="EVS" border="0" class="mt_left mt_autowidth" src="https://www.gronau.de/media/custom/1486_9608_1_r.JPG?1531742168" style="width: 100%; height: auto;" title="EVS" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Beim Mitmachen gibt es eine Geldprämie
+           <br/>
+           Unter dem Motto „Wo bleibt mein Geld?“ findet seit dem 1. Januar 2018 deutschlandweit die Einkommens- und Verbrauchsstichprobe (EVS), die größte freiwillige Haushaltserhebung der amtlichen Statistik, statt. Information und Technik Nordrhein-Westfalen (IT.NRW) als amtliche Statistikstelle des Landes sucht für die Einkommens- und Verbrauchsstichprobe (EVS) 2018 nach wie vor ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7342.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  Einkommens- und Verbrauchsstichprobe 2018">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_6">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            16.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7338.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Stadt feierte Jubilare und verabschiedete langjährige Mitarbeiter
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_7">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="Dienstjubiläum und Verabschiedung Juli 2018" border="0" class="mt_left mt_autowidth" src="https://www.gronau.de/media/custom/1486_9607_1_r.JPG?1531725424" style="width: 100%; height: auto;" title="Dienstjubiläum und Verabschiedung Juli 2018" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           „Nach 25 Jahren, nach 40 Jahren und am Ende eines langen Berufslebens in der Verwaltung gibt es viel zu erzählen. Gratulation und Dank für das, was Sie in dieser Zeit, einem großen Teil Ihrer Lebenszeit, für die Stadt Gronau getan haben“, sagte Sandra Cichon, Erste Beigeordnete der Stadt Gronau zu den Jubilaren am vergangenen Freitag bei einer Feierstunde im Hotel Driland.
+           <br/>
+           V.l.n.r.: ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7338.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  Stadt feierte Jubilare und verabschiedete langjährige Mitarbeiter">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_7">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            13.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7337.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Amtsblatt Nr. 10/2018 für die Stadt Gronau erschienen
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_8">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="Amtsblatt der Stadt Gronau" border="0" class="mt_left" src="https://www.gronau.de/media/custom/1486_5625_1_m.JPG?1389607243" title="Amtsblatt der Stadt Gronau" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Das aktuelle Amtsblatt Nr. 10/2018 für die Stadt Gronau ist erschienen.
+           <br/>
+           Weitere Informationen zum Amtsblatt der Stadt Gronau finden Sie in der Übersicht.
+           <br/>
+           <br/>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_8">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            10.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7333.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             50. Sitzung des Rates am 18.07.2018
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_9">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="left" alt="Sitzungssaal Ratssitzung" border="0" class="mt_left" src="https://www.gronau.de/media/custom/1486_5979_1_m.JPG?1403253623" title="Sitzungssaal Ratssitzung" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Am Mittwoch, den 18.07.2018 findet um 18.00 Uhr die 50. Sitzung des Rates im Sitzungssaal des Rathauses, Konrad-Adenauer-Str. 1 statt.
+           <br/>
+           Weitere Informationen erhalten Sie im Sitzungsdienst der Stadt Gronau.
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_9">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            06.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7330.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Amtsblatt Nr. 9/2018 für die Stadt Gronau erschienen
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_10">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="right" alt="Amtsblatt der Stadt Gronau" border="0" class="mt_right" src="https://www.gronau.de/media/custom/1486_5625_1_m.JPG?1389607243" title="Amtsblatt der Stadt Gronau" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Das aktuelle Amtsblatt Nr. 9/2018 für die Stadt Gronau ist erschienen.
+           <br/>
+           Weitere Informationen um Amtsblatt der Stadt Gronau finden Sie in der Übersicht.
+           <br/>
+           <br/>
+           <br/>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <a name="nr_10">
+          </a>
+          <div class="mtp_fl" style="width:125px">
+           <h4 class="mtp_ti_date" style="color: #bbbbbb">
+            04.07.2018
+           </h4>
+          </div>
+          <div class="mtp_fl">
+           <h4 class="mtp_ti_text" style="width:100%; text-align:justify">
+            <a href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7329.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="Interner Link: Zur Pressemitteilung">
+             Aktuelle Stellenausschreibung
+            </a>
+           </h4>
+          </div>
+          <br clear="all"/>
+          <br/>
+          <div class="mtp_sprungziel">
+           <br/>
+           <a href="#nr_11">
+            Textanriss überspringen
+           </a>
+           <br/>
+          </div>
+          <div class="mtp_fl bild_fix" style="width:125px!important;">
+           <img align="right" alt="Logo Stadt Gronau hell" border="0" class="mt_right" src="https://www.gronau.de/media/custom/1486_2726_1_m.JPG?1281016031" title="Logo Stadt Gronau hell" width="120"/>
+          </div>
+          <div class="mtp_f_text" style="text-align:justify;">
+           Im Fachdienst 465- Gebäude- und Liegenschaftsmanagement ist eine Stelle als
+           <br/>
+           Hausmeister/in
+           <br/>
+           zu besetzen.
+           <br/>
+           Ihre Aufgaben umfassen u.a.:
+           <br/>
+            Ansprechpartner/in in Fragen des täglichen Dienstbetriebes  Feststellen von Schäden/Störungen, Ausführung von kleineren Ausbesserungs- und Reparaturarbeiten  Überwachung und Betreuung der technischen Anlagen sowie Gebäude-, Ver- und Entsorgungseinrichtungen  Zuständigkeit für den Öffnungs- und Schließdienst, Mobiliarumstellen bzw. Austauschen ...
+           <a class="csslink_intern" href="/index.php?object=tx%7c1479.1&amp;ModID=255&amp;FID=1486.7329.1&amp;&amp;sNavID=1486.38&amp;mNavID=1486.38" title="interner Link: Mehr zu der Pressemitteilung  Aktuelle Stellenausschreibung">
+            mehr
+           </a>
+           <br clear="all"/>
+          </div>
+          <br clear="all"/>
+          <hr size="1"/>
+          <div class="mtp_footer">
+           <div class="mtp_sprungziel">
+            <br/>
+            <a href="#start" title="Zurück zum Seitenanfang">
+             Zurück zum Seitenanfang
+            </a>
+            <br clear="all"/>
+           </div>
+           <script language="JavaScript" type="text/javascript">
+            // <![CDATA[
+ 		document.write ('<'+'div style="float:left">');
+ 		document.write ('<'+'a href="#start"><img src="/media/output/but_oben.GIF" title="Zurück zum Seitenanfang" alt="Zurück zum Seitenanfang" style="border: 0px;" /><'+'/a>&nbsp;');
+ 		document.write ('<'+'a href="javascript:window.history.back()"><img src="/media/output/but_zurueck.GIF" title="Zur&uuml;ck zur vorhergehenden Seite" alt="Zur&uuml;ck zur vorhergehenden Seite" style="border: 0px;" /><'+'/a>&nbsp;');
+ 		if (window.print) document.write('<a href="javascript:print();"><img src="/media/output/but_drucken.GIF" title="Seite drucken" alt="Seite drucken" style="border: 0px;" /><'+'/a>&nbsp;');
+ 		document.write ('<'+'/div>');
+ 	// ]]>
+           </script>
+           <div style="float:right; margin-right:2em !important; margin:0px">
+            <a class="csslink_intern" href="/index.phtml?&amp;sNavID=1486.38&amp;mNavID=1486.38&amp;object=tx,1479.1.1&amp;ModID=255&amp;sub=0&amp;La=1" target="_self">
+             Zum Archiv
+            </a>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <!--
+ 
+ <div class="tpl_spalte_rechts_fest">
+ 
+ <div class="tpl_headline"></div>
+ 
+ <div class="tpl_content"></div>
+ 
+ </div>
+ 
+ 
+ -->
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Piwik -->
+   <script type="text/javascript">
+    if (window.ikiss_basic && ikiss_basic.getCookie("ikiss-tracking") == 1) ; else {
+ 								var _paq = _paq || [];
+ 								_paq.push(["trackPageView"]);
+ 								_paq.push(["enableLinkTracking"]);
+ 								(function() {
+ 									var u="https://piwik.advantic.de/";
+ 									_paq.push(["setTrackerUrl", u+"piwik.php"]);
+ 									_paq.push(["setSiteId", "158"]);
+ 									var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+ 									g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
+ 								})();
+ 							}
+   </script>
+   <noscript>
+    <!-- Piwik Image Tracker -->
+    <img alt="" src="https://piwik.advantic.de/piwik.php?idsite=158&amp;rec=1" style="border:0"/>
+   </noscript>
+   <!-- End Piwik Code -->
+  </body>
+ </html>

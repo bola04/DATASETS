@@ -1,0 +1,884 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <meta content="ie=8" http-equiv="X-UA-Compatible"/>
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <title>
+    FELIX Wohnungsgenossenschaft eG
+   </title>
+   <meta content="DiUS Guido Thielsch" name="author"/>
+   <meta content="follow" name="robots"/>
+   <meta content="Wohnung, Wohnungen, Wohnungsgenossenschaft, Wohnungssuche, Wohnungsuche, Wohnungsangebot, Wohnungsverwaltung, wohnen, Berlin, Genossenschaft, Marzahn, Felix, FELIX WG" name="keywords"/>
+   <meta content="Informationen über die FELIX Wohnungsgenossenschaft eG. Angebote an freien 1-5 Raum Wohnungen in Berlin!" name="description"/>
+   <meta content="2014-10-01" name="date"/>
+   <link href="grafik/favicon.ico" rel="shortcut icon"/>
+   <link href="formate.css" rel="stylesheet" type="text/css"/>
+   <script src="_taktgeber.js" type="text/javascript">
+   </script>
+   <script src="_ueberblenden.js" type="text/javascript">
+   </script>
+   <script src="_galerie.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="detectmobilebrowser.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="vorlagen.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" src="regie.js" type="text/javascript">
+   </script>
+   <script language="JavaScript" type="text/javascript">
+    <!--
+   // Anzeige aus den Frameseiten:
+   seitennummer=-1;  // Direktseite
+   ruecksprung=false;
+ 
+   letzteaktion=0; //1-Wohnung ausgesucht, 2-Grundriss ausgesucht
+   // Wahlwohnung merken:
+   wahlwhg="";
+ 
+   // Suche nach Grundrissen
+   risswahl=false;
+ 
+   // Auswahlliste vormerken
+   auswahl= new Array();
+   gewaehlt=false;
+ 
+ 
+   // Grundriss merken:
+   rissnummer=-1;
+   // Galeriebild merken:
+   bildnummer=-1;
+   // Positionszeile setzen
+   function pfadzeile(nummer)
+   {
+     // Felixlauf verbieten/erlauben
+     seitennummer=nummer;
+     if((nummer==0)||(nummer==4))
+     {
+       document.getElementById('felix').style.display='none';
+       zeitauftrag[7][1]=false;
+     }
+     else
+     { 
+       document.getElementById('felix').style.display='block';
+       zeitauftrag[7][1]=true;
+       zeitauftrag[7][0]=true;
+     }
+     
+     if(seitennummer==0)
+     {
+       document.getElementById('gruppenname').firstChild.nodeValue="";
+     }
+     else
+     {
+       document.getElementById('gruppenname').firstChild.nodeValue="\u00bb "+seiten[seitennummer][3];
+     }
+     document.getElementById('seitenname').firstChild.nodeValue="\u00bb "+seiten[seitennummer][1];  
+   }
+ 
+   // Liste der Seiten: htm / Texttitel / gruppenid / Gruppentitel | Alle Eintragungen ohne Kapselung
+   seiten=new Array();
+   seiten[0]=new Array("start.htm","Startseite",""," ","-1");
+   seiten[1]=new Array("wir.htm","\u00dcber uns","gen","Die Genossenschaft","0");
+   seiten[2]=new Array("sitz.htm","Gesch\u00e4ftsstelle","gen","Die Genossenschaft","0");
+   seiten[3]=new Array("satzung.htm","Satzung","gen","Die Genossenschaft","0");
+   seiten[4]=new Array("album.htm","Fotoalbum","gen","Die Genossenschaft","0");
+   seiten[5]=new Array("archiv.htm","Archiv","gen","Die Genossenschaft","0");
+ 
+   seiten[6]=new Array("impressum.htm","Impressum","","Formales","-1");
+   seiten[7]=new Array("haftung.htm","Haftung und Copyright","","Formales","-1");
+   seiten[8]=new Array("daten.htm","Datenschutz","","Formales","-1");
+ 
+   seiten[9]=new Array("liste.htm","Angebotsliste","whg","Unsere Wohnungen","1");
+   seiten[10]=new Array("risse.htm","Grundriss-<br />Varianten","whg","Unsere Wohnungen","1");
+   seiten[11]=new Array("quartiera.htm","Allee der Kosmonauten","whg","Unsere Wohnungen","1");
+   seiten[12]=new Array("quartierk.htm","Kienbergstra\u00dfe","whg","Unsere Wohnungen","1");
+   seiten[13]=new Array("quartierm.htm","Mehrower Allee Oberwei\u00dfbacher Str.","whg","Unsere Wohnungen","1");
+   seiten[14]=new Array("quartierw.htm","Wuhletalstr. Schwarzburger Str.","whg","Unsere Wohnungen","1");
+ 
+   seiten[15]=new Array("login.htm","Benutzerlogin","ser","Mieterservice","3");
+   seiten[16]=new Array("service.htm","Serviceinformationen","ser","Mieterservice","3");
+   seiten[17]=new Array("havarie.htm","Havarie","ser","Mieterservice","3");
+   seiten[18]=new Array("gaestesb.htm","G\u00e4stewohnung Schwarzburger Str. 10","ser","Mieterservice","3");
+   seiten[19]=new Array("hausordnung.htm","Hausordnung","ser","Mieterservice","3");
+ 
+   seiten[20]=new Array("kontakt.htm","Kontakt","kon","Kontakt und Links","4");
+   seiten[21]=new Array("links.htm","Links für Mieter","kon","Kontakt und Links","4");
+   seiten[22]=new Array("partner.htm","Unsere Partner","kon","Kontakt und Links","4");
+ 
+   seiten[23]=new Array("infos.htm","Informationen","akt","Aktuelles","2");
+   seiten[24]=new Array("kalender.htm","Kalender","akt","Aktuelles","2");
+   seiten[25]=new Array("mieterblatt.htm","Das Mieterblatt","akt","Aktuelles","2");
+   seiten[26]=new Array("energie.htm","Unsere Energieausweise","whg","Unsere Wohnungen","1");
+ 
+   seiten[27]=new Array("forum_start.htm","Felix-Intern","ser","Mieterservice","1");
+   seiten[28]=new Array("forum.htm","Felix-Intern","ser","Mieterservice","1");
+ 
+   seiten[29]=new Array("felixclub.htm","FELIX-Punkt-Club","ser","Mieterservice","1");
+   seiten[30]=new Array("mieterliste/index.htm","FELIX-Punkt-Mieter","ser","Mieterservice","1");
+   seiten[31]=new Array("gewerberaum/index.htm","Unsere Gewerber\u00e4ume","gew","Die Unsere Gewerber\u00e4ume","0");
+ //  seiten[30]=new Array("jobs.htm","Jobs bei FELIX","ser","Mieterservice","3");
+   
+   // Manipulation der Index-Seite: Klappmenüs 
+   klappmenue=new Array(5);
+   klappmenue=false;
+   fahne="";
+   toplauf="";
+   menue="";
+   stellung=0;
+   aktuell="-1";
+   neufahne="-1";
+ 
+   function zeigen(pos)
+   {
+     neufahne=pos;
+     if(aktuell!=pos)
+     {
+       menueaus();
+       aktuell=pos;
+       if(pos>=0)
+       {
+         document.getElementById('flaeche'+pos).style.display='block';
+         fahne='flaeche'+pos;
+         if(document.getElementById(fahne).offsetHeight>150)
+         {
+           stellung=-150;
+         }
+         else
+         {
+           stellung=-document.getElementById(fahne).offsetHeight;
+         }
+         document.getElementById(fahne).style.top=stellung+"px";
+         top.zeitauftrag[4][0]=true;
+         document.getElementById('grund'+pos).style.display='block'; 
+         klappmenue[pos]=true;
+         if (seitennummer==0) 
+         {
+           if(pos==0)window.frames.Inhalt.document.getElementById('gen').style.background='#fff600';
+           if(pos==2)window.frames.Inhalt.document.getElementById('akt').style.background='#fff600';
+           if(pos==4)window.frames.Inhalt.document.getElementById('kon').style.background='#fff600';
+           if(pos==1)window.frames.Inhalt.document.getElementById('whg').style.background='#fff600';
+           if(pos==3)window.frames.Inhalt.document.getElementById('ser').style.background='#fff600';
+           if(pos==5)window.frames.Inhalt.document.getElementById('gew').style.background='#fff600';
+         }
+       }
+       document.getElementById("navsack").style.visibility="visible";
+     }
+   }
+   
+   function gleiten()
+   {
+     stellung+=10;
+     if (stellung>=0)
+     {
+       document.getElementById(fahne).style.top="0px";
+       top.zeitauftrag[4][1]=false;
+     }
+     else
+     {
+       document.getElementById(fahne).style.top=stellung+"px";
+     }
+   }
+ 
+   function menueaus()
+   {
+       top.zeitauftrag[4][0]=false;
+       klappmenue[aktuell]=false;
+       menueneu();
+   }
+ 
+   function menueneu()
+   {
+     aktuell=-1;
+     document.getElementById("navsack").style.visibility="hidden";
+     for(i=0; i<6; i++)
+     {
+       document.getElementById('flaeche'+i).style.display='none';
+       document.getElementById('flaeche'+i).style.top=Number(0-document.getElementById('flaeche'+i).offsetHeight)+"px";
+ 
+       document.getElementById('grund'+i).style.display='none';  
+       klappmenue[i]=false;
+     }
+     if (seitennummer==0) 
+     {
+       window.frames.Inhalt.document.getElementById('gen').style.background='#ffffff';
+       window.frames.Inhalt.document.getElementById('akt').style.background='#ffffff';
+       window.frames.Inhalt.document.getElementById('kon').style.background='#ffffff';
+       window.frames.Inhalt.document.getElementById('whg').style.background='#ffffff';
+       window.frames.Inhalt.document.getElementById('ser').style.background='#ffffff';
+       window.frames.Inhalt.document.getElementById('gew').style.background='#ffffff';
+     }
+   }
+   
+   felixnr=-1;
+   vorgeladen=false;
+   function felixlauf()
+   {
+     if (vorgeladen)
+     {
+       felixnr++;
+       if (felixnr>640)
+       {
+         felixnr=0;
+       }
+       /*
+       bildname="felix/Winken-990px_00";
+       if (felixnr<100)
+       {
+         bildname+="0";
+       }
+       if (felixnr<10)
+       {
+         bildname+="0";
+       }
+       bildname+=String(felixnr)+".png";
+       */
+       document.getElementById("felix").src=bild[felixnr].src;
+     }
+     else
+     {
+       felixnr=-1;
+     }
+   }
+   
+   var bildliste = new Array();
+   for(i=0; i<641; i++)
+   {
+     vorbild="felix/Winken-990px_00";
+     if (i<100)
+     {
+       vorbild+="0";
+     }
+     if (i<10)
+     {
+       vorbild+="0";
+     }
+     vorbild+=String(i)+".png";
+     bildliste[i] = vorbild;
+   }
+ 
+   var bild= new Array();
+   var bildInterval = null;
+   /* function vorladen() 
+   {
+     for(i=0; i<641; i++)
+     {
+       bild[i] = new Image();
+       bild[i].src = bildliste[i];
+     }
+     vorgeladen=true;
+     zeitauftrag[7][0]=true;
+   }*/
+   
+   function vorladen()
+   {
+     if ((bild.length < 641) && ((bild.length == 0) || bild[bild.length - 1].complete))
+     {
+       if (bild.length == 0) bildInterval = window.setInterval(vorladen, 10);
+       bild.push(new Image());
+       bild[bild.length - 1].src = bildliste[bild.length - 1];
+     }
+     else if ((bild.length == 641) && bild[bild.length - 1].complete)
+     {
+       window.clearInterval(bildInterval);
+       bildInterval = null;
+       vorgeladen=true;
+       zeitauftrag[7][0]=true;
+     }
+   }
+   //-->
+   </script>
+  </head>
+  <body onload="menueneu();zeitgeber();lauf();$Galerie.initialisieren();vorladen();">
+   <div class="container">
+    <div>
+     <!-- linker Rand -->
+     <div onclick="felixlauf();" style="position:absolute;left:0px;top:0px;width:17px;height:100%;background:url(grafik/lrand.jpg) repeat-y;">
+     </div>
+     <!-- rechter Rand -->
+     <div onmouseover="menueaus();" style="position:absolute;right:0px;top:0px;width:17px;height:100%;background:url(grafik/rrand.jpg) repeat-y;">
+     </div>
+     <!-- Kopffeld -->
+     <div style="position:absolute;left:17px;top:0px;width:990px;height:212px;background:#fff600;">
+      <a href="index.htm">
+       <img alt="FELIX" src="maennlein/titel.png" style="position:absolute;left:20px;top:0px;"/>
+       <img alt="FELIX" src="grafik/kopflogo.gif" style="position:absolute;left:0px;top:10px;width:290px;height:134px;"/>
+      </a>
+      <img alt="Wohnen mit Lust und Laune" src="grafik/slogan.png" style="position:absolute;left:300px;top:15px;width:550px;height:76px;"/>
+      <!-- positionszeile mit Titelrücksprung -->
+      <div style="position:absolute;left:13px;bottom:48px;width:550px;height:17px;">
+       <p style="font-size:11px;">
+        Sie sind hier:
+        <a class="menue" href="javascript:top.ruecksprung=true;Inhalt.document.location.href='start.htm';zeigen(seiten[seitennummer][4]);void(0);">
+         <span id="gruppenname">
+         </span>
+        </a>
+        <span id="seitenname">
+         » Startseite
+        </span>
+       </p>
+      </div>
+      <!-- weißer Grund unter Fotoband -->
+      <div style="position:absolute;left:0px;bottom:2px;width:590px;height:44px;background:#ffffff;">
+      </div>
+      <div style="position:absolute;left:590px;bottom:2px;width:400px;height:100px;background:#ffffff;">
+      </div>
+      <!-- Ende Grund  -->
+      <!-- Kontaktdaten -->
+      <div onmouseover="menueaus();" style="position:absolute;left:0px;bottom:2px;width:492px;height:30px;background:#ffffff;">
+       <p style="margin:12px 0px 0px 12px;">
+        Tel.: 030 - 93 77 18 26  /  E-Mail:
+        <a href="mailto:felix-wg@onlinehome.de">
+         FELIX-WG@onlinehome.de
+        </a>
+       </p>
+      </div>
+      <!-- gelbe Aktionsflächen unter dem Fotoband -->
+      <div id="grund0" style="position:absolute;left:480px;bottom:0px;width:112px;height:60px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:60px;">
+       </div>
+      </div>
+      <div id="grund1" style="position:absolute;left:592px;bottom:0px;width:88px;height:60px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:60px;">
+       </div>
+      </div>
+      <div id="grund5" style="position:absolute;left:680px;bottom:0px;width:107px;height:60px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:60px;">
+       </div>
+      </div>
+      <div id="grund2" style="position:absolute;left:787px;bottom:0px;width:72px;height:110px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:110px;">
+       </div>
+      </div>
+      <div id="grund3" style="position:absolute;left:859px;bottom:0px;width:63px;height:110px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:110px;">
+       </div>
+      </div>
+      <div id="grund4" style="position:absolute;left:922px;bottom:0px;width:68px;height:110px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;height:110px;">
+       </div>
+      </div>
+      <!-- Ende Aktionsflächen -->
+      <!-- Fotoband -->
+      <img alt="Wohnen i9m grünen Marzahn" onmouseover="menueaus();" src="grafik/fotoband2.gif" style="position:absolute;right:0px;top:10px;width:600px;height:180px;"/>
+      <!-- Ende Fotoband -->
+      <!--Schaltflächen -->
+      <div onmouseover="zeigen(0);" style="position:absolute;left:480px;bottom:0px;width:112px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         Die
+         <br/>
+         Genossenschaft
+        </strong>
+       </p>
+      </div>
+      <div onmouseover="zeigen(1);" style="position:absolute;left:592px;bottom:0px;width:88px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         Unsere
+         <br/>
+         Wohnungen
+        </strong>
+       </p>
+      </div>
+      <div onmouseover="zeigen(5);" style="position:absolute;left:680px;bottom:0px;width:107px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         <a href="gewerberaum/index.htm" style="color:#338;" target="_blank">
+          Unsere
+          <br/>
+          Gewerberäume
+         </a>
+        </strong>
+       </p>
+      </div>
+      <div onmouseover="zeigen(2);" style="position:absolute;left:787px;bottom:0px;width:72px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         <br/>
+         Aktuelles
+        </strong>
+       </p>
+      </div>
+      <div onmouseover="zeigen(3);" style="position:absolute;left:859px;bottom:0px;width:63px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         Mieter-
+         <br/>
+         service
+        </strong>
+       </p>
+      </div>
+      <div onmouseover="zeigen(4);" style="position:absolute;left:922px;bottom:0px;width:68px;cursor:pointer;">
+       <p class="sflaechen">
+        <strong>
+         Kontakt
+         <br/>
+         &amp; Links
+        </strong>
+       </p>
+      </div>
+      <!--Ende Schaltflächen -->
+      <!-- Laufzeile -->
+      <div class="bl" style="position:absolute;left:0px;bottom:24px;width:444px;height:25px;">
+      </div>
+      <div style="position:absolute;left:0px;top:163px;width:460px;height:25px;overflow:hidden;">
+       <div class="lauftext" id="lauf1" style="position:absolute;left:0px;top:0px;">
+        <script language="JavaScript" type="text/javascript">
+         <!--
+           document.write('<p class="lauf"><nobr>'+lauftext+'</nobr></p>');
+         //-->
+        </script>
+       </div>
+       <div class="lauftext" id="lauf2" style="position:absolute;left:1500px;top:0px;">
+        <script language="JavaScript" type="text/javascript">
+         <!--
+           document.write('<p class="lauf"><nobr>'+lauftext+'</nobr></p>');
+         //-->
+        </script>
+       </div>
+      </div>
+      <!-- Ende Laufzeile -->
+     </div>
+     <div id="feldinnen" style="position:absolute;left:17px;top:211px;bottom:50px;width:990px;">
+      <!-- iFrame -->
+      <iframe frameborder="0" height="100%" name="Inhalt" src="start.htm" width="100%">
+       <p>
+        Die Wohnungsgenossenschaft FELIX WG e.G. bietet Wohnungen im grünen Stadtbezirk Marzahn von Berlin an. Informieren Sie sich über unsere modernisierten Mietwohnungen und das genossenschaftliche Miteinander - Wohnen nach Lust und Laune.
+       </p>
+       <p>
+        Dieser Internetauftritt enthält folgende inhaltliche Seiten:
+       </p>
+       <ul>
+        <li>
+         <a href="start.htm">
+          "Startseite",
+         </a>
+        </li>
+        <li>
+         <a href="wir.htm">
+          "Die Genossenschaft" → Über uns,
+         </a>
+        </li>
+        <li>
+         <a href="sitz.htm">
+          "Die Genossenschaft" → Geschäftsstelle,
+         </a>
+        </li>
+        <li>
+         <a href="satzung.htm">
+          "Die Genossenschaft" → Satzung,
+         </a>
+        </li>
+        <li>
+         <a href="album.htm">
+          "Die Genossenschaft" → Fotoalbum,
+         </a>
+        </li>
+        <li>
+         <a href="gewerberaum/index.htm">
+          "Die Genossenschaft" → Gewerberaumvermietung,
+         </a>
+        </li>
+        <li>
+         <a href="liste.htm">
+          "Unsere Wohnungen" → Angebotsliste,
+         </a>
+        </li>
+        <li>
+         <a href="energie.htm">
+          "Unsere Wohnungen" → Unsere Energieausweise,
+         </a>
+        </li>
+        <li>
+         <a href="risse.htm">
+          "Unsere Wohnungen" → verfügbare Grundrisse,
+         </a>
+        </li>
+        <li>
+         <a href="quartiera.htm">
+          "Unsere Wohnungen" → Wohnquartier Allee der Kosmonauten,
+         </a>
+        </li>
+        <li>
+         <a href="quartierk.htm">
+          "Unsere Wohnungen" → Wohnquartier Kienbergstraße,
+         </a>
+        </li>
+        <li>
+         <a href="quartierm.htm">
+          "Unsere Wohnungen" → Wohnquartier Mehrower Allee Oberweißbacher Straße,
+         </a>
+        </li>
+        <li>
+         <a href="quartierw.htm">
+          "Unsere Wohnungen" → Wohnquartier Wuhletalstraße Schwarzburger Straße "Informati-onen",
+         </a>
+        </li>
+        <li>
+         <a href="infos.htm">
+          "Aktuelles" → Informationen,
+         </a>
+        </li>
+        <li>
+         <a href="kalender.htm">
+          "Aktuelles" → Veranstaltungskalender,
+         </a>
+        </li>
+        <li>
+         <a href="mieterblatt.htm">
+          "Aktuelles" → Das Mieterblatt,
+         </a>
+        </li>
+        <li>
+         <a href="service.htm">
+          "Mieterservice" → Serviceinformationen
+         </a>
+        </li>
+        <li>
+         <a href="havarie.htm">
+          "Mieterservice" → Havarie - was tun?
+         </a>
+        </li>
+        <li>
+         <a href="gaestesb.htm">
+          "Mieterservice" → Gästewohnung Schwarzburger Str. 10,
+         </a>
+        </li>
+        <li>
+         <a href="hausordnung.htm">
+          "Mieterservice" → Hausordnung,
+         </a>
+        </li>
+        <li>
+         <a href="kontakt.htm">
+          "Kontakt und Links" → Kontakt,
+         </a>
+        </li>
+        <li>
+         <a href="links.htm">
+          "Kontakt und Links" → Links für Mieter,
+         </a>
+        </li>
+        <li>
+         <a href="partner.htm">
+          "Kontakt und Links" → Unsere Partner,
+         </a>
+        </li>
+        <li>
+         <a href="impressum.htm">
+          "Impressum",
+         </a>
+        </li>
+       </ul>
+       <p>
+        Webmaster für diesen Internetauftritt ist
+        <a href="http://www.dius.de">
+         DiUS
+        </a>
+       </p>
+       <p>
+        Weitere DiUS-Seiten finden Sie z.B. unter:
+       </p>
+       <ul>
+        <li>
+         <a href="http://www.wohnfuehrerschein.de">
+          www.wohnfuehrerschein.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.landsbergertor.de">
+          www.landsbergertor.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.rakleine.de">
+          www.rakleine.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.sc-berlin.de">
+          www.sc-berlin.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.betreuungsverein-wuhletal.de">
+          www.betreuungsverein-wuhletal.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.btv-olympia.de">
+          www.btv-olympia.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.blumenfee-berlin.de">
+          www.blumenfee-berlin.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.schlossmeister.de/">
+          www.schlossmeister.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.gti-elektroanlagen.de/">
+          www.gti-elektroanlagen.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.abaton-personal.de">
+          www.abaton-personal.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.stadtumbauinfo.de">
+          www.stadtumbauinfo.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.quality-process.de/">
+          www.quality-process.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.rebermo.de">
+          www.rebermo.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.hvmgmbh.de">
+          www.hvmgmbh.de
+         </a>
+        </li>
+        <li>
+         <a href="http://www.chemcon-berlin.de">
+          www.chemcon-berlin.de
+         </a>
+        </li>
+       </ul>
+      </iframe>
+      <!-- Ende iFrame -->
+      <div id="deckfeld" onmouseover="this.style.display='none';document.getElementById('felix').style.visibility='visible';" style="position:absolute;left:0px;bottom:20px;width:990px;height:433px;text-align:center;display:none;">
+       <img alt="FELIX - unser Maskottchen" src="maennlein/allesok-gross.gif"/>
+      </div>
+     </div>
+     <!-- Fahnenfeld -->
+     <div id="navsack" style="position:absolute;left:17px;top:211px;width:990px;height:400px;overflow:hidden;visibility:hidden;">
+      <!-- gelbe Ausklappflächen -->
+      <!-- Ausschalterdiv -->
+      <div onmouseover="menueaus();" style="position:absolute;left:0px;top:0px;width:990px;height:400px;">
+      </div>
+      <!-- Ende Ausschalterdiv -->
+      <div id="flaeche0" onmouseover="zeigen(0);" style="position:absolute;left:480px;top:0px;width:112px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+        <p class="menue">
+         <a class="menue" href="wir.htm" target="Inhalt">
+          Über uns
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="sitz.htm" target="Inhalt">
+          Geschäftsstelle
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="satzung.htm" target="Inhalt">
+          Satzung
+         </a>
+        </p>
+        <p class="menue" style="padding-bottom:12px;">
+         <a class="menue" href="album.htm" target="Inhalt">
+          Fotoalbum
+         </a>
+        </p>
+        <p class="menue" style="display:none;">
+         <a class="menue" href="archiv.htm" target="Inhalt">
+          Archiv
+         </a>
+        </p>
+       </div>
+      </div>
+      <div id="flaeche1" onmouseover="zeigen(1);" style="position:absolute;left:592px;top:0px;width:110px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+        <p class="menue">
+         <a class="menue" href="liste.htm" target="Inhalt">
+          Angebotsliste
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="energie.htm" target="Inhalt">
+          unsere Ener-
+          <br/>
+          gieausweise
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="risse.htm" target="Inhalt">
+          verfügbare Grundrisse
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="quartiera.htm" target="Inhalt">
+          Wohnquartier Allee der Kosmonauten
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="quartierk.htm" target="Inhalt">
+          Wohnquartier Kienbergstraße
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="quartierm.htm" target="Inhalt">
+          Wohnquartier Mehrower Allee Oberweißbacher Straße
+         </a>
+        </p>
+        <p class="menue" style="padding-bottom:12px;">
+         <a class="menue" href="quartierw.htm" target="Inhalt">
+          Wohnquartier Wuhletalstraße Schwarzburger Straße
+         </a>
+        </p>
+       </div>
+      </div>
+      <div id="flaeche5" onmouseover="zeigen(5);" style="position:absolute;left:680px;top:0px;width:107px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+       </div>
+      </div>
+      <div id="flaeche2" onmouseover="zeigen(2);" style="position:absolute;left:787px;top:0px;width:100px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+        <!--        <p class="menue"><a class="menue" href="umfrage.htm" target="Inhalt">Umfrage</a></p> -->
+        <p class="menue">
+         <a class="menue" href="infos.htm" target="Inhalt">
+          Informationen
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="kalender.htm" target="Inhalt">
+          Veranstaltungs-
+          <br/>
+          kalender
+         </a>
+        </p>
+        <p class="menue" style="padding-bottom:12px;">
+         <a class="menue" href="mieterblatt.htm" target="Inhalt">
+          Das Mieterblatt
+         </a>
+        </p>
+       </div>
+      </div>
+      <div id="flaeche3" onmouseover="zeigen(3);" style="position:absolute;left:859px;top:0px;width:100px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+        <!--<p class="menue"><a class="menue" href="login.htm" target="Inhalt">Benutzer-Login</a></p>-->
+        <p class="menue">
+         <a class="menue" href="service.htm" target="Inhalt">
+          Service-
+          <br/>
+          informationen
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="havarie.htm" target="Inhalt">
+          Havarie - was tun?
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="gaestesb.htm" target="Inhalt">
+          Gästewohnung Schwarzburger
+          <br/>
+          Straße 10
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="felixclub.htm" target="Inhalt">
+          FELIX-PUNKT-Club
+         </a>
+        </p>
+        <p class="menue" style="padding-bottom:12px;">
+         <a class="menue" href="hausordnung.htm" target="Inhalt">
+          Hausordnung
+         </a>
+        </p>
+       </div>
+      </div>
+      <div id="flaeche4" onmouseover="zeigen(4);" style="position:absolute;left:922px;top:0px;width:68px;background:#fff600;display:none;">
+       <div style="border-right:2px solid #aaaaaa;border-bottom:2px solid #aaaaaa;padding-top:6px;">
+        <p class="menue">
+         <a class="menue" href="kontakt.htm" target="Inhalt">
+          Kontakt
+         </a>
+        </p>
+        <p class="menue">
+         <a class="menue" href="links.htm" target="Inhalt">
+          Links
+          <br/>
+          für Mieter
+         </a>
+        </p>
+        <p class="menue" style="padding-bottom:12px;">
+         <a class="menue" href="partner.htm" target="Inhalt">
+          Unsere
+          <br/>
+          Partner
+         </a>
+        </p>
+       </div>
+      </div>
+      <!-- Ende Ausklappflächen -->
+     </div>
+     <img alt="Felix läuft und winkt" id="felix" onclick="this.style.display='none';zeitauftrag[7][1]=false;" src="grafik/nichts.gif" style="position:absolute;left:17px;bottom:20px;width:990px;height:163px;border-bottom:1px solid #ffffff;"/>
+     <!-- Fussfeld -->
+     <div style="position:absolute;left:17px;bottom:0px;width:990px;height:50px;background:#333388;">
+      <p onmouseover="document.getElementById('deckfeld').style.display='block';document.getElementById('felix').style.visibility='hidden';" style="position:absolute;left:250px;top:10px;color:#ffffff;letter-spacing:2px;text-align:center;">
+       Unser Maskottchen
+       <br/>
+       heißt "
+       <i>
+        Felix
+       </i>
+       "
+      </p>
+      <p style="float:right;margin:13px 6px;width:88px;cursor:pointer;" title="Diese Seiten sind W3C-konform">
+       <a href="http://validator.w3.org/check?uri=referer" target="_blank">
+        <img alt="Valid XHTML 1.0 Transitional" height="31" src="http://www.w3.org/Icons/valid-xhtml10" width="88"/>
+       </a>
+      </p>
+      <a class="fuss" href="impressum.htm" target="Inhalt">
+       <span class="fuss" onmouseout="this.style.background='#fff600';" onmouseover="this.style.background='#ffffff';">
+        Impressum
+       </span>
+      </a>
+      <a class="fuss" href="haftung.htm" target="Inhalt">
+       <span class="fuss" onmouseout="this.style.background='#fff600';" onmouseover="this.style.background='#ffffff';">
+        Copyright und Haftung
+       </span>
+      </a>
+      <a class="fuss" href="daten.htm" target="Inhalt">
+       <span class="fuss" onmouseout="this.style.background='#fff600';" onmouseover="this.style.background='#ffffff';">
+        Datenschutz
+       </span>
+      </a>
+      <a href="start.htm" target="Inhalt">
+       <img alt="zur Startseite" border="0" height="33" src="grafik/startbutton.gif" style="margin:8px 0px 0px 5px;" title="zur Startseite" width="150"/>
+      </a>
+     </div>
+    </div>
+   </div>
+   <script language="JavaScript" type="text/javascript">
+    <!--
+   // Aufruf einer bestimmten Seite
+   startok=true;
+   anhang="";
+   anhang=document.location.search.slice(1);
+ 
+   if (anhang!="")
+   {
+     for(i=0; i<seiten.length; i++)
+     {
+       if(seiten[i][0]==anhang) Inhalt.document.location.href=anhang;
+     }
+   }
+ 
+ 
+ //-->
+   </script>
+  </body>
+ </html>

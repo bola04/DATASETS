@@ -1,0 +1,288 @@
+<html lang="de-de" ng-app="FeuerwehrBerne" ng-controller="mainCtrl">
+  <head>
+   <title ng-bind="title">
+   </title>
+   <meta content="{{description}}" name="description"/>
+   <meta content="{{title}}" property="og:title"/>
+   <meta content="{{description}}" property="og:description"/>
+   <!-- crawler fallback -->
+   <title ng-if="false">
+    Feuerwehr Berne
+   </title>
+   <meta content="Willkommen auf der Website der Freiwilligen Feuerwehr Berne." name="description" ng-if="false"/>
+   <meta content="Feuerwehr Berne" name="author"/>
+   <meta content="website" property="og:type"/>
+   <meta content="Feuerwehr Berne" ng-if="false" property="og:title"/>
+   <meta content="Willkommen auf der Website der Freiwilligen Feuerwehr Berne." ng-if="false" property="og:description"/>
+   <meta content="/img/wappen_berne.jpg" property="og:image"/>
+   <meta content="initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+   <link href="./dest/app.min.css" rel="stylesheet"/>
+   <meta charset="utf-8"/>
+  </head>
+  <body layout="row" md-swipe-left="swipeLeft()" ng-cloak="">
+   <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar">
+     <div class="md-toolbar-tools">
+      <img alt="wappen" class="wappen" src="./img/wappen_berne.png"/>
+      <h1>
+       Feuerwehr Berne
+      </h1>
+     </div>
+     <md-progress-linear class="md-accent" md-mode="indeterminate" ng-show="isResolving">
+     </md-progress-linear>
+    </md-toolbar>
+    <md-content flex="" role="navigation">
+     <menu-link ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="home">
+       Startseite
+      </a>
+     </menu-link>
+     <menu-link>
+      <a class="md-button md-default-theme" ng-click="toggleCurrentMenu()">
+       <div layout="row">
+        <span>
+         Aktuelles
+        </span>
+        <span flex="">
+        </span>
+        <span class="arrow-toggle-icon" ng-class="{arrowToggled: collapseCurrentMenu}">
+         <md-icon aria-label="expand" md-svg-icon="expandMore" style="color: #000;">
+         </md-icon>
+        </span>
+       </div>
+      </a>
+     </menu-link>
+     <div class="subMenu" ng-class="{collapsed: collapseCurrentMenu}">
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="currentEmergencies">
+        Einsätze / Mitteilungen
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="events">
+        Termine
+       </a>
+      </menu-link>
+     </div>
+     <menu-link ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="vehicles">
+       Fahrzeuge
+      </a>
+     </menu-link>
+     <menu-link ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="history">
+       Chronik
+      </a>
+     </menu-link>
+     <menu-link ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="foundation">
+       Förderverein
+      </a>
+     </menu-link>
+     <menu-link>
+      <a class="md-button md-default-theme" ng-click="toggleAboutUsMenu()">
+       <div layout="row">
+        <span>
+         Über uns
+        </span>
+        <span flex="">
+        </span>
+        <span class="arrow-toggle-icon" ng-class="{arrowToggled: collapseAboutUsMenu}">
+         <md-icon aria-label="expand" md-svg-icon="expandMore" style="color: #000;">
+         </md-icon>
+        </span>
+       </div>
+      </a>
+     </menu-link>
+     <div class="subMenu" ng-class="{collapsed: collapseAboutUsMenu}">
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="aboutManagement">
+        Leitung der Feuerwehr
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="aboutWhoWeAre">
+        Wer wir sind
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="aboutBecomeAMember">
+        Mitglied werden
+       </a>
+      </menu-link>
+     </div>
+     <menu-link ng-hide="loggedIn()" ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="member">
+       Mitgliederbereich
+      </a>
+     </menu-link>
+     <menu-link ng-show="loggedIn()">
+      <a class="md-button md-default-theme" ng-click="toggleMemberMenu()">
+       <div layout="row">
+        <span>
+         Mitgliederbereich
+        </span>
+        <span flex="">
+        </span>
+        <span class="arrow-toggle-icon" ng-class="{arrowToggled: collapseMemberMenu}">
+         <md-icon aria-label="expand" md-svg-icon="expandMore" style="color: #000;">
+         </md-icon>
+        </span>
+       </div>
+      </a>
+     </menu-link>
+     <div class="subMenu" ng-class="{collapsed: collapseMemberMenu}" ng-show="loggedIn()">
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="memberHome">
+        Übersicht
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="editProfile">
+        Profil
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="memberEmergencies">
+        Einsätze
+       </a>
+      </menu-link>
+      <menu-link ui-sref-active="active">
+       <a class="md-button md-default-theme" ui-sref="memberEvents">
+        Termine
+       </a>
+      </menu-link>
+     </div>
+     <menu-link ui-sref-active="active">
+      <a class="md-button md-default-theme" ui-sref="imprint">
+       Impressum
+      </a>
+     </menu-link>
+    </md-content>
+   </md-sidenav>
+   <div flex="" layout="column" role="main" tabindex="-1">
+    <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar">
+     <div class="md-toolbar-tools">
+      <md-button class="md-icon-button" hide-gt-sm="" ng-click="toggleSidenav()">
+       <md-icon aria-label="Menu" md-svg-icon="menu" style="color: #FFF;">
+       </md-icon>
+      </md-button>
+      <h1>
+       {{currentSite}}
+      </h1>
+      <span flex="">
+      </span>
+      <md-menu ng-show="loggedIn()">
+       <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+        <md-icon md-menu-origin="" md-svg-icon="moreVert">
+        </md-icon>
+       </md-button>
+       <md-menu-content width="3">
+        <md-menu-item>
+         <md-button ng-click="logout()">
+          Abmelden
+         </md-button>
+        </md-menu-item>
+       </md-menu-content>
+      </md-menu>
+     </div>
+     <md-progress-linear class="md-accent" md-mode="indeterminate" ng-show="isResolving">
+     </md-progress-linear>
+    </md-toolbar>
+    <md-content flex="" layout-padding="" md-scroll-y="" ng-show="!isResolving" ng-view="" ui-view="">
+    </md-content>
+    <md-content flex="" layout="column" layout-align="center center" ng-show="isResolving">
+     <md-progress-circular class="md-primary" md-diameter="128">
+     </md-progress-circular>
+    </md-content>
+    <md-button aria-label="Einsatz hinzufügen" class="md-fab md-fab-bottom-right" ng-click="fabAddClick()" ng-show="fabAddShow">
+     <md-icon md-svg-icon="add" style="color: #FFF;">
+     </md-icon>
+    </md-button>
+   </div>
+   <script src="./dest/app.min.js">
+   </script>
+   <script>
+    function openGallery(caller, className) {
+ 			var pswpElement = document.querySelectorAll('.pswp')[0];
+ 			var items = getItemsFromDOM();
+ 			var options = {
+ 				index: parseInt(caller.getAttribute("index")),
+ 				getThumbBoundsFn: function (index) {
+ 					var pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+ 					var rect = caller.getBoundingClientRect();
+ 
+ 					return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
+ 				},
+ 				shareButtons: [
+ 					{ id: 'download', label: 'Bild herunterladen', url: '{{raw_image_url}}', download: true }
+ 				]
+ 			};
+ 
+ 			var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
+ 			gallery.init();
+ 
+ 			function getItemsFromDOM() {
+ 				var items = [];
+ 				var elements = document.getElementsByClassName(className);
+ 				for (i = 0; i < elements.length; i++) {
+ 					items.push({
+ 						src: elements[i].getAttribute("src"),
+ 						w: elements[i].getAttribute("galleryWidth"),
+ 						h: elements[i].getAttribute("galleryHeight")
+ 					});
+ 				}
+ 				return items;
+ 			}
+ 		}
+   </script>
+  </body>
+  <div aria-hidden="true" class="pswp" role="dialog" tabindex="-1">
+   <div class="pswp__bg">
+   </div>
+   <div class="pswp__scroll-wrap">
+    <div class="pswp__container">
+     <div class="pswp__item">
+     </div>
+     <div class="pswp__item">
+     </div>
+     <div class="pswp__item">
+     </div>
+    </div>
+    <div class="pswp__ui pswp__ui--hidden">
+     <div class="pswp__top-bar">
+      <div class="pswp__counter">
+      </div>
+      <button class="pswp__button pswp__button--close" title="Close (Esc)">
+      </button>
+      <button class="pswp__button pswp__button--share" title="Share">
+      </button>
+      <button class="pswp__button pswp__button--fs" title="Toggle fullscreen">
+      </button>
+      <button class="pswp__button pswp__button--zoom" title="Zoom in/out">
+      </button>
+      <div class="pswp__preloader">
+       <div class="pswp__preloader__icn">
+        <div class="pswp__preloader__cut">
+         <div class="pswp__preloader__donut">
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+      <div class="pswp__share-tooltip">
+      </div>
+     </div>
+     <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+     </button>
+     <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+     </button>
+     <div class="pswp__caption">
+      <div class="pswp__caption__center">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </html>

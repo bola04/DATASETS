@@ -1,0 +1,620 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+   <title>
+    Dalmatiner Ex Nihilo Nihil
+   </title>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="BK" name="author"/>
+   <meta content="Ex Nihilo Nihil" name="copyright"/>
+   <meta content="dalmatiner, dalmatiner dalmatinerzucht vdh, dalmatiner hund, dalmatiner vdh ddc, dalmatiner welpen, dalmatiner zucht, dalmatiner zuchtstaette, dalmatiner zuechter, dalmatiner welpen, welpen" name="Keywords"/>
+   <meta content="Die Dalmatiner von Ex Nihilo Nihil stellen sich und ihre Dalmatinerzuchtstätte vor. Mitglied im Deutschen Dalmatiner Club " name="Description"/>
+   <meta content="Dalmatiner" name="page-topic"/>
+   <meta content="Alle" name="audience"/>
+   <meta content="NEVER" name="Expires"/>
+   <meta content="Private Homepage" name="page-type"/>
+   <meta content="INDEX,FOLLOW" name="robots"/>
+   <link href="main.css" rel="stylesheet" type="text/css"/>
+   <style type="text/css">
+    <!--
+ .Stil1 {font-size: 10px}
+ .Stil3 {
+ 	font-size: 14px;
+ 	color: #0000FF;
+ }
+ .Stil4 {
+ 	font-weight: bold;
+ 	color: #000000;
+ }
+ .Stil6 {color: #000000}
+ #highlight{
+ 	position:absolute;
+ 	display:none;
+ 	width:400px;
+ 	height:500px;
+ 	padding:10px;
+ 	text-align:center;
+ 	background-color:#fff;
+ 	border:1px solid #666;
+ 	top:50%;
+ 	left:50%;
+ 	margin-top:-250px;
+ 	margin-left:-155px;
+ 	
+ 	z-index:100;
+ }
+ #highlight h1{
+ 	font-size:14px;
+ 	margin:0px;
+ 	margin-bottom:10px;
+ 	}
+ 	body{
+ 	overflow-x:hidden;}
+ 	body, html{
+ 	width:100%;
+ 	height:100%;}
+ -->
+   </style>
+   <script src="Scripts/AC_RunActiveContent.js" type="text/javascript">
+   </script>
+   <script src="Scripts/swfobject_modified.js" type="text/javascript">
+   </script>
+   <script type="text/javascript">
+    function show(id){
+ 	document.getElementById(id).style.display='block';
+ }
+ function hide(id){
+ 	document.getElementById(id).style.display='none';
+ }
+ // Anzahl der Schneeflocken (mehr als 30 - 40 nicht empfehlenswert)
+ var snowmax=45;
+ 
+ // Farben der Schneeflocken. Es können beliebig viele Farben angegeben werden
+ var snowcolor=new Array("#AAAACC","#DDDDFF","#CCCCDD","#F3F3F3","#F0FFFF");
+ 
+ // Fonts, welche die Schneeflocken erzeugen. Beliebig viele Fonts ergänzbar
+ var snowtype=new Array("Arial Black","Arial Narrow","Times","Comic Sans MS");
+ 
+ // Zeichen für die Schneeflocke (empfohlen: * )
+ var snowletter="*";
+ 
+ // Fallgeschwindigkeit (empfohlen sind Werte zwischen 0.3 bis 2)
+ var sinkspeed=1.0;
+ 
+ // Maximale Größe der Schneeflocken
+ var snowmaxsize=22;
+ 
+ // Minimale Größe der Schneeflocken
+ var snowminsize=8;
+ 
+ /*  Schnee-Zone:
+ ** 1 für überall, 2 für Schneefall nur auf der linken Seite
+ ** 3 für Schneefall in der Mitte, 4 für Schneefall nur auf der rechten Seite */
+ var snowingzone=1;
+ 
+ /*
+ * Ab hier nichts mehr ändern *
+ */
+ 
+ var snow=new Array();
+ var marginbottom;
+ var marginright;
+ var timer;
+ var i_snow=0;
+ var x_mv=new Array();
+ var crds=new Array();
+ var lftrght=new Array();
+ var browserinfos=navigator.userAgent ;
+ var ie5=document.all&&document.getElementById&&!browserinfos.match(/Opera/);
+ var ns6=document.getElementById&&!document.all;
+ var opera=browserinfos.match(/Opera/);
+ var browserok=ie5||ns6||opera;
+ 
+ function randommaker(range) {		
+ 	rand=Math.floor(range*Math.random());
+     return rand;
+ }
+ 
+ function initsnow() {
+ 	if (ie5 || opera) {
+ 		marginbottom = document.body.clientHeight;
+ 		marginright = document.body.clientWidth;
+ 	}
+ 	else if (ns6) {
+ 		marginbottom = window.innerHeight;
+ 		marginright = window.innerWidth;
+ 	}
+ 	var snowsizerange=snowmaxsize-snowminsize;
+ 	for (i=0;i<=snowmax;i++) {
+ 		crds[i] = 0;                      
+     	lftrght[i] = Math.random()*15;         
+     	x_mv[i] = 0.03 + Math.random()/10;
+ 		snow[i]=document.getElementById("s"+i);
+ 		snow[i].style.fontFamily=snowtype[randommaker(snowtype.length)];
+ 		snow[i].size=randommaker(snowsizerange)+snowminsize;
+ 		snow[i].style.fontSize=snow[i].size;
+ 		snow[i].style.color=snowcolor[randommaker(snowcolor.length)];
+ 		snow[i].sink=sinkspeed*snow[i].size/5;
+ 		if (snowingzone==1) {snow[i].posx=randommaker(marginright-snow[i].size);}
+ 		if (snowingzone==2) {snow[i].posx=randommaker(marginright/2-snow[i].size);}
+ 		if (snowingzone==3) {snow[i].posx=randommaker(marginright/2-snow[i].size)+marginright/4;}
+ 		if (snowingzone==4) {snow[i].posx=randommaker(marginright/2-snow[i].size)+marginright/2;}
+ 		snow[i].posy=randommaker(2*marginbottom-marginbottom-2*snow[i].size);
+ 		snow[i].style.left=snow[i].posx;
+ 		snow[i].style.top=snow[i].posy;
+ 	}
+ 	movesnow();
+ }
+ 
+ function movesnow() {
+ 	for (i=0;i<=snowmax;i++) {
+ 		crds[i] += x_mv[i];
+ 		snow[i].posy+=snow[i].sink;
+ 		snow[i].style.left=(snow[i].posx+lftrght[i]*Math.sin(crds[i])) + "px";
+ 		snow[i].style.top=snow[i].posy + "px";
+ 		
+ 		if (snow[i].posy>=marginbottom-2*snow[i].size || parseInt(snow[i].style.left)>(marginright-3*lftrght[i])){
+ 			if (snowingzone==1) {snow[i].posx=randommaker(marginright-snow[i].size);}
+ 			if (snowingzone==2) {snow[i].posx=randommaker(marginright/2-snow[i].size);}
+ 			if (snowingzone==3) {snow[i].posx=randommaker(marginright/2-snow[i].size)+marginright/4;}
+ 			if (snowingzone==4) {snow[i].posx=randommaker(marginright/2-snow[i].size)+marginright/2;}
+ 			snow[i].posy=0;
+ 		}
+ 	}
+ 	var timer=setTimeout("movesnow()",50);
+ }
+ 
+ for (i=0;i<=snowmax;i++) {
+ 	document.write("<div id='s"+i+"' style='position:absolute;z-index:20;top:-"+snowmaxsize+"px;'>"+snowletter+"</div>");
+ }
+ 
+ Hmove=1500;
+ 
+ function moveObjRight() 
+ 
+ {    
+ 
+    	document.getElementById('JS').style.left=Hmove+"px";
+ 
+    	Hmove=Hmove-2;
+ 
+    	if(Hmove>-380)
+ 
+    	  	window.setTimeout("moveObjRight();", 10);
+ 
+ }
+   </script>
+  </head>
+  <body>
+   <div id="JS" style="z-index: 0; position: absolute; top: 150px; width:350px;">
+    <img align="baseline" border="0" height="120" hspace="0" src="weihnachtsmann_schlitten.gif" width="350"/>
+   </div>
+   <script type="text/javascript">
+    initsnow();
+ 	moveObjRight();
+   </script>
+   <!--<div id="highlight"><h1>EX NIHILO NIHIL JAGO (LUNA) SUCHT EIN NEUES ZUHAUSE!</h1><img src="images/luna_sep10.jpg" width="290" height="300" alt="Luna"><p><br>Sie wurde im Tierheim Böblingen abgegeben.<br><br>Weitere Informationen unter: <a href="http://www.tierheim-boeblingen.de/component/option,com_ponygallery/func,detail/id,1050/Itemid,114/" target="_blank">www.tierheim-boeblingen.de</a><br><br>Telefon Tierheim: 07031/25025</p><p><br><br><a href="javascript:hide('highlight');">-Fenster schließen-</a></p></div>-->
+   <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+    <tr>
+     <td height="80">
+      <table border="0" cellpadding="0" cellspacing="0" height="80" width="100%">
+       <tr>
+        <td height="13" width="180">
+         <p class="oben">
+          <img height="13" src="images/design_r1_c1.gif" width="180"/>
+         </p>
+        </td>
+        <td height="13" width="190">
+         <p class="oben">
+          <img height="13" src="images/design_r1_c2.gif" width="190"/>
+         </p>
+        </td>
+        <td background="images/design_r1_c3.gif">
+         <p class="oben">
+         </p>
+        </td>
+        <td height="13" width="24">
+         <p class="oben">
+          <img height="13" src="images/design_r1_c4.gif" width="220"/>
+         </p>
+        </td>
+        <td height="13" width="43">
+         <p class="oben">
+          <a href="kontakt.htm">
+           <img border="0" height="13" src="images/design_r1_c5.gif" width="43"/>
+          </a>
+         </p>
+        </td>
+        <td height="13" width="57">
+         <p class="oben">
+          <a href="impressum.htm">
+           <img border="0" height="13" src="images/design_r1_c6.gif" width="57"/>
+          </a>
+         </p>
+        </td>
+        <td height="13" width="45">
+         <p class="oben">
+          <a href="sitemap.htm">
+           <img border="0" height="13" src="images/design_r1_c7.gif" width="45"/>
+          </a>
+         </p>
+        </td>
+        <td height="13" width="35">
+         <p class="oben">
+          <a href="mailto:info@ex-nihilo-nihil.de">
+           <img border="0" height="13" src="images/design_r1_c8.gif" width="35"/>
+          </a>
+         </p>
+        </td>
+        <td height="13" width="20">
+         <p class="oben">
+          <img height="13" src="images/design_r1_c9.gif" width="20"/>
+         </p>
+        </td>
+       </tr>
+       <tr>
+        <td height="67">
+         <img height="67" src="images/design_r2_c1.gif" width="180"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c2.gif" width="190"/>
+        </td>
+        <td background="images/design_r2_c3.gif">
+        </td>
+        <td height="67" width="24">
+         <img height="67" src="images/design_r2_c4.gif" width="220"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c5.gif" width="43"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c6.gif" width="57"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c7.gif" width="45"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c8.gif" width="35"/>
+        </td>
+        <td height="67">
+         <img height="67" src="images/design_r2_c9.gif" width="20"/>
+        </td>
+       </tr>
+      </table>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <div>
+       <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+        <tr>
+         <td height="50" width="180">
+          <img height="50" src="images/design_r3_c1.gif" width="180"/>
+         </td>
+         <td>
+          <div align="center">
+           <p>
+            <img height="30" src="images/willkommen.gif" width="300"/>
+           </p>
+           <p align="left" class="fuss">
+            &gt;&gt;
+            <a class="Stil1" href="index.htm">
+             Home
+            </a>
+           </p>
+          </div>
+         </td>
+        </tr>
+        <tr>
+         <td background="images/design_r4_c1.gif" width="180">
+          <table border="0" cellpadding="0" cellspacing="0" width="150">
+           <tr>
+            <td>
+             <img height="26" src="images/homepage.gif" width="150"/>
+            </td>
+           </tr>
+           <tr>
+            <td>
+             <div align="left">
+              <p class="nav">
+              </p>
+              <p class="nav">
+               <a class="nav" href="http://www.afk-inc.de/ex/gaestebuch.php">
+                Gästebuch
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="galerie.htm">
+                Galerie
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="welpengalerie.htm">
+                Welpengalerie
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="links.htm">
+                Links
+               </a>
+              </p>
+              <p class="nav">
+              </p>
+             </div>
+            </td>
+           </tr>
+           <tr>
+            <td>
+             <img height="26" src="images/zucht.gif" width="150"/>
+            </td>
+           </tr>
+           <tr>
+            <td>
+             <div align="left">
+              <p class="nav">
+              </p>
+              <p class="nav">
+               <a class="nav" href="news.htm">
+                Zwingernachrichten
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wir.htm">
+                Über uns
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="kontakt.htm">
+                Kontakt
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="zucht.htm">
+                Unsere Zucht
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="hunde.htm">
+                Unsere Hunde
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="pferde.htm">
+                Unsere Pferde
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="deckr.htm">
+                Deckrüde
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="ausstellung.htm">
+                Ausstellungen
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="presse.htm">
+                Pressemitteilungen
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="vwzz.htm">
+                Hürdenlauf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="urlaub.htm">
+                Urlaubsdalmatiner
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="memorium.htm" target="_blank">
+                Memorium
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="gadf.htm">
+                Grüße aus der Ferne
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag.htm">
+                Wandertag 2003
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag04.htm">
+                Wandertag 2004 /1
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag042.htm">
+                Wandertag 2004 /2
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag05.htm">
+                Wandertag 2005
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag06.htm">
+                Wandertag 2006
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="wandertag08.htm">
+                Wandertag 2008
+               </a>
+              </p>
+              <p class="nav">
+              </p>
+             </div>
+            </td>
+           </tr>
+           <tr>
+            <td>
+             <img height="26" src="images/wurf.gif" width="150"/>
+            </td>
+           </tr>
+           <tr>
+            <td>
+             <div align="left">
+              <p class="nav">
+              </p>
+              <p class="nav">
+               <a class="nav" href="a-wurf.htm">
+                A-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="b-wurf.htm">
+                B-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="c-wurf.htm">
+                C-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="d-wurf.htm">
+                D-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="e-wurf.htm">
+                E-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="f-wurf.htm">
+                F-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="g-wurf.htm">
+                G-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="h-wurf.htm">
+                H-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="i-wurf.htm">
+                I-Wurf
+               </a>
+              </p>
+              <p class="nav">
+               <a class="nav" href="http://www.afk-inc.de/ex/j-wurf/">
+                J-Wurf
+               </a>
+              </p>
+              <p class="nav">
+              </p>
+             </div>
+            </td>
+           </tr>
+          </table>
+         </td>
+         <td>
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+           <tr>
+            <td>
+             <p align="left">
+             </p>
+             <h2 align="center">
+             </h2>
+             <p align="center" class="Stil2">
+             </p>
+             <p align="center">
+              <img height="412" src="images/wish.gif" width="400"/>
+             </p>
+             <p align="left">
+             </p>
+             <p align="left" style="text-align:center; padding-top:5px; margin-bottom:0px; font-size:xx-small;">
+              Sie sind Besucher Nummer
+             </p>
+             <p align="left" style="text-align:center; margin-top:0px; margin-bottom:0px; font-size:xx-small;">
+              <a href="http://www.webcounter.goweb.de">
+               <img alt="COWEBCounterbyInline" border="0" src="http://webcounter.goweb.de/128545.GIF" vspace="0"/>
+              </a>
+             </p>
+             <p align="left">
+             </p>
+             <p align="left">
+             </p>
+            </td>
+            <td width="124">
+             <div align="center" style="border-left:1px solid #000000 ">
+              <p>
+               <img height="30" src="images/neu.gif" width="113"/>
+              </p>
+              <p class="Stil3">
+               <a href="news.htm">
+                Zwingernachrichten
+               </a>
+              </p>
+              <p class="Stil3">
+               <a href="hunde.htm">
+                Unsere Hunde
+               </a>
+              </p>
+              <p class="Stil3">
+               <a href="wandertag08.htm">
+                Wandertag 2008
+               </a>
+               <a href="gadf.htm">
+               </a>
+              </p>
+              <p class="Stil3">
+              </p>
+              <p align="center">
+               <img alt="Deutscher Dalmatiner Club" border="0" height="119" src="images/dvd_113.gif" width="113"/>
+              </p>
+              <p align="center">
+              </p>
+             </div>
+            </td>
+           </tr>
+          </table>
+         </td>
+        </tr>
+        <tr>
+         <td height="140" width="180">
+          <img height="140" src="images/design_r6_c1.gif" width="180"/>
+         </td>
+         <td style="vertical-align:bottom ">
+          <p align="center" class="fuss">
+           ANZEIGE
+          </p>
+          <p align="center">
+           <!-- BEGIN PARTNER PROGRAM - DO NOT CHANGE THE PARAMETERS OF THE HYPERLINK -->
+           <a href="http://partners.webmasterplan.com/click.asp?ref=165947&amp;site=1597&amp;type=b3&amp;bnb=3" target="_top">
+            <img alt="zooplus.de - der große Internet-Haustiershop" border="0" height="60" src="http://banners.webmasterplan.com/view.asp?site=1597&amp;ref=165947&amp;b=3" width="468"/>
+           </a>
+           <!-- END PARTNER PROGRAM -->
+          </p>
+          <hr align="center" noshade="noshade"/>
+          <p align="center" class="fuss">
+           © 2008 Ex Nihilo Nihil, alle Rechte
+             vorbehalten! Designed by
+           <a class="Stil1" href="http://www.onward-design.com" target="_blank">
+            Onward-Design
+           </a>
+          </p>
+         </td>
+        </tr>
+       </table>
+      </div>
+     </td>
+    </tr>
+   </table>
+   <script type="text/javascript">
+    swfobject.registerObject("FlashID");
+   </script>
+  </body>
+ </html>
